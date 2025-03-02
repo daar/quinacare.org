@@ -44,7 +44,6 @@ const { videoSrc, text, textSize = "2rem", textWidth = "30%" } = Astro.props;
     <div
         class="hero-text"
         style={`--text-size: ${textSize}; --text-width: ${textWidth};`}
-    >
-        {text}
-    </div>
+        set:html={text}
+    />
 </section>
