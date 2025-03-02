@@ -1,0 +1,50 @@
+---
+const { videoSrc, text, textSize = "2rem", textWidth = "30%" } = Astro.props;
+---
+
+<style>
+    .hero {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .hero video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-text {
+        position: absolute;
+        top: 50%;
+        left: 5%;
+        transform: translateY(-50%);
+        color: white;
+        font-size: var(--text-size, 2rem);
+        max-width: var(--text-width, 50%);
+        text-align: left;
+        line-height: 1.3;
+        font-weight: bold;
+        /* background: rgba(0, 0, 0, 0.5); */
+        padding: 1rem;
+        border-radius: 8px;
+    }
+</style>
+
+<section class="hero">
+    <video autoplay loop muted playsinline>
+        <source src={videoSrc} type="video/mp4" />
+        Your browser does not support the video tag.
+    </video>
+    <div
+        class="hero-text"
+        style={`--text-size: ${textSize}; --text-width: ${textWidth};`}
+    >
+        {text}
+    </div>
+</section>
