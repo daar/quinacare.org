@@ -1,0 +1,134 @@
+---
+import sponsorData from "../content/sponsors.json";
+import { Image } from "astro:assets";
+
+// Define a max width for the text block (adjust as needed)
+const textMaxWidth = "350px"; // Controls the line width of the text
+
+// Dynamically import sponsor images
+const sponsorImages = await Promise.all(
+  sponsorData.sponsors.map(async (sponsor) => ({
+    ...sponsor,
+    image: (await import(`../sponsors/${sponsor.logo}`)).default
+  }))
+);
+---
+
+<style>
+  .sponsor-section {
+    width: 100%;
+    padding: 3rem 5%;
+    background: #f8f8f8;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 2rem; /* Space between title and content */
+  }
+
+  .header-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: left;
+    flex: 1;
+  }
+
+  .divider {
+    width: 2px;
+    height: 80px;
+    background: #ddd;
+  }
+
+  .header-content {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Keep text and button aligned to the left */
+  }
+
+  .text-box {
+    max-width: var(--text-max-width); /* Limit the text width */
+    text-align: left;
+  }
+
+  .header-text {
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .header-button {
+    display: inline-block;
+    background: #0077cc;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background 0.3s ease-in-out;
+    margin-top: 1rem;
+  }
+
+  .header-button:hover {
+    background: #005fa3;
+  }
+
+  .sponsor-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding-top: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .sponsor-item {
+    width: 150px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sponsor-item img {
+    width: 100%;
+    height: auto;
+    max-height: 80px;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  .sponsor-item img:hover {
+    filter: grayscale(0%);
+    transform: scale(1.1);
+  }
+</style>
+
+<section class="sponsor-section" style={`--text-max-width: ${textMaxWidth};`}>
+  <!-- Header -->
+  <div class="header-container">
+    <h2 class="header-title">Partners of Quina Care</h2>
+    <div class="divider"></div>
+    <div class="header-content">
+      <div class="text-box">
+        <p class="header-text">
+          Thanks to our partners, we provide healthcare to people in the rainforest of Ecuador.
+        </p>
+        <a href="/partners" class="header-button">See all partners</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sponsors Grid -->
+  <div class="sponsor-grid">
+    {sponsorImages.map((sponsor, index) => (
+      <a class="sponsor-item" href={sponsor.url} target="_blank" rel="noopener noreferrer" key={index}>
+        <Image src={sponsor.image} alt={sponsor.name} width="150" height="100" />
+      </a>
+    ))}
+  </div>
+</section>

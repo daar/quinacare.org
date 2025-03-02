@@ -1,0 +1,20 @@
+{
+    "sponsors": [
+        {
+            "name": "Quinacare",
+            "logo": "quinacare.svg",
+            "url": "https://quinacare.org"
+          },
+          {
+            "name": "ANBI (Algemeen Nut Beogende Instelling)",
+            "logo": "anbi-algemeen-nut-beogende-instelling.svg",
+            "url": "https://anbi.com"
+          },
+          {
+            "name": "Wilde ganzen",
+            "logo": "my-image.jpg",
+            "url": "https://wilde-ganzen.com"
+          }
+    ]
+  }
+  
