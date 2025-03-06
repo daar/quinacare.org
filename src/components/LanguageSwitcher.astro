@@ -1,0 +1,142 @@
+---
+const languages = [
+  { code: 'nl', label: 'Nederlands' },  // Dutch as primary language
+  { code: 'en', label: 'English' },
+  { code: 'es', label: 'Español' },
+];
+let defaultLanguage = 'nl';  // Default to Dutch (fallback language)
+---
+
+<style>
+  .language-switcher {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+  }
+
+  .language-switcher button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 1rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .language-switcher button:hover {
+    transform: scale(1.1);
+    color: #0070f3;
+  }
+
+  .language-switcher .active {
+    font-weight: bold;
+    color: #0070f3;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .language-switcher.open .dropdown-menu {
+    display: flex;
+  }
+</style>
+
+<div class="language-switcher" id="languageSwitcher">
+  <button id="languageButton">{defaultLanguage.toUpperCase()}</button>
+  
+  <div class="dropdown-menu" id="dropdownMenu">
+    <!-- This will be populated dynamically by JS -->
+  </div>
+</div>
+
+<!-- Client-side JS -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const languageSwitcher = document.getElementById("languageSwitcher");
+    const languageButton = document.getElementById("languageButton");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+
+    // Track the current language (default or based on browser)
+    let currentLanguage = '{defaultLanguage}'; // Initial current language is from the frontmatter, i.e., Dutch (nl)
+    let isOpen = false;
+
+    // Language detection on client-side
+    const languages = ['nl', 'en', 'es']; // Supported language codes
+    const browserLanguage = navigator.language.split('-')[0]; // Get the primary language code
+    const supportedLanguages = languages;
+
+    // Set the default language based on browser language if supported
+    if (supportedLanguages.includes(browserLanguage)) {
+      currentLanguage = browserLanguage;
+    } else {
+      currentLanguage = 'nl'; // Fall back to Dutch if the browser language is unsupported
+    }
+
+    // Update the button text to reflect the default/current language
+    languageButton.textContent = currentLanguage.toUpperCase();
+
+    // Function to update the dropdown menu dynamically
+    const updateDropdownMenu = () => {
+      dropdownMenu.innerHTML = ''; // Clear current menu
+
+      // Create buttons for all languages except the current one
+      languages.filter(language => language !== currentLanguage).forEach(languageCode => {
+        const button = document.createElement('button');
+        const language = { nl: 'Nederlands', en: 'English', es: 'Español' }[languageCode];
+        button.textContent = language;
+        button.id = languageCode;
+        button.setAttribute('aria-label', `Switch to ${language}`);
+        
+        button.addEventListener('click', () => {
+          currentLanguage = languageCode; // Update the selected language
+          languageButton.textContent = currentLanguage.toUpperCase(); // Update the button text
+          dropdownMenu.style.display = 'none'; // Close dropdown after selecting a language
+          isOpen = false; // Reset dropdown state
+          updateDropdownMenu(); // Update the dropdown menu
+        });
+
+        dropdownMenu.appendChild(button);
+      });
+    };
+
+    // Initialize the dropdown menu
+    updateDropdownMenu();
+
+    // Toggle dropdown visibility when the button is clicked
+    languageButton.addEventListener('click', () => {
+      isOpen = !isOpen;
+      dropdownMenu.style.display = isOpen ? 'flex' : 'none';
+    });
+
+    // Close the dropdown when clicking outside of the dropdown or the language switcher
+    document.addEventListener('click', (event) => {
+      if (!languageSwitcher.contains(event.target)) {
+        dropdownMenu.style.display = 'none'; // Close dropdown if clicked outside
+        isOpen = false; // Reset isOpen state
+      }
+    });
+
+    // Optionally, close the dropdown when losing focus
+    languageButton.addEventListener('blur', () => {
+      setTimeout(() => {  // Delay closing to allow for button blur behavior
+        if (!dropdownMenu.contains(document.activeElement)) {
+          dropdownMenu.style.display = 'none';
+          isOpen = false;  // Reset isOpen state
+        }
+      }, 200);  // Adjust time as necessary
+    });
+  });
+</script>

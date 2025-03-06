@@ -5,6 +5,7 @@ import Logo from './Logo.astro';
 import DonateButton from './DonateButton.astro';
 import SearchBar from './SearchBar.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 
 const menuItems = [
   { 
@@ -40,6 +41,7 @@ const menuItems = [
     <div class="flex items-center gap-4">
       <SearchBar />
       <DonateButton />
+      <LanguageSwitcher />
       <ThemeToggle />
 
       <button id="menu-button" class="md:hidden focus:outline-none" aria-label="Mobile menu">
