@@ -5,7 +5,8 @@ import Footer from '../../components/Footer.astro';
 import '/src/styles/global.css';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('actueel');
+  // Only show Dutch posts for now
+  const posts = await getCollection('actueel-nl');
   return posts.map((post, index) => ({
     params: { slug: post.data.slug || post.id },
     props: {

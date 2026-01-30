@@ -6,7 +6,8 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const allPosts = await getCollection('actueel');
+  // Only show Dutch posts for now
+  const allPosts = await getCollection('actueel-nl');
 
   // Sort by date descending and filter published posts
   const posts = allPosts
