@@ -1,0 +1,38 @@
+---
+interface Props {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  align?: string;
+  caption?: string;
+}
+
+const { src, alt = '', width, height, align = 'left', caption } = Astro.props;
+
+const alignClass = {
+  left: 'mr-auto',
+  center: 'mx-auto',
+  right: 'ml-auto',
+}[align] || 'mr-auto';
+
+const floatClass = {
+  left: 'float-left mr-4 mb-2',
+  right: 'float-right ml-4 mb-2',
+  center: '',
+}[align] || '';
+---
+
+<figure class={`${align === 'center' ? 'text-center my-4' : floatClass}`}>
+  <img
+    src={src}
+    alt={alt || caption || ''}
+    width={width}
+    height={height}
+    class={`${align === 'center' ? alignClass : ''} max-w-full h-auto`}
+    loading="lazy"
+  />
+  {caption && (
+    <figcaption class="text-sm text-gray-500 mt-2 italic">{caption}</figcaption>
+  )}
+</figure>
