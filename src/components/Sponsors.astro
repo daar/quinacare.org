@@ -2,16 +2,28 @@
 import sponsorData from "../content/sponsors.json";
 import { Image } from "astro:assets";
 
-// Define a max width for the text block (adjust as needed)
-const textMaxWidth = "350px"; // Controls the line width of the text
+const textMaxWidth = "350px";
 
-// Dynamically import sponsor images
-const sponsorImages = await Promise.all(
-  sponsorData.sponsors.map(async (sponsor) => ({
+/** * 1. Tell Vite to find all images in the sponsors folder.
+ * This must be a static string (no variables).
+ */
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/sponsors/*.{jpeg,jpg,png,gif,svg}');
+
+/**
+ * 2. Map your JSON data to the globbed images.
+ */
+const sponsorImages = sponsorData.sponsors.map((sponsor) => {
+  const imagePath = `/src/sponsors/${sponsor.logo}`;
+  
+  if (!images[imagePath]) {
+    throw new Error(`"${imagePath}" does not exist in /src/sponsors/. Check your JSON!`);
+  }
+
+  return {
     ...sponsor,
-    image: (await import(`../sponsors/${sponsor.logo}`)).default
-  }))
-);
+    image: images[imagePath]() // This executes the import for this specific file
+  };
+});
 ---
 
 <style>
