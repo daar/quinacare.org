@@ -5,5 +5,12 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [markdoc(), tailwind()]
+  integrations: [markdoc(), tailwind()],
+  i18n: {
+    defaultLocale: 'nl',
+    locales: ['nl', 'en', 'es'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });

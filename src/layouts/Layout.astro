@@ -1,25 +1,35 @@
 ---
-import '/src/styles/global.css'
+import '/src/styles/global.css';
+import { getLangFromUrl, getAlternateUrls, defaultLang, type Lang } from '../i18n';
 
 interface Props {
   title?: string;
+  lang?: Lang;
+  description?: string;
 }
 
-const { title = 'Quina Care - Zorg Zonder Grenzen' } = Astro.props;
+const currentLang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const { title = 'Quina Care - Zorg Zonder Grenzen', description } = Astro.props;
+const alternateUrls = getAlternateUrls(Astro.url);
 ---
 
 <!doctype html>
-<html lang="nl">
+<html lang={currentLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content="Stichting Quina Care brengt medische expertise naar de meest afgelegen gebieden van de Amazone. Omdat elk leven telt." />
+    <meta name="description" content={description || "Stichting Quina Care brengt medische expertise naar de meest afgelegen gebieden van de Amazone. Omdat elk leven telt."} />
     <title>{title}</title>
+    {alternateUrls.map(({ lang, url }) => (
+      <link rel="alternate" hreflang={lang} href={url} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={alternateUrls.find(a => a.lang === defaultLang)?.url} />
   </head>
-  <body class="bg-white text-qcBlack">
+  <body class="bg-white text-qcBlack font-arimo">
     <slot />
   </body>
 </html>

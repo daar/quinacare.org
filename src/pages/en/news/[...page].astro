@@ -1,0 +1,206 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import { useTranslations, getDateLocale, getLocalizedPath, type Lang } from '../../../i18n';
+
+const lang: Lang = 'en';
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allPosts = await getCollection('news-en');
+  const posts = allPosts
+    .filter(post => post.data.status === 'publish')
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+  return paginate(posts, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const isFirstPage = page.currentPage === 1;
+const featuredPost = isFirstPage ? page.data[0] : null;
+const remainingPosts = isFirstPage ? page.data.slice(1) : page.data;
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat(dateLocale, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+}
+
+function getCategoryLabel(categories: string[] | undefined): string {
+  if (!categories || categories.length === 0) return t('category.article');
+  const cat = categories[0].toLowerCase();
+  if (cat.includes('vlog') || cat.includes('video')) return t('category.vlog');
+  if (cat.includes('update') || cat.includes('nieuws') || cat.includes('news')) return t('category.update');
+  return t('category.article');
+}
+
+function getNewsPath(slug: string): string {
+  return getLocalizedPath(`/news/${slug}`, lang);
+}
+---
+
+<Layout title={`${t('nav.news')}${page.currentPage > 1 ? ` - ${t('news.page')} ${page.currentPage}` : ''} | Quina Care`} lang={lang}>
+  <Nav />
+
+  <header class="pt-40 pb-16 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <span class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4">{t('news.subtitle')}</span>
+          <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">{t('news.title')}<span class="italic font-light text-gray-300">.</span></h1>
+        </div>
+        <div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest">
+          <button class="text-qcRed border-b border-qcRed pb-2">{t('news.all')}</button>
+          <button class="text-gray-400 hover:text-qcBlack transition pb-2">{t('news.vlogs')}</button>
+          <button class="text-gray-400 hover:text-qcBlack transition pb-2">{t('news.articles')}</button>
+          <button class="text-gray-400 hover:text-qcBlack transition pb-2">{t('news.updates')}</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="py-20 max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+
+      {featuredPost && (
+        <article class="group cursor-pointer lg:col-span-2">
+          <a href={getNewsPath(featuredPost.data.slug || featuredPost.id)}>
+            <div class="aspect-video mb-8 overflow-hidden bg-qcBlack rounded-xl relative">
+              {featuredPost.data.featured_image ? (
+                <img
+                  src={featuredPost.data.featured_image}
+                  alt={featuredPost.data.title}
+                  class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-700"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-qcBlack to-gray-800"></div>
+              )}
+              <div class="absolute top-4 left-4">
+                <span class="bg-qcRed text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5">
+                  {getCategoryLabel(featuredPost.data.categories)}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest text-gray-400 mb-4 font-bold">
+              <span class="text-qcBlack">{featuredPost.data.author || 'Team QC'}</span>
+              <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+              <span>{formatDate(featuredPost.data.date)}</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold tracking-tighter leading-tight group-hover:text-qcRed transition uppercase">
+              {featuredPost.data.title}
+            </h2>
+          </a>
+        </article>
+      )}
+
+      {isFirstPage && remainingPosts.length > 0 && remainingPosts[0] && (
+        <article class="bg-qcBlack p-8 flex flex-col justify-between group cursor-pointer hover:bg-qcRed transition-colors duration-500 rounded-xl">
+          <a href={getNewsPath(remainingPosts[0].data.slug || remainingPosts[0].id)} class="flex flex-col h-full">
+            <div>
+              <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest block mb-12">
+                {getCategoryLabel(remainingPosts[0].data.categories)}
+              </span>
+              <h2 class="text-2xl font-bold tracking-tighter text-white leading-tight uppercase">
+                {remainingPosts[0].data.title}
+              </h2>
+            </div>
+            <div class="mt-12 flex items-center justify-between text-white/60">
+              <span class="text-[10px] font-bold uppercase tracking-widest">{t('news.readPost')}</span>
+              <svg class="w-5 h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </div>
+          </a>
+        </article>
+      )}
+
+      {(isFirstPage ? remainingPosts.slice(1) : remainingPosts).map((post) => (
+        <article class="group cursor-pointer">
+          <a href={getNewsPath(post.data.slug || post.id)}>
+            <div class="aspect-[4/3] mb-6 overflow-hidden bg-gray-100 rounded-xl relative">
+              {post.data.featured_image ? (
+                <img
+                  src={post.data.featured_image}
+                  alt={post.data.title}
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200"></div>
+              )}
+              <div class="absolute top-4 left-4">
+                <span class="bg-white text-qcBlack text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 border border-gray-100">
+                  {getCategoryLabel(post.data.categories)}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest text-gray-400 mb-3 font-bold">
+              <span class="text-qcBlack">{post.data.author || 'Team QC'}</span>
+              <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+              <span>{formatDate(post.data.date)}</span>
+            </div>
+            <h3 class="text-xl font-bold group-hover:text-qcRed transition uppercase leading-tight">
+              {post.data.title}
+            </h3>
+            {post.data.excerpt && (
+              <p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">
+                {post.data.excerpt}
+              </p>
+            )}
+          </a>
+        </article>
+      ))}
+
+    </div>
+
+    <div class="mt-32 pt-12 border-t border-gray-100 flex justify-between items-center">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+        {t('news.page')} {String(page.currentPage).padStart(2, '0')} / {String(page.lastPage).padStart(2, '0')}
+      </span>
+      <div class="flex gap-4">
+        {page.url.prev ? (
+          <a href={page.url.prev} class="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center hover:bg-qcRed hover:text-white hover:border-qcRed transition group">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </a>
+        ) : (
+          <span class="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-300 cursor-not-allowed">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </span>
+        )}
+        {page.url.next ? (
+          <a href={page.url.next} class="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center hover:bg-qcRed hover:text-white hover:border-qcRed transition group">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        ) : (
+          <span class="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-300 cursor-not-allowed">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </span>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
