@@ -1,0 +1,157 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('actueel');
+  return posts.map((post) => ({
+    params: { slug: post.data.slug || post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('nl-NL', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(date);
+}
+---
+
+<Layout title={`${post.data.title} | Quina Care`}>
+  <Nav />
+
+  <article class="pt-32 pb-20">
+    <header class="max-w-4xl mx-auto px-6 mb-16">
+      <a href="/actueel" class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcRed transition mb-8">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Terug naar actueel
+      </a>
+
+      {post.data.categories && post.data.categories.length > 0 && (
+        <div class="flex gap-2 mb-6">
+          {post.data.categories.map((cat: string) => (
+            <span class="bg-qcRed/10 text-qcRed text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded">
+              {cat}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-tight mb-8">
+        {post.data.title}
+      </h1>
+
+      <div class="flex items-center gap-4 text-sm text-gray-500">
+        <span class="font-bold text-qcBlack">{post.data.author || 'Team QC'}</span>
+        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+        <time datetime={post.data.date.toISOString()}>
+          {formatDate(post.data.date)}
+        </time>
+      </div>
+    </header>
+
+    {post.data.featured_image && (
+      <div class="max-w-5xl mx-auto px-6 mb-16">
+        <img
+          src={post.data.featured_image}
+          alt={post.data.title}
+          class="w-full h-auto rounded-xl"
+        />
+      </div>
+    )}
+
+    <div class="max-w-3xl mx-auto px-6 prose prose-lg prose-gray">
+      <Content />
+    </div>
+  </article>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  .prose {
+    max-width: none;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose h2 {
+    font-size: 1.75rem;
+  }
+
+  .prose h3 {
+    font-size: 1.25rem;
+  }
+
+  .prose p {
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+    color: #4b5563;
+  }
+
+  .prose a {
+    color: #e11d48;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .prose a:hover {
+    color: #111111;
+  }
+
+  .prose img {
+    border-radius: 0.75rem;
+    margin: 2em 0;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin: 1.5em 0;
+    padding-left: 1.5em;
+  }
+
+  .prose li {
+    margin-bottom: 0.5em;
+    color: #4b5563;
+  }
+
+  .prose blockquote {
+    border-left: 4px solid #e11d48;
+    padding-left: 1.5em;
+    margin: 2em 0;
+    font-style: italic;
+    color: #6b7280;
+  }
+
+  .prose figure {
+    margin: 2em 0;
+  }
+
+  .prose figcaption {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-top: 0.5em;
+  }
+
+  .prose strong {
+    color: #111111;
+  }
+</style>
