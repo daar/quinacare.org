@@ -1,4 +1,12 @@
 ---
+import { getLangFromUrl, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="relative bg-qcRed py-24 overflow-hidden font-arimo">
@@ -11,24 +19,24 @@
   <div class="max-w-7xl mx-auto px-6 relative z-10">
     <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
       <div class="text-white text-center lg:text-left">
-        <span class="text-[11px] font-bold uppercase tracking-[0.4em] opacity-80 block mb-4">Word onderdeel van de missie</span>
+        <span class="text-[11px] font-bold uppercase tracking-[0.4em] opacity-80 block mb-4">{t('cta.label')}</span>
         <h2 class="text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.9] mb-6">
-          Samen redden we <br><span class="italic font-black text-qcBlack">levens.</span>
+          {t('cta.title1')} <br><span class="italic font-black text-qcBlack">{t('cta.title2')}</span>
         </h2>
         <p class="text-red-100 text-lg max-w-md font-light">
-          Jouw bijdrage gaat direct naar medische apparatuur en personeel op locatie in Ecuador. 100% impact.
+          {t('cta.subtitle')}
         </p>
       </div>
 
       <div class="flex-shrink-0">
         <a href="#donate" class="group relative inline-flex items-center gap-6 bg-white text-qcRed px-10 py-6 font-bold text-xs uppercase tracking-[0.3em] hover:bg-qcBlack hover:text-white transition-all duration-500 shadow-2xl shadow-red-900/20 rounded-md">
           <i class="fa-solid fa-heart transition-transform group-hover:scale-125"></i>
-          <span>Doneer nu</span>
+          <span>{t('cta.donate')}</span>
         </a>
 
         <div class="mt-4 flex items-center justify-center lg:justify-start gap-4 text-red-200 text-[9px] font-bold uppercase tracking-widest opacity-70">
-          <span class="flex items-center gap-1"><i class="fa-solid fa-shield-check"></i> Veilig betalen</span>
-          <span class="flex items-center gap-1"><i class="fa-solid fa-certificate"></i> CBF Erkend</span>
+          <span class="flex items-center gap-1"><i class="fa-solid fa-shield-check"></i> {t('cta.securePayment')}</span>
+          <span class="flex items-center gap-1"><i class="fa-solid fa-certificate"></i> {t('cta.certified')}</span>
         </div>
       </div>
     </div>

@@ -1,34 +1,42 @@
 ---
+import { getLangFromUrl, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="py-24 border-t border-gray-100 font-arimo">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid lg:grid-cols-2 gap-16 items-center">
       <div>
-        <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4">Blijf Betrokken</span>
+        <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4">{t('newsletter.label')}</span>
         <h2 class="text-3xl md:text-4xl font-bold tracking-tighter uppercase leading-tight mb-6">
-          Ontvang updates rechtstreeks uit de <span class="italic underline decoration-qcRed underline-offset-8">kliniek.</span>
+          {t('newsletter.title')} <span class="italic underline decoration-qcRed underline-offset-8">{t('newsletter.titleHighlight')}</span>
         </h2>
         <p class="text-gray-500 text-sm leading-relaxed max-w-md">
-          Schrijf je in voor onze nieuwsbrief en ontvang kwartaalupdates over lopende projecten, medische resultaten en hoe jouw steun impact maakt in Ecuador.
+          {t('newsletter.subtitle')}
         </p>
       </div>
 
       <div class="relative">
         <form class="flex flex-col sm:flex-row gap-4">
           <div class="relative flex-grow group">
-            <input type="email" placeholder="Jouw e-mailadres"
+            <input type="email" placeholder={t('newsletter.placeholder')}
               class="w-full bg-white border border-gray-200 px-6 py-4 text-sm focus:outline-none focus:border-qcRed transition-colors placeholder:text-gray-300 placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
               required>
             <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-qcRed transition-all duration-500 group-focus-within:w-full"></div>
           </div>
           <button class="bg-qcBlack text-white px-10 py-4 font-bold text-[10px] uppercase tracking-widest hover:bg-qcRed transition-all duration-300 flex-shrink-0 rounded-md">
-            Inschrijven
+            {t('newsletter.submit')}
           </button>
         </form>
 
         <p class="mt-4 text-[9px] text-gray-400 uppercase tracking-widest flex items-center gap-2">
-          <i class="fa-solid fa-lock text-[8px]"></i> Wij respecteren je privacy. Geen spam, alleen impact.
+          <i class="fa-solid fa-lock text-[8px]"></i> {t('newsletter.privacy')}
         </p>
       </div>
     </div>

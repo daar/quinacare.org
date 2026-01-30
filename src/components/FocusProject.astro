@@ -1,4 +1,12 @@
 ---
+import { getLangFromUrl, useTranslations, type Lang } from '../i18n';
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="bg-qcGray py-24 border-y border-gray-100">
@@ -7,11 +15,11 @@
       <img src="https://picsum.photos/600/1000" class="w-full h-[500px] object-cover">
     </div>
     <div>
-      <span class="text-qcRed font-bold text-xs uppercase tracking-widest mb-4 block">Focus Project 2026</span>
-      <h2 class="text-4xl font-bold mb-6">Nieuwe Kraamafdeling.</h2>
-      <p class="text-gray-600 text-lg mb-8">Wij bouwen aan de toekomst. Help ons 500 extra veilige bevallingen per jaar te realiseren.</p>
+      <span class="text-qcRed font-bold text-xs uppercase tracking-widest mb-4 block">{t('focus.label')}</span>
+      <h2 class="text-4xl font-bold mb-6">{t('focus.title')}</h2>
+      <p class="text-gray-600 text-lg mb-8">{t('focus.description')}</p>
       <button class="bg-qcRed text-white px-10 py-4 font-bold uppercase text-xs tracking-widest hover:bg-qcBlack transition rounded-md">
-        Steun de bouw
+        {t('focus.cta')}
       </button>
     </div>
   </div>
