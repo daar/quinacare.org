@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
@@ -73,10 +74,12 @@ function getNewsPath(slug: string): string {
           <a href={getNewsPath(featuredPost.data.slug || featuredPost.id)}>
             <div class="aspect-video mb-8 overflow-hidden bg-qcBlack rounded-xl relative">
               {featuredPost.data.featured_image ? (
-                <img
+                <Image
                   src={featuredPost.data.featured_image}
                   alt={featuredPost.data.title}
                   class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-700"
+                  widths={[400, 800, 1200]}
+                  sizes="(max-width: 768px) 100vw, 800px"
                 />
               ) : (
                 <div class="w-full h-full bg-gradient-to-br from-qcBlack to-gray-800"></div>
@@ -125,10 +128,12 @@ function getNewsPath(slug: string): string {
           <a href={getNewsPath(post.data.slug || post.id)}>
             <div class="aspect-[4/3] mb-6 overflow-hidden bg-gray-100 rounded-xl relative">
               {post.data.featured_image ? (
-                <img
+                <Image
                   src={post.data.featured_image}
                   alt={post.data.title}
                   class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                  widths={[300, 600]}
+                  sizes="(max-width: 768px) 100vw, 400px"
                 />
               ) : (
                 <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200"></div>

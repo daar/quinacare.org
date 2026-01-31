@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-const newsSchema = z.object({
+const newsSchema = ({ image }: { image: () => z.ZodObject<any> }) => z.object({
   title: z.string(),
   date: z.date(),
   status: z.string().optional(),
@@ -10,7 +10,9 @@ const newsSchema = z.object({
   excerpt: z.string().optional(),
   categories: z.array(z.string()).optional(),
   language: z.string().optional(),
-  featured_image: z.string().optional(),
+  featured_image: image().optional(),
+  featured_image_caption: z.string().optional(),
+  featured_image_copyright: z.string().optional(),
 });
 
 const news_nl = defineCollection({
