@@ -183,6 +183,16 @@ export const ui = {
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
       "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via info@quinacare.org.",
+    // Submenu - Wat kun jij doen?
+    "submenu.fundraise": "Fondsenwerving",
+    "submenu.joinTeam": "Word vrijwilliger",
+    "submenu.becomePartner": "Word partner",
+    "submenu.yuraBoom": "De Yura Boom",
+    "submenu.yuraBoomDesc":
+      "Koop een blad aan onze symbolische bamboe boom en steun het ziekenhuis.",
+    "submenu.sponsorBooklet": "Sponsorboekje",
+    "submenu.sponsorBookletDesc":
+      "Sponsor een personeelslid en maak direct impact op de zorg.",
     // Search
     "search.title": "Zoeken",
     "search.label": "Zoekresultaten",
@@ -366,6 +376,16 @@ export const ui = {
     "donate.faq3Q": "Can I cancel my monthly donation?",
     "donate.faq3A":
       "Yes, you can cancel your monthly donation at any time by contacting us at info@quinacare.org.",
+    // Submenu - What can you do?
+    "submenu.fundraise": "Fundraise",
+    "submenu.joinTeam": "Join Our Team",
+    "submenu.becomePartner": "Become a Partner",
+    "submenu.yuraBoom": "The Yura Tree",
+    "submenu.yuraBoomDesc":
+      "Buy a leaf on our symbolic bamboo tree and support the hospital.",
+    "submenu.sponsorBooklet": "Sponsor Booklet",
+    "submenu.sponsorBookletDesc":
+      "Sponsor a staff member and make a direct impact on care.",
     // Search
     "search.title": "Search",
     "search.label": "Search results",
@@ -549,6 +569,16 @@ export const ui = {
     "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
     "donate.faq3A":
       "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en info@quinacare.org.",
+    // Submenu - ¿Qué puedes hacer?
+    "submenu.fundraise": "Recaudar fondos",
+    "submenu.joinTeam": "Únete al equipo",
+    "submenu.becomePartner": "Sé socio",
+    "submenu.yuraBoom": "El Árbol Yura",
+    "submenu.yuraBoomDesc":
+      "Compra una hoja en nuestro árbol simbólico de bambú y apoya al hospital.",
+    "submenu.sponsorBooklet": "Folleto de patrocinio",
+    "submenu.sponsorBookletDesc":
+      "Patrocina a un miembro del personal y genera un impacto directo en la atención.",
     // Search
     "search.title": "Buscar",
     "search.label": "Resultados de búsqueda",

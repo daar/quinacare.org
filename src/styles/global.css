@@ -90,3 +90,47 @@ mark {
 .search-expand-enter {
   animation: searchExpandIn 0.25s ease-out;
 }
+
+/* Submenu dropdown */
+.submenu-dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s;
+}
+
+.group:hover > .submenu-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Mobile menu slide */
+.mobile-menu-slider {
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-menu-main,
+.mobile-submenu-panel {
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu-slider.submenu-open .mobile-menu-main {
+  transform: translateX(-100%);
+}
+
+.mobile-submenu-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateX(100%);
+}
+
+.mobile-menu-slider.submenu-open .mobile-submenu-panel.is-active {
+  transform: translateX(0);
+}

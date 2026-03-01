@@ -1,0 +1,57 @@
+{
+  "items": [
+    {
+      "id": "whatCanYouDo",
+      "labelKey": "nav.whatCanYouDo",
+      "submenu": [
+        {
+          "labelKey": "submenu.fundraise",
+          "path": "/fundraise",
+          "icon": "fa-solid fa-hand-holding-heart"
+        },
+        {
+          "labelKey": "submenu.joinTeam",
+          "path": "/join-team",
+          "icon": "fa-solid fa-people-group"
+        },
+        {
+          "labelKey": "submenu.becomePartner",
+          "path": "/become-partner",
+          "icon": "fa-solid fa-handshake"
+        },
+        {
+          "labelKey": "submenu.yuraBoom",
+          "path": "/yura-boom",
+          "icon": "fa-solid fa-tree",
+          "image": "https://picsum.photos/seed/yura-boom/440/250",
+          "descriptionKey": "submenu.yuraBoomDesc"
+        },
+        {
+          "labelKey": "submenu.sponsorBooklet",
+          "path": "/sponsor-booklet",
+          "icon": "fa-solid fa-book-open",
+          "image": "https://picsum.photos/seed/sponsor-booklet/440/250",
+          "descriptionKey": "submenu.sponsorBookletDesc"
+        }
+      ],
+      "cta": {
+        "labelKey": "nav.donate",
+        "path": "/donate",
+        "icon": "fa-solid fa-heart"
+      }
+    },
+    {
+      "id": "whatDoWeDo",
+      "labelKey": "nav.whatDoWeDo"
+    },
+    {
+      "id": "whoAreWe",
+      "labelKey": "nav.whoAreWe"
+    },
+    {
+      "id": "news",
+      "labelKey": "nav.news",
+      "path": "/news"
+    }
+  ]
+}
