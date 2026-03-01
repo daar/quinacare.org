@@ -1,8 +1,7 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection, z, type SchemaContext } from "astro:content";
 import { glob } from "astro/loaders";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const newsSchema = ({ image }: { image: () => z.ZodObject<any> }) =>
+const newsSchema = ({ image }: SchemaContext) =>
   z.object({
     title: z.string(),
     date: z.date(),

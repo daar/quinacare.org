@@ -156,19 +156,20 @@ const t = useTranslations(lang);
     threshold: 0.6,
   };
 
-  const handleScroll = (entries) => {
+  const handleScroll = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const idx = entry.target.getAttribute("data-index");
 
         metricItems.forEach((item, i) => {
-          if (item.getAttribute("data-metric") === idx) {
-            item.style.opacity = "1";
-            item.style.transform = "translateY(0)";
+          const el = item as HTMLElement;
+          if (el.getAttribute("data-metric") === idx) {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
             dots[i]?.classList.replace("bg-gray-100", "bg-qcRed");
           } else {
-            item.style.opacity = "0";
-            item.style.transform = "translateY(2rem)";
+            el.style.opacity = "0";
+            el.style.transform = "translateY(2rem)";
             dots[i]?.classList.replace("bg-qcRed", "bg-gray-100");
           }
         });
