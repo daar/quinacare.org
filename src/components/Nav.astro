@@ -17,9 +17,9 @@ const searchPath = getLocalizedPath("/search", lang);
     <div class="flex items-center gap-8">
       <a href={getLocalizedPath("/", lang)}>
         <img
-          src="https://www.quinacare.org/wp-content/uploads/2017/05/logo-quina-care.svg"
+          src="/logo-quina-care.svg"
           alt="Quina Care"
-          class="h-10"
+          class="w-10 max-w-none"
         />
       </a>
       <div
@@ -101,11 +101,12 @@ const searchPath = getLocalizedPath("/search", lang);
       <a
         id="nav-donate-btn"
         href={getLocalizedPath("/donate", lang)}
-        class="bg-qcRed text-white px-7 py-3 rounded-md font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-qcBlack transition-all shadow-md"
+        class="bg-qcRed text-white px-4 lg:px-7 py-3 rounded-md font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-qcBlack transition-all shadow-md flex-shrink-0 whitespace-nowrap"
       >
         <i class="fa-solid fa-heart transition-transform group-hover:scale-125"
         ></i>
-        {t("nav.donate")}
+        <span class="hidden lg:inline">{t("nav.donate")}</span>
+        <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
       </a>
     </div>
   </div>
