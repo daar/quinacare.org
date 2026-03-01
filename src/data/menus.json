@@ -28,7 +28,7 @@
         },
         {
           "labelKey": "submenu.sponsorBooklet",
-          "path": "/sponsor-booklet",
+          "path": "/donate/sponsor-booklet",
           "icon": "fa-solid fa-book-open",
           "image": "https://picsum.photos/seed/sponsor-booklet/440/250",
           "descriptionKey": "submenu.sponsorBookletDesc"

@@ -13,5 +13,12 @@ export default defineMarkdocConfig({
         caption: { type: String },
       },
     },
+    download: {
+      render: component("./src/components/markdoc/Download.astro"),
+      attributes: {
+        href: { type: String, required: true },
+        label: { type: String, required: true },
+      },
+    },
   },
 });

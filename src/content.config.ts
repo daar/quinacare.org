@@ -16,6 +16,16 @@ const newsSchema = ({ image }: SchemaContext) =>
     featured_image_copyright: z.string().optional(),
   });
 
+const pageSchema = ({ image }: SchemaContext) =>
+  z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    category_label: z.string().optional(),
+    slug: z.string(),
+    featured_image: image().optional(),
+    featured_image_alt: z.string().optional(),
+  });
+
 const news_nl = defineCollection({
   loader: glob({ pattern: "**/*.mdoc", base: "./src/content/news/nl" }),
   schema: newsSchema,
@@ -31,8 +41,26 @@ const news_es = defineCollection({
   schema: newsSchema,
 });
 
+const pages_nl = defineCollection({
+  loader: glob({ pattern: "**/*.mdoc", base: "./src/content/pages/nl" }),
+  schema: pageSchema,
+});
+
+const pages_en = defineCollection({
+  loader: glob({ pattern: "**/*.mdoc", base: "./src/content/pages/en" }),
+  schema: pageSchema,
+});
+
+const pages_es = defineCollection({
+  loader: glob({ pattern: "**/*.mdoc", base: "./src/content/pages/es" }),
+  schema: pageSchema,
+});
+
 export const collections = {
   "news-nl": news_nl,
   "news-en": news_en,
   "news-es": news_es,
+  "pages-nl": pages_nl,
+  "pages-en": pages_en,
+  "pages-es": pages_es,
 };
