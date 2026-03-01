@@ -42,11 +42,52 @@
     },
     {
       "id": "whatDoWeDo",
-      "labelKey": "nav.whatDoWeDo"
+      "labelKey": "nav.whatDoWeDo",
+      "submenu": [
+        {
+          "labelKey": "submenu.projects",
+          "path": "/projects",
+          "icon": "fa-solid fa-diagram-project"
+        },
+        {
+          "labelKey": "submenu.hospital",
+          "path": "/hospital",
+          "icon": "fa-solid fa-hospital",
+          "image": "https://picsum.photos/seed/hospital/440/250",
+          "descriptionKey": "submenu.hospitalDesc"
+        },
+        {
+          "labelKey": "submenu.contact",
+          "path": "/contact",
+          "icon": "fa-solid fa-envelope"
+        }
+      ]
     },
     {
       "id": "whoAreWe",
-      "labelKey": "nav.whoAreWe"
+      "labelKey": "nav.whoAreWe",
+      "submenu": [
+        {
+          "labelKey": "submenu.aboutUs",
+          "path": "/about",
+          "icon": "fa-solid fa-users"
+        },
+        {
+          "labelKey": "submenu.organisation",
+          "path": "/organisation",
+          "icon": "fa-solid fa-sitemap"
+        },
+        {
+          "labelKey": "submenu.media",
+          "path": "/media",
+          "icon": "fa-solid fa-photo-film"
+        },
+        {
+          "labelKey": "submenu.goals",
+          "path": "/goals",
+          "icon": "fa-solid fa-bullseye"
+        }
+      ]
     },
     {
       "id": "news",

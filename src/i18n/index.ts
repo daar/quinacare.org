@@ -193,6 +193,17 @@ export const ui = {
     "submenu.sponsorBooklet": "Sponsorboekje",
     "submenu.sponsorBookletDesc":
       "Sponsor een personeelslid en maak direct impact op de zorg.",
+    // Submenu - Wat doen wij?
+    "submenu.projects": "Projecten",
+    "submenu.hospital": "Ons ziekenhuis",
+    "submenu.hospitalDesc":
+      "Ontdek onze kliniek in het hart van de Ecuadoriaanse Amazone.",
+    "submenu.contact": "Contact",
+    // Submenu - Wie zijn wij?
+    "submenu.aboutUs": "Over ons",
+    "submenu.organisation": "Organisatie",
+    "submenu.media": "Media",
+    "submenu.goals": "Onze doelstellingen",
     // Search
     "search.title": "Zoeken",
     "search.label": "Zoekresultaten",
@@ -386,6 +397,17 @@ export const ui = {
     "submenu.sponsorBooklet": "Sponsor Booklet",
     "submenu.sponsorBookletDesc":
       "Sponsor a staff member and make a direct impact on care.",
+    // Submenu - What do we do?
+    "submenu.projects": "Projects",
+    "submenu.hospital": "Our Hospital",
+    "submenu.hospitalDesc":
+      "Discover our clinic in the heart of the Ecuadorian Amazon.",
+    "submenu.contact": "Contact",
+    // Submenu - Who are we?
+    "submenu.aboutUs": "About Us",
+    "submenu.organisation": "Organisation",
+    "submenu.media": "Media",
+    "submenu.goals": "Our Goals",
     // Search
     "search.title": "Search",
     "search.label": "Search results",
@@ -579,6 +601,17 @@ export const ui = {
     "submenu.sponsorBooklet": "Folleto de patrocinio",
     "submenu.sponsorBookletDesc":
       "Patrocina a un miembro del personal y genera un impacto directo en la atención.",
+    // Submenu - ¿Qué hacemos?
+    "submenu.projects": "Proyectos",
+    "submenu.hospital": "Nuestro hospital",
+    "submenu.hospitalDesc":
+      "Descubre nuestra clínica en el corazón de la Amazonía ecuatoriana.",
+    "submenu.contact": "Contacto",
+    // Submenu - ¿Quiénes somos?
+    "submenu.aboutUs": "Sobre nosotros",
+    "submenu.organisation": "Organización",
+    "submenu.media": "Medios",
+    "submenu.goals": "Nuestros objetivos",
     // Search
     "search.title": "Buscar",
     "search.label": "Resultados de búsqueda",

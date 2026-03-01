@@ -97,23 +97,29 @@ const searchPath = getLocalizedPath("/search", lang);
                         .map((sub) => (
                           <a
                             href={getLocalizedPath(sub.path, lang)}
-                            class="block rounded-lg overflow-hidden hover:bg-gray-50 transition group/item"
+                            class="block rounded-lg overflow-hidden transition group/item"
                           >
-                            <img
-                              src={sub.image}
-                              alt=""
-                              class="w-full h-36 object-cover bg-gray-100"
-                            />
-                            <div class="px-3 py-2.5">
-                              <div class="text-[11px] font-bold uppercase tracking-[0.12em] group-hover/item:text-qcRed transition">
-                                {t(sub.labelKey as any)}
+                            <div class="relative">
+                              <img
+                                src={sub.image}
+                                alt=""
+                                class="w-full h-36 object-cover bg-gray-100"
+                              />
+                              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                              <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
+                                <span class="w-7 h-7 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
+                                  <i class="fa-solid fa-arrow-right text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform" />
+                                </span>
+                                <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-white">
+                                  {t(sub.labelKey as any)}
+                                </span>
                               </div>
-                              {sub.descriptionKey && (
-                                <p class="text-[10px] text-gray-400 leading-snug mt-0.5 normal-case tracking-normal font-normal line-clamp-2">
-                                  {t(sub.descriptionKey as any)}
-                                </p>
-                              )}
                             </div>
+                            {sub.descriptionKey && (
+                              <p class="px-3 py-2 text-[10px] text-gray-400 leading-snug normal-case tracking-normal font-normal line-clamp-2">
+                                {t(sub.descriptionKey as any)}
+                              </p>
+                            )}
                           </a>
                         ))}
                     </div>
@@ -329,23 +335,29 @@ const searchPath = getLocalizedPath("/search", lang);
                   sub.image ? (
                     <a
                       href={getLocalizedPath(sub.path, lang)}
-                      class="mobile-menu-link block rounded-lg overflow-hidden hover:bg-gray-50 transition"
+                      class="mobile-menu-link block rounded-lg overflow-hidden transition group/mitem"
                     >
-                      <img
-                        src={sub.image}
-                        alt=""
-                        class="w-full h-36 object-cover bg-gray-100 rounded-lg"
-                      />
-                      <div class="py-2">
-                        <div class="text-sm font-bold uppercase tracking-widest">
-                          {t(sub.labelKey as any)}
+                      <div class="relative mt-1">
+                        <img
+                          src={sub.image}
+                          alt=""
+                          class="w-full h-44 object-cover bg-gray-100 rounded-lg"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
+                        <div class="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-2.5">
+                          <span class="w-8 h-8 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-arrow-right text-white text-xs submenu-arrow will-change-transform" />
+                          </span>
+                          <span class="text-sm font-bold uppercase tracking-widest text-white">
+                            {t(sub.labelKey as any)}
+                          </span>
                         </div>
-                        {sub.descriptionKey && (
-                          <p class="text-xs text-gray-400 leading-snug mt-0.5 normal-case tracking-normal font-normal">
-                            {t(sub.descriptionKey as any)}
-                          </p>
-                        )}
                       </div>
+                      {sub.descriptionKey && (
+                        <p class="py-2 text-xs text-gray-400 leading-snug normal-case tracking-normal font-normal">
+                          {t(sub.descriptionKey as any)}
+                        </p>
+                      )}
                     </a>
                   ) : (
                     <a

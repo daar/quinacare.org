@@ -91,6 +91,24 @@ mark {
   animation: searchExpandIn 0.25s ease-out;
 }
 
+/* Submenu arrow pulse on hover */
+@keyframes submenuPulse {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile: pulse arrows when submenu slides in */
+.mobile-submenu-panel.is-active .submenu-arrow {
+  animation: submenuPulse 0.4s ease 0.3s;
+}
+
 /* Submenu dropdown */
 .submenu-dropdown {
   opacity: 0;
