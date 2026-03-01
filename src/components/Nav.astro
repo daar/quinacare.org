@@ -103,8 +103,7 @@ const searchPath = getLocalizedPath("/search", lang);
         href={getLocalizedPath("/donate", lang)}
         class="bg-qcRed text-white px-7 py-3 rounded-md font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-qcBlack transition-all shadow-md"
       >
-        <i
-          class="fa-solid fa-heart transition-transform group-hover:scale-125"
+        <i class="fa-solid fa-heart transition-transform group-hover:scale-125"
         ></i>
         {t("nav.donate")}
       </a>
@@ -321,10 +320,7 @@ const searchPath = getLocalizedPath("/search", lang);
           closeSearch();
         }
       }
-      if (
-        e.key === "Escape" &&
-        !navSearch?.classList.contains("hidden")
-      ) {
+      if (e.key === "Escape" && !navSearch?.classList.contains("hidden")) {
         closeSearch();
       }
     });

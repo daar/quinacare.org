@@ -133,9 +133,7 @@ const t = useTranslations(lang);
       }
     }
 
-    function showState(
-      state: "initial" | "loading" | "empty" | "results",
-    ) {
+    function showState(state: "initial" | "loading" | "empty" | "results") {
       initial?.classList.toggle("hidden", state !== "initial");
       loading?.classList.toggle("hidden", state !== "loading");
       empty?.classList.toggle("hidden", state !== "empty");
@@ -222,8 +220,7 @@ const t = useTranslations(lang);
         const container = document.querySelector(
           "[data-search-container]",
         ) as HTMLElement;
-        const resultsLabel =
-          container?.dataset.resultsLabel || "results";
+        const resultsLabel = container?.dataset.resultsLabel || "results";
         countEl.textContent = `${allResults.length} ${resultsLabel}`;
         countEl.classList.remove("hidden");
       }

@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/markdoc": "^0.15.10",
@@ -22,10 +23,16 @@
     "@eslint/js": "^10.0.1",
     "eslint": "^10.0.2",
     "eslint-plugin-astro": "^1.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
     "pagefind": "^1.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
+  },
+  "lint-staged": {
+    "*.{js,ts,mjs,cjs,json,css,md}": "prettier --write",
+    "*.astro": "prettier --write --plugin prettier-plugin-astro"
   }
 }
