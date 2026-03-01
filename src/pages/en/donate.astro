@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Nav from "../../components/Nav.astro";
+import DonationForm from "../../components/DonationForm.astro";
+import Footer from "../../components/Footer.astro";
+import type { Lang } from "../../i18n";
+
+const lang: Lang = "en";
+---
+
+<Layout title="Donate - Quina Care" lang={lang}>
+  <Nav />
+  <DonationForm lang={lang} />
+  <Footer lang={lang} />
+</Layout>

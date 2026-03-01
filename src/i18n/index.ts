@@ -130,6 +130,59 @@ export const ui = {
       "Quina Care is een officieel erkende goededoelinstelling.",
     "footer.privacyPolicy": "Privacy Policy",
     "footer.cookies": "Cookies",
+    // Donate page
+    "donate.pageTitle": "Doneer aan Quina Care",
+    "donate.pageSubtitle":
+      "Jouw bijdrage gaat 100% naar medische zorg in de Ecuadoriaanse Amazone.",
+    "donate.oneTime": "Eenmalig",
+    "donate.monthly": "Maandelijks",
+    "donate.customPlaceholder": "Ander bedrag",
+    "donate.impactGeneric": "Jouw donatie maakt direct verschil in de Amazone.",
+    "donate.impactLabel": "Jouw Impact",
+    "donate.paymentMethod": "Betaalmethode",
+    "donate.creditCard": "Credit/Debit Card",
+    "donate.bankTransfer": "Bankoverschrijving",
+    "donate.submitButton": "Doneer",
+    "donate.thankYouTitle": "Bedankt!",
+    "donate.thankYouMessage":
+      "Jouw donatie maakt een wereld van verschil. Samen brengen we zorg waar het het hardst nodig is.",
+    "donate.backHome": "Terug naar home",
+    // Donate page - Counter
+    "donate.counterValue": "4.200+",
+    "donate.counterLabel": "patiënten geholpen, en het telt door",
+    // Donate page - Personal notes
+    "donate.notesLabel": "Vanuit het Veld",
+    "donate.notesTitle": "De mensen achter de missie",
+    "donate.quote1":
+      "Dankzij jullie steun kunnen we elke dag levens redden in de meest afgelegen gebieden van de Amazone. Elke donatie maakt direct verschil.",
+    "donate.quote1Author": "Yvonne van der Ende",
+    "donate.quote1Role": "Oprichter & Directeur",
+    "donate.quote2":
+      "De kliniek is een baken van hoop voor duizenden families. Jullie bijdragen zorgen ervoor dat we medicijnen en apparatuur hebben wanneer het er écht toe doet.",
+    "donate.quote2Author": "Dr. Elvis Salazar",
+    "donate.quote2Role": "Arts in de kliniek",
+    // Donate page - Achievements
+    "donate.achievedLabel": "Onze Resultaten",
+    "donate.achievedTitle": "Wat we samen al hebben bereikt",
+    "donate.achieved1":
+      "Een volwaardige kliniek gebouwd en operationeel in het hart van de Ecuadoriaanse Amazone",
+    "donate.achieved2":
+      "Meer dan 4.200 patiënten voorzien van medische zorg, inclusief spoedeisende hulp",
+    "donate.achieved3":
+      "Honderden veilige bevallingen begeleid in een regio waar dat eerder onmogelijk was",
+    "donate.achieved4":
+      "Structurele levering van essentiële medicijnen aan afgelegen gemeenschappen langs de rivier",
+    // Donate page - FAQ
+    "donate.faqTitle": "Veelgestelde Vragen",
+    "donate.faq1Q": "Waar gaat mijn donatie naartoe?",
+    "donate.faq1A":
+      "100% van je donatie gaat naar de kliniek in Ecuador. We gebruiken het voor medicijnen, medische apparatuur, salarissen van lokaal personeel en het onderhoud van de kliniek.",
+    "donate.faq2Q": "Is mijn donatie fiscaal aftrekbaar?",
+    "donate.faq2A":
+      "Ja, Stichting Quina Care heeft de ANBI-status. Je donatie is daarmee aftrekbaar van de belasting in Nederland.",
+    "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
+    "donate.faq3A":
+      "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via info@quinacare.org.",
   },
   en: {
     // Navigation
@@ -251,6 +304,60 @@ export const ui = {
       "Quina Care is an officially recognized charity.",
     "footer.privacyPolicy": "Privacy Policy",
     "footer.cookies": "Cookies",
+    // Donate page
+    "donate.pageTitle": "Donate to Quina Care",
+    "donate.pageSubtitle":
+      "Your contribution goes 100% to medical care in the Ecuadorian Amazon.",
+    "donate.oneTime": "One-time",
+    "donate.monthly": "Monthly",
+    "donate.customPlaceholder": "Custom amount",
+    "donate.impactGeneric":
+      "Your donation makes a direct difference in the Amazon.",
+    "donate.impactLabel": "Your Impact",
+    "donate.paymentMethod": "Payment Method",
+    "donate.creditCard": "Credit/Debit Card",
+    "donate.bankTransfer": "Bank Transfer",
+    "donate.submitButton": "Donate",
+    "donate.thankYouTitle": "Thank You!",
+    "donate.thankYouMessage":
+      "Your donation makes a world of difference. Together we bring care where it is needed most.",
+    "donate.backHome": "Back to home",
+    // Donate page - Counter
+    "donate.counterValue": "4,200+",
+    "donate.counterLabel": "patients helped, and counting",
+    // Donate page - Personal notes
+    "donate.notesLabel": "From the Field",
+    "donate.notesTitle": "The people behind the mission",
+    "donate.quote1":
+      "Thanks to your support, we can save lives every day in the most remote areas of the Amazon. Every donation makes a direct difference.",
+    "donate.quote1Author": "Yvonne van der Ende",
+    "donate.quote1Role": "Founder & Director",
+    "donate.quote2":
+      "The clinic is a beacon of hope for thousands of families. Your contributions ensure we have medicine and equipment when it truly matters.",
+    "donate.quote2Author": "Dr. Elvis Salazar",
+    "donate.quote2Role": "Clinic Physician",
+    // Donate page - Achievements
+    "donate.achievedLabel": "Our Results",
+    "donate.achievedTitle": "What we've achieved together",
+    "donate.achieved1":
+      "Built and operate a full medical clinic in the heart of the Ecuadorian Amazon",
+    "donate.achieved2":
+      "Provided medical care to over 4,200 patients, including emergency treatment",
+    "donate.achieved3":
+      "Guided hundreds of safe deliveries in a region where this was previously impossible",
+    "donate.achieved4":
+      "Structural delivery of essential medicine to remote communities along the river",
+    // Donate page - FAQ
+    "donate.faqTitle": "Frequently Asked Questions",
+    "donate.faq1Q": "Where does my donation go?",
+    "donate.faq1A":
+      "100% of your donation goes to the clinic in Ecuador. We use it for medicine, medical equipment, local staff salaries, and clinic maintenance.",
+    "donate.faq2Q": "Is my donation tax-deductible?",
+    "donate.faq2A":
+      "Yes, Quina Care Foundation has ANBI status in the Netherlands, making your donation tax-deductible under Dutch tax law.",
+    "donate.faq3Q": "Can I cancel my monthly donation?",
+    "donate.faq3A":
+      "Yes, you can cancel your monthly donation at any time by contacting us at info@quinacare.org.",
   },
   es: {
     // Navigation
@@ -372,6 +479,60 @@ export const ui = {
       "Quina Care es una organización benéfica oficialmente reconocida.",
     "footer.privacyPolicy": "Política de Privacidad",
     "footer.cookies": "Cookies",
+    // Donate page
+    "donate.pageTitle": "Dona a Quina Care",
+    "donate.pageSubtitle":
+      "Tu contribución va 100% a la atención médica en la Amazonía ecuatoriana.",
+    "donate.oneTime": "Una vez",
+    "donate.monthly": "Mensual",
+    "donate.customPlaceholder": "Otra cantidad",
+    "donate.impactGeneric":
+      "Tu donación marca una diferencia directa en la Amazonía.",
+    "donate.impactLabel": "Tu Impacto",
+    "donate.paymentMethod": "Método de Pago",
+    "donate.creditCard": "Tarjeta de Crédito/Débito",
+    "donate.bankTransfer": "Transferencia Bancaria",
+    "donate.submitButton": "Donar",
+    "donate.thankYouTitle": "¡Gracias!",
+    "donate.thankYouMessage":
+      "Tu donación marca una gran diferencia. Juntos llevamos atención donde más se necesita.",
+    "donate.backHome": "Volver al inicio",
+    // Donate page - Counter
+    "donate.counterValue": "4.200+",
+    "donate.counterLabel": "pacientes atendidos, y contando",
+    // Donate page - Personal notes
+    "donate.notesLabel": "Desde el Campo",
+    "donate.notesTitle": "Las personas detrás de la misión",
+    "donate.quote1":
+      "Gracias a su apoyo, podemos salvar vidas cada día en las zonas más remotas de la Amazonía. Cada donación marca una diferencia directa.",
+    "donate.quote1Author": "Yvonne van der Ende",
+    "donate.quote1Role": "Fundadora y Directora",
+    "donate.quote2":
+      "La clínica es un faro de esperanza para miles de familias. Sus contribuciones aseguran que tengamos medicinas y equipos cuando realmente importa.",
+    "donate.quote2Author": "Dr. Elvis Salazar",
+    "donate.quote2Role": "Médico de la clínica",
+    // Donate page - Achievements
+    "donate.achievedLabel": "Nuestros Resultados",
+    "donate.achievedTitle": "Lo que hemos logrado juntos",
+    "donate.achieved1":
+      "Construimos y operamos una clínica médica completa en el corazón de la Amazonía ecuatoriana",
+    "donate.achieved2":
+      "Atención médica brindada a más de 4.200 pacientes, incluyendo tratamiento de emergencia",
+    "donate.achieved3":
+      "Cientos de partos seguros asistidos en una región donde antes era imposible",
+    "donate.achieved4":
+      "Entrega estructural de medicamentos esenciales a comunidades remotas a lo largo del río",
+    // Donate page - FAQ
+    "donate.faqTitle": "Preguntas Frecuentes",
+    "donate.faq1Q": "¿A dónde va mi donación?",
+    "donate.faq1A":
+      "El 100% de tu donación va a la clínica en Ecuador. La usamos para medicinas, equipos médicos, salarios del personal local y mantenimiento de la clínica.",
+    "donate.faq2Q": "¿Es mi donación deducible de impuestos?",
+    "donate.faq2A":
+      "Sí, la Fundación Quina Care tiene estatus ANBI en los Países Bajos, lo que hace tu donación deducible de impuestos bajo la ley fiscal holandesa.",
+    "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
+    "donate.faq3A":
+      "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en info@quinacare.org.",
   },
 } as const;
 

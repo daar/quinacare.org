@@ -1,5 +1,10 @@
 ---
-import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getLocalizedPath,
+  type Lang,
+} from "../i18n";
 
 interface Props {
   lang?: Lang;
@@ -40,11 +45,12 @@ const t = useTranslations(lang);
         <p class="text-gray-500 text-sm leading-relaxed mb-8">
           {t("donation.medicationDesc")}
         </p>
-        <button
-          class="w-full py-3 border border-qcBlack text-[10px] font-bold uppercase tracking-widest hover:bg-qcBlack hover:text-white transition-all rounded-md"
+        <a
+          href={`${getLocalizedPath("/donate", lang)}?amount=15`}
+          class="block w-full py-3 border border-qcBlack text-[10px] font-bold uppercase tracking-widest hover:bg-qcBlack hover:text-white transition-all rounded-md text-center"
         >
-          {t("donation.donate")} €15
-        </button>
+          {t("donation.donate")} &euro;15
+        </a>
       </div>
 
       <div
@@ -62,11 +68,12 @@ const t = useTranslations(lang);
         <p class="text-gray-500 text-sm leading-relaxed mb-8">
           {t("donation.prenatalDesc")}
         </p>
-        <button
-          class="w-full py-3 bg-qcBlack text-white text-[10px] font-bold uppercase tracking-widest hover:bg-qcRed transition-all rounded-md"
+        <a
+          href={`${getLocalizedPath("/donate", lang)}?amount=35`}
+          class="block w-full py-3 bg-qcBlack text-white text-[10px] font-bold uppercase tracking-widest hover:bg-qcRed transition-all rounded-md text-center"
         >
-          {t("donation.donate")} €35
-        </button>
+          {t("donation.donate")} &euro;35
+        </a>
       </div>
 
       <div
@@ -84,17 +91,18 @@ const t = useTranslations(lang);
         <p class="text-gray-500 text-sm leading-relaxed mb-8">
           {t("donation.surgeryDesc")}
         </p>
-        <button
-          class="w-full py-3 border border-qcBlack text-[10px] font-bold uppercase tracking-widest hover:bg-qcBlack hover:text-white transition-all rounded-md"
+        <a
+          href={`${getLocalizedPath("/donate", lang)}?amount=75`}
+          class="block w-full py-3 border border-qcBlack text-[10px] font-bold uppercase tracking-widest hover:bg-qcBlack hover:text-white transition-all rounded-md text-center"
         >
-          {t("donation.donate")} €75
-        </button>
+          {t("donation.donate")} &euro;75
+        </a>
       </div>
     </div>
 
     <div class="mt-16 text-center">
       <a
-        href="#donate"
+        href={getLocalizedPath("/donate", lang)}
         class="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcRed transition-colors"
       >
         {t("donation.chooseAmount")}

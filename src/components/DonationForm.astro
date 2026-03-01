@@ -1,0 +1,746 @@
+---
+import {
+  getLangFromUrl,
+  useTranslations,
+  getLocalizedPath,
+  type Lang,
+} from "../i18n";
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<!-- SECTION 1: Hero with floating donation form -->
+<header
+  class="relative min-h-screen bg-qcBlack flex items-center overflow-hidden font-arimo"
+>
+  <div class="absolute inset-0 z-0">
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      class="w-full h-full object-cover opacity-50"
+    >
+      <source src="/videos/hero.webm" type="video/webm" />
+    </video>
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-qcBlack via-qcBlack/80 to-qcBlack/40"
+    >
+    </div>
+  </div>
+
+  <div
+    class="relative z-10 max-w-[1600px] mx-auto px-6 w-full py-32 flex flex-col lg:flex-row items-center gap-16"
+  >
+    <!-- Left: Title + Counter -->
+    <div class="flex-1 text-center lg:text-left">
+      <span
+        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.5em] block mb-8"
+      >
+        {t("hero.foundation")}
+      </span>
+      <h1
+        class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] tracking-tighter mb-8"
+      >
+        {t("donate.pageTitle")}
+      </h1>
+      <p
+        class="text-white/60 text-lg max-w-lg mb-12 font-light leading-relaxed mx-auto lg:mx-0"
+      >
+        {t("donate.pageSubtitle")}
+      </p>
+
+      <!-- Live counter -->
+      <div class="flex items-center gap-4 justify-center lg:justify-start">
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2.5 w-2.5">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"
+            ></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-qcRed"
+            ></span>
+          </span>
+        </div>
+        <div>
+          <span
+            class="text-white font-bold text-4xl md:text-5xl tracking-tighter"
+            >{t("donate.counterValue")}</span
+          >
+          <span class="text-white/50 text-sm block mt-1"
+            >{t("donate.counterLabel")}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Floating donation form card -->
+    <div
+      class="w-full lg:w-[460px] flex-shrink-0 bg-white rounded-xl shadow-2xl p-8"
+    >
+      <h2
+        class="text-2xl font-bold tracking-tighter uppercase mb-6 text-center"
+      >
+        {t("donate.submitButton")}
+      </h2>
+
+      <!-- Frequency toggle -->
+      <div class="flex gap-2 mb-6" id="frequency-toggle">
+        <button
+          type="button"
+          data-frequency="one-time"
+          class="flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white"
+        >
+          {t("donate.oneTime")}
+        </button>
+        <button
+          type="button"
+          data-frequency="monthly"
+          class="flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack"
+        >
+          {t("donate.monthly")}
+        </button>
+      </div>
+
+      <!-- Preset amounts -->
+      <div class="grid grid-cols-4 gap-2 mb-2" id="amount-grid">
+        {
+          [15, 25, 50, 100].map((amount) => (
+            <button
+              type="button"
+              data-amount={amount}
+              class:list={[
+                "py-3 text-center font-bold text-base rounded-md border transition-all",
+                amount === 50
+                  ? "bg-qcRed text-white border-qcRed"
+                  : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
+              ]}
+            >
+              &euro;{amount}
+            </button>
+          ))
+        }
+      </div>
+      <input
+        type="number"
+        id="custom-amount"
+        min="1"
+        placeholder={t("donate.customPlaceholder")}
+        class="w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
+      />
+
+      <!-- Impact preview -->
+      <div
+        id="impact-preview"
+        class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6"
+      >
+        <span
+          class="text-qcRed font-bold text-[9px] uppercase tracking-[0.4em] block mb-1"
+        >
+          {t("donate.impactLabel")}
+        </span>
+        <p id="impact-text" class="text-gray-600 text-sm leading-relaxed">
+          {t("donate.impactGeneric")}
+        </p>
+        <span id="impact-medication" class="hidden" data-impact="medication">
+          {t("donation.medicationDesc")}
+        </span>
+        <span id="impact-prenatal" class="hidden" data-impact="prenatal">
+          {t("donation.prenatalDesc")}
+        </span>
+        <span id="impact-surgery" class="hidden" data-impact="surgery">
+          {t("donation.surgeryDesc")}
+        </span>
+        <span id="impact-generic" class="hidden" data-impact="generic">
+          {t("donate.impactGeneric")}
+        </span>
+      </div>
+
+      <!-- Payment method grid -->
+      <div class="mb-6">
+        <span
+          class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3"
+        >
+          {t("donate.paymentMethod")}
+        </span>
+        <div class="grid grid-cols-2 gap-2" id="payment-methods">
+          <button
+            type="button"
+            data-method="card"
+            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
+          >
+            <i class="fa-solid fa-credit-card"></i>
+            {t("donate.creditCard")}
+          </button>
+          <button
+            type="button"
+            data-method="ideal"
+            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+          >
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="2"
+                y="4"
+                width="20"
+                height="16"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="2"></rect>
+              <path d="M7 12h10M7 8h6" stroke="currentColor" stroke-width="2"
+              ></path>
+            </svg>
+            iDEAL
+          </button>
+          <button
+            type="button"
+            data-method="paypal"
+            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+          >
+            <i class="fa-brands fa-paypal"></i>
+            PayPal
+          </button>
+          <button
+            type="button"
+            data-method="bank"
+            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+          >
+            <i class="fa-solid fa-building-columns"></i>
+            {t("donate.bankTransfer")}
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <button
+        type="button"
+        id="donate-submit"
+        class="w-full py-4 bg-qcRed text-white font-bold text-[11px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all shadow-lg"
+      >
+        <i class="fa-solid fa-heart mr-2"></i>
+        {t("donate.submitButton")} &euro;<span id="submit-amount">50</span>
+      </button>
+
+      <!-- Trust badges -->
+      <div
+        class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400"
+      >
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-lock"></i>
+          {t("cta.securePayment")}
+        </span>
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-certificate"></i>
+          {t("cta.certified")}
+        </span>
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-shield-halved"></i>
+          SSL
+        </span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SECTION 2: Impact CTA (3 cards) -->
+<section class="py-24 bg-white font-arimo border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <span
+        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
+        >{t("donation.directImpact")}</span
+      >
+      <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">
+        {t("donation.title")}
+      </h2>
+      <p class="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
+        {t("donation.subtitle")}
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div
+        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md"
+      >
+        <div
+          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
+        >
+          <i class="fa-solid fa-pills text-6xl"></i>
+        </div>
+        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+          &euro;15
+        </h3>
+        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+          {t("donation.medication")}
+        </h4>
+        <p class="text-gray-500 text-sm leading-relaxed">
+          {t("donation.medicationDesc")}
+        </p>
+      </div>
+
+      <div
+        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden bg-qcGray/30 rounded-md"
+      >
+        <div
+          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
+        >
+          <i class="fa-solid fa-baby text-6xl"></i>
+        </div>
+        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+          &euro;35
+        </h3>
+        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+          {t("donation.prenatal")}
+        </h4>
+        <p class="text-gray-500 text-sm leading-relaxed">
+          {t("donation.prenatalDesc")}
+        </p>
+      </div>
+
+      <div
+        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md"
+      >
+        <div
+          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
+        >
+          <i class="fa-solid fa-stethoscope text-6xl"></i>
+        </div>
+        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+          &euro;75
+        </h3>
+        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+          {t("donation.surgery")}
+        </h4>
+        <p class="text-gray-500 text-sm leading-relaxed">
+          {t("donation.surgeryDesc")}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: Personal notes from the team -->
+<section class="py-24 bg-qcGray font-arimo border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <span
+        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
+        >{t("donate.notesLabel")}</span
+      >
+      <h2 class="text-4xl font-bold tracking-tighter uppercase">
+        {t("donate.notesTitle")}
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <!-- Quote 1 -->
+      <div class="bg-white rounded-xl p-8 shadow-sm">
+        <div class="flex items-center gap-4 mb-6">
+          <div
+            class="w-14 h-14 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
+          >
+            <i class="fa-solid fa-quote-left text-qcRed text-lg"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm">{t("donate.quote1Author")}</h4>
+            <span
+              class="text-gray-400 text-xs font-bold uppercase tracking-wider"
+              >{t("donate.quote1Role")}</span
+            >
+          </div>
+        </div>
+        <blockquote class="text-gray-600 text-sm leading-relaxed italic">
+          &ldquo;{t("donate.quote1")}&rdquo;
+        </blockquote>
+      </div>
+
+      <!-- Quote 2 -->
+      <div class="bg-white rounded-xl p-8 shadow-sm">
+        <div class="flex items-center gap-4 mb-6">
+          <div
+            class="w-14 h-14 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
+          >
+            <i class="fa-solid fa-quote-left text-qcRed text-lg"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm">{t("donate.quote2Author")}</h4>
+            <span
+              class="text-gray-400 text-xs font-bold uppercase tracking-wider"
+              >{t("donate.quote2Role")}</span
+            >
+          </div>
+        </div>
+        <blockquote class="text-gray-600 text-sm leading-relaxed italic">
+          &ldquo;{t("donate.quote2")}&rdquo;
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: What we've achieved -->
+<section class="py-24 bg-white font-arimo border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <span
+          class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
+          >{t("donate.achievedLabel")}</span
+        >
+        <h2 class="text-4xl font-bold tracking-tighter uppercase mb-8">
+          {t("donate.achievedTitle")}
+        </h2>
+        <ul class="space-y-6">
+          <li class="flex gap-4">
+            <div
+              class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+            >
+              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              <strong class="text-qcBlack"
+                >{
+                  t("donate.achieved1").split(" ").slice(0, 3).join(" ")
+                }</strong
+              >
+              {t("donate.achieved1").split(" ").slice(3).join(" ")}
+            </p>
+          </li>
+          <li class="flex gap-4">
+            <div
+              class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+            >
+              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              <strong class="text-qcBlack"
+                >{
+                  t("donate.achieved2").split(" ").slice(0, 3).join(" ")
+                }</strong
+              >
+              {t("donate.achieved2").split(" ").slice(3).join(" ")}
+            </p>
+          </li>
+          <li class="flex gap-4">
+            <div
+              class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+            >
+              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              <strong class="text-qcBlack"
+                >{
+                  t("donate.achieved3").split(" ").slice(0, 3).join(" ")
+                }</strong
+              >
+              {t("donate.achieved3").split(" ").slice(3).join(" ")}
+            </p>
+          </li>
+          <li class="flex gap-4">
+            <div
+              class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+            >
+              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              <strong class="text-qcBlack"
+                >{
+                  t("donate.achieved4").split(" ").slice(0, 3).join(" ")
+                }</strong
+              >
+              {t("donate.achieved4").split(" ").slice(3).join(" ")}
+            </p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="grid grid-cols-2 gap-6">
+        <div class="bg-qcGray rounded-xl p-8 text-center">
+          <span
+            class="text-qcRed font-bold text-5xl tracking-tighter block mb-2"
+            >4.200+</span
+          >
+          <span class="text-gray-500 text-xs font-bold uppercase tracking-wider"
+            >{t("metrics.consultations")}</span
+          >
+        </div>
+        <div class="bg-qcGray rounded-xl p-8 text-center">
+          <span
+            class="text-qcRed font-bold text-5xl tracking-tighter block mb-2"
+            >42</span
+          >
+          <span class="text-gray-500 text-xs font-bold uppercase tracking-wider"
+            >{t("metrics.births")}</span
+          >
+        </div>
+        <div class="bg-qcGray rounded-xl p-8 text-center">
+          <span
+            class="text-qcRed font-bold text-5xl tracking-tighter block mb-2"
+            >15k</span
+          >
+          <span class="text-gray-500 text-xs font-bold uppercase tracking-wider"
+            >{t("metrics.medication")}</span
+          >
+        </div>
+        <div class="bg-qcRed rounded-xl p-8 text-center">
+          <span
+            class="text-white font-bold text-5xl tracking-tighter block mb-2"
+            >100%</span
+          >
+          <span class="text-red-100 text-xs font-bold uppercase tracking-wider"
+            >Impact</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: FAQs -->
+<section class="py-24 bg-qcGray font-arimo">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold tracking-tighter uppercase">
+        {t("donate.faqTitle")}
+      </h2>
+    </div>
+
+    <div class="space-y-4" id="faq-accordion">
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+        <button
+          type="button"
+          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
+          aria-expanded="false"
+        >
+          <span>{t("donate.faq1Q")}</span>
+          <i
+            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
+          ></i>
+        </button>
+        <div class="faq-content hidden px-6 pb-6">
+          <p class="text-gray-600 text-sm leading-relaxed">
+            {t("donate.faq1A")}
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+        <button
+          type="button"
+          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
+          aria-expanded="false"
+        >
+          <span>{t("donate.faq2Q")}</span>
+          <i
+            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
+          ></i>
+        </button>
+        <div class="faq-content hidden px-6 pb-6">
+          <p class="text-gray-600 text-sm leading-relaxed">
+            {t("donate.faq2A")}
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+        <button
+          type="button"
+          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
+          aria-expanded="false"
+        >
+          <span>{t("donate.faq3Q")}</span>
+          <i
+            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
+          ></i>
+        </button>
+        <div class="faq-content hidden px-6 pb-6">
+          <p class="text-gray-600 text-sm leading-relaxed">
+            {t("donate.faq3A")}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Success overlay -->
+<div
+  id="success-overlay"
+  class="fixed inset-0 z-[100] bg-white flex items-center justify-center hidden"
+>
+  <div class="text-center px-6">
+    <div
+      class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8"
+    >
+      <i class="fa-solid fa-check text-green-600 text-3xl"></i>
+    </div>
+    <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">
+      {t("donate.thankYouTitle")}
+    </h2>
+    <p class="text-gray-500 text-sm leading-relaxed max-w-md mx-auto mb-8">
+      {t("donate.thankYouMessage")}
+    </p>
+    <a
+      href={getLocalizedPath("/", lang)}
+      class="inline-block bg-qcRed text-white px-8 py-4 font-bold text-[11px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all"
+    >
+      {t("donate.backHome")}
+    </a>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    // === Donation form logic ===
+    let frequency = "one-time";
+    let amount = 50;
+    let method = "card";
+
+    const amountGrid = document.getElementById("amount-grid");
+    const customInput = document.getElementById(
+      "custom-amount",
+    ) as HTMLInputElement | null;
+    const frequencyToggle = document.getElementById("frequency-toggle");
+    const paymentMethods = document.getElementById("payment-methods");
+    const submitBtn = document.getElementById("donate-submit");
+    const submitAmount = document.getElementById("submit-amount");
+    const impactText = document.getElementById("impact-text");
+    const overlay = document.getElementById("success-overlay");
+
+    if (
+      !amountGrid ||
+      !customInput ||
+      !frequencyToggle ||
+      !paymentMethods ||
+      !submitBtn ||
+      !submitAmount ||
+      !impactText ||
+      !overlay
+    )
+      return;
+
+    // Read ?amount= query param
+    const params = new URLSearchParams(window.location.search);
+    const paramAmount = parseInt(params.get("amount") || "", 10);
+    if (paramAmount > 0) {
+      amount = paramAmount;
+    }
+
+    function updateUI() {
+      amountGrid!.querySelectorAll("button").forEach((btn) => {
+        const btnAmount = parseInt(btn.dataset.amount || "", 10);
+        if (btnAmount === amount) {
+          btn.className =
+            "py-3 text-center font-bold text-base rounded-md border transition-all bg-qcRed text-white border-qcRed";
+        } else {
+          btn.className =
+            "py-3 text-center font-bold text-base rounded-md border transition-all bg-white text-qcBlack border-gray-200 hover:border-qcRed";
+        }
+      });
+
+      frequencyToggle!.querySelectorAll("button").forEach((btn) => {
+        if (btn.dataset.frequency === frequency) {
+          btn.className =
+            "flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white";
+        } else {
+          btn.className =
+            "flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack";
+        }
+      });
+
+      paymentMethods!.querySelectorAll("button").forEach((btn) => {
+        if (btn.dataset.method === method) {
+          btn.className =
+            "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all";
+        } else {
+          btn.className =
+            "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all";
+        }
+      });
+
+      submitAmount!.textContent = String(amount);
+
+      let impactKey = "generic";
+      if (amount >= 75) impactKey = "surgery";
+      else if (amount >= 35) impactKey = "prenatal";
+      else if (amount >= 15) impactKey = "medication";
+
+      const impactSpan = document.querySelector(
+        `[data-impact="${impactKey}"]`,
+      ) as HTMLElement | null;
+      if (impactSpan) {
+        impactText!.textContent = impactSpan.textContent || "";
+      }
+    }
+
+    amountGrid.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest("button");
+      if (!btn?.dataset.amount) return;
+      amount = parseInt(btn.dataset.amount, 10);
+      customInput!.value = "";
+      updateUI();
+    });
+
+    customInput.addEventListener("input", () => {
+      const val = parseInt(customInput.value, 10);
+      if (val > 0) {
+        amount = val;
+        updateUI();
+      }
+    });
+
+    frequencyToggle.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest("button");
+      if (!btn?.dataset.frequency) return;
+      frequency = btn.dataset.frequency;
+      updateUI();
+    });
+
+    paymentMethods.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest("button");
+      if (!btn?.dataset.method) return;
+      method = btn.dataset.method;
+      updateUI();
+    });
+
+    submitBtn.addEventListener("click", () => {
+      overlay!.classList.remove("hidden");
+    });
+
+    updateUI();
+
+    // === FAQ accordion logic ===
+    document.querySelectorAll(".faq-toggle").forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const content = toggle.nextElementSibling as HTMLElement | null;
+        const icon = toggle.querySelector("i");
+        const isOpen = toggle.getAttribute("aria-expanded") === "true";
+
+        // Close all others
+        document.querySelectorAll(".faq-toggle").forEach((other) => {
+          const otherContent = other.nextElementSibling as HTMLElement | null;
+          const otherIcon = other.querySelector("i");
+          other.setAttribute("aria-expanded", "false");
+          otherContent?.classList.add("hidden");
+          otherIcon?.classList.remove("rotate-180");
+        });
+
+        // Toggle current
+        if (!isOpen && content) {
+          toggle.setAttribute("aria-expanded", "true");
+          content.classList.remove("hidden");
+          icon?.classList.add("rotate-180");
+        }
+      });
+    });
+  });
+</script>

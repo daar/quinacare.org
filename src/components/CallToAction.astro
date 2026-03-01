@@ -1,5 +1,10 @@
 ---
-import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getLocalizedPath,
+  type Lang,
+} from "../i18n";
 
 interface Props {
   lang?: Lang;
@@ -38,7 +43,7 @@ const t = useTranslations(lang);
 
       <div class="flex-shrink-0">
         <a
-          href="#donate"
+          href={getLocalizedPath("/donate", lang)}
           class="group relative inline-flex items-center gap-6 bg-white text-qcRed px-10 py-6 font-bold text-xs uppercase tracking-[0.3em] hover:bg-qcBlack hover:text-white transition-all duration-500 shadow-2xl shadow-red-900/20 rounded-md"
         >
           <i
