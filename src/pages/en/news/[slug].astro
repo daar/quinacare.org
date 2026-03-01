@@ -105,7 +105,7 @@ function getNewsPath(slug: string): string {
     <div id="progress-bar"></div>
     <Nav />
 
-    <header class="pt-40 pb-16">
+    <header class="pt-40 pb-16" data-pagefind-body>
       <div class="max-w-3xl mx-auto px-6 text-center">
         {
           post.data.categories && post.data.categories.length > 0 && (
@@ -133,7 +133,7 @@ function getNewsPath(slug: string): string {
 
     {
       post.data.featured_image && (
-        <figure class="max-w-6xl mx-auto px-6 mb-24 group">
+        <figure class="max-w-6xl mx-auto px-6 mb-24 group" data-pagefind-body>
           <div class="relative">
             <div class="aspect-[21/9] overflow-hidden rounded-xl bg-gray-100 relative z-10">
               <Image
@@ -142,6 +142,7 @@ function getNewsPath(slug: string): string {
                 alt={post.data.featured_image_caption || post.data.title}
                 widths={[400, 800, 1200]}
                 sizes="(max-width: 768px) 100vw, 1200px"
+                data-pagefind-meta="image[src]"
               />
             </div>
             <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700" />
@@ -192,8 +193,9 @@ function getNewsPath(slug: string): string {
 
     <main
       class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-16 relative"
+      data-pagefind-body
     >
-      <aside class="hidden lg:block w-32 sticky top-32 h-fit">
+      <aside class="hidden lg:block w-32 sticky top-32 h-fit" data-pagefind-ignore>
         <div class="flex flex-col gap-6">
           <span
             class="text-[9px] font-bold uppercase tracking-widest text-gray-300 transform -rotate-90 origin-left translate-y-8"
@@ -233,6 +235,7 @@ function getNewsPath(slug: string): string {
         <article class="prose prose-article"><Content /></article>
         <div
           class="mt-20 p-8 border border-gray-100 bg-gray-50 flex flex-col sm:flex-row items-center gap-8 rounded-xl"
+          data-pagefind-ignore
         >
           <div
             class="w-20 h-20 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"

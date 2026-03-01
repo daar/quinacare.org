@@ -52,3 +52,41 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Search highlight */
+mark {
+  background: transparent;
+  color: #e11d48;
+  font-weight: 700;
+}
+
+/* Search animations */
+@keyframes searchDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes searchExpandIn {
+  from {
+    opacity: 0;
+    width: 0;
+  }
+  to {
+    opacity: 1;
+    width: 100%;
+  }
+}
+
+.search-dropdown-enter {
+  animation: searchDropdownIn 0.2s ease-out;
+}
+
+.search-expand-enter {
+  animation: searchExpandIn 0.25s ease-out;
+}

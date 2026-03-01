@@ -1,0 +1,267 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { useTranslations, type Lang } from "../i18n";
+
+const lang: Lang = "nl";
+const t = useTranslations(lang);
+---
+
+<Layout title={`${t("search.title")} | Quina Care`} lang={lang}>
+  <Nav />
+
+  <header class="pt-40 pb-16 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+      <div>
+        <span
+          class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4"
+          >{t("search.label")}</span
+        >
+        <h1
+          class="text-6xl md:text-8xl font-bold tracking-tighter leading-none"
+        >
+          {t("search.title")}<span class="italic font-light text-gray-300"
+            >.</span
+          >
+        </h1>
+      </div>
+      <div class="mt-10">
+        <div class="relative">
+          <i
+            class="fa-solid fa-magnifying-glass absolute left-0 top-1/2 -translate-y-1/2 text-gray-300"
+          ></i>
+          <input
+            id="search-page-input"
+            type="text"
+            placeholder={t("search.placeholder")}
+            class="w-full pl-8 pr-4 py-4 text-xl border-b-2 border-gray-200 focus:border-qcRed outline-none transition bg-transparent"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main
+    class="py-20 max-w-7xl mx-auto px-6"
+    data-search-container
+    data-no-results={t("search.noResults")}
+    data-start-typing={t("search.startTyping")}
+  >
+    <!-- Initial state -->
+    <div id="search-initial" class="text-center py-20">
+      <p class="text-gray-400 text-sm">{t("search.startTyping")}</p>
+    </div>
+
+    <!-- Loading state -->
+    <div id="search-loading" class="hidden text-center py-20">
+      <div
+        class="w-8 h-8 border-2 border-gray-200 border-t-qcRed rounded-full animate-spin mx-auto"
+      >
+      </div>
+    </div>
+
+    <!-- No results state -->
+    <div id="search-empty" class="hidden text-center py-20">
+      <p class="text-gray-400 text-sm">{t("search.noResults")}</p>
+    </div>
+
+    <!-- Results grid -->
+    <div
+      id="search-grid"
+      class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
+    >
+    </div>
+
+    <!-- Load more -->
+    <div id="search-load-more" class="hidden text-center mt-16">
+      <button
+        class="px-8 py-3 border border-gray-200 rounded-md text-[11px] font-bold uppercase tracking-widest hover:bg-qcRed hover:text-white hover:border-qcRed transition"
+      >
+        {t("search.seeAll")}
+      </button>
+    </div>
+
+    <!-- Results count -->
+    <div
+      id="search-count"
+      class="hidden mt-12 pt-6 border-t border-gray-100 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+    >
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById(
+      "search-page-input",
+    ) as HTMLInputElement;
+    const initial = document.getElementById("search-initial");
+    const loading = document.getElementById("search-loading");
+    const empty = document.getElementById("search-empty");
+    const grid = document.getElementById("search-grid");
+    const loadMoreWrap = document.getElementById("search-load-more");
+    const loadMoreBtn = loadMoreWrap?.querySelector("button");
+    const countEl = document.getElementById("search-count");
+
+    if (!input || !grid) return;
+
+    let pagefind: any = null;
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    let allResults: any[] = [];
+    let shownCount = 0;
+    const PAGE_SIZE = 12;
+
+    async function loadPagefind() {
+      if (pagefind) return pagefind;
+      try {
+        const path = "/pagefind/pagefind.js";
+        pagefind = await import(/* @vite-ignore */ path);
+        await pagefind.init({
+          language: document.documentElement.lang,
+        });
+        return pagefind;
+      } catch {
+        return null;
+      }
+    }
+
+    function showState(
+      state: "initial" | "loading" | "empty" | "results",
+    ) {
+      initial?.classList.toggle("hidden", state !== "initial");
+      loading?.classList.toggle("hidden", state !== "loading");
+      empty?.classList.toggle("hidden", state !== "empty");
+      grid?.classList.toggle("hidden", state !== "results");
+      if (state !== "results") {
+        loadMoreWrap?.classList.add("hidden");
+        countEl?.classList.add("hidden");
+      }
+    }
+
+    function renderCard(item: any): string {
+      const hasImage = item.meta?.image;
+      return `
+        <article class="group cursor-pointer">
+          <a href="${item.url}">
+            <div class="aspect-[4/3] mb-6 overflow-hidden bg-gray-100 rounded-xl relative">
+              ${
+                hasImage
+                  ? `<img src="${item.meta.image}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />`
+                  : `<div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <i class="fa-solid fa-file-lines text-gray-300 text-3xl"></i>
+                    </div>`
+              }
+            </div>
+            <h3 class="text-xl font-bold group-hover:text-qcRed transition uppercase leading-tight tracking-tighter">
+              ${item.meta?.title || ""}
+            </h3>
+            ${
+              item.excerpt
+                ? `<p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">${item.excerpt}</p>`
+                : ""
+            }
+          </a>
+        </article>
+      `;
+    }
+
+    async function renderBatch(results: any[], startIndex: number) {
+      const batch = results.slice(startIndex, startIndex + PAGE_SIZE);
+      const dataPromises = batch.map((r: any) => r.data());
+      const items = await Promise.all(dataPromises);
+
+      items.forEach((item: any) => {
+        grid!.insertAdjacentHTML("beforeend", renderCard(item));
+      });
+
+      shownCount += batch.length;
+
+      if (shownCount < results.length) {
+        loadMoreWrap?.classList.remove("hidden");
+      } else {
+        loadMoreWrap?.classList.add("hidden");
+      }
+    }
+
+    async function doSearch(query: string) {
+      if (query.length < 2) {
+        showState("initial");
+        return;
+      }
+
+      showState("loading");
+
+      const pf = await loadPagefind();
+      if (!pf) {
+        showState("initial");
+        return;
+      }
+
+      const search = await pf.search(query);
+      allResults = search.results;
+      shownCount = 0;
+      grid!.innerHTML = "";
+
+      if (allResults.length === 0) {
+        showState("empty");
+        return;
+      }
+
+      showState("results");
+      await renderBatch(allResults, 0);
+
+      if (countEl) {
+        const container = document.querySelector(
+          "[data-search-container]",
+        ) as HTMLElement;
+        const resultsLabel =
+          container?.dataset.resultsLabel || "resultaten";
+        countEl.textContent = `${allResults.length} ${resultsLabel}`;
+        countEl.classList.remove("hidden");
+      }
+    }
+
+    // Read ?q= param on load
+    const params = new URLSearchParams(window.location.search);
+    const initialQuery = params.get("q") || "";
+    if (initialQuery) {
+      input.value = initialQuery;
+      doSearch(initialQuery);
+    }
+
+    // Input handler
+    input.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const q = input.value.trim();
+        const url = new URL(window.location.href);
+        if (q) {
+          url.searchParams.set("q", q);
+        } else {
+          url.searchParams.delete("q");
+        }
+        history.replaceState(null, "", url.toString());
+        doSearch(q);
+      }, 300);
+    });
+
+    // Load more button
+    loadMoreBtn?.addEventListener("click", () => {
+      renderBatch(allResults, shownCount);
+    });
+  });
+</script>

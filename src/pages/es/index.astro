@@ -17,11 +17,15 @@ const lang: Lang = "es";
 
 <Layout title="Quina Care - Cuidado Sin Fronteras" lang={lang}>
   <Nav />
-  <Hero lang={lang} />
+  <div data-pagefind-body>
+    <Hero lang={lang} />
+  </div>
   <LiveMetrics lang={lang} />
   <News lang={lang} />
   <DonationCards lang={lang} />
-  <FocusProject lang={lang} />
+  <div data-pagefind-body>
+    <FocusProject lang={lang} />
+  </div>
   <Partners lang={lang} />
   <CallToAction lang={lang} />
   <Newsletter lang={lang} />

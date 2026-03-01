@@ -183,6 +183,14 @@ export const ui = {
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
       "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via info@quinacare.org.",
+    // Search
+    "search.title": "Zoeken",
+    "search.label": "Zoekresultaten",
+    "search.placeholder": "Zoek op trefwoord...",
+    "search.noResults": "Geen resultaten gevonden",
+    "search.startTyping": "Begin met typen om te zoeken",
+    "search.seeAll": "Bekijk alle resultaten",
+    "search.results": "resultaten",
   },
   en: {
     // Navigation
@@ -358,6 +366,14 @@ export const ui = {
     "donate.faq3Q": "Can I cancel my monthly donation?",
     "donate.faq3A":
       "Yes, you can cancel your monthly donation at any time by contacting us at info@quinacare.org.",
+    // Search
+    "search.title": "Search",
+    "search.label": "Search results",
+    "search.placeholder": "Search by keyword...",
+    "search.noResults": "No results found",
+    "search.startTyping": "Start typing to search",
+    "search.seeAll": "See all results",
+    "search.results": "results",
   },
   es: {
     // Navigation
@@ -533,6 +549,14 @@ export const ui = {
     "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
     "donate.faq3A":
       "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en info@quinacare.org.",
+    // Search
+    "search.title": "Buscar",
+    "search.label": "Resultados de búsqueda",
+    "search.placeholder": "Buscar por palabra clave...",
+    "search.noResults": "No se encontraron resultados",
+    "search.startTyping": "Empieza a escribir para buscar",
+    "search.seeAll": "Ver todos los resultados",
+    "search.results": "resultados",
   },
 } as const;
 

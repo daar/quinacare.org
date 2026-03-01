@@ -4,6 +4,8 @@ import { getLangFromUrl, useTranslations, getLocalizedPath } from "../i18n";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const searchPath = getLocalizedPath("/search", lang);
 ---
 
 <nav
@@ -53,22 +55,278 @@ const t = useTranslations(lang);
       >
     </div>
     <div class="flex items-center gap-6">
+      <!-- Default state: search icon + language switcher -->
       <div
+        id="nav-default"
         class="flex items-center gap-4 text-[11px] font-bold uppercase tracking-widest border-r border-gray-200 pr-6 mr-2"
       >
-        <button class="text-gray-400 hover:text-qcRed text-sm">
+        <button
+          id="search-open-btn"
+          class="text-gray-400 hover:text-qcRed text-sm"
+          aria-label={t("search.title")}
+        >
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
         <LanguageSwitcher />
       </div>
+
+      <!-- Expanded search state (hidden by default) -->
+      <div
+        id="nav-search"
+        class="hidden items-center gap-3 border-r border-gray-200 pr-6 mr-2 search-expand-enter"
+        data-search-path={searchPath}
+        data-placeholder={t("search.placeholder")}
+        data-no-results={t("search.noResults")}
+        data-see-all={t("search.seeAll")}
+        data-results-label={t("search.results")}
+      >
+        <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+        <input
+          id="search-input"
+          type="text"
+          placeholder={t("search.placeholder")}
+          class="bg-transparent outline-none text-sm w-48 md:w-64"
+          autocomplete="off"
+        />
+        <button
+          id="search-close-btn"
+          class="text-gray-400 hover:text-qcBlack text-sm"
+          aria-label="Close search"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Donate button -->
       <a
+        id="nav-donate-btn"
         href={getLocalizedPath("/donate", lang)}
         class="bg-qcRed text-white px-7 py-3 rounded-md font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-qcBlack transition-all shadow-md"
       >
-        <i class="fa-solid fa-heart transition-transform group-hover:scale-125"
+        <i
+          class="fa-solid fa-heart transition-transform group-hover:scale-125"
         ></i>
         {t("nav.donate")}
       </a>
     </div>
   </div>
+
+  <!-- Search dropdown -->
+  <div
+    id="search-dropdown"
+    class="hidden absolute left-0 right-0 top-full bg-white border-b border-gray-200 shadow-lg search-dropdown-enter"
+  >
+    <div class="max-w-[1600px] mx-auto px-6 py-6">
+      <div id="search-results-list" class="space-y-4"></div>
+      <div id="search-no-results" class="hidden text-center py-8">
+        <p class="text-gray-400 text-sm">{t("search.noResults")}</p>
+      </div>
+      <div id="search-start" class="hidden text-center py-8">
+        <p class="text-gray-400 text-sm">{t("search.startTyping")}</p>
+      </div>
+      <a
+        id="search-see-all"
+        href="#"
+        class="hidden mt-4 pt-4 border-t border-gray-100 text-[11px] font-bold uppercase tracking-widest text-qcRed hover:text-qcBlack transition items-center gap-2"
+      >
+        <span id="search-see-all-text"></span>
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Backdrop -->
+  <div
+    id="search-backdrop"
+    class="hidden fixed inset-0 top-20 bg-black/20 z-[-1]"
+  >
+  </div>
 </nav>
+
+<script>
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  document.addEventListener("DOMContentLoaded", () => {
+    const navDefault = document.getElementById("nav-default");
+    const navSearch = document.getElementById("nav-search");
+    const searchInput = document.getElementById(
+      "search-input",
+    ) as HTMLInputElement;
+    const openBtn = document.getElementById("search-open-btn");
+    const closeBtn = document.getElementById("search-close-btn");
+    const donateBtn = document.getElementById("nav-donate-btn");
+    const dropdown = document.getElementById("search-dropdown");
+    const backdrop = document.getElementById("search-backdrop");
+    const resultsList = document.getElementById("search-results-list");
+    const noResults = document.getElementById("search-no-results");
+    const searchStart = document.getElementById("search-start");
+    const seeAllLink = document.getElementById(
+      "search-see-all",
+    ) as HTMLAnchorElement;
+    const seeAllText = document.getElementById("search-see-all-text");
+
+    if (!navDefault || !navSearch || !searchInput || !dropdown) return;
+
+    const searchPath = navSearch.dataset.searchPath || "/search";
+    const seeAllMsg = navSearch.dataset.seeAll || "See all results";
+    const resultsLabel = navSearch.dataset.resultsLabel || "results";
+
+    let pagefind: any = null;
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    async function loadPagefind() {
+      if (pagefind) return pagefind;
+      try {
+        const path = "/pagefind/pagefind.js";
+        pagefind = await import(/* @vite-ignore */ path);
+        await pagefind.init({
+          language: document.documentElement.lang,
+        });
+        return pagefind;
+      } catch {
+        return null;
+      }
+    }
+
+    function openSearch() {
+      navDefault!.classList.add("hidden");
+      donateBtn?.classList.add("hidden");
+      navSearch!.classList.remove("hidden");
+      navSearch!.classList.add("flex");
+      searchInput!.focus();
+      searchStart?.classList.remove("hidden");
+      dropdown!.classList.remove("hidden");
+      backdrop?.classList.remove("hidden");
+    }
+
+    function closeSearch() {
+      navSearch!.classList.add("hidden");
+      navSearch!.classList.remove("flex");
+      navDefault!.classList.remove("hidden");
+      donateBtn?.classList.remove("hidden");
+      dropdown!.classList.add("hidden");
+      backdrop?.classList.add("hidden");
+      searchInput!.value = "";
+      if (resultsList) resultsList.innerHTML = "";
+      noResults?.classList.add("hidden");
+      searchStart?.classList.add("hidden");
+      seeAllLink?.classList.add("hidden");
+      seeAllLink?.classList.remove("flex");
+    }
+
+    function navigateToSearch(query: string) {
+      if (query.trim()) {
+        window.location.href = `${searchPath}?q=${encodeURIComponent(query.trim())}`;
+      }
+    }
+
+    async function doSearch(query: string) {
+      const pf = await loadPagefind();
+      if (!pf) return;
+
+      if (query.length < 2) {
+        if (resultsList) resultsList.innerHTML = "";
+        noResults?.classList.add("hidden");
+        searchStart?.classList.remove("hidden");
+        seeAllLink?.classList.add("hidden");
+        seeAllLink?.classList.remove("flex");
+        return;
+      }
+
+      searchStart?.classList.add("hidden");
+
+      const search = await pf.search(query);
+
+      if (search.results.length === 0) {
+        if (resultsList) resultsList.innerHTML = "";
+        noResults?.classList.remove("hidden");
+        seeAllLink?.classList.add("hidden");
+        seeAllLink?.classList.remove("flex");
+        return;
+      }
+
+      noResults?.classList.add("hidden");
+
+      const top5 = search.results.slice(0, 5);
+      const dataPromises = top5.map((r: any) => r.data());
+      const items = await Promise.all(dataPromises);
+
+      if (resultsList) {
+        resultsList.innerHTML = items
+          .map(
+            (item: any) => `
+          <a href="${item.url}" class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition group">
+            ${
+              item.meta?.image
+                ? `<img src="${item.meta.image}" alt="" class="w-16 h-16 object-cover rounded-lg bg-gray-100 flex-shrink-0" />`
+                : `<div class="w-16 h-16 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-file-lines text-gray-300"></i>
+                  </div>`
+            }
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm font-bold uppercase tracking-tight group-hover:text-qcRed transition truncate">${item.meta?.title || ""}</h4>
+              <p class="text-xs text-gray-400 line-clamp-1 mt-1">${item.excerpt || ""}</p>
+            </div>
+          </a>
+        `,
+          )
+          .join("");
+      }
+
+      if (search.results.length > 5 && seeAllLink && seeAllText) {
+        seeAllText.textContent = `${seeAllMsg} (${search.results.length} ${resultsLabel}) →`;
+        seeAllLink.href = `${searchPath}?q=${encodeURIComponent(query)}`;
+        seeAllLink.classList.remove("hidden");
+        seeAllLink.classList.add("flex");
+      } else if (seeAllLink) {
+        seeAllLink.classList.add("hidden");
+        seeAllLink.classList.remove("flex");
+      }
+    }
+
+    // Event listeners
+    openBtn?.addEventListener("click", openSearch);
+    closeBtn?.addEventListener("click", closeSearch);
+    backdrop?.addEventListener("click", closeSearch);
+
+    searchInput?.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        doSearch(searchInput.value);
+      }, 200);
+    });
+
+    searchInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        navigateToSearch(searchInput.value);
+      }
+      if (e.key === "Escape") {
+        closeSearch();
+      }
+    });
+
+    // Ctrl/Cmd+K shortcut
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        if (navSearch?.classList.contains("hidden")) {
+          openSearch();
+        } else {
+          closeSearch();
+        }
+      }
+      if (
+        e.key === "Escape" &&
+        !navSearch?.classList.contains("hidden")
+      ) {
+        closeSearch();
+      }
+    });
+  });
+</script>
