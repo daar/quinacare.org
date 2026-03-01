@@ -89,32 +89,41 @@ const t = useTranslations(lang);
         </ul>
       </div>
 
-      <div>
-        <h4
-          class="text-[11px] font-bold uppercase tracking-[0.3em] mb-8 text-white"
-        >
-          {t("footer.certifications")}
-        </h4>
-        <div
-          class="flex flex-wrap gap-4 opacity-40 grayscale hover:grayscale-0 transition-all duration-500"
-        >
-          <div
-            class="bg-white/10 p-2 rounded flex items-center justify-center w-20 h-12 text-[10px] font-bold"
-          >
-            ANBI
+      {
+        (lang === "nl" || lang === "en") && (
+          <div>
+            <h4 class="text-[11px] font-bold uppercase tracking-[0.3em] mb-8 text-white">
+              {t("footer.certifications")}
+            </h4>
+            <div class="flex flex-wrap gap-4">
+              {lang === "en" && (
+                <img
+                  src="/images/certifications/certified-nonprofit.png"
+                  alt="Certified Nonprofit"
+                  class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                />
+              )}
+              {lang === "nl" && (
+                <>
+                  <img
+                    src="/images/certifications/anbi.png"
+                    alt="ANBI"
+                    class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                  />
+                  <img
+                    src="/images/certifications/cbf.png"
+                    alt="CBF Erkend Goed Doel"
+                    class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                  />
+                </>
+              )}
+            </div>
+            <p class="mt-6 text-[9px] text-white/30 leading-relaxed uppercase tracking-widest">
+              {t("footer.certifiedCharity")}
+            </p>
           </div>
-          <div
-            class="bg-white/10 p-2 rounded flex items-center justify-center w-20 h-12 text-[10px] font-bold"
-          >
-            CBF
-          </div>
-        </div>
-        <p
-          class="mt-6 text-[9px] text-white/30 leading-relaxed uppercase tracking-widest"
-        >
-          {t("footer.certifiedCharity")}
-        </p>
-      </div>
+        )
+      }
     </div>
 
     <div
