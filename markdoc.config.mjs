@@ -1,9 +1,9 @@
-import { defineMarkdocConfig, component } from '@astrojs/markdoc/config';
+import { defineMarkdocConfig, component } from "@astrojs/markdoc/config";
 
 export default defineMarkdocConfig({
   tags: {
     image: {
-      render: component('./src/components/markdoc/Image.astro'),
+      render: component("./src/components/markdoc/Image.astro"),
       attributes: {
         src: { type: String, required: true },
         alt: { type: String },

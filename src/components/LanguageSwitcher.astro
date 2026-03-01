@@ -1,34 +1,45 @@
 ---
-import { languages, getLangFromUrl, getLocalizedPath, defaultLang, type Lang } from '../i18n';
+import {
+  languages,
+  getLangFromUrl,
+  getLocalizedPath,
+  type Lang,
+} from "../i18n";
 
 const currentUrl = Astro.url;
-const currentLang = Astro.currentLocale as Lang ?? getLangFromUrl(currentUrl);
+const currentLang = (Astro.currentLocale as Lang) ?? getLangFromUrl(currentUrl);
 const currentPath = currentUrl.pathname;
 const langEntries = Object.entries(languages) as [Lang, string][];
 ---
 
 <nav aria-label="Language switcher" class="flex items-center gap-2">
-  {langEntries.map(([code, name], index) => {
-    const isActive = code === currentLang;
-    const href = getLocalizedPath(currentPath, code);
+  {
+    langEntries.map(([code, name], index) => {
+      const isActive = code === currentLang;
+      const href = getLocalizedPath(currentPath, code);
 
-    return (
-      <>
-        {index > 0 && <span class="text-gray-300" aria-hidden="true">|</span>}
-        <a
-          href={href}
-          class:list={[
-            'uppercase transition-colors duration-200 hover:text-qcRed',
-            isActive ? 'text-qcBlack font-bold' : 'text-gray-400',
-          ]}
-          aria-current={isActive ? 'page' : undefined}
-          aria-label={`Switch to ${name}`}
-          hreflang={code}
-          lang={code}
-        >
-          {code.toUpperCase()}
-        </a>
-      </>
-    );
-  })}
+      return (
+        <>
+          {index > 0 && (
+            <span class="text-gray-300" aria-hidden="true">
+              |
+            </span>
+          )}
+          <a
+            href={href}
+            class:list={[
+              "uppercase transition-colors duration-200 hover:text-qcRed",
+              isActive ? "text-qcBlack font-bold" : "text-gray-400",
+            ]}
+            aria-current={isActive ? "page" : undefined}
+            aria-label={`Switch to ${name}`}
+            hreflang={code}
+            lang={code}
+          >
+            {code.toUpperCase()}
+          </a>
+        </>
+      );
+    })
+  }
 </nav>

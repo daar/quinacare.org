@@ -8,31 +8,37 @@ interface Props {
   caption?: string;
 }
 
-const { src, alt = '', width, height, align = 'left', caption } = Astro.props;
+const { src, alt = "", width, height, align = "left", caption } = Astro.props;
 
-const alignClass = {
-  left: 'mr-auto',
-  center: 'mx-auto',
-  right: 'ml-auto',
-}[align] || 'mr-auto';
+const alignClass =
+  {
+    left: "mr-auto",
+    center: "mx-auto",
+    right: "ml-auto",
+  }[align] || "mr-auto";
 
-const floatClass = {
-  left: 'float-left mr-4 mb-2',
-  right: 'float-right ml-4 mb-2',
-  center: '',
-}[align] || '';
+const floatClass =
+  {
+    left: "float-left mr-4 mb-2",
+    right: "float-right ml-4 mb-2",
+    center: "",
+  }[align] || "";
 ---
 
-<figure class={`${align === 'center' ? 'text-center my-4' : floatClass}`}>
+<figure class={`${align === "center" ? "text-center my-4" : floatClass}`}>
   <img
     src={src}
-    alt={alt || caption || ''}
+    alt={alt || caption || ""}
     width={width}
     height={height}
-    class={`${align === 'center' ? alignClass : ''} max-w-full h-auto`}
+    class={`${align === "center" ? alignClass : ""} max-w-full h-auto`}
     loading="lazy"
   />
-  {caption && (
-    <figcaption class="text-sm text-gray-500 mt-2 italic">{caption}</figcaption>
-  )}
+  {
+    caption && (
+      <figcaption class="text-sm text-gray-500 mt-2 italic">
+        {caption}
+      </figcaption>
+    )
+  }
 </figure>

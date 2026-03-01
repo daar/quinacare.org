@@ -1,21 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap");
 @import "tailwindcss";
 
 @theme {
   --color-qcRed: #e11d48;
   --color-qcBlack: #111111;
   --color-qcGray: #fcfcfc;
-  --font-arimo: 'Arimo', sans-serif;
+  --font-arimo: "Arimo", sans-serif;
 }
 
 body {
-  font-family: 'Arimo', sans-serif;
+  font-family: "Arimo", sans-serif;
   scroll-behavior: smooth;
 }
 
 /* Metric Transition Logic */
 .metric-item {
-  transition: opacity 0.6s ease-in-out, transform 0.6s ease-out;
+  transition:
+    opacity 0.6s ease-in-out,
+    transform 0.6s ease-out;
   pointer-events: none;
 }
 

@@ -1,18 +1,25 @@
 ---
-import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
-import Nav from '../../components/Nav.astro';
-import Footer from '../../components/Footer.astro';
-import '/src/styles/global.css';
-import { useTranslations, getDateLocale, getLocalizedPath, type Lang } from '../../i18n';
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import "/src/styles/global.css";
+import {
+  useTranslations,
+  getDateLocale,
+  getLocalizedPath,
+  type Lang,
+} from "../../i18n";
 
-const lang: Lang = 'nl';
+type NewsEntry = CollectionEntry<"news-nl">;
+
+const lang: Lang = "nl";
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
 export async function getStaticPaths() {
-  const posts = await getCollection('news-nl');
-  return posts.map((post, index) => ({
+  const posts = await getCollection("news-nl");
+  return posts.map((post) => ({
     params: { slug: post.data.slug || post.id },
     props: { post, allPosts: posts },
   }));
@@ -22,23 +29,31 @@ const { post, allPosts } = Astro.props;
 const { Content } = await render(post);
 
 const publishedPosts = allPosts
-  .filter((p: any) => p.data.status === 'publish')
-  .sort((a: any, b: any) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .filter((p: NewsEntry) => p.data.status === "publish")
+  .sort(
+    (a: NewsEntry, b: NewsEntry) =>
+      new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  );
 
-const currentIndex = publishedPosts.findIndex((p: any) => (p.data.slug || p.id) === (post.data.slug || post.id));
-const prevPost = currentIndex < publishedPosts.length - 1 ? publishedPosts[currentIndex + 1] : null;
+const currentIndex = publishedPosts.findIndex(
+  (p: NewsEntry) => (p.data.slug || p.id) === (post.data.slug || post.id),
+);
+const prevPost =
+  currentIndex < publishedPosts.length - 1
+    ? publishedPosts[currentIndex + 1]
+    : null;
 const nextPost = currentIndex > 0 ? publishedPosts[currentIndex - 1] : null;
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat(dateLocale, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   }).format(date);
 }
 
 function getCategoryLabel(categories: string[] | undefined): string {
-  if (!categories || categories.length === 0) return t('category.article');
+  if (!categories || categories.length === 0) return t("category.article");
   return categories[0];
 }
 
@@ -53,238 +68,304 @@ function getNewsPath(slug: string): string {
 ---
 
 <html lang={lang}>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <meta name="generator" content={Astro.generator} />
-  <meta name="description" content={post.data.excerpt || `${post.data.title} - Quina Care`} />
-  <title>{post.data.title} | Quina Care</title>
-  <style>
-    #progress-bar {
-      height: 3px;
-      background: #e11d48;
-      width: 0%;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 100;
-      transition: width 0.1s ease;
-    }
-  </style>
-</head>
-<body class="font-arimo text-qcBlack bg-white selection:bg-qcRed selection:text-white">
-
-  <div id="progress-bar"></div>
-
-  <Nav />
-
-  <header class="pt-40 pb-16">
-    <div class="max-w-3xl mx-auto px-6 text-center">
-      {post.data.categories && post.data.categories.length > 0 && (
-        <span class="bg-gray-100 text-qcBlack text-[9px] font-bold uppercase tracking-[0.3em] px-3 py-1 rounded-sm mb-8 inline-block">
-          {getCategoryLabel(post.data.categories)}
-        </span>
-      )}
-
-      <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1] mb-8 uppercase">
-        {post.data.title}
-      </h1>
-
-      <div class="flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 flex-wrap">
-        <span class="text-qcBlack">{post.data.author || 'Team QC'}</span>
-        <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-        <span>{formatDate(post.data.date)}</span>
-        <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-        <span>{getReadingTime(post.body || '')} {t('post.readingTime')}</span>
-      </div>
-    </div>
-  </header>
-
-  {post.data.featured_image && (
-    <figure class="max-w-6xl mx-auto px-6 mb-24 group">
-      <div class="relative">
-        <div class="aspect-[21/9] overflow-hidden rounded-xl bg-gray-100 relative z-10">
-          <Image
-            src={post.data.featured_image}
-            class="w-full h-full object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
-            alt={post.data.featured_image_caption || post.data.title}
-            widths={[400, 800, 1200]}
-            sizes="(max-width: 768px) 100vw, 1200px"
-          />
-        </div>
-        <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700"></div>
-        <div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gray-200 opacity-40 rounded-xl"></div>
-
-        {(post.data.featured_image_caption || post.data.featured_image_copyright) && (
-          <figcaption class="mt-6 flex flex-wrap items-center justify-between gap-4 px-2">
-            {post.data.featured_image_caption && (
-              <div class="flex items-center gap-3">
-                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <p class="text-[10px] tracking-widest uppercase font-bold text-gray-400">
-                  <span class="mx-2 text-gray-200">|</span>
-                  {post.data.featured_image_caption}
-                </p>
-              </div>
-            )}
-            {post.data.featured_image_copyright && (
-              <div class="flex items-center gap-2">
-                <span class="text-[9px] font-medium uppercase tracking-[0.2em] text-gray-300">{post.data.featured_image_copyright}</span>
-              </div>
-            )}
-          </figcaption>
-        )}
-      </div>
-    </figure>
-  )}
-
-  <main class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-16 relative">
-
-    <aside class="hidden lg:block w-32 sticky top-32 h-fit">
-      <div class="flex flex-col gap-6">
-        <span class="text-[9px] font-bold uppercase tracking-widest text-gray-300 transform -rotate-90 origin-left translate-y-8">
-          {t('post.shareStory')}
-        </span>
-        <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
-        <a
-          href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.data.title)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-        >
-          <i class="fa-brands fa-x-twitter"></i>
-        </a>
-        <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-        >
-          <i class="fa-brands fa-facebook-f"></i>
-        </a>
-        <a
-          href={`https://www.linkedin.com/shareArticle?mini=true&url=${Astro.url}&title=${encodeURIComponent(post.data.title)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-        >
-          <i class="fa-brands fa-linkedin-in"></i>
-        </a>
-        <a
-          href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${Astro.url}`}
-          class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-        >
-          <i class="fa-solid fa-envelope"></i>
-        </a>
-      </div>
-    </aside>
-
-    <div class="max-w-2xl mx-auto md:mx-0 flex-1">
-      <article class="prose prose-article">
-        <Content />
-      </article>
-
-      <div class="mt-20 p-8 border border-gray-100 bg-gray-50 flex flex-col sm:flex-row items-center gap-8 rounded-xl">
-        <div class="w-20 h-20 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0">
-          <i class="fa-solid fa-user text-2xl text-qcRed"></i>
-        </div>
-        <div class="text-center sm:text-left">
-          <span class="text-[9px] font-bold uppercase tracking-widest text-qcRed mb-1 block">{t('post.aboutAuthor')}</span>
-          <h4 class="text-xl font-bold mb-2 uppercase tracking-tighter">{post.data.author || 'Team QC'}</h4>
-          <p class="text-xs text-gray-500 leading-relaxed">
-            {t('post.authorBio')}
-          </p>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  {(prevPost || nextPost) && (
-    <section class="py-24 bg-white border-t border-gray-100 mt-20">
-      <div class="max-w-7xl mx-auto px-6 text-center mb-16">
-        <h2 class="text-3xl font-bold uppercase tracking-tighter">
-          {t('post.continueReading').split(' ')[0]} <span class="text-qcRed italic underline decoration-1 underline-offset-8">{t('post.continueReading').split(' ').slice(1).join(' ')}</span>
-        </h2>
-      </div>
-      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
-        {nextPost && (
-          <a href={getNewsPath(nextPost.data.slug || nextPost.id)} class="flex gap-6 items-center group cursor-pointer">
-            <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-              {nextPost.data.featured_image ? (
-                <Image
-                  src={nextPost.data.featured_image}
-                  class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
-                  alt={nextPost.data.title}
-                  width={128}
-                  height={128}
-                />
-              ) : (
-                <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                  <i class="fa-solid fa-newspaper text-gray-300 text-2xl"></i>
-                </div>
-              )}
-            </div>
-            <div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-qcRed">{t('post.next')}</span>
-              <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
-                {nextPost.data.title}
-              </h3>
-            </div>
-          </a>
-        )}
-        {prevPost && (
-          <a href={getNewsPath(prevPost.data.slug || prevPost.id)} class="flex gap-6 items-center group cursor-pointer">
-            <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-              {prevPost.data.featured_image ? (
-                <Image
-                  src={prevPost.data.featured_image}
-                  class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
-                  alt={prevPost.data.title}
-                  width={128}
-                  height={128}
-                />
-              ) : (
-                <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                  <i class="fa-solid fa-newspaper text-gray-300 text-2xl"></i>
-                </div>
-              )}
-            </div>
-            <div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400">{t('post.previous')}</span>
-              <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
-                {prevPost.data.title}
-              </h3>
-            </div>
-          </a>
-        )}
-      </div>
-    </section>
-  )}
-
-  <Footer />
-
-  <script>
-    window.onscroll = function() {
-      let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-      let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      let scrolled = (winScroll / height) * 100;
-      const progressBar = document.getElementById("progress-bar");
-      if (progressBar) {
-        progressBar.style.width = scrolled + "%";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content={post.data.excerpt || `${post.data.title} - Quina Care`}
+    />
+    <title>{post.data.title} | Quina Care</title>
+    <style>
+      #progress-bar {
+        height: 3px;
+        background: #e11d48;
+        width: 0%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        transition: width 0.1s ease;
       }
-    };
-  </script>
-</body>
+    </style>
+  </head>
+  <body
+    class="font-arimo text-qcBlack bg-white selection:bg-qcRed selection:text-white"
+  >
+    <div id="progress-bar"></div>
+
+    <Nav />
+
+    <header class="pt-40 pb-16">
+      <div class="max-w-3xl mx-auto px-6 text-center">
+        {
+          post.data.categories && post.data.categories.length > 0 && (
+            <span class="bg-gray-100 text-qcBlack text-[9px] font-bold uppercase tracking-[0.3em] px-3 py-1 rounded-sm mb-8 inline-block">
+              {getCategoryLabel(post.data.categories)}
+            </span>
+          )
+        }
+
+        <h1
+          class="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1] mb-8 uppercase"
+        >
+          {post.data.title}
+        </h1>
+
+        <div
+          class="flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 flex-wrap"
+        >
+          <span class="text-qcBlack">{post.data.author || "Team QC"}</span>
+          <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+          <span>{formatDate(post.data.date)}</span>
+          <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+          <span>{getReadingTime(post.body || "")} {t("post.readingTime")}</span>
+        </div>
+      </div>
+    </header>
+
+    {
+      post.data.featured_image && (
+        <figure class="max-w-6xl mx-auto px-6 mb-24 group">
+          <div class="relative">
+            <div class="aspect-[21/9] overflow-hidden rounded-xl bg-gray-100 relative z-10">
+              <Image
+                src={post.data.featured_image}
+                class="w-full h-full object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
+                alt={post.data.featured_image_caption || post.data.title}
+                widths={[400, 800, 1200]}
+                sizes="(max-width: 768px) 100vw, 1200px"
+              />
+            </div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700" />
+            <div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gray-200 opacity-40 rounded-xl" />
+
+            {(post.data.featured_image_caption ||
+              post.data.featured_image_copyright) && (
+              <figcaption class="mt-6 flex flex-wrap items-center justify-between gap-4 px-2">
+                {post.data.featured_image_caption && (
+                  <div class="flex items-center gap-3">
+                    <svg
+                      class="w-3.5 h-3.5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <p class="text-[10px] tracking-widest uppercase font-bold text-gray-400">
+                      <span class="mx-2 text-gray-200">|</span>
+                      {post.data.featured_image_caption}
+                    </p>
+                  </div>
+                )}
+                {post.data.featured_image_copyright && (
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] font-medium uppercase tracking-[0.2em] text-gray-300">
+                      {post.data.featured_image_copyright}
+                    </span>
+                  </div>
+                )}
+              </figcaption>
+            )}
+          </div>
+        </figure>
+      )
+    }
+
+    <main
+      class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-16 relative"
+    >
+      <aside class="hidden lg:block w-32 sticky top-32 h-fit">
+        <div class="flex flex-col gap-6">
+          <span
+            class="text-[9px] font-bold uppercase tracking-widest text-gray-300 transform -rotate-90 origin-left translate-y-8"
+          >
+            {t("post.shareStory")}
+          </span>
+          <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
+          <a
+            href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.data.title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
+          >
+            <i class="fa-brands fa-x-twitter"></i>
+          </a>
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
+          >
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+          <a
+            href={`https://www.linkedin.com/shareArticle?mini=true&url=${Astro.url}&title=${encodeURIComponent(post.data.title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
+          >
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+          <a
+            href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${Astro.url}`}
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
+          >
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </aside>
+
+      <div class="max-w-2xl mx-auto md:mx-0 flex-1">
+        <article class="prose prose-article">
+          <Content />
+        </article>
+
+        <div
+          class="mt-20 p-8 border border-gray-100 bg-gray-50 flex flex-col sm:flex-row items-center gap-8 rounded-xl"
+        >
+          <div
+            class="w-20 h-20 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
+          >
+            <i class="fa-solid fa-user text-2xl text-qcRed"></i>
+          </div>
+          <div class="text-center sm:text-left">
+            <span
+              class="text-[9px] font-bold uppercase tracking-widest text-qcRed mb-1 block"
+              >{t("post.aboutAuthor")}</span
+            >
+            <h4 class="text-xl font-bold mb-2 uppercase tracking-tighter">
+              {post.data.author || "Team QC"}
+            </h4>
+            <p class="text-xs text-gray-500 leading-relaxed">
+              {t("post.authorBio")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {
+      (prevPost || nextPost) && (
+        <section class="py-24 bg-white border-t border-gray-100 mt-20">
+          <div class="max-w-7xl mx-auto px-6 text-center mb-16">
+            <h2 class="text-3xl font-bold uppercase tracking-tighter">
+              {t("post.continueReading").split(" ")[0]}{" "}
+              <span class="text-qcRed italic underline decoration-1 underline-offset-8">
+                {t("post.continueReading").split(" ").slice(1).join(" ")}
+              </span>
+            </h2>
+          </div>
+          <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+            {nextPost && (
+              <a
+                href={getNewsPath(nextPost.data.slug || nextPost.id)}
+                class="flex gap-6 items-center group cursor-pointer"
+              >
+                <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                  {nextPost.data.featured_image ? (
+                    <Image
+                      src={nextPost.data.featured_image}
+                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
+                      alt={nextPost.data.title}
+                      width={128}
+                      height={128}
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <i class="fa-solid fa-newspaper text-gray-300 text-2xl" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <span class="text-[9px] font-bold uppercase tracking-widest text-qcRed">
+                    {t("post.next")}
+                  </span>
+                  <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
+                    {nextPost.data.title}
+                  </h3>
+                </div>
+              </a>
+            )}
+            {prevPost && (
+              <a
+                href={getNewsPath(prevPost.data.slug || prevPost.id)}
+                class="flex gap-6 items-center group cursor-pointer"
+              >
+                <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                  {prevPost.data.featured_image ? (
+                    <Image
+                      src={prevPost.data.featured_image}
+                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
+                      alt={prevPost.data.title}
+                      width={128}
+                      height={128}
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <i class="fa-solid fa-newspaper text-gray-300 text-2xl" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400">
+                    {t("post.previous")}
+                  </span>
+                  <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
+                    {prevPost.data.title}
+                  </h3>
+                </div>
+              </a>
+            )}
+          </div>
+        </section>
+      )
+    }
+
+    <Footer />
+
+    <script>
+      window.onscroll = function () {
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        const progressBar = document.getElementById("progress-bar");
+        if (progressBar) {
+          progressBar.style.width = scrolled + "%";
+        }
+      };
+    </script>
+  </body>
 </html>
 
 <style is:global>
   .prose-article {
-    font-family: 'Lora', serif;
+    font-family: "Lora", serif;
     font-size: 1.125rem;
     line-height: 1.8;
     color: #374151;
@@ -297,24 +378,106 @@ function getNewsPath(slug: string): string {
     float: left;
     margin-right: 0.75rem;
     line-height: 1;
-    font-family: 'Arimo', sans-serif;
+    font-family: "Arimo", sans-serif;
   }
 
-  .prose-article p { margin-bottom: 1.5em; }
-  .prose-article h2 { font-family: 'Arimo', sans-serif; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; color: #1a1a1a; margin-top: 2.5em; margin-bottom: 1em; text-transform: uppercase; }
-  .prose-article h3 { font-family: 'Arimo', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; color: #1a1a1a; margin-top: 2em; margin-bottom: 0.75em; text-transform: uppercase; }
-  .prose-article h4 { font-family: 'Arimo', sans-serif; font-size: 1.25rem; font-weight: 700; color: #1a1a1a; margin-top: 1.5em; margin-bottom: 0.5em; }
-  .prose-article a { color: #e11d48; text-decoration: underline; text-underline-offset: 4px; }
-  .prose-article a:hover { color: #1a1a1a; }
-  .prose-article blockquote { border-left: 4px solid #e11d48; padding: 1rem 0 1rem 2rem; margin: 3rem 0; font-style: italic; font-size: 1.5rem; color: #1a1a1a; background: #f9fafb; }
-  .prose-article ul, .prose-article ol { margin: 1.5em 0; padding-left: 1.5em; }
-  .prose-article li { margin-bottom: 0.5em; }
-  .prose-article img { border-radius: 0.75rem; margin: 2em 0; }
-  .prose-article figure { margin: 2.5em 0; }
-  .prose-article figcaption { text-align: center; font-size: 0.75rem; color: #9ca3af; margin-top: 0.75em; font-family: 'Arimo', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
-  .prose-article strong { color: #1a1a1a; font-weight: 700; }
-  .prose-article hr { border: none; border-top: 1px solid #e5e7eb; margin: 3em 0; }
-  .prose-article code { background: #f3f4f6; padding: 0.2em 0.4em; border-radius: 0.25rem; font-size: 0.875em; }
-  .prose-article pre { background: #1a1a1a; color: #e5e7eb; padding: 1.5em; border-radius: 0.75rem; overflow-x: auto; margin: 2em 0; }
-  .prose-article pre code { background: none; padding: 0; }
+  .prose-article p {
+    margin-bottom: 1.5em;
+  }
+  .prose-article h2 {
+    font-family: "Arimo", sans-serif;
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #1a1a1a;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+  }
+  .prose-article h3 {
+    font-family: "Arimo", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #1a1a1a;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+    text-transform: uppercase;
+  }
+  .prose-article h4 {
+    font-family: "Arimo", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  .prose-article a {
+    color: #e11d48;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .prose-article a:hover {
+    color: #1a1a1a;
+  }
+  .prose-article blockquote {
+    border-left: 4px solid #e11d48;
+    padding: 1rem 0 1rem 2rem;
+    margin: 3rem 0;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: #1a1a1a;
+    background: #f9fafb;
+  }
+  .prose-article ul,
+  .prose-article ol {
+    margin: 1.5em 0;
+    padding-left: 1.5em;
+  }
+  .prose-article li {
+    margin-bottom: 0.5em;
+  }
+  .prose-article img {
+    border-radius: 0.75rem;
+    margin: 2em 0;
+  }
+  .prose-article figure {
+    margin: 2.5em 0;
+  }
+  .prose-article figcaption {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.75em;
+    font-family: "Arimo", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .prose-article strong {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  .prose-article hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 3em 0;
+  }
+  .prose-article code {
+    background: #f3f4f6;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+  .prose-article pre {
+    background: #1a1a1a;
+    color: #e5e7eb;
+    padding: 1.5em;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    margin: 2em 0;
+  }
+  .prose-article pre code {
+    background: none;
+    padding: 0;
+  }
 </style>

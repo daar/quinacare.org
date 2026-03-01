@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslations, type Lang } from '../i18n';
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 
 interface Props {
   lang?: Lang;
@@ -12,57 +12,129 @@ const t = useTranslations(lang);
 <section class="bg-white border-y border-gray-100 font-arimo overflow-hidden">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center gap-4 py-8">
-      <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+      <div
+        class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100"
+      >
         <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-qcRed"></span>
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"
+          ></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-qcRed"
+          ></span>
         </span>
-        <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-qcBlack">{t('metrics.liveData')}</span>
+        <span
+          class="text-[9px] font-bold uppercase tracking-[0.2em] text-qcBlack"
+          >{t("metrics.liveData")}</span
+        >
       </div>
       <div class="h-px flex-1 bg-gray-100"></div>
     </div>
 
-    <div id="full-impact-container" class="relative h-[40vh] overflow-y-auto no-scrollbar snap-y snap-mandatory flex flex-col md:flex-row gap-12 items-start">
-      <div class="sticky top-0 w-full md:w-1/2 h-full flex items-center justify-between pr-12 pointer-events-none">
+    <div
+      id="full-impact-container"
+      class="relative h-[40vh] overflow-y-auto no-scrollbar snap-y snap-mandatory flex flex-col md:flex-row gap-12 items-start"
+    >
+      <div
+        class="sticky top-0 w-full md:w-1/2 h-full flex items-center justify-between pr-12 pointer-events-none"
+      >
         <div class="relative w-full h-24" id="metric-viewer">
-          <div class="metric-item opacity-100 transition-all duration-700 absolute inset-0 flex flex-col justify-center" data-metric="0">
-            <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.3em] block mb-1">{t('metrics.consultations')}</span>
-            <h2 class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none">1.240</h2>
+          <div
+            class="metric-item opacity-100 transition-all duration-700 absolute inset-0 flex flex-col justify-center"
+            data-metric="0"
+          >
+            <span
+              class="text-qcRed font-bold text-[10px] uppercase tracking-[0.3em] block mb-1"
+              >{t("metrics.consultations")}</span
+            >
+            <h2
+              class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none"
+            >
+              1.240
+            </h2>
           </div>
-          <div class="metric-item opacity-0 translate-y-8 transition-all duration-700 absolute inset-0 flex flex-col justify-center" data-metric="1">
-            <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.3em] block mb-1">{t('metrics.births')}</span>
-            <h2 class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none">42</h2>
+          <div
+            class="metric-item opacity-0 translate-y-8 transition-all duration-700 absolute inset-0 flex flex-col justify-center"
+            data-metric="1"
+          >
+            <span
+              class="text-qcRed font-bold text-[10px] uppercase tracking-[0.3em] block mb-1"
+              >{t("metrics.births")}</span
+            >
+            <h2
+              class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none"
+            >
+              42
+            </h2>
           </div>
-          <div class="metric-item opacity-0 translate-y-8 transition-all duration-700 absolute inset-0 flex flex-col justify-center" data-metric="2">
-            <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.3em] block mb-1">{t('metrics.medication')}</span>
-            <h2 class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none">15k</h2>
+          <div
+            class="metric-item opacity-0 translate-y-8 transition-all duration-700 absolute inset-0 flex flex-col justify-center"
+            data-metric="2"
+          >
+            <span
+              class="text-qcRed font-bold text-[10px] uppercase tracking-[0.3em] block mb-1"
+              >{t("metrics.medication")}</span
+            >
+            <h2
+              class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none"
+            >
+              15k
+            </h2>
           </div>
         </div>
 
         <div class="hidden md:flex flex-col gap-2">
-          <div class="w-1 h-8 bg-qcRed transition-all duration-500 rounded-full" id="dot-0"></div>
-          <div class="w-1 h-8 bg-gray-100 transition-all duration-500 rounded-full" id="dot-1"></div>
-          <div class="w-1 h-8 bg-gray-100 transition-all duration-500 rounded-full" id="dot-2"></div>
+          <div
+            class="w-1 h-8 bg-qcRed transition-all duration-500 rounded-full"
+            id="dot-0"
+          >
+          </div>
+          <div
+            class="w-1 h-8 bg-gray-100 transition-all duration-500 rounded-full"
+            id="dot-1"
+          >
+          </div>
+          <div
+            class="w-1 h-8 bg-gray-100 transition-all duration-500 rounded-full"
+            id="dot-2"
+          >
+          </div>
         </div>
       </div>
 
       <div class="w-full md:w-1/2">
-        <div class="h-[40vh] flex flex-col justify-center snap-start impact-content-block" data-index="0">
-          <h3 class="text-xl font-bold mb-4 uppercase tracking-tight">{t('metrics.directMedical')}</h3>
+        <div
+          class="h-[40vh] flex flex-col justify-center snap-start impact-content-block"
+          data-index="0"
+        >
+          <h3 class="text-xl font-bold mb-4 uppercase tracking-tight">
+            {t("metrics.directMedical")}
+          </h3>
           <p class="text-gray-500 text-base leading-relaxed max-w-sm">
-            {t('metrics.directMedicalDesc')}
+            {t("metrics.directMedicalDesc")}
           </p>
         </div>
-        <div class="h-[40vh] flex flex-col justify-center snap-start impact-content-block" data-index="1">
-          <h3 class="text-xl font-bold mb-4 uppercase tracking-tight text-qcRed">{t('metrics.buildingFuture')}</h3>
+        <div
+          class="h-[40vh] flex flex-col justify-center snap-start impact-content-block"
+          data-index="1"
+        >
+          <h3
+            class="text-xl font-bold mb-4 uppercase tracking-tight text-qcRed"
+          >
+            {t("metrics.buildingFuture")}
+          </h3>
           <p class="text-gray-500 text-base leading-relaxed max-w-sm">
-            {t('metrics.buildingFutureDesc')}
+            {t("metrics.buildingFutureDesc")}
           </p>
         </div>
-        <div class="h-[40vh] flex flex-col justify-center snap-start impact-content-block" data-index="2">
-          <h3 class="text-xl font-bold mb-4 uppercase tracking-tight">{t('metrics.jungleLogistics')}</h3>
+        <div
+          class="h-[40vh] flex flex-col justify-center snap-start impact-content-block"
+          data-index="2"
+        >
+          <h3 class="text-xl font-bold mb-4 uppercase tracking-tight">
+            {t("metrics.jungleLogistics")}
+          </h3>
           <p class="text-gray-500 text-base leading-relaxed max-w-sm">
-            {t('metrics.jungleLogisticsDesc')}
+            {t("metrics.jungleLogisticsDesc")}
           </p>
         </div>
       </div>
@@ -71,29 +143,33 @@ const t = useTranslations(lang);
 </section>
 
 <script>
-  const container = document.querySelector('#full-impact-container');
-  const metricItems = document.querySelectorAll('.metric-item');
-  const dots = [document.querySelector('#dot-0'), document.querySelector('#dot-1'), document.querySelector('#dot-2')];
+  const container = document.querySelector("#full-impact-container");
+  const metricItems = document.querySelectorAll(".metric-item");
+  const dots = [
+    document.querySelector("#dot-0"),
+    document.querySelector("#dot-1"),
+    document.querySelector("#dot-2"),
+  ];
 
   const scrollOptions = {
     root: container,
-    threshold: 0.6
+    threshold: 0.6,
   };
 
   const handleScroll = (entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        const idx = entry.target.getAttribute('data-index');
+        const idx = entry.target.getAttribute("data-index");
 
         metricItems.forEach((item, i) => {
-          if (item.getAttribute('data-metric') === idx) {
+          if (item.getAttribute("data-metric") === idx) {
             item.style.opacity = "1";
             item.style.transform = "translateY(0)";
-            dots[i]?.classList.replace('bg-gray-100', 'bg-qcRed');
+            dots[i]?.classList.replace("bg-gray-100", "bg-qcRed");
           } else {
             item.style.opacity = "0";
             item.style.transform = "translateY(2rem)";
-            dots[i]?.classList.replace('bg-qcRed', 'bg-gray-100');
+            dots[i]?.classList.replace("bg-qcRed", "bg-gray-100");
           }
         });
       }
@@ -101,5 +177,7 @@ const t = useTranslations(lang);
   };
 
   const observer = new IntersectionObserver(handleScroll, scrollOptions);
-  document.querySelectorAll('.impact-content-block').forEach(block => observer.observe(block));
+  document
+    .querySelectorAll(".impact-content-block")
+    .forEach((block) => observer.observe(block));
 </script>

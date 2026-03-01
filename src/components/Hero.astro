@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslations, type Lang } from '../i18n';
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 
 interface Props {
   lang?: Lang;
@@ -9,36 +9,59 @@ const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<header class="relative h-[85vh] bg-qcBlack flex items-center overflow-hidden font-arimo">
+<header
+  class="relative h-[85vh] bg-qcBlack flex items-center overflow-hidden font-arimo"
+>
   <div class="absolute inset-0 z-0">
-    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-70 grayscale-[10%]">
-      <source src="/videos/hero.webm" type="video/webm">
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      class="w-full h-full object-cover opacity-70 grayscale-[10%]"
+    >
+      <source src="/videos/hero.webm" type="video/webm" />
     </video>
-    <div class="absolute inset-0 bg-gradient-to-r from-qcBlack via-qcBlack/60 to-transparent"></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-qcBlack via-qcBlack/60 to-transparent"
+    >
+    </div>
   </div>
 
   <div class="relative z-20 max-w-[1600px] mx-auto px-6 w-full">
     <div class="max-w-3xl">
-      <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.5em] block mb-8">
-        {t('hero.foundation')}
+      <span
+        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.5em] block mb-8"
+      >
+        {t("hero.foundation")}
       </span>
-      <h1 class="text-6xl md:text-[7.5rem] font-bold text-white leading-[0.8] tracking-tighter mb-10">
-        {t('hero.title1')}<br>
-        <span class="text-qcRed">{t('hero.title2')}</span>
+      <h1
+        class="text-6xl md:text-[7.5rem] font-bold text-white leading-[0.8] tracking-tighter mb-10"
+      >
+        {t("hero.title1")}<br />
+        <span class="text-qcRed">{t("hero.title2")}</span>
       </h1>
-      <p class="text-white/70 text-lg md:text-xl max-w-lg mb-12 font-light leading-relaxed">
-        {t('hero.subtitle')}
+      <p
+        class="text-white/70 text-lg md:text-xl max-w-lg mb-12 font-light leading-relaxed"
+      >
+        {t("hero.subtitle")}
       </p>
 
       <div class="flex flex-wrap gap-6 items-center">
-        <button class="bg-qcRed rounded-md text-white px-12 py-5 font-bold text-[11px] uppercase tracking-[0.25em] hover:bg-white hover:text-qcBlack transition-all duration-500">
-          {t('hero.cta1')}
+        <button
+          class="bg-qcRed rounded-md text-white px-12 py-5 font-bold text-[11px] uppercase tracking-[0.25em] hover:bg-white hover:text-qcBlack transition-all duration-500"
+        >
+          {t("hero.cta1")}
         </button>
-        <button class="group flex items-center text-white text-[11px] font-bold uppercase tracking-[0.25em] hover:text-qcRed transition-colors">
-          <span class="w-12 h-12 rounded-full flex items-center justify-center group-hover:border-qcRed transition-colors">
+        <button
+          class="group flex items-center text-white text-[11px] font-bold uppercase tracking-[0.25em] hover:text-qcRed transition-colors"
+        >
+          <span
+            class="w-12 h-12 rounded-full flex items-center justify-center group-hover:border-qcRed transition-colors"
+          >
             <i class="fa-solid fa-heart text"></i>
           </span>
-          {t('hero.cta2')}
+          {t("hero.cta2")}
         </button>
       </div>
     </div>
