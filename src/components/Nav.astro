@@ -67,7 +67,7 @@ const searchPath = getLocalizedPath("/search", lang);
           item.submenu ? (
             <div class="group relative">
               <button
-                class="flex items-center gap-1.5 hover:text-qcRed transition cursor-pointer"
+                class="flex items-center gap-1.5 uppercase hover:text-qcRed transition cursor-pointer"
                 aria-expanded="false"
                 aria-haspopup="true"
               >
@@ -157,12 +157,12 @@ const searchPath = getLocalizedPath("/search", lang);
           ) : item.path ? (
             <a
               href={getLocalizedPath(item.path, lang)}
-              class="hover:text-qcRed transition"
+              class="uppercase hover:text-qcRed transition"
             >
               {tk(item.labelKey)}
             </a>
           ) : (
-            <a href="#" class="hover:text-qcRed transition">
+            <a href="#" class="uppercase hover:text-qcRed transition">
               {tk(item.labelKey)}
             </a>
           ),
