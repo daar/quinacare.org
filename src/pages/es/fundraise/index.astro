@@ -1,0 +1,322 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../../layouts/Layout.astro";
+import Nav from "../../../components/Nav.astro";
+import Footer from "../../../components/Footer.astro";
+import { useTranslations, getLocalizedPath, type Lang } from "../../../i18n";
+
+const lang: Lang = "es";
+const t = useTranslations(lang);
+
+const fundraisers = await getCollection("fundraisers-es");
+const sorted = fundraisers.sort((a, b) => {
+  const order = { active: 0, upcoming: 1, completed: 2 };
+  return (order[a.data.status] ?? 3) - (order[b.data.status] ?? 3);
+});
+
+function getPercentage(raised: number, goal: number): number {
+  return Math.min(100, Math.round((raised / goal) * 100));
+}
+
+function getDaysToGo(endDate: Date): number {
+  const now = new Date();
+  const diff = endDate.getTime() - now.getTime();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function getStatusColor(status: string): string {
+  switch (status) {
+    case "active":
+      return "bg-emerald-500";
+    case "completed":
+      return "bg-qcRed";
+    case "upcoming":
+      return "bg-amber-500";
+    default:
+      return "bg-gray-500";
+  }
+}
+
+function getStatusLabel(status: string): string {
+  switch (status) {
+    case "active":
+      return t("fundraise.active");
+    case "completed":
+      return t("fundraise.completed");
+    case "upcoming":
+      return t("fundraise.upcoming");
+    default:
+      return status;
+  }
+}
+---
+
+<Layout title={`${t("fundraise.title")} | Quina Care`} lang={lang}>
+  <Nav />
+
+  <header class="pt-40 pb-16 border-b border-gray-100">
+    <div class="max-w-[1600px] mx-auto px-6">
+      <span
+        class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4"
+      >
+        {t("fundraise.subtitle")}
+      </span>
+      <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-none">
+        {t("fundraise.title")}<span class="italic font-light text-gray-300"
+          >.</span
+        >
+      </h1>
+    </div>
+  </header>
+
+  <main class="py-20 max-w-[1600px] mx-auto px-6">
+    {
+      sorted.length === 0 ? (
+        <p class="text-gray-500 text-center text-lg">
+          {t("fundraise.noFundraisers")}
+        </p>
+      ) : (
+        <>
+          <div
+            id="fundraise-grid"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
+          >
+            {sorted.map((fundraiser, idx) => {
+              const pct = getPercentage(
+                fundraiser.data.raised_amount,
+                fundraiser.data.goal_amount,
+              );
+              const days = getDaysToGo(fundraiser.data.end_date);
+              return (
+                <a
+                  href={getLocalizedPath(
+                    `/fundraise/${fundraiser.data.slug}`,
+                    lang,
+                  )}
+                  class="group cursor-pointer block fundraise-card"
+                  data-card-index={idx}
+                >
+                  <article class="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+                      {fundraiser.data.featured_image ? (
+                        <Image
+                          src={fundraiser.data.featured_image}
+                          alt={
+                            fundraiser.data.featured_image_alt ||
+                            fundraiser.data.title
+                          }
+                          class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                          widths={[300, 600]}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
+                      )}
+                      <div class="absolute top-4 left-4">
+                        <span
+                          class={`${getStatusColor(fundraiser.data.status)} text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm`}
+                        >
+                          {getStatusLabel(fundraiser.data.status)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="p-5 md:p-6">
+                      <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+                        <div
+                          class="bg-qcRed h-1.5 rounded-full transition-all duration-500"
+                          style={`width: ${pct}%`}
+                        />
+                      </div>
+
+                      <div class="flex items-baseline justify-between mb-1">
+                        <span class="text-xl md:text-2xl font-bold tracking-tight">
+                          {formatCurrency(fundraiser.data.raised_amount)}
+                        </span>
+                        <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
+                          {pct}% {t("fundraise.funded")}
+                        </span>
+                      </div>
+
+                      <p class="text-sm text-gray-400 mb-4">
+                        {t("fundraise.of")}{" "}
+                        {formatCurrency(fundraiser.data.goal_amount)}{" "}
+                        {t("fundraise.goal")}
+                      </p>
+
+                      <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
+                        <span>
+                          {fundraiser.data.backers} {t("fundraise.backers")}
+                        </span>
+                        <span class="w-1 h-1 rounded-full bg-gray-200" />
+                        <span>
+                          {days} {t("fundraise.daysToGo")}
+                        </span>
+                      </div>
+
+                      <h3 class="text-base md:text-lg font-bold uppercase tracking-tight leading-tight group-hover:text-qcRed transition">
+                        {fundraiser.data.title}
+                      </h3>
+                      <p class="text-[11px] text-gray-400 mt-1">
+                        {t("fundraise.by")} {fundraiser.data.organizer}
+                      </p>
+                    </div>
+                  </article>
+                </a>
+              );
+            })}
+          </div>
+
+          <nav
+            id="fundraise-pagination"
+            class="hidden mt-12 flex items-center justify-center gap-2"
+            aria-label="Pagination"
+          >
+            <button
+              id="pagination-prev"
+              class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-400"
+              aria-label="Previous page"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <div id="pagination-pages" class="flex items-center gap-1" />
+            <button
+              id="pagination-next"
+              class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-400"
+              aria-label="Next page"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </nav>
+        </>
+      )
+    }
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll<HTMLElement>(".fundraise-card");
+    const paginationNav = document.getElementById("fundraise-pagination");
+    const pagesContainer = document.getElementById("pagination-pages");
+    const prevBtn = document.getElementById(
+      "pagination-prev",
+    ) as HTMLButtonElement;
+    const nextBtn = document.getElementById(
+      "pagination-next",
+    ) as HTMLButtonElement;
+
+    if (!cards.length || !paginationNav || !pagesContainer) return;
+
+    let currentPage = 1;
+
+    function getPageSize(): number {
+      return window.innerWidth >= 768 ? 9 : 5;
+    }
+
+    function getTotalPages(): number {
+      return Math.ceil(cards.length / getPageSize());
+    }
+
+    function render() {
+      const pageSize = getPageSize();
+      const totalPages = getTotalPages();
+
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      if (totalPages <= 1) {
+        paginationNav!.classList.add("hidden");
+        cards.forEach((c) => (c.style.display = ""));
+        return;
+      }
+
+      paginationNav!.classList.remove("hidden");
+
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+
+      cards.forEach((card, i) => {
+        card.style.display = i >= start && i < end ? "" : "none";
+      });
+
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+
+      pagesContainer!.innerHTML = "";
+      for (let p = 1; p <= totalPages; p++) {
+        const btn = document.createElement("button");
+        btn.textContent = String(p);
+        btn.className =
+          p === currentPage
+            ? "w-10 h-10 rounded-lg bg-qcRed text-white text-sm font-bold"
+            : "w-10 h-10 rounded-lg border border-gray-200 text-gray-500 text-sm font-bold hover:border-qcRed hover:text-qcRed transition-colors";
+        btn.addEventListener("click", () => {
+          currentPage = p;
+          render();
+          window.scrollTo({
+            top: document.getElementById("fundraise-grid")!.offsetTop - 100,
+            behavior: "smooth",
+          });
+        });
+        pagesContainer!.appendChild(btn);
+      }
+    }
+
+    prevBtn?.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        render();
+        window.scrollTo({
+          top: document.getElementById("fundraise-grid")!.offsetTop - 100,
+          behavior: "smooth",
+        });
+      }
+    });
+
+    nextBtn?.addEventListener("click", () => {
+      if (currentPage < getTotalPages()) {
+        currentPage++;
+        render();
+        window.scrollTo({
+          top: document.getElementById("fundraise-grid")!.offsetTop - 100,
+          behavior: "smooth",
+        });
+      }
+    });
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(render, 150);
+    });
+
+    render();
+  });
+</script>
