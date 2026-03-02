@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+
 interface Props {
   src: string;
   alt?: string;
@@ -23,17 +25,39 @@ const floatClass =
     right: "float-right ml-4 mb-2",
     center: "",
   }[align] || "";
+
+// Resolve images from src/assets/ using import.meta.glob
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/raw/**/*",
+);
+
+// Body image paths are /images/raw/... → asset key is /src/assets/images/raw/...
+const assetPath = `/src/assets${src}`;
+const resolvedImage = images[assetPath];
 ---
 
 <figure class={`${align === "center" ? "text-center my-4" : floatClass}`}>
-  <img
-    src={src}
-    alt={alt || caption || ""}
-    width={width}
-    height={height}
-    class={`${align === "center" ? alignClass : ""} max-w-full h-auto`}
-    loading="lazy"
-  />
+  {
+    resolvedImage ? (
+      <Image
+        src={resolvedImage()}
+        alt={alt || caption || ""}
+        width={width}
+        height={height}
+        class={`${align === "center" ? alignClass : ""} max-w-full h-auto`}
+        loading="lazy"
+      />
+    ) : (
+      <img
+        src={src}
+        alt={alt || caption || ""}
+        width={width}
+        height={height}
+        class={`${align === "center" ? alignClass : ""} max-w-full h-auto`}
+        loading="lazy"
+      />
+    )
+  }
   {
     caption && (
       <figcaption class="text-sm text-gray-500 mt-2 italic">
