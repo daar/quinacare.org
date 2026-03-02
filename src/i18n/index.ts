@@ -202,6 +202,11 @@ export const ui = {
     "fundraise.campaignBy": "Een actie van",
     "fundraise.endDate": "Einddatum",
     "fundraise.noFundraisers": "Er zijn momenteel geen fondsenwerving acties.",
+    // 404
+    "404.title": "Pagina niet gevonden",
+    "404.subtitle": "404",
+    "404.description": "Je bent verdwaald... maar wij laten niemand achter.",
+    "404.backHome": "Terug naar home",
     // Submenu - Wat kun jij doen?
     "submenu.fundraise": "Fondsenwerving acties",
     "submenu.joinTeam": "Word vrijwilliger",
@@ -425,6 +430,12 @@ export const ui = {
     "fundraise.campaignBy": "A campaign by",
     "fundraise.endDate": "End date",
     "fundraise.noFundraisers": "There are currently no fundraising campaigns.",
+    // 404
+    "404.title": "Page not found",
+    "404.subtitle": "404",
+    "404.description":
+      "You've wandered off the path... but we never leave anyone behind.",
+    "404.backHome": "Back to home",
     // Submenu - What can you do?
     "submenu.fundraise": "Fundraising campaigns",
     "submenu.joinTeam": "Join Our Team",
@@ -648,6 +659,11 @@ export const ui = {
     "fundraise.campaignBy": "Una campaña de",
     "fundraise.endDate": "Fecha de cierre",
     "fundraise.noFundraisers": "Actualmente no hay campañas de recaudación.",
+    // 404
+    "404.title": "Página no encontrada",
+    "404.subtitle": "404",
+    "404.description": "Te has perdido... pero nunca dejamos a nadie atrás.",
+    "404.backHome": "Volver al inicio",
     // Submenu - ¿Qué puedes hacer?
     "submenu.fundraise": "Campañas de recaudación",
     "submenu.joinTeam": "Únete al equipo",
