@@ -320,55 +320,41 @@ def get_attachment_meta(attachment_id: str) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 # 5. Featured image resolution
 # ---------------------------------------------------------------------------
-def resolve_featured_image(post: dict, content: str) -> tuple[Optional[str], dict[str, str], str]:
-    """Resolve featured image.
+def extract_featured_from_markdown(
+    markdown: str, post: dict,
+) -> tuple[Optional[str], dict[str, str], str]:
+    """Extract the first {% image %} tag from converted markdown as featured image.
 
-    Returns (frontmatter_path, attachment_meta_dict, possibly_modified_content).
-    attachment_meta_dict may contain 'caption' and/or 'copyright' keys.
-
-    Priority:
-    1. _thumbnail_id from postmeta → attachment map → download
-    2. First <img> in content → download → remove from content
+    Returns (frontmatter_path, meta_dict, markdown_with_first_image_removed).
+    Also looks up _thumbnail_id metadata for caption/copyright.
     """
-    post_id = str(post.get("post_id", ""))
+    # Find the first {% image src="..." ... %} tag
+    img_match = re.search(r"\{%\s*image\s[^%]+%\}", markdown)
+    if not img_match:
+        return None, {}, markdown
 
-    # Priority 1: _thumbnail_id
+    tag = img_match.group(0)
+    src_match = re.search(r'src="([^"]+)"', tag)
+    if not src_match:
+        return None, {}, markdown
+
+    body_path = src_match.group(1)
+    fm_path = body_path_to_frontmatter_path(body_path)
+
+    # Remove the first image tag from markdown
+    markdown = markdown[: img_match.start()] + markdown[img_match.end() :]
+    # Clean up any resulting double blank lines
+    markdown = re.sub(r"\n{3,}", "\n\n", markdown).strip()
+
+    # Look up caption/copyright from _thumbnail_id if available
+    post_id = str(post.get("post_id", ""))
     meta = postmeta_map.get(post_id, {})
     thumbnail_id = meta.get("_thumbnail_id", "")
-    if thumbnail_id and thumbnail_id in attachment_map:
-        url = attachment_map[thumbnail_id]
-        body_path = download_image(url)
-        if body_path:
-            att_meta = get_attachment_meta(thumbnail_id)
-            return body_path_to_frontmatter_path(body_path), att_meta, content
+    att_meta: dict[str, str] = {}
+    if thumbnail_id:
+        att_meta = get_attachment_meta(thumbnail_id)
 
-    # Priority 2: First <img> in content
-    img_match = re.search(r"<img[^>]+src=[\"']([^\"']+)[\"'][^>]*>", content or "", re.IGNORECASE)
-    if img_match:
-        src = img_match.group(1)
-        body_path = download_image(src)
-        if body_path:
-            # Extract alt text from the img tag as a caption fallback
-            alt_match = re.search(r'alt=["\']([^"\']*)["\']', img_match.group(0), re.I)
-            alt_text = (alt_match.group(1) if alt_match else "").strip()
-            att_meta: dict[str, str] = {}
-            if alt_text and not re.match(r"^(SONY DSC|SAMSUNG CSC|DCIM\w*|Created with GIMP)$", alt_text, re.I):
-                att_meta["caption"] = alt_text
-
-            # Remove the first img (and its wrapping <a> if present) so it doesn't appear twice
-            full_match = img_match.group(0)
-            a_pattern = re.compile(
-                r"<a[^>]*>\s*" + re.escape(full_match) + r"\s*</a>",
-                re.IGNORECASE | re.DOTALL,
-            )
-            a_match = a_pattern.search(content)
-            if a_match:
-                content = content[: a_match.start()] + content[a_match.end() :]
-            else:
-                content = content.replace(full_match, "", 1)
-            return body_path_to_frontmatter_path(body_path), att_meta, content
-
-    return None, {}, content
+    return fm_path, att_meta, markdown
 
 
 # ---------------------------------------------------------------------------
@@ -791,11 +777,13 @@ def migrate_post(post: dict) -> Optional[Path]:
     print(f"\nProcessing: {title}")
     print(f"  Language: {language} | Status: {post.get('status', 'unknown')}")
 
-    # Resolve featured image (may modify content to remove first img)
-    featured_path, featured_meta, content = resolve_featured_image(post, content)
-
-    # Convert HTML content to markdown
+    # Convert HTML content to markdown (all images become {% image %} tags)
     markdown_content = html_to_markdown(content)
+
+    # Extract first image from converted markdown as featured image
+    featured_path, featured_meta, markdown_content = extract_featured_from_markdown(
+        markdown_content, post,
+    )
 
     # De-duplicate slug within language
     slug = get_unique_slug(raw_slug, language)
