@@ -61,14 +61,14 @@ const searchPath = getLocalizedPath("/search", lang);
 
     {/* Desktop navigation */}
     <div
-      class="hidden lg:flex gap-10 text-[11px] font-bold uppercase tracking-[0.15em]"
+      class="hidden lg:flex gap-10 text-[14px] font-bold uppercase tracking-[0.15em]"
     >
       {
         menuData.items.map((item) =>
           item.submenu ? (
             <div class="group relative">
               <button
-                class="flex items-center gap-1.5 hover:text-qcRed transition cursor-pointer"
+                class="flex items-center gap-1.5 uppercase hover:text-qcRed transition cursor-pointer"
                 aria-expanded="false"
                 aria-haspopup="true"
               >
