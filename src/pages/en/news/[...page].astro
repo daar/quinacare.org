@@ -138,33 +138,49 @@ function getNewsPath(slug: string): string {
 
       {
         isFirstPage && remainingPosts.length > 0 && remainingPosts[0] && (
-          <article class="bg-qcBlack p-8 flex flex-col justify-between group cursor-pointer hover:bg-qcRed transition-colors duration-500 rounded-xl">
+          <article class="group cursor-pointer relative rounded-xl overflow-hidden">
             <a
               href={getNewsPath(
                 remainingPosts[0].data.slug || remainingPosts[0].id,
               )}
               class="flex flex-col h-full"
             >
-              <div>
-                <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest block mb-12">
+              <div class="absolute inset-0">
+                {remainingPosts[0].data.featured_image ? (
+                  <Image
+                    src={remainingPosts[0].data.featured_image}
+                    alt={remainingPosts[0].data.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                    widths={[400, 600]}
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                ) : (
+                  <div class="w-full h-full bg-gradient-to-br from-qcBlack to-gray-800" />
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+              </div>
+              <div class="relative p-8 flex flex-col justify-between h-full min-h-[320px]">
+                <span class="text-white/60 text-[9px] font-bold uppercase tracking-widest block">
                   {getCategoryLabel(remainingPosts[0].data.categories)}
                 </span>
-                <h2 class="text-2xl font-bold tracking-tighter text-white leading-tight uppercase">
-                  {remainingPosts[0].data.title}
-                </h2>
-              </div>
-              <div class="mt-12 flex items-center justify-between text-white/60">
-                <span class="text-[10px] font-bold uppercase tracking-widest">
-                  {t("news.readPost")}
-                </span>
-                <svg
-                  class="w-5 h-5 group-hover:translate-x-2 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <div>
+                  <h2 class="text-2xl font-bold tracking-tighter text-white leading-tight uppercase">
+                    {remainingPosts[0].data.title}
+                  </h2>
+                  <div class="mt-6 flex items-center justify-between text-white/60">
+                    <span class="text-[10px] font-bold uppercase tracking-widest">
+                      {t("news.readPost")}
+                    </span>
+                    <svg
+                      class="w-5 h-5 group-hover:translate-x-2 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </a>
           </article>
@@ -204,7 +220,7 @@ function getNewsPath(slug: string): string {
                 {post.data.title}
               </h3>
               {post.data.excerpt && (
-                <p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">
+                <p class="text-gray-500 text-[18px] font-georgia mt-4 line-clamp-2 leading-relaxed">
                   {post.data.excerpt}
                 </p>
               )}
