@@ -1,0 +1,179 @@
+---
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../../layouts/Layout.astro";
+import Nav from "../../../components/Nav.astro";
+import Footer from "../../../components/Footer.astro";
+import {
+  useTranslations,
+  getDateLocale,
+  getLocalizedPath,
+  type Lang,
+} from "../../../i18n";
+
+const lang: Lang = "en";
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects-en");
+  return projects.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat(dateLocale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function getStatusColor(status: string): string {
+  switch (status) {
+    case "active":
+      return "bg-emerald-500";
+    case "completed":
+      return "bg-qcRed";
+    case "upcoming":
+      return "bg-amber-500";
+    default:
+      return "bg-gray-500";
+  }
+}
+
+function getStatusLabel(status: string): string {
+  switch (status) {
+    case "active":
+      return t("projects.active");
+    case "completed":
+      return t("projects.completed");
+    case "upcoming":
+      return t("projects.upcoming");
+    default:
+      return status;
+  }
+}
+
+const shareUrl = `https://quinacare.org${getLocalizedPath(`/projects/${entry.data.slug}`, lang)}`;
+const shareTitle = entry.data.title;
+---
+
+<Layout title={`${entry.data.title} | Quina Care`} lang={lang}>
+  <Nav />
+
+  <div class="max-w-[1600px] mx-auto px-6 pt-32 pb-6">
+    <a
+      href={getLocalizedPath("/projects", lang)}
+      class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcRed transition-colors group"
+    >
+      <svg
+        class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      {t("projects.backToList")}
+    </a>
+
+    <div class="mt-6 mb-8">
+      <div class="flex items-center gap-3 mb-4">
+        <span
+          class={`${getStatusColor(entry.data.status)} text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full`}
+        >
+          {getStatusLabel(entry.data.status)}
+        </span>
+        <span
+          class="text-[10px] font-bold uppercase tracking-widest text-gray-400"
+        >
+          {formatDate(entry.data.date)}
+        </span>
+      </div>
+      <h1
+        class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter leading-[1.1] uppercase"
+      >
+        {entry.data.title}
+      </h1>
+    </div>
+  </div>
+
+  <div class="max-w-[1600px] mx-auto px-6 pb-12">
+    {
+      entry.data.featured_image && (
+        <div class="aspect-video rounded-xl overflow-hidden bg-gray-100 relative max-w-4xl">
+          <Image
+            src={entry.data.featured_image}
+            alt={entry.data.featured_image_alt || entry.data.title}
+            class="w-full h-full object-cover"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 1024px) 100vw, 60vw"
+          />
+        </div>
+      )
+    }
+  </div>
+
+  <div class="border-t border-gray-100"></div>
+  <main class="max-w-[1600px] mx-auto px-6 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+      <div class="lg:col-span-3">
+        <article class="prose prose-article max-w-none">
+          <Content />
+        </article>
+      </div>
+      <div class="lg:col-span-2">
+        <div class="sticky top-28 space-y-6">
+          <div
+            class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
+          >
+            <p class="text-[18px] font-georgia text-gray-500 leading-relaxed">
+              {entry.data.excerpt}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 pt-4">
+            <span
+              class="text-[9px] font-bold uppercase tracking-widest text-gray-300 mr-1"
+              >{t("post.shareStory")}</span
+            >
+            <a
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors"
+              ><i class="fa-brands fa-x-twitter text-xs"></i></a
+            >
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors"
+              ><i class="fa-brands fa-facebook-f text-xs"></i></a
+            >
+            <a
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareTitle)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors"
+              ><i class="fa-brands fa-linkedin-in text-xs"></i></a
+            >
+            <a
+              href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareUrl)}`}
+              class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors"
+              ><i class="fa-solid fa-envelope text-xs"></i></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

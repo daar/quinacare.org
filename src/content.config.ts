@@ -27,6 +27,17 @@ const pageSchema = ({ image }: SchemaContext) =>
     featured_image_alt: z.string().optional(),
   });
 
+const projectSchema = ({ image }: SchemaContext) =>
+  z.object({
+    title: z.string(),
+    slug: z.string(),
+    excerpt: z.string(),
+    featured_image: image().optional(),
+    featured_image_alt: z.string().optional(),
+    date: z.date(),
+    status: z.enum(["active", "completed", "upcoming"]).default("active"),
+  });
+
 const fundraiserSchema = ({ image }: SchemaContext) =>
   z.object({
     title: z.string(),
@@ -97,6 +108,21 @@ const fundraisers_es = defineCollection({
   schema: fundraiserSchema,
 });
 
+const projects_nl = defineCollection({
+  loader: glob({ pattern: "**/*.mdoc", base: "./src/content/projects/nl" }),
+  schema: projectSchema,
+});
+
+const projects_en = defineCollection({
+  loader: glob({ pattern: "**/*.mdoc", base: "./src/content/projects/en" }),
+  schema: projectSchema,
+});
+
+const projects_es = defineCollection({
+  loader: glob({ pattern: "**/*.mdoc", base: "./src/content/projects/es" }),
+  schema: projectSchema,
+});
+
 export const collections = {
   "news-nl": news_nl,
   "news-en": news_en,
@@ -104,6 +130,9 @@ export const collections = {
   "pages-nl": pages_nl,
   "pages-en": pages_en,
   "pages-es": pages_es,
+  "projects-nl": projects_nl,
+  "projects-en": projects_en,
+  "projects-es": projects_es,
   "fundraisers-nl": fundraisers_nl,
   "fundraisers-en": fundraisers_en,
   "fundraisers-es": fundraisers_es,

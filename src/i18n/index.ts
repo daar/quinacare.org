@@ -84,11 +84,11 @@ export const ui = {
     "donation.donate": "Doneer",
     "donation.chooseAmount": "Of kies zelf een bedrag",
     // Homepage - Focus Project
-    "focus.label": "Focus Project 2026",
-    "focus.title": "Nieuwe Kraamafdeling.",
+    "focus.label": "Focus Project",
+    "focus.title": "HPV Screening Putumayo.",
     "focus.description":
-      "Wij bouwen aan de toekomst. Help ons 500 extra veilige bevallingen per jaar te realiseren.",
-    "focus.cta": "Steun de bouw",
+      "Screen 1.000 inheemse vrouwen op baarmoederhalskanker. Met een eenvoudige zelftest maken we preventieve zorg toegankelijk in de Amazone.",
+    "focus.cta": "Bekijk dit project",
     // Homepage - Partners
     "partners.label": "Gezamenlijke Impact",
     "partners.title":
@@ -203,6 +203,15 @@ export const ui = {
     "fundraise.campaignBy": "Een actie van",
     "fundraise.endDate": "Einddatum",
     "fundraise.noFundraisers": "Er zijn momenteel geen fondsenwerving acties.",
+    // Projects section
+    "projects.title": "PROJECTEN",
+    "projects.subtitle": "Onze Projecten",
+    "projects.readMore": "Lees meer",
+    "projects.backToList": "Terug naar projecten",
+    "projects.active": "Actief",
+    "projects.completed": "Voltooid",
+    "projects.upcoming": "Binnenkort",
+    "projects.noProjects": "Er zijn momenteel geen projecten.",
     // 404
     "404.title": "Pagina niet gevonden",
     "404.subtitle": "404",
@@ -313,11 +322,11 @@ export const ui = {
     "donation.donate": "Donate",
     "donation.chooseAmount": "Or choose your own amount",
     // Homepage - Focus Project
-    "focus.label": "Focus Project 2026",
-    "focus.title": "New Maternity Ward.",
+    "focus.label": "Focus Project",
+    "focus.title": "HPV Screening Putumayo.",
     "focus.description":
-      "We are building for the future. Help us achieve 500 additional safe deliveries per year.",
-    "focus.cta": "Support the construction",
+      "Screen 1,000 indigenous women for cervical cancer. With a simple self-test, we make preventive care accessible in the Amazon.",
+    "focus.cta": "View this project",
     // Homepage - Partners
     "partners.label": "Joint Impact",
     "partners.title":
@@ -432,6 +441,15 @@ export const ui = {
     "fundraise.campaignBy": "A campaign by",
     "fundraise.endDate": "End date",
     "fundraise.noFundraisers": "There are currently no fundraising campaigns.",
+    // Projects section
+    "projects.title": "PROJECTS",
+    "projects.subtitle": "Our Projects",
+    "projects.readMore": "Read more",
+    "projects.backToList": "Back to projects",
+    "projects.active": "Active",
+    "projects.completed": "Completed",
+    "projects.upcoming": "Upcoming",
+    "projects.noProjects": "There are currently no projects.",
     // 404
     "404.title": "Page not found",
     "404.subtitle": "404",
@@ -543,11 +561,11 @@ export const ui = {
     "donation.donate": "Donar",
     "donation.chooseAmount": "O elige tu propia cantidad",
     // Homepage - Focus Project
-    "focus.label": "Proyecto Enfoque 2026",
-    "focus.title": "Nueva Sala de Maternidad.",
+    "focus.label": "Proyecto Enfoque",
+    "focus.title": "Detección VPH Putumayo.",
     "focus.description":
-      "Estamos construyendo para el futuro. Ayúdanos a lograr 500 partos seguros adicionales por año.",
-    "focus.cta": "Apoya la construcción",
+      "Tamizar a 1.000 mujeres indígenas para detectar cáncer de cuello uterino. Con una simple autoprueba, hacemos accesible la atención preventiva en la Amazonía.",
+    "focus.cta": "Ver este proyecto",
     // Homepage - Partners
     "partners.label": "Impacto Conjunto",
     "partners.title":
@@ -662,6 +680,15 @@ export const ui = {
     "fundraise.campaignBy": "Una campaña de",
     "fundraise.endDate": "Fecha de cierre",
     "fundraise.noFundraisers": "Actualmente no hay campañas de recaudación.",
+    // Projects section
+    "projects.title": "PROYECTOS",
+    "projects.subtitle": "Nuestros Proyectos",
+    "projects.readMore": "Leer más",
+    "projects.backToList": "Volver a proyectos",
+    "projects.active": "Activo",
+    "projects.completed": "Completado",
+    "projects.upcoming": "Próximamente",
+    "projects.noProjects": "Actualmente no hay proyectos.",
     // 404
     "404.title": "Página no encontrada",
     "404.subtitle": "404",
