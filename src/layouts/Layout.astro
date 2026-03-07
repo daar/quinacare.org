@@ -28,10 +28,6 @@ const alternateUrls = getAlternateUrls(Astro.url);
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
@@ -50,7 +46,7 @@ const alternateUrls = getAlternateUrls(Astro.url);
       href={alternateUrls.find((a) => a.lang === defaultLang)?.url}
     />
   </head>
-  <body class="bg-white text-qcBlack font-arimo">
+  <body class="bg-white text-qcBlack">
     <slot />
   </body>
 </html>

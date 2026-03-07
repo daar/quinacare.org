@@ -9,7 +9,7 @@ const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section class="py-24 border-t border-gray-100 font-arimo">
+<section class="py-24 border-t border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid lg:grid-cols-2 gap-16 items-center">
       <div>
@@ -25,7 +25,7 @@ const t = useTranslations(lang);
             >{t("newsletter.titleHighlight")}</span
           >
         </h2>
-        <p class="text-gray-500 text-sm leading-relaxed max-w-md">
+        <p class="text-gray-500 text-lg leading-relaxed max-w-md font-georgia">
           {t("newsletter.subtitle")}
         </p>
       </div>

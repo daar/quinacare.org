@@ -14,7 +14,7 @@ const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section class="py-24 bg-white font-arimo border-b border-gray-100">
+<section class="py-24 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
       <span
@@ -24,7 +24,9 @@ const t = useTranslations(lang);
       <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">
         {t("donation.title")}
       </h2>
-      <p class="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
+      <p
+        class="text-gray-500 max-w-xl mx-auto text-lg leading-relaxed font-georgia"
+      >
         {t("donation.subtitle")}
       </p>
     </div>
@@ -42,7 +44,7 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.medication")}
         </h4>
-        <p class="text-gray-500 text-sm leading-relaxed mb-8">
+        <p class="text-gray-500 text-lg leading-relaxed mb-8 font-georgia">
           {t("donation.medicationDesc")}
         </p>
         <a
@@ -65,7 +67,7 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.prenatal")}
         </h4>
-        <p class="text-gray-500 text-sm leading-relaxed mb-8">
+        <p class="text-gray-500 text-lg leading-relaxed mb-8 font-georgia">
           {t("donation.prenatalDesc")}
         </p>
         <a
@@ -88,7 +90,7 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.surgery")}
         </h4>
-        <p class="text-gray-500 text-sm leading-relaxed mb-8">
+        <p class="text-gray-500 text-lg leading-relaxed mb-8 font-georgia">
           {t("donation.surgeryDesc")}
         </p>
         <a

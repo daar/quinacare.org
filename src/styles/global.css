@@ -1,15 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap");
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Effra";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/Effra_Lt.ttf") format("truetype");
+}
+
 @theme {
-  --color-qcRed: #e11d48;
+  --color-qcRed: #ee172c;
   --color-qcBlack: #111111;
   --color-qcGray: #fcfcfc;
-  --font-arimo: "Arimo", sans-serif;
+  --font-effra: "Effra", sans-serif;
+  --font-georgia: Georgia, "Times New Roman", serif;
 }
 
 body {
-  font-family: "Arimo", sans-serif;
+  font-family: var(--font-effra);
   scroll-behavior: smooth;
 }
 
@@ -37,7 +44,7 @@ body {
 /* Search highlight */
 mark {
   background: transparent;
-  color: #e11d48;
+  color: var(--color-qcRed);
   font-weight: 700;
 }
 
@@ -134,51 +141,69 @@ mark {
   transform: translateX(0);
 }
 
-/* Prose article typography */
-.prose-article {
-  font-family: "Lora", serif;
-  font-size: 1.125rem;
+/* Body text: Georgia 18px for long-form content */
+.prose-article,
+.prose-landing > p {
+  font-family: var(--font-georgia);
+  font-size: 18px;
   line-height: 1.8;
   color: #374151;
+}
+
+/* Landing sections: center body text */
+.prose-landing > p {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5em;
 }
 
 .prose-article p {
   margin-bottom: 1.5em;
 }
 
-.prose-article h2 {
-  font-family: "Arimo", sans-serif;
-  font-size: 1.875rem;
+.prose-article > p:first-of-type::first-letter {
+  font-size: 4.5rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  color: var(--color-qcRed);
+  float: left;
+  margin-right: 0.75rem;
+  line-height: 1;
+  font-family: var(--font-effra);
+}
+
+.prose-article h2,
+.prose-article h3,
+.prose-article h4 {
+  font-family: var(--font-effra);
+  font-weight: 700;
   color: #1a1a1a;
+}
+
+.prose-article h2 {
+  font-size: 1.875rem;
+  letter-spacing: -0.025em;
   margin-top: 2.5em;
   margin-bottom: 1em;
   text-transform: uppercase;
 }
 
 .prose-article h3 {
-  font-family: "Arimo", sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
   letter-spacing: -0.025em;
-  color: #1a1a1a;
   margin-top: 2em;
   margin-bottom: 0.75em;
   text-transform: uppercase;
 }
 
 .prose-article h4 {
-  font-family: "Arimo", sans-serif;
   font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a1a1a;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
 
 .prose-article a {
-  color: #e11d48;
+  color: var(--color-qcRed);
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -188,7 +213,7 @@ mark {
 }
 
 .prose-article .not-prose a {
-  color: #e11d48;
+  color: var(--color-qcRed);
   text-decoration: none;
   transition:
     color 0.15s,
@@ -200,7 +225,7 @@ mark {
 }
 
 .prose-article blockquote {
-  border-left: 4px solid #e11d48;
+  border-left: 4px solid var(--color-qcRed);
   padding: 1rem 0 1rem 2rem;
   margin: 3rem 0;
   font-style: italic;
@@ -233,7 +258,7 @@ mark {
   font-size: 0.75rem;
   color: #9ca3af;
   margin-top: 0.75em;
-  font-family: "Arimo", sans-serif;
+  font-family: var(--font-effra);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }

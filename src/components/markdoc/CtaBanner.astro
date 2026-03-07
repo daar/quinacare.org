@@ -9,7 +9,7 @@ interface Props {
 const { title, subtitle, cta, href } = Astro.props;
 ---
 
-<section class="relative bg-qcRed py-24 overflow-hidden font-arimo">
+<section class="relative bg-qcRed py-24 overflow-hidden">
   <div class="absolute inset-0 opacity-10 pointer-events-none">
     <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
       <path d="M0 100 L100 0 L100 100 Z" fill="black"></path>
@@ -26,7 +26,9 @@ const { title, subtitle, cta, href } = Astro.props;
         </h2>
         {
           subtitle && (
-            <p class="text-red-100 text-lg max-w-md font-light">{subtitle}</p>
+            <p class="text-red-100 text-lg max-w-md font-light font-georgia">
+              {subtitle}
+            </p>
           )
         }
       </div>

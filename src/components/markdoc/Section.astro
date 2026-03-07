@@ -15,7 +15,7 @@ const bgClass = {
 }[background];
 ---
 
-<section class={`py-24 font-arimo border-b border-gray-100 ${bgClass}`}>
+<section class={`py-24 border-b border-gray-100 ${bgClass}`}>
   <div class="max-w-7xl mx-auto px-6">
     {
       (label || title) && (
@@ -42,6 +42,8 @@ const bgClass = {
         </div>
       )
     }
-    <slot />
+    <div class="prose-landing">
+      <slot />
+    </div>
   </div>
 </section>

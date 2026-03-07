@@ -14,7 +14,7 @@ const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section class="border-y border-gray-100 py-20 font-arimo">
+<section class="border-y border-gray-100 py-20">
   <div class="max-w-[1600px] mx-auto px-6">
     <div class="grid lg:grid-cols-12 gap-12 items-center">
       <div class="lg:col-span-5">
@@ -25,7 +25,9 @@ const t = useTranslations(lang);
         <h2 class="text-3xl font-bold text-qcBlack leading-tight mb-4">
           {t("partners.title")}
         </h2>
-        <p class="text-gray-500 text-sm leading-relaxed max-w-md italic">
+        <p
+          class="text-gray-500 text-lg leading-relaxed max-w-md italic font-georgia"
+        >
           {t("partners.subtitle")}
         </p>
       </div>

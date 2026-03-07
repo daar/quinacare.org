@@ -9,9 +9,7 @@ const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<header
-  class="relative h-[85vh] bg-qcBlack flex items-center overflow-hidden font-arimo"
->
+<header class="relative h-[85vh] bg-qcBlack flex items-center overflow-hidden">
   <div class="absolute inset-0 z-0">
     <video
       autoplay
@@ -42,7 +40,7 @@ const t = useTranslations(lang);
         <span class="text-qcRed">{t("hero.title2")}</span>
       </h1>
       <p
-        class="text-white/70 text-lg md:text-xl max-w-lg mb-12 font-light leading-relaxed"
+        class="text-white/70 text-lg md:text-xl max-w-lg mb-12 font-light leading-relaxed font-georgia"
       >
         {t("hero.subtitle")}
       </p>
