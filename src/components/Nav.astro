@@ -68,19 +68,12 @@ const searchPath = getLocalizedPath("/search", lang);
           item.submenu ? (
             <div class="group relative">
               <button
-                class="flex items-center gap-1.5 uppercase hover:text-qcRed transition cursor-pointer"
+                class="flex items-center gap-1.5 hover:text-qcRed transition cursor-pointer"
                 aria-expanded="false"
                 aria-haspopup="true"
               >
                 {tk(item.labelKey)}
-                <svg
-                  class="w-3 h-3 transition-transform duration-200 group-hover:rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                </svg>
+                <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180" />
               </button>
 
               <div class="submenu-dropdown absolute top-full left-1/2 -translate-x-1/2 pt-4 w-80">
@@ -296,14 +289,7 @@ const searchPath = getLocalizedPath("/search", lang);
                 data-submenu={item.id}
               >
                 {tk(item.labelKey)}
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-width="2.5" d="M9 5l7 7-7 7" />
-                </svg>
+                <i class="fa-solid fa-chevron-right text-[10px]" />
               </button>
             ) : item.path ? (
               <a
@@ -337,14 +323,7 @@ const searchPath = getLocalizedPath("/search", lang);
               data-submenu-panel={item.id}
             >
               <button class="mobile-back-btn flex items-center gap-2 py-3 text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-qcBlack transition">
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-width="2.5" d="M15 19l-7-7 7-7" />
-                </svg>
+                <i class="fa-solid fa-chevron-left text-[10px]" />
                 {tk(item.labelKey)}
               </button>
               <div class="space-y-1 mt-1">
