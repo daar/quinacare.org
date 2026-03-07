@@ -198,11 +198,11 @@ function getNewsPath(slug: string): string {
           >
           <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
           <a
-            href={`https://twitter.com/intent/tweet?url=${Astro.url}&text=${encodeURIComponent(post.data.title)}`}
+            href="https://www.instagram.com/quinacare/"
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-            ><i class="fa-brands fa-x-twitter"></i></a
+            ><i class="fa-brands fa-instagram"></i></a
           >
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`}
@@ -219,7 +219,7 @@ function getNewsPath(slug: string): string {
             ><i class="fa-brands fa-linkedin-in"></i></a
           >
           <a
-            href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${Astro.url}`}
+            href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${encodeURIComponent(post.data.title + "\n\n" + Astro.url + "\n\n— Quina Care")}`}
             class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
             ><i class="fa-solid fa-envelope"></i></a
           >

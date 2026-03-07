@@ -253,11 +253,11 @@ const shareTitle = entry.data.title;
                 >{t("post.shareStory")}</span
               >
               <a
-                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
+                href="https://www.instagram.com/quinacare/"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors"
-                ><i class="fa-brands fa-x-twitter text-xs"></i></a
+                ><i class="fa-brands fa-instagram text-xs"></i></a
               >
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
@@ -274,7 +274,7 @@ const shareTitle = entry.data.title;
                 ><i class="fa-brands fa-linkedin-in text-xs"></i></a
               >
               <a
-                href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareUrl)}`}
+                href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareTitle + "\n\n" + shareUrl + "\n\n— Quina Care")}`}
                 class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors"
                 ><i class="fa-solid fa-envelope text-xs"></i></a
               >
