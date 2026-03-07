@@ -1,8 +1,11 @@
 ---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import {
   getLangFromUrl,
   useTranslations,
   getLocalizedPath,
+  getDateLocale,
   type Lang,
 } from "../i18n";
 
@@ -12,6 +15,44 @@ interface Props {
 
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+const collectionName = `news-${lang}` as "news-nl" | "news-en" | "news-es";
+const allPosts = await getCollection(collectionName);
+const posts = allPosts
+  .filter((post) => post.data.status === "publish")
+  .sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  )
+  .slice(0, 3);
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat(dateLocale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
+function getCategoryLabel(categories: string[] | undefined): string {
+  if (!categories || categories.length === 0) return t("category.article");
+  const cat = categories[0].toLowerCase();
+  if (cat.includes("vlog") || cat.includes("video")) return t("category.vlog");
+  if (cat.includes("update") || cat.includes("nieuws") || cat.includes("news"))
+    return t("category.update");
+  return t("category.article");
+}
+
+function getTeaser(body: string, wordCount = 25): string {
+  const text = body
+    .replace(/---[\s\S]*?---/, "")
+    .replace(/\{%.*?%\}/gs, "")
+    .replace(/[*_#`>\[\]()!|]/g, "")
+    .replace(/\n+/g, " ")
+    .trim();
+  const words = text.split(/\s+/).slice(0, wordCount).join(" ");
+  return words + "…";
+}
 ---
 
 <section class="py-24 max-w-7xl mx-auto px-6">
@@ -30,160 +71,64 @@ const t = useTranslations(lang);
   </div>
 
   <div class="grid md:grid-cols-3 gap-12">
-    <article class="group cursor-pointer">
-      <div
-        class="aspect-video mb-6 overflow-hidden bg-gray-100 rounded-md relative"
-      >
-        <div class="absolute top-3 left-3 z-10">
-          <span
-            class="bg-white/90 backdrop-blur-sm text-qcBlack text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded shadow-sm border border-gray-100"
-          >
-            {t("homeNews.medical")}
-          </span>
-        </div>
-        <img
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600"
-          class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-        />
-      </div>
+    {
+      posts.map((post) => {
+        const postUrl = getLocalizedPath(
+          `/news/${post.data.slug || post.id}`,
+          lang,
+        );
+        const teaser = getTeaser(post.body || "");
+        return (
+          <article class="group flex flex-col">
+            <a href={postUrl} class="block">
+              <div class="aspect-video mb-6 overflow-hidden bg-gray-100 rounded-md relative">
+                <div class="absolute top-3 left-3 z-10">
+                  <span class="bg-white/90 backdrop-blur-sm text-qcBlack text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded shadow-sm border border-gray-100">
+                    {getCategoryLabel(post.data.categories)}
+                  </span>
+                </div>
+                {post.data.featured_image ? (
+                  <Image
+                    src={post.data.featured_image}
+                    alt={post.data.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    widths={[300, 600]}
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                ) : (
+                  <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
+                )}
+              </div>
 
-      <div
-        class="flex items-center gap-3 text-[10px] uppercase tracking-wider text-gray-400 mb-3"
-      >
-        <span class="font-bold text-qcBlack">Dr. Maria Silva</span>
-        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-        <span>24 Jan 2024</span>
-        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-        <div class="flex items-center gap-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>4 min</span>
-        </div>
-      </div>
+              <div class="flex items-center gap-3 text-[10px] uppercase tracking-wider text-gray-400 mb-3">
+                <span class="font-bold text-qcBlack">
+                  {post.data.author || "Team QC"}
+                </span>
+                <span class="w-1 h-1 rounded-full bg-gray-300" />
+                <span>{formatDate(post.data.date)}</span>
+              </div>
 
-      <h3
-        class="text-xl font-bold group-hover:text-qcRed transition leading-tight"
-      >
-        Nieuwe echo-apparatuur
-      </h3>
-      <p class="text-gray-500 text-lg mt-4 line-clamp-2 font-georgia">
-        Mijlpaal: Verbeterde zorg voor aanstaande moeders in afgelegen dorpen...
-      </p>
-    </article>
+              <h3 class="text-xl font-bold group-hover:text-qcRed transition leading-tight">
+                {post.data.title}
+              </h3>
+            </a>
 
-    <article class="group cursor-pointer">
-      <div
-        class="aspect-video mb-6 overflow-hidden bg-gray-100 rounded-md relative"
-      >
-        <div class="absolute top-3 left-3 z-10">
-          <span
-            class="bg-white/90 backdrop-blur-sm text-qcBlack text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded shadow-sm border border-gray-100"
-          >
-            {t("homeNews.impact")}
-          </span>
-        </div>
-        <img
-          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=600"
-          class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-        />
-      </div>
+            {teaser && (
+              <p class="text-gray-500 text-lg mt-4 line-clamp-3 font-georgia leading-relaxed">
+                {teaser}
+              </p>
+            )}
 
-      <div
-        class="flex items-center gap-3 text-[10px] uppercase tracking-wider text-gray-400 mb-3"
-      >
-        <span class="font-bold text-qcBlack">Bestuur QC</span>
-        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-        <span>18 Jan 2024</span>
-        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-        <div class="flex items-center gap-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>6 min</span>
-        </div>
-      </div>
-
-      <h3
-        class="text-xl font-bold group-hover:text-qcRed transition leading-tight"
-      >
-        Jaarverslag 2025
-      </h3>
-      <p class="text-gray-500 text-lg mt-4 line-clamp-2 font-georgia">
-        100% transparantie: Hoe uw bijdrage direct levens heeft gered...
-      </p>
-    </article>
-
-    <article class="group cursor-pointer">
-      <div
-        class="aspect-video mb-6 overflow-hidden bg-gray-100 rounded-md relative"
-      >
-        <div class="absolute top-3 left-3 z-10">
-          <span
-            class="bg-qcRed text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded shadow-sm"
-          >
-            {t("homeNews.vacancy")}
-          </span>
-        </div>
-        <img
-          src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600"
-          class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-        />
-      </div>
-
-      <div
-        class="flex items-center gap-3 text-[10px] uppercase tracking-wider text-gray-400 mb-3"
-      >
-        <span class="font-bold text-qcBlack">HR Team</span>
-        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-        <span>12 Jan 2024</span>
-        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-        <div class="flex items-center gap-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>3 min</span>
-        </div>
-      </div>
-
-      <h3
-        class="text-xl font-bold group-hover:text-qcRed transition leading-tight"
-      >
-        Vacature: Medisch Coordinator
-      </h3>
-      <p class="text-gray-500 text-lg mt-4 line-clamp-2 font-georgia">
-        Wil jij het verschil maken op de grond in Ecuador? Wij zoeken jou...
-      </p>
-    </article>
+            <a
+              href={postUrl}
+              class="mt-auto pt-4 text-[10px] font-bold uppercase tracking-widest leading-none text-qcRed hover:text-qcBlack transition self-start"
+            >
+              {t("homeNews.readMore")}{" "}
+              <i class="fa-solid fa-arrow-right ml-1" />
+            </a>
+          </article>
+        );
+      })
+    }
   </div>
 </section>

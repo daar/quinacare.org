@@ -66,6 +66,7 @@ export const ui = {
     "homeNews.medical": "Medisch",
     "homeNews.impact": "Impact",
     "homeNews.vacancy": "Vacature",
+    "homeNews.readMore": "Lees verder",
     // Homepage - Donation Cards
     "donation.directImpact": "Directe Impact",
     "donation.title": "Wat jouw steun betekent",
@@ -294,6 +295,7 @@ export const ui = {
     "homeNews.medical": "Medical",
     "homeNews.impact": "Impact",
     "homeNews.vacancy": "Vacancy",
+    "homeNews.readMore": "Read more",
     // Homepage - Donation Cards
     "donation.directImpact": "Direct Impact",
     "donation.title": "What your support means",
@@ -523,6 +525,7 @@ export const ui = {
     "homeNews.medical": "Médico",
     "homeNews.impact": "Impacto",
     "homeNews.vacancy": "Vacante",
+    "homeNews.readMore": "Leer más",
     // Homepage - Donation Cards
     "donation.directImpact": "Impacto Directo",
     "donation.title": "Lo que significa tu apoyo",
