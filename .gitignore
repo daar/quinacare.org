@@ -25,3 +25,9 @@ pnpm-debug.log*
 
 temp/oc
 temp/qc
+
+# migration state
+.env
+.last_migration
+__pycache__
+*.pyc

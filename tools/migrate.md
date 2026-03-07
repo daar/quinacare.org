@@ -10,7 +10,7 @@ Requirements Summary
 1. All post statuses (draft, publish, private, etc.)
 2. Pages + Posts → Posts (unified as blog posts)
 3. Custom Image component with caption, width, height, alignment
-4. Download images to src/assets/images/raw/
+4. Download images to src/assets/media/
 5. Strip shortcodes and clean HTML
 
 ---
@@ -55,7 +55,7 @@ Migration Script Modules
 
 - Parse <img> tags and [gallery] shortcodes for image URLs
 - Download images from quinacare.org/wp-content/uploads/...
-- Save to src/assets/images/raw/ preserving directory structure
+- Save to src/assets/media/ preserving directory structure
 - Extract: src, width, height, alt (for caption), alignment (from CSS classes)
 - Generate Markdoc image tag: {% image src="..." width=X height=Y caption="..."
   align="left|right|center" %}
@@ -72,7 +72,7 @@ title: "Post Title"
  excerpt: "Post excerpt..."  
  categories: ["Category1", "Category2"]  
  language: "en"|"nl"|"es"  
- featured_image: "/images/raw/2024/01/image.jpg"
+ featured_image: "/media/2024/01/image.jpg"
 
 ---
 
@@ -124,7 +124,7 @@ Shortcodes to Strip/Convert
 WpImage.astro Component (for reference)
 
 The Python script will output tags like:  
- {% image src="/images/raw/2024/01/photo.jpg" width=800 height=600 caption="A beautiful
+ {% image src="/media/2024/01/photo.jpg" width=800 height=600 caption="A beautiful
   scene" align="center" %}
 
 The Astro component will:

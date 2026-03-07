@@ -1,208 +1,288 @@
 #!/usr/bin/env python3
 """
-WordPress to Astro Markdoc Migration Script
+WordPress REST API Migration Script for quinacare.org
 
-Comprehensive single-script migration that:
-- Parses WP XML with wpparser + custom postmeta extraction (fixes _thumbnail_id bug)
-- Detects language via Polylang tags, slug prefix, or word frequency
-- Downloads images preserving wp-content/uploads path structure
-- Strips size suffixes to get original images
-- Resolves featured images from _thumbnail_id or first <img> in content
-- Converts shortcodes + HTML to Markdoc
-- Outputs to src/content/news/{nl,en,es}/
+Fetches posts, pages, and media from the live WordPress site via its
+REST API + Polylang language endpoints, downloads media preserving the
+wp-content/uploads/ directory structure, and outputs Markdoc files into
+src/content/news/{nl,en,es}/.
+
+Incremental by default: stores last run timestamp in .last_migration and
+only fetches items modified after that date. Existing local files are
+never overwritten.
+
+Usage:
+    uv run migrate.py                       # Incremental sync
+    uv run migrate.py --full                # Full migration, ignore last-run timestamp
+    uv run migrate.py --force               # Force overwrite existing posts/pages
+    uv run migrate.py --skip-media          # Skip all media downloads
+    uv run migrate.py --force --skip-media  # Re-import all content, no media downloads
+    uv run migrate.py --clear               # Wipe local news + media, then migrate
+    uv run migrate.py --dry-run             # Preview without writing
+    uv run migrate.py --help                # Show all flags
 """
 
+import argparse
 import os
 import re
+import shutil
 import sys
-import hashlib
-import requests
-import xml.etree.ElementTree as ET
-from pathlib import Path
-from datetime import datetime
-from urllib.parse import urlparse, unquote
+import time
+from datetime import datetime, timezone
 from html import unescape
+from pathlib import Path
 from typing import Optional
+from urllib.parse import unquote, urlparse
 
-try:
-    import wpparser
-except ImportError:
-    print("Error: wpparser not installed. Run: pip install wpparser")
-    sys.exit(1)
+import requests
+from dotenv import load_dotenv
 
 try:
     from markdownify import MarkdownConverter
 except ImportError:
-    print("Error: markdownify not installed. Run: pip install markdownify")
+    print("Error: markdownify not installed. Run: uv add markdownify")
     sys.exit(1)
-
-try:
-    import phpserialize
-except ImportError:
-    phpserialize = None
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-XML_FILE = SCRIPT_DIR / "quinacare.WordPress.2024-04-14.xml"
 OUTPUT_BASE = PROJECT_ROOT / "src" / "content" / "news"
-IMAGES_DIR = PROJECT_ROOT / "src" / "assets" / "images" / "raw"
-WP_BASE_URL = "https://www.quinacare.org"
+MEDIA_DIR = PROJECT_ROOT / "src" / "assets" / "media"
+
+WP_BASE = "https://www.quinacare.org"
+API_BASE = f"{WP_BASE}/wp-json/wp/v2"
+PLL_API = f"{WP_BASE}/wp-json/pll/v1"
+LANGUAGES = ("nl", "en", "es")
 DEFAULT_LANGUAGE = "nl"
 
-# Runtime state
-downloaded_images: dict[str, str] = {}
-attachment_map: dict[str, str] = {}           # {attachment_id: url}
-attachment_posts: dict[str, dict] = {}        # {attachment_id: wpparser post dict}
-postmeta_map: dict[str, dict[str, str]] = {}
+# Relative prefix from src/content/news/{lang}/ to src/assets/media/
+FRONTMATTER_IMAGE_PREFIX = "../../../assets/media/"
+BODY_IMAGE_PREFIX = "/media/"
 
-# Relative prefix from any language dir to src/assets/images/raw/
-# e.g. src/content/news/nl/ -> ../../../assets/images/raw/
-FRONTMATTER_IMAGE_PREFIX = "../../../assets/images/raw/"
-BODY_IMAGE_PREFIX = "/images/raw/"
+# Rate limiting
+REQUEST_DELAY = 0.15  # seconds between API requests
+PER_PAGE = 50  # max items per API page (WP max is 100)
 
-# Stop-word lists for language detection fallback
-DUTCH_WORDS = [
-    "de", "het", "een", "en", "van", "voor", "met", "zijn", "worden", "naar",
-    "ook", "niet", "maar", "bij", "onze", "ons", "wij", "zij", "deze", "dit",
-    "dat", "hier", "daar", "heeft", "werd", "meer", "nog", "over", "uit",
-]
-ENGLISH_WORDS = [
-    "the", "is", "are", "was", "were", "have", "has", "for", "with", "this",
-    "that", "which", "from", "they", "their", "our", "your", "been", "will",
-    "would", "could", "should", "about", "into",
-]
-SPANISH_WORDS = [
-    "el", "la", "los", "las", "un", "una", "para", "con", "por", "está",
-    "están", "que", "como", "más", "pero", "también", "del", "este", "esta",
-    "son", "fue", "muy", "todo", "tiene",
-]
+# Incremental sync state file
+LAST_RUN_FILE = SCRIPT_DIR / ".last_migration"
 
-# Size suffix pattern: image-300x200.jpg → image.jpg
+# Size suffix pattern: image-300x200.jpg -> image.jpg
 SIZE_SUFFIX_RE = re.compile(r"-\d+x\d+(\.\w+)$")
 
+# Runtime state — load .env and configure auth
+load_dotenv(Path(__file__).parent / ".env")
+session = requests.Session()
+session.headers.update({"User-Agent": "QuinaCare-Migration/1.0"})
 
-# ---------------------------------------------------------------------------
-# 1. Custom postmeta extraction (fixes wpparser _thumbnail_id bug)
-# ---------------------------------------------------------------------------
-def extract_postmeta_from_xml(xml_path: str) -> dict[str, dict[str, str]]:
-    """Parse XML directly to extract all wp:postmeta per post_id.
+_wp_user = os.environ.get("WP_USERNAME", "")
+_wp_pass = os.environ.get("WP_PASSWORD", "")
+_authenticated = False
+downloaded_images: dict[str, str] = {}
 
-    wpparser silently drops _thumbnail_id and other postmeta.
-    We build {post_id: {meta_key: meta_value}} by walking the XML tree.
+
+def wp_login():
+    """Authenticate via wp-login.php cookie auth + nonce."""
+    global _authenticated
+    if not _wp_user or not _wp_pass:
+        return
+
+    print(f"Logging in as {_wp_user}...")
+    resp = session.post(
+        f"{WP_BASE}/wp-login.php",
+        data={
+            "log": _wp_user,
+            "pwd": _wp_pass,
+            "wp-submit": "Log In",
+            "redirect_to": f"{WP_BASE}/wp-admin/",
+            "testcookie": "1",
+        },
+        allow_redirects=True,
+        timeout=30,
+    )
+
+    # Check if login succeeded (cookies should contain wordpress_logged_in_*)
+    logged_in = any("wordpress_logged_in" in name for name in session.cookies.keys())
+    if not logged_in:
+        print("  Login FAILED — falling back to public content only")
+        return
+
+    # Fetch the REST API nonce from wp-admin
+    nonce_resp = session.get(f"{WP_BASE}/wp-admin/admin-ajax.php?action=rest-nonce", timeout=30)
+    if nonce_resp.status_code == 200 and len(nonce_resp.text) < 50:
+        session.headers.update({"X-WP-Nonce": nonce_resp.text.strip()})
+        _authenticated = True
+        print("  Login OK (cookie + nonce)")
+    else:
+        _authenticated = True
+        print("  Login OK (cookie only)")
+author_map: dict[int, str] = {}
+category_map: dict[int, str] = {}
+tag_map: dict[int, str] = {}
+media_map: dict[int, dict] = {}  # {media_id: media API object}
+used_slugs: dict[str, set[str]] = {lang: set() for lang in LANGUAGES}
+last_run_iso: Optional[str] = None  # set from LAST_RUN_FILE or --full
+skip_media: bool = False  # set from --skip-media
+force_overwrite: bool = False  # set from --full or --skip-media
+
+
+def load_last_run() -> Optional[str]:
+    """Load the last successful run timestamp as an ISO 8601 string.
+
+    Returns None if no previous run or file is missing.
     """
-    ns = {
-        "wp": "http://wordpress.org/export/1.2/",
-        "content": "http://purl.org/rss/1.0/modules/content/",
-        "excerpt": "http://wordpress.org/export/1.2/excerpt/",
-    }
-    result: dict[str, dict[str, str]] = {}
+    if not LAST_RUN_FILE.exists():
+        return None
+    text = LAST_RUN_FILE.read_text().strip()
+    if not text:
+        return None
+    return text
 
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
 
-    for item in root.iter("item"):
-        post_id_el = item.find("wp:post_id", ns)
-        if post_id_el is None or not post_id_el.text:
-            continue
-        post_id = post_id_el.text.strip()
-        meta: dict[str, str] = {}
-        for pm in item.findall("wp:postmeta", ns):
-            key_el = pm.find("wp:meta_key", ns)
-            val_el = pm.find("wp:meta_value", ns)
-            if key_el is not None and key_el.text and val_el is not None:
-                meta[key_el.text.strip()] = (val_el.text or "").strip()
-        if meta:
-            result[post_id] = meta
-
-    return result
+def save_last_run():
+    """Save the current UTC timestamp as the last successful run."""
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
+    LAST_RUN_FILE.write_text(ts + "\n")
+    print(f"  Saved last-run timestamp: {ts}")
 
 
 # ---------------------------------------------------------------------------
-# 2. Language detection
+# API helpers
 # ---------------------------------------------------------------------------
-def detect_language(post: dict) -> str:
-    """Detect language using Polylang tags → slug prefix → word frequency → default."""
+def api_get(url: str, params: dict | None = None) -> requests.Response:
+    """GET with rate limiting and retry."""
+    time.sleep(REQUEST_DELAY)
+    for attempt in range(3):
+        try:
+            resp = session.get(url, params=params, timeout=30)
+            resp.raise_for_status()
+            return resp
+        except requests.exceptions.RequestException as e:
+            if attempt == 2:
+                raise
+            print(f"  [RETRY] {e}")
+            time.sleep(2 ** attempt)
+    raise RuntimeError("unreachable")
 
-    # Priority 1: Polylang tags (wpparser puts domain="language" into tags)
-    for tag in post.get("tags", []):
-        if isinstance(tag, dict):
-            nicename = tag.get("nicename", "").lower()
-            domain = tag.get("domain", "")
-            if domain == "language" or nicename in ("nl", "en", "es"):
-                if nicename in ("nl", "en", "es"):
-                    return nicename
-        else:
-            tag_str = str(tag).lower()
-            if tag_str in ("nl", "en", "es"):
-                return tag_str
 
-    # Priority 2: Slug prefix
-    slug = post.get("post_name", "")
-    if slug:
-        if slug.startswith("en-"):
-            return "en"
-        if slug.startswith("es-"):
-            return "es"
-        if slug.startswith("nl-"):
-            return "nl"
+def fetch_all_pages(endpoint: str, params: dict | None = None) -> list[dict]:
+    """Fetch all pages of a paginated WP REST API endpoint."""
+    params = dict(params or {})
+    params.setdefault("per_page", PER_PAGE)
+    params["page"] = 1
+    all_items: list[dict] = []
 
-    # Priority 3: Word frequency analysis
-    content = post.get("content", "") or ""
-    title = post.get("title", "") or ""
-    text = f"{title} {content}".lower()
+    while True:
+        resp = api_get(endpoint, params)
+        items = resp.json()
+        if not isinstance(items, list):
+            break
+        all_items.extend(items)
 
-    def count_words(word_list):
-        return sum(1 for w in word_list if f" {w} " in text or text.startswith(f"{w} "))
+        total_pages = int(resp.headers.get("X-WP-TotalPages", 1))
+        if params["page"] >= total_pages:
+            break
+        params["page"] += 1
 
-    nl_count = count_words(DUTCH_WORDS)
-    en_count = count_words(ENGLISH_WORDS)
-    es_count = count_words(SPANISH_WORDS)
-
-    if nl_count >= en_count and nl_count >= es_count:
-        return "nl"
-    if es_count > nl_count and es_count > en_count:
-        return "es"
-    if en_count > nl_count and en_count > es_count:
-        return "en"
-
-    # Priority 4: Default
-    return DEFAULT_LANGUAGE
+    return all_items
 
 
 # ---------------------------------------------------------------------------
-# 3. Image pipeline
+# Taxonomy & author lookups
 # ---------------------------------------------------------------------------
+def fetch_authors():
+    """Fetch all WP users for author name resolution."""
+    global author_map
+    print("Fetching authors...")
+    users = fetch_all_pages(f"{API_BASE}/users")
+    author_map = {u["id"]: u["name"] for u in users}
+    print(f"  {len(author_map)} authors")
+
+
+def fetch_categories():
+    """Fetch all WP categories."""
+    global category_map
+    print("Fetching categories...")
+    cats = fetch_all_pages(f"{API_BASE}/categories", {"per_page": 100})
+    category_map = {c["id"]: unescape(c["name"]) for c in cats}
+    print(f"  {len(category_map)} categories")
+
+
+def fetch_tags():
+    """Fetch all WP tags."""
+    global tag_map
+    print("Fetching tags...")
+    tags = fetch_all_pages(f"{API_BASE}/tags", {"per_page": 100})
+    tag_map = {t["id"]: unescape(t["name"]) for t in tags}
+    print(f"  {len(tag_map)} tags")
+
+
+# ---------------------------------------------------------------------------
+# Media pipeline
+# ---------------------------------------------------------------------------
+def fetch_all_media():
+    """Fetch media items from WP REST API. Uses modified_after for incremental.
+
+    When skip_media is set, always fetch all media (need full ID→URL map
+    for resolving vc_single_image attachment IDs in content).
+    """
+    global media_map
+    params: dict = {}
+    if last_run_iso and not skip_media:
+        params["modified_after"] = last_run_iso
+        print(f"Fetching media index (modified since {last_run_iso})...")
+    else:
+        print("Fetching media index (all)...")
+    items = fetch_all_pages(f"{API_BASE}/media", params)
+    media_map = {m["id"]: m for m in items}
+    print(f"  {len(media_map)} media items indexed")
+
+
 def strip_size_suffix(url: str) -> str:
-    """Convert image-300x200.jpg → image.jpg to request the original."""
+    """Convert image-300x200.jpg -> image.jpg to request the original."""
     return SIZE_SUFFIX_RE.sub(r"\1", url)
 
 
-def download_image(url: str) -> Optional[str]:
-    """Download an image and return its *body* path (/images/raw/YYYY/MM/file.ext).
+def get_best_media_url(media_obj: dict) -> str:
+    """Get the best (largest) URL from a media object."""
+    details = media_obj.get("media_details", {})
+    sizes = details.get("sizes", {})
 
-    Returns None on failure. Skips already-downloaded or already-existing files.
+    # Prefer: full > original > 2048x2048 > largest available
+    for size_key in ("full", "original", "2048x2048"):
+        if size_key in sizes:
+            return sizes[size_key].get("source_url", "")
+
+    # Fall back to the main source_url (usually full size)
+    return media_obj.get("source_url", "")
+
+
+def download_image(url: str) -> Optional[str]:
+    """Download an image, return its body path (/media/YYYY/MM/file.ext).
+
+    Returns None on failure. Skips already-downloaded or existing files.
     """
     if not url:
         return None
 
-    # Normalize URL
+    # Skip non-media file types
+    ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".mp4", ".mp3", ".pdf"}
+    ext = os.path.splitext(urlparse(url).path)[1].lower()
+    if ext and ext not in ALLOWED_EXTENSIONS:
+        return None
+
     if url.startswith("//"):
         url = "https:" + url
     elif url.startswith("/"):
-        url = WP_BASE_URL + url
+        url = WP_BASE + url
 
-    # Strip size suffixes to get the original
     original_url = strip_size_suffix(url)
 
-    # Check cache (try both original and sized URL)
     for u in (original_url, url):
         if u in downloaded_images:
             return downloaded_images[u]
 
-    # Determine relative path after wp-content/uploads/
     parsed = urlparse(original_url)
     url_path = unquote(parsed.path)
 
@@ -210,155 +290,106 @@ def download_image(url: str) -> Optional[str]:
         rel_path = url_path.split("wp-content/uploads/")[-1]
     else:
         filename = os.path.basename(url_path) or "image"
-        url_hash = hashlib.md5(original_url.encode()).hexdigest()[:8]
-        rel_path = f"other/{url_hash}_{filename}"
+        rel_path = f"other/{filename}"
 
-    local_file = IMAGES_DIR / rel_path
+    local_file = MEDIA_DIR / rel_path
     body_path = f"{BODY_IMAGE_PREFIX}{rel_path}"
 
-    # Skip if already on disk
     if local_file.exists():
         downloaded_images[original_url] = body_path
         downloaded_images[url] = body_path
         return body_path
 
-    # Try downloading the original first, fall back to sized URL
+    # With --skip-media, only resolve existing files, never download new ones
+    if skip_media:
+        return None
+
     for try_url in (original_url, url):
         try:
-            print(f"  [DOWNLOAD] {try_url}")
-            resp = requests.get(try_url, timeout=30, allow_redirects=True)
+            resp = session.get(try_url, timeout=30, allow_redirects=True)
             resp.raise_for_status()
+            content_type = resp.headers.get("content-type", "")
+            if "text/html" in content_type:
+                continue
             local_file.parent.mkdir(parents=True, exist_ok=True)
             with open(local_file, "wb") as f:
                 f.write(resp.content)
             downloaded_images[original_url] = body_path
             downloaded_images[url] = body_path
+            print(f"    [DL] {rel_path}")
             return body_path
         except Exception:
             continue
 
-    print(f"  [ERROR] Failed to download {original_url}")
+    print(f"    [SKIP] Failed: {original_url}")
     return None
 
 
+def download_all_media():
+    """Download all indexed media items. Skips files that already exist locally."""
+    print(f"Downloading media ({len(media_map)} items, skipping existing)...")
+    skipped = 0
+    downloaded = 0
+    for i, (mid, media_obj) in enumerate(media_map.items(), 1):
+        url = get_best_media_url(media_obj)
+        if not url:
+            continue
+        # Check if already on disk before downloading
+        original_url = strip_size_suffix(url)
+        url_path = unquote(urlparse(original_url).path)
+        if "wp-content/uploads/" in url_path:
+            rel_path = url_path.split("wp-content/uploads/")[-1]
+        else:
+            rel_path = f"other/{os.path.basename(url_path) or 'image'}"
+        if (MEDIA_DIR / rel_path).exists():
+            body_path = f"{BODY_IMAGE_PREFIX}{rel_path}"
+            downloaded_images[original_url] = body_path
+            downloaded_images[url] = body_path
+            skipped += 1
+            continue
+        if (i - skipped) % 50 == 0:
+            print(f"  Progress: {i}/{len(media_map)}")
+        result = download_image(url)
+        if result:
+            downloaded += 1
+    print(f"  Done: {downloaded} downloaded, {skipped} already existed")
+
+
 def body_path_to_frontmatter_path(body_path: str) -> str:
-    """Convert /images/raw/YYYY/MM/file.ext → ../../../assets/images/raw/YYYY/MM/file.ext."""
+    """Convert /media/... -> ../../../assets/media/..."""
     rel = body_path.removeprefix(BODY_IMAGE_PREFIX)
     return f"{FRONTMATTER_IMAGE_PREFIX}{rel}"
 
 
-# ---------------------------------------------------------------------------
-# 4. Attachment map
-# ---------------------------------------------------------------------------
-def build_attachment_map(posts: list):
-    """Build {attachment_id: url} and {attachment_id: post} from wpparser's attachment posts."""
-    global attachment_map, attachment_posts
-    for post in posts:
-        if post.get("post_type") != "attachment":
-            continue
-        post_id = str(post.get("post_id", ""))
-        url = post.get("guid", "")
-        if not url or not url.startswith("http"):
-            meta = postmeta_map.get(post_id, {})
-            attached = meta.get("_wp_attached_file", "")
-            if attached:
-                url = f"{WP_BASE_URL}/wp-content/uploads/{attached}"
-        if post_id and url:
-            attachment_map[post_id] = url
-            attachment_posts[post_id] = post
+def resolve_featured_image(featured_media_id: int) -> tuple[Optional[str], dict[str, str]]:
+    """Resolve a WP featured_media ID to a local frontmatter path + meta."""
+    if not featured_media_id:
+        return None, {}
 
+    media_obj = resolve_media_by_id(featured_media_id)
+    if not media_obj:
+        return None, {}
 
-def get_attachment_meta(attachment_id: str) -> dict[str, str]:
-    """Extract caption and copyright from an attachment's metadata.
+    url = get_best_media_url(media_obj)
+    body_path = download_image(url)
+    if not body_path:
+        return None, {}
 
-    Sources checked (in priority order for each field):
-    - _wp_attachment_metadata → image_meta (caption, copyright, credit)
-    - Attachment post excerpt (WP caption field)
-    - _wp_attachment_image_alt
-    """
-    result: dict[str, str] = {}
-
-    # Attachment post data (excerpt = WP caption)
-    att_post = attachment_posts.get(attachment_id, {})
-    wp_caption = (att_post.get("excerpt", "") or "").strip()
-
-    # Postmeta
-    meta = postmeta_map.get(attachment_id, {})
-    alt_text = meta.get("_wp_attachment_image_alt", "").strip()
-
-    # Deserialize _wp_attachment_metadata for image_meta
-    image_meta: dict = {}
-    raw_meta = meta.get("_wp_attachment_metadata", "")
-    if raw_meta and phpserialize and raw_meta.startswith("a:"):
-        try:
-            parsed = phpserialize.loads(raw_meta.encode(), decode_strings=True)
-            image_meta = parsed.get("image_meta", {}) or {}
-        except Exception:
-            pass
-
-    # Caption: image_meta.caption → WP excerpt → alt text
-    caption = (
-        (image_meta.get("caption", "") or "").strip()
-        or wp_caption
-        or alt_text
-    )
-    # Filter out camera model noise (SONY DSC, SAMSUNG CSC, DCIM*, Created with GIMP)
-    if caption and not re.match(r"^(SONY DSC|SAMSUNG CSC|DCIM\w*|Created with GIMP)$", caption, re.I):
-        result["caption"] = caption
-
-    # Copyright: image_meta.copyright (+ credit if different)
-    copyright_val = (image_meta.get("copyright", "") or "").strip()
-    credit = (image_meta.get("credit", "") or "").strip()
-    if copyright_val:
-        result["copyright"] = copyright_val
-    elif credit:
-        result["copyright"] = credit
-
-    return result
-
-
-# ---------------------------------------------------------------------------
-# 5. Featured image resolution
-# ---------------------------------------------------------------------------
-def extract_featured_from_markdown(
-    markdown: str, post: dict,
-) -> tuple[Optional[str], dict[str, str], str]:
-    """Extract the first {% image %} tag from converted markdown as featured image.
-
-    Returns (frontmatter_path, meta_dict, markdown_with_first_image_removed).
-    Also looks up _thumbnail_id metadata for caption/copyright.
-    """
-    # Find the first {% image src="..." ... %} tag
-    img_match = re.search(r"\{%\s*image\s[^%]+%\}", markdown)
-    if not img_match:
-        return None, {}, markdown
-
-    tag = img_match.group(0)
-    src_match = re.search(r'src="([^"]+)"', tag)
-    if not src_match:
-        return None, {}, markdown
-
-    body_path = src_match.group(1)
     fm_path = body_path_to_frontmatter_path(body_path)
 
-    # Remove the first image tag from markdown
-    markdown = markdown[: img_match.start()] + markdown[img_match.end() :]
-    # Clean up any resulting double blank lines
-    markdown = re.sub(r"\n{3,}", "\n\n", markdown).strip()
+    meta: dict[str, str] = {}
+    caption = unescape(re.sub(r"<[^>]+>", "", media_obj.get("caption", {}).get("rendered", ""))).strip()
+    alt = media_obj.get("alt_text", "").strip()
+    if caption:
+        meta["caption"] = caption
+    elif alt:
+        meta["caption"] = alt
 
-    # Look up caption/copyright from _thumbnail_id if available
-    post_id = str(post.get("post_id", ""))
-    meta = postmeta_map.get(post_id, {})
-    thumbnail_id = meta.get("_thumbnail_id", "")
-    att_meta: dict[str, str] = {}
-    if thumbnail_id:
-        att_meta = get_attachment_meta(thumbnail_id)
-
-    return fm_path, att_meta, markdown
+    return fm_path, meta
 
 
 # ---------------------------------------------------------------------------
-# 6. Content processing
+# Content processing
 # ---------------------------------------------------------------------------
 class ImageConverter(MarkdownConverter):
     """Custom markdownify converter that outputs {% image %} Markdoc tags."""
@@ -366,16 +397,14 @@ class ImageConverter(MarkdownConverter):
     def convert_img(self, el, text=None, *args, **kwargs):
         src = el.get("src", "")
         alt = el.get("alt", "")
-        width = el.get("width", "")
-        height = el.get("height", "")
 
         classes = el.get("class", "") or ""
         if isinstance(classes, list):
             classes = " ".join(classes)
         align = "center"
-        if "alignleft" in classes or "wp-image-left" in classes:
+        if "alignleft" in classes:
             align = "left"
-        elif "alignright" in classes or "wp-image-right" in classes:
+        elif "alignright" in classes:
             align = "right"
 
         local_path = download_image(src)
@@ -383,10 +412,6 @@ class ImageConverter(MarkdownConverter):
             return ""
 
         parts = [f'src="{local_path}"']
-        if width:
-            parts.append(f"width={width}")
-        if height:
-            parts.append(f"height={height}")
         if alt:
             parts.append(f'caption="{escape_markdoc_string(alt)}"')
         parts.append(f'align="{align}"')
@@ -406,8 +431,61 @@ def escape_yaml_string(s: str) -> str:
     return f'"{s}"'
 
 
+def normalize_quotes(content: str) -> str:
+    """Replace curly/smart quotes with straight quotes for shortcode parsing."""
+    content = content.replace("\u201c", '"').replace("\u201d", '"')  # left/right double quotes
+    content = content.replace("\u2033", '"')  # double prime
+    content = content.replace("\u2018", "'").replace("\u2019", "'")  # left/right single quotes
+    content = content.replace("\u2032", "'")  # prime
+    return content
+
+
+def strip_shortcodes(content: str) -> str:
+    """Strip WordPress shortcodes, preserving useful inner content."""
+    if not content:
+        return ""
+
+    # Normalize smart/curly quotes so shortcode attribute regexes match
+    content = normalize_quotes(content)
+
+    # Remove duplicate VC responsive columns (mobile-hidden versions)
+    content = re.sub(
+        r'\[vc_row\]\[vc_column\s+offset="vc_hidden-lg[^"]*"\].*?\[/vc_column\]\[/vc_row\]',
+        "", content, flags=re.DOTALL,
+    )
+
+    # Convert image-bearing VC shortcodes
+    content = process_vc_single_image(content)
+    content = process_vc_images_carousel(content)
+
+    # Convert special shortcodes
+    content = process_embedyt(content)
+    content = process_info_box(content)
+
+    # Extract text from vc_column_text
+    content = re.sub(r"\[vc_column_text[^\]]*\]", "\n\n", content)
+    content = re.sub(r"\[/vc_column_text\]", "\n\n", content)
+
+    # Paired shortcodes: strip open + close tags
+    for prefix in ["vc_", "et_", "bears_", "tbdonations", "contact-form", "embed"]:
+        content = re.sub(rf"\[{prefix}[^\]]*\]", "", content)
+        content = re.sub(rf"\[/{prefix}[^\]]*\]", "", content)
+
+    # Self-closing / standalone shortcodes
+    for tag in [
+        "gallery", "wpforms", "instagram-feed", "profilepress", "wpcode",
+        "email-subscribers", "blog_special", "story_special", "demo_item",
+        "donation_box", "do_widget", "paytium", "blog",
+    ]:
+        content = re.sub(rf"\[{tag}[^\]]*\]", "", content, flags=re.I)
+
+    # Generic self-closing shortcodes [something /]
+    content = re.sub(r"\[[a-z_]+[^\]]*\/\]", "", content, flags=re.I)
+
+    return content
+
+
 def process_embedyt(content: str) -> str:
-    """Convert [embedyt]...[/embedyt] → YouTube links."""
     def _replace(m):
         url = m.group(1).strip()
         vid = None
@@ -420,12 +498,10 @@ def process_embedyt(content: str) -> str:
         if vid:
             return f"\n\n[Watch on YouTube](https://www.youtube.com/watch?v={vid})\n\n"
         return ""
-
     return re.sub(r"\[embedyt\]\s*(https?://[^\s\[]+)\s*\[/embedyt\]", _replace, content, flags=re.I)
 
 
 def process_info_box(content: str) -> str:
-    """Convert [info_box] shortcodes to markdown."""
     def _replace(m):
         title = m.group(1).strip()
         inner = m.group(2).strip()
@@ -436,7 +512,6 @@ def process_info_box(content: str) -> str:
         if inner:
             return f"{inner}\n\n"
         return ""
-
     return re.sub(
         r'\[info_box[^\]]*title="([^"]*)"[^\]]*\](.*?)\[/info_box\]',
         _replace, content, flags=re.DOTALL | re.I,
@@ -444,22 +519,22 @@ def process_info_box(content: str) -> str:
 
 
 def process_gallery(content: str) -> str:
-    """Convert [gallery ids="..."] → multiple {% image %} tags."""
+    """Convert [gallery ids="..."] -> multiple {% image %} tags via media_map."""
     def _replace(m):
         ids = [i.strip() for i in m.group(1).split(",") if i.strip()]
         images = []
         for aid in ids:
-            if aid in attachment_map:
-                path = download_image(attachment_map[aid])
+            media_obj = resolve_media_by_id(int(aid))
+            if media_obj:
+                url = get_best_media_url(media_obj)
+                path = download_image(url)
                 if path:
                     images.append(f'{{% image src="{path}" align="center" /%}}')
         return "\n\n".join(images) if images else ""
-
     return re.sub(r"\[gallery[^\]]*ids=[\"']([^\"']+)[\"'][^\]]*\]", _replace, content, flags=re.I)
 
 
 def process_caption(content: str) -> str:
-    """Convert [caption]...[/caption] → {% image %} with caption."""
     def _replace(m):
         inner = m.group(1)
         img_m = re.search(r"<img[^>]+>", inner, re.I)
@@ -473,41 +548,47 @@ def process_caption(content: str) -> str:
         local_path = download_image(src_m.group(1))
         if not local_path:
             return ""
-        width_m = re.search(r'width=["\']?(\d+)["\']?', img_tag)
-        height_m = re.search(r'height=["\']?(\d+)["\']?', img_tag)
         parts = [f'src="{local_path}"']
-        if width_m:
-            parts.append(f"width={width_m.group(1)}")
-        if height_m:
-            parts.append(f"height={height_m.group(1)}")
         if caption_text:
             parts.append(f'caption="{escape_markdoc_string(caption_text)}"')
         parts.append('align="center"')
         return f'{{% image {" ".join(parts)} /%}}'
-
     return re.sub(r"\[caption[^\]]*\](.*?)\[/caption\]", _replace, content, flags=re.DOTALL | re.I)
 
 
+def resolve_media_by_id(mid: int) -> Optional[dict]:
+    """Look up a media object by ID, fetching from API if not in cache."""
+    media_obj = media_map.get(mid)
+    if media_obj:
+        return media_obj
+    try:
+        resp = api_get(f"{API_BASE}/media/{mid}")
+        media_obj = resp.json()
+        media_map[mid] = media_obj
+        return media_obj
+    except Exception:
+        return None
+
+
 def process_vc_single_image(content: str) -> str:
-    """Convert [vc_single_image image="ID" ...] → {% image %} via attachment map."""
     def _replace(m):
         attrs = m.group(1)
         img_id = re.search(r'image="(\d+)"', attrs)
         if not img_id:
             return ""
-        aid = img_id.group(1)
-        if aid not in attachment_map:
+        mid = int(img_id.group(1))
+        media_obj = resolve_media_by_id(mid)
+        if not media_obj:
             return ""
-        path = download_image(attachment_map[aid])
+        url = get_best_media_url(media_obj)
+        path = download_image(url)
         if not path:
             return ""
         return f'\n\n{{% image src="{path}" align="center" /%}}\n\n'
-
     return re.sub(r"\[vc_single_image([^\]]*)\]", _replace, content, flags=re.I)
 
 
 def process_vc_images_carousel(content: str) -> str:
-    """Convert [vc_images_carousel images="1,2,3" ...] → multiple {% image %} tags."""
     def _replace(m):
         attrs = m.group(1)
         ids_match = re.search(r'images="([^"]+)"', attrs)
@@ -516,59 +597,14 @@ def process_vc_images_carousel(content: str) -> str:
         ids = [i.strip() for i in ids_match.group(1).split(",") if i.strip()]
         images = []
         for aid in ids:
-            if aid in attachment_map:
-                path = download_image(attachment_map[aid])
+            media_obj = resolve_media_by_id(int(aid))
+            if media_obj:
+                url = get_best_media_url(media_obj)
+                path = download_image(url)
                 if path:
                     images.append(f'{{% image src="{path}" align="center" /%}}')
         return "\n\n".join(images) if images else ""
-
     return re.sub(r"\[vc_images_carousel([^\]]*)\]", _replace, content, flags=re.I)
-
-
-def strip_shortcodes(content: str) -> str:
-    """Strip WordPress shortcodes, preserving useful inner content where appropriate."""
-    if not content:
-        return ""
-
-    # Remove duplicate VC responsive columns (mobile-hidden versions)
-    content = re.sub(
-        r'\[vc_row\]\[vc_column\s+offset="vc_hidden-lg[^"]*"\].*?\[/vc_column\]\[/vc_row\]',
-        "", content, flags=re.DOTALL,
-    )
-
-    # Convert image-bearing VC shortcodes BEFORE blanket vc_ stripping
-    content = process_vc_single_image(content)
-    content = process_vc_images_carousel(content)
-
-    # Convert other special shortcodes
-    content = process_embedyt(content)
-    content = process_info_box(content)
-
-    # Extract text from vc_column_text
-    content = re.sub(r"\[vc_column_text[^\]]*\]", "\n\n", content)
-    content = re.sub(r"\[/vc_column_text\]", "\n\n", content)
-
-    # Paired shortcodes: strip open + close tags
-    paired = [
-        "vc_", "et_", "bears_", "tbdonations", "contact-form", "embed",
-    ]
-    for prefix in paired:
-        content = re.sub(rf"\[{prefix}[^\]]*\]", "", content)
-        content = re.sub(rf"\[/{prefix}[^\]]*\]", "", content)
-
-    # Self-closing / standalone shortcodes
-    standalone = [
-        "gallery", "wpforms", "instagram-feed", "profilepress", "wpcode",
-        "email-subscribers", "blog_special", "story_special", "demo_item",
-        "donation_box", "do_widget", "paytium", "blog",
-    ]
-    for tag in standalone:
-        content = re.sub(rf"\[{tag}[^\]]*\]", "", content, flags=re.I)
-
-    # Generic self-closing shortcodes [something /]
-    content = re.sub(r"\[[a-z_]+[^\]]*\/\]", "", content, flags=re.I)
-
-    return content
 
 
 def preprocess_html(html: str) -> str:
@@ -576,11 +612,24 @@ def preprocess_html(html: str) -> str:
     if not html:
         return ""
 
+    # WP REST API returns rendered HTML — decode HTML entities in shortcodes
+    html = unescape(html)
+
     # Remove styled spans but keep content
     html = re.sub(r'<span[^>]*style="[^"]*"[^>]*>(.*?)</span>', r"\1", html, flags=re.DOTALL)
     html = re.sub(r"<span[^>]*>\s*</span>", "", html)
     html = re.sub(r"<span[^>]*>", "", html)
     html = re.sub(r"</span>", "", html)
+
+    # Remove WP block wrappers
+    html = re.sub(r'<div class="wpb-content-wrapper">', "", html)
+
+    # Remove paytium / donation forms entirely
+    html = re.sub(r"<form[^>]*class=\"pt-checkout-form\"[^>]*>.*?</form>", "", html, flags=re.DOTALL)
+    html = re.sub(r"<noscript>.*?</noscript>", "", html, flags=re.DOTALL)
+
+    # Remove hidden inputs
+    html = re.sub(r'<input[^>]*type="hidden"[^>]*/?\s*>', "", html)
 
     # Ensure block-level spacing
     for tag in ("p", "div"):
@@ -598,10 +647,9 @@ def clean_markdown(md: str) -> str:
     if not md:
         return ""
 
-    # Remove bearsthemes links and URLs
+    # Remove bearsthemes links
     md = re.sub(r"\[[^\]]*\]\([^)]*bearsthemes\.com[^)]*\)", "", md)
     md = re.sub(r"https?://[^\s)]*bearsthemes\.com[^\s)]*", "", md)
-    md = re.sub(r"theme\.bearsthemes\.com[^\s)]*", "", md)
 
     # Remove old hosting IP links
     md = re.sub(r"\[[^\]]*\]\([^)]*50\.87\.248\.77[^)]*\)", "", md)
@@ -621,20 +669,15 @@ def clean_markdown(md: str) -> str:
     # Fix escaped bold
     md = re.sub(r"\\\*\\\*([^*]+)\\\*\\\*", r"**\1**", md)
 
-    # Fix double colons in bold labels
-    md = re.sub(r"\*\*([^*]+)::\*\*", r"**\1:**", md)
-
     # Paragraph separation
-    md = re.sub(r'(\*"[^"]+"\*)\*\*', r"\1\n\n**", md)
     md = re.sub(r"([a-z.,!?])\*\*([A-Z])", r"\1\n\n**\2", md)
-    md = re.sub(r"(\*\*[^*]+\*\*)\n?([A-Z][a-z])", r"\1\n\n\2", md)
     md = re.sub(r"\.(\n)([A-Z])", r".\n\n\2", md)
 
     return md
 
 
 def html_to_markdown(html: str) -> str:
-    """Full HTML-to-Markdown pipeline: shortcodes → gallery/caption → HTML → clean."""
+    """Full HTML-to-Markdown pipeline."""
     if not html:
         return ""
 
@@ -642,9 +685,7 @@ def html_to_markdown(html: str) -> str:
     content = process_caption(content)
     content = process_gallery(content)
 
-    # Protect {% image ... %} tags from markdownify's underscore escaping
-    # by replacing them with unique placeholders before HTML→markdown conversion.
-    # Use a format without double underscores (markdownify treats __ as bold).
+    # Protect {% image %} tags from markdownify
     placeholders: dict[str, str] = {}
     def _protect(m):
         key = f"XMARKDOCIMGX{len(placeholders)}X"
@@ -658,11 +699,10 @@ def html_to_markdown(html: str) -> str:
         heading_style="atx",
         bullets="-",
         strong_em_symbol="*",
-        strip=["script", "style", "meta", "link"],
+        strip=["script", "style", "meta", "link", "button", "form", "input", "label", "noscript"],
     )
     markdown = converter.convert(content)
 
-    # Restore protected image tags
     for key, original in placeholders.items():
         markdown = markdown.replace(key, original)
 
@@ -671,75 +711,98 @@ def html_to_markdown(html: str) -> str:
     return markdown.strip()
 
 
-# ---------------------------------------------------------------------------
-# 7. Category extraction
-# ---------------------------------------------------------------------------
-def extract_categories(post: dict) -> list[str]:
-    """Extract non-language category names."""
-    result = []
-    for cat in post.get("categories", []):
-        if isinstance(cat, dict):
-            if cat.get("domain") == "language":
-                continue
-            name = cat.get("name", cat.get("nicename", ""))
-        else:
-            name = str(cat)
-        if name and name.lower() not in ("en", "nl", "es", "english", "dutch", "nederlands", "spanish"):
-            result.append(unescape(name))
-    return result
+def extract_featured_from_markdown(markdown: str) -> tuple[Optional[str], str]:
+    """Extract the first {% image %} tag as featured image, remove it from body."""
+    img_match = re.search(r"\{%\s*image\s[^%]+%\}", markdown)
+    if not img_match:
+        return None, markdown
+
+    tag = img_match.group(0)
+    src_match = re.search(r'src="([^"]+)"', tag)
+    if not src_match:
+        return None, markdown
+
+    body_path = src_match.group(1)
+    fm_path = body_path_to_frontmatter_path(body_path)
+
+    markdown = markdown[:img_match.start()] + markdown[img_match.end():]
+    markdown = re.sub(r"\n{3,}", "\n\n", markdown).strip()
+
+    return fm_path, markdown
+
+
+def extract_and_remove_first_image(html: str) -> tuple[Optional[str], str]:
+    """Extract the first image from HTML as featured image and remove it from content.
+
+    Checks (in order):
+    1. vc_single_image image="ID" shortcodes
+    2. <img src="..."> tags
+    3. background-image: url(...) in inline styles
+
+    Returns (frontmatter_path, modified_html). The matched element is removed
+    from the HTML so it won't appear in the body text.
+    """
+    if not html:
+        return None, html
+
+    # 1. vc_single_image shortcode (most common in quinacare.org pages)
+    vc_match = re.search(r'\[vc_single_image[^\]]*image="(\d+)"[^\]]*\]', html)
+    if vc_match:
+        mid = int(vc_match.group(1))
+        media_obj = resolve_media_by_id(mid)
+        if media_obj:
+            url = get_best_media_url(media_obj)
+            body_path = download_image(url)
+            if body_path:
+                # Remove the first vc_single_image shortcode from HTML
+                html = html[:vc_match.start()] + html[vc_match.end():]
+                return body_path_to_frontmatter_path(body_path), html
+
+    # 2. <img> tags
+    img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\'][^>]*/?\s*>', html)
+    if img_match:
+        url = img_match.group(1)
+        if not re.search(r'(150x150|placeholder|icon|logo|mollie\.com|gravatar)', url, re.I):
+            body_path = download_image(url)
+            if body_path:
+                html = html[:img_match.start()] + html[img_match.end():]
+                return body_path_to_frontmatter_path(body_path), html
+
+    # 3. background-image: url(...)
+    bg_match = re.search(r'background-image:\s*url\(([^)]+)\)', html)
+    if bg_match:
+        url = bg_match.group(1).strip("'\"")
+        body_path = download_image(url)
+        if body_path:
+            # Remove the style block containing the background-image
+            block_match = re.search(
+                r'\{[^}]*background-image:\s*url\([^)]*?' + re.escape(os.path.basename(url)) + r'[^)]*\)[^}]*\}',
+                html,
+            )
+            if block_match:
+                html = html[:block_match.start()] + html[block_match.end():]
+            return body_path_to_frontmatter_path(body_path), html
+
+    return None, html
 
 
 # ---------------------------------------------------------------------------
-# 8. Frontmatter + file output
+# Post migration
 # ---------------------------------------------------------------------------
-def generate_frontmatter(
-    post: dict,
-    language: str,
-    featured_image_path: Optional[str],
-    featured_image_meta: dict[str, str],
-) -> str:
-    """Generate YAML frontmatter matching newsSchema."""
-    title = unescape(post.get("title", "") or "Untitled")
+def detect_language_from_link(link: str) -> Optional[str]:
+    """Detect actual language from WP page link URL.
 
-    post_date = post.get("post_date", "")
-    try:
-        dt = datetime.strptime(post_date, "%Y-%m-%d %H:%M:%S")
-        date_str = dt.strftime("%Y-%m-%d")
-    except (ValueError, TypeError):
-        date_str = datetime.now().strftime("%Y-%m-%d")
-
-    status = post.get("status", "draft")
-    slug = post.get("post_name", "") or sanitize_slug(title)
-    author = post.get("creator", "")
-
-    excerpt = post.get("excerpt", "") or ""
-    if excerpt:
-        excerpt = unescape(re.sub(r"<[^>]+>", "", excerpt)).strip()[:200]
-
-    categories = extract_categories(post)
-
-    lines = ["---"]
-    lines.append(f"title: {escape_yaml_string(title)}")
-    lines.append(f"date: {date_str}")
-    lines.append(f"status: {status}")
-    lines.append(f"slug: {escape_yaml_string(slug)}")
-    if author:
-        lines.append(f"author: {escape_yaml_string(author)}")
-    if excerpt:
-        lines.append(f"excerpt: {escape_yaml_string(excerpt)}")
-    if categories:
-        cat_list = ", ".join(f'"{c}"' for c in categories)
-        lines.append(f"categories: [{cat_list}]")
-    lines.append(f'language: "{language}"')
-    if featured_image_path:
-        lines.append(f"featured_image: {escape_yaml_string(featured_image_path)}")
-    if featured_image_meta.get("caption"):
-        lines.append(f"featured_image_caption: {escape_yaml_string(featured_image_meta['caption'])}")
-    if featured_image_meta.get("copyright"):
-        lines.append(f"featured_image_copyright: {escape_yaml_string(featured_image_meta['copyright'])}")
-    lines.append("---")
-
-    return "\n".join(lines)
+    NL (default) has no prefix: quinacare.org/slug/
+    EN: quinacare.org/en/slug/
+    ES: quinacare.org/es/slug/
+    """
+    if not link:
+        return None
+    parsed = urlparse(link)
+    parts = parsed.path.strip("/").split("/")
+    if parts and parts[0] in ("en", "es"):
+        return parts[0]
+    return "nl"
 
 
 def sanitize_slug(text: str) -> str:
@@ -750,12 +813,7 @@ def sanitize_slug(text: str) -> str:
     return slug.strip("-").lower() or "untitled"
 
 
-# Track used slugs per language to handle duplicates
-used_slugs: dict[str, set[str]] = {"nl": set(), "en": set(), "es": set()}
-
-
 def get_unique_slug(slug: str, lang: str) -> str:
-    """Return a unique slug for the given language, appending -1, -2, etc. if needed."""
     base = slug
     counter = 1
     while slug in used_slugs[lang]:
@@ -765,111 +823,289 @@ def get_unique_slug(slug: str, lang: str) -> str:
     return slug
 
 
-def migrate_post(post: dict) -> Optional[Path]:
-    """Migrate a single post to Markdoc format."""
-    title = post.get("title", "Untitled")
-    raw_slug = post.get("post_name", "") or sanitize_slug(title)
+def file_needs_update(filepath: Path, featured_media_id: int, html_content: str = "") -> bool:
+    """Check if an existing .mdoc file is missing data that we can now provide."""
+    if not filepath.exists():
+        return True
+    content = filepath.read_text(encoding="utf-8")
+    if "featured_image:" in content:
+        return False
+    # Re-generate if WP has featured_media or if the HTML content contains images
+    if featured_media_id:
+        return True
+    html_content = normalize_quotes(html_content) if html_content else ""
+    if html_content and (
+        re.search(r'<img[^>]+src=', html_content)
+        or re.search(r'background-image:\s*url\(', html_content)
+        or re.search(r'vc_single_image[^]]*image="\d+"', html_content)
+    ):
+        return True
+    return False
+
+
+def migrate_item(item: dict, lang: str, item_type: str) -> Optional[Path]:
+    """Migrate a single post or page to Markdoc. Skips if file already exists and is complete."""
+    title = unescape(re.sub(r"<[^>]+>", "", item.get("title", {}).get("rendered", "Untitled")))
+    raw_slug = item.get("slug", "") or sanitize_slug(title)
     raw_slug = sanitize_slug(raw_slug)
 
-    language = detect_language(post)
-    content = post.get("content", "") or ""
+    # Strip language prefix from slug (e.g. "en-martha-arimuya-tanguila" -> "martha-arimuya-tanguila")
+    if lang != DEFAULT_LANGUAGE and raw_slug.startswith(f"{lang}-"):
+        raw_slug = raw_slug[len(lang) + 1:]
 
-    print(f"\nProcessing: {title}")
-    print(f"  Language: {language} | Status: {post.get('status', 'unknown')}")
+    # Check if output file already exists and is complete
+    output_dir = OUTPUT_BASE / lang
+    candidate = output_dir / f"{raw_slug}.mdoc"
+    featured_media_id = item.get("featured_media", 0)
+    html_content_raw = item.get("content", {}).get("rendered", "")
+    if candidate.exists() and not force_overwrite and not file_needs_update(candidate, featured_media_id, html_content_raw):
+        used_slugs[lang].add(raw_slug)
+        print(f"  [{lang}] SKIP (exists): {title}")
+        return None
+    if candidate.exists() and force_overwrite:
+        print(f"  [{lang}] OVERWRITE: {title}")
+    elif candidate.exists():
+        print(f"  [{lang}] UPDATE (missing featured_image): {title}")
 
-    # Convert HTML content to markdown (all images become {% image %} tags)
-    markdown_content = html_to_markdown(content)
+    date_str_raw = item.get("date", "")
+    try:
+        dt = datetime.fromisoformat(date_str_raw)
+        date_str = dt.strftime("%Y-%m-%d")
+    except (ValueError, TypeError):
+        date_str = datetime.now().strftime("%Y-%m-%d")
 
-    # Extract first image from converted markdown as featured image
-    featured_path, featured_meta, markdown_content = extract_featured_from_markdown(
-        markdown_content, post,
-    )
+    status = item.get("status", "publish")
+    author_id = item.get("author", 0)
+    author_name = author_map.get(author_id, "")
 
-    # De-duplicate slug within language
-    slug = get_unique_slug(raw_slug, language)
+    # Categories
+    cat_ids = item.get("categories", [])
+    categories = [category_map[cid] for cid in cat_ids if cid in category_map]
+    # Filter out generic categories
+    categories = [c for c in categories if c.lower() not in ("uncategorized",)]
 
-    # Build output path
-    output_dir = OUTPUT_BASE / language
+    print(f"\n  [{lang}] {item_type}: {title}")
+
+    # Content — REST API provides rendered HTML
+    # unescape HTML entities first (&#8221; -> Unicode), then normalize smart quotes to straight
+    html_content = normalize_quotes(unescape(item.get("content", {}).get("rendered", "")))
+
+    # Featured image — from WP featured_media ID
+    featured_media_id = item.get("featured_media", 0)
+    featured_path, featured_meta = resolve_featured_image(featured_media_id)
+
+    # If no featured_media, extract first image from raw HTML and remove it
+    if not featured_path and html_content:
+        featured_path, html_content = extract_and_remove_first_image(html_content)
+        featured_meta = {}
+
+    # Convert HTML to markdown
+    markdown_content = html_to_markdown(html_content)
+
+    # Final fallback: extract first {% image %} tag from converted markdown
+    if not featured_path:
+        featured_path, markdown_content = extract_featured_from_markdown(markdown_content)
+        featured_meta = {}
+
+    slug = get_unique_slug(raw_slug, lang)
+
+    # Excerpt
+    excerpt_html = item.get("excerpt", {}).get("rendered", "")
+    excerpt = unescape(re.sub(r"<[^>]+>", "", excerpt_html)).strip()
+    excerpt = re.sub(r"\[.*?\]", "", excerpt).strip()  # strip remaining shortcodes
+    if len(excerpt) > 200:
+        excerpt = excerpt[:200].rsplit(" ", 1)[0] + "..."
+
+    # Build frontmatter
+    lines = ["---"]
+    lines.append(f"title: {escape_yaml_string(title)}")
+    lines.append(f"date: {date_str}")
+    lines.append(f"status: {status}")
+    lines.append(f"slug: {escape_yaml_string(slug)}")
+    if author_name:
+        lines.append(f"author: {escape_yaml_string(author_name)}")
+    if excerpt:
+        lines.append(f"excerpt: {escape_yaml_string(excerpt)}")
+    if categories:
+        cat_list = ", ".join(f'"{c}"' for c in categories)
+        lines.append(f"categories: [{cat_list}]")
+    lines.append(f'language: "{lang}"')
+    if featured_path:
+        lines.append(f"featured_image: {escape_yaml_string(featured_path)}")
+    if featured_meta.get("caption"):
+        lines.append(f"featured_image_caption: {escape_yaml_string(featured_meta['caption'])}")
+    if featured_meta.get("copyright"):
+        lines.append(f"featured_image_copyright: {escape_yaml_string(featured_meta['copyright'])}")
+    lines.append("---")
+
+    frontmatter = "\n".join(lines)
+
+    # Write file
+    output_dir = OUTPUT_BASE / lang
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / f"{slug}.mdoc"
 
-    # Generate frontmatter
-    frontmatter = generate_frontmatter(post, language, featured_path, featured_meta)
-
-    # Write file
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(f"{frontmatter}\n\n{markdown_content}\n")
 
-    print(f"  Output: {output_file.relative_to(PROJECT_ROOT)}")
     return output_file
+
+
+# ---------------------------------------------------------------------------
+# Clear
+# ---------------------------------------------------------------------------
+def clear_local_data():
+    """Delete all local news content and downloaded media."""
+    print("\nClearing local data...")
+
+    if OUTPUT_BASE.exists():
+        for lang_dir in OUTPUT_BASE.iterdir():
+            if lang_dir.is_dir() and lang_dir.name in LANGUAGES:
+                count = sum(1 for f in lang_dir.glob("*.mdoc"))
+                shutil.rmtree(lang_dir)
+                print(f"  Deleted {count} files from {lang_dir.relative_to(PROJECT_ROOT)}")
+
+    if MEDIA_DIR.exists():
+        count = sum(1 for _ in MEDIA_DIR.rglob("*") if _.is_file())
+        shutil.rmtree(MEDIA_DIR)
+        print(f"  Deleted {count} media files from {MEDIA_DIR.relative_to(PROJECT_ROOT)}")
+
+    print("  Done.\n")
 
 
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main():
-    global postmeta_map
+    global last_run_iso, skip_media, force_overwrite
+
+    parser = argparse.ArgumentParser(description="Migrate quinacare.org WordPress content via REST API")
+    parser.add_argument("--clear", action="store_true", help="Clear local news + media before migrating")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be fetched without writing")
+    parser.add_argument("--full", action="store_true", help="Full migration, ignore last-run timestamp")
+    parser.add_argument("--force", action="store_true", help="Force overwrite existing posts/pages")
+    parser.add_argument("--skip-media", action="store_true", help="Skip all media downloads (still fetches media index and resolves existing local files)")
+    args = parser.parse_args()
 
     print("=" * 60)
-    print("WordPress to Astro Markdoc Migration")
+    print("WordPress REST API Migration — quinacare.org")
     print("=" * 60)
 
-    if not XML_FILE.exists():
-        print(f"Error: XML file not found: {XML_FILE}")
-        sys.exit(1)
+    if args.clear:
+        clear_local_data()
+        if LAST_RUN_FILE.exists():
+            LAST_RUN_FILE.unlink()
 
-    # Step 1: Custom postmeta extraction
-    print(f"\nParsing postmeta from: {XML_FILE.name}")
-    postmeta_map = extract_postmeta_from_xml(str(XML_FILE))
-    print(f"  Extracted postmeta for {len(postmeta_map)} posts")
+    # Force flag
+    skip_media = args.skip_media
+    force_overwrite = args.force
 
-    # Step 2: Parse with wpparser
-    print("Parsing with wpparser...")
-    data = wpparser.parse(str(XML_FILE))
-    all_posts = data.get("posts", [])
-    print(f"  Found {len(all_posts)} total items")
+    # Auth
+    wp_login()
+    if _authenticated:
+        status_filter = "publish,draft,pending,private"
+    else:
+        status_filter = "publish"
 
-    # Step 3: Build attachment map
-    build_attachment_map(all_posts)
-    print(f"  Found {len(attachment_map)} attachments")
+    # Determine incremental cutoff
+    if args.full or args.clear or args.force:
+        last_run_iso = None
+        print("Mode: FULL migration")
+    else:
+        last_run_iso = load_last_run()
+        if last_run_iso:
+            print(f"Mode: INCREMENTAL (since {last_run_iso})")
+        else:
+            print("Mode: FULL migration (no previous run found)")
 
-    # Step 4: Filter posts/pages with non-empty titles
-    posts_to_migrate = [
-        p for p in all_posts
-        if p.get("post_type") in ("post", "page") and p.get("title")
-    ]
-    print(f"  {len(posts_to_migrate)} posts/pages to migrate")
-
-    # Ensure output + images dirs exist
+    # Ensure output dirs exist
     OUTPUT_BASE.mkdir(parents=True, exist_ok=True)
-    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Step 5: Migrate
-    migrated = 0
-    errors = 0
+    # Step 1: Fetch taxonomies and authors (always full — small datasets)
+    fetch_authors()
+    fetch_categories()
+    fetch_tags()
 
-    for post in posts_to_migrate:
-        try:
-            result = migrate_post(post)
-            if result:
-                migrated += 1
-        except Exception as e:
-            print(f"  [ERROR] {e}")
-            errors += 1
+    # Step 2: Fetch media index (always needed for ID→URL resolution)
+    fetch_all_media()
+
+    # Step 3: Download media
+    if args.skip_media:
+        print("Skipping media download (--skip-media)")
+    elif not args.dry_run:
+        download_all_media()
+
+    # Step 4: Fetch all posts + pages in a single pass, sort by language from link
+    total_migrated = 0
+    total_skipped = 0
+    total_errors = 0
+
+    params: dict = {"status": status_filter}
+    if last_run_iso:
+        params["modified_after"] = last_run_iso
+
+    print("\nFetching posts...")
+    all_posts = fetch_all_pages(f"{API_BASE}/posts", params)
+    print(f"  {len(all_posts)} posts" + (f" (modified since {last_run_iso})" if last_run_iso else ""))
+
+    print("Fetching pages...")
+    all_pages = fetch_all_pages(f"{API_BASE}/pages", params)
+    print(f"  {len(all_pages)} pages" + (f" (modified since {last_run_iso})" if last_run_iso else ""))
+
+    all_items = [(item, "post") for item in all_posts] + [(item, "page") for item in all_pages]
+
+    # Group by detected language
+    by_lang: dict[str, list[tuple[dict, str]]] = {lang: [] for lang in LANGUAGES}
+    skipped_lang = 0
+    for item, item_type in all_items:
+        lang = detect_language_from_link(item.get("link", ""))
+        if lang in by_lang:
+            by_lang[lang].append((item, item_type))
+        else:
+            skipped_lang += 1
+
+    for lang in LANGUAGES:
+        print(f"\n{'=' * 40}")
+        print(f"Language: {lang} ({len(by_lang[lang])} items)")
+        print(f"{'=' * 40}")
+
+        if args.dry_run:
+            total_migrated += len(by_lang[lang])
+            continue
+
+        for item, item_type in by_lang[lang]:
+            try:
+                result = migrate_item(item, lang, item_type)
+                if result:
+                    total_migrated += 1
+                else:
+                    total_skipped += 1
+            except Exception as e:
+                print(f"    [ERROR] {e}")
+                total_errors += 1
+
+    if skipped_lang:
+        print(f"\n  Skipped {skipped_lang} items with unrecognized language")
 
     # Summary
-    print("\n" + "=" * 60)
-    print("Migration Complete!")
-    print("=" * 60)
-    print(f"  Migrated:   {migrated} posts/pages")
-    print(f"  Errors:     {errors}")
-    print(f"  Images:     {len(downloaded_images)}")
-    print(f"  Output:     {OUTPUT_BASE.relative_to(PROJECT_ROOT)}")
+    print(f"\n{'=' * 60}")
+    if args.dry_run:
+        print(f"Dry run complete — would migrate {total_migrated} items")
+    else:
+        print("Migration Complete!")
+        print(f"  New:      {total_migrated} items")
+        print(f"  Skipped:  {total_skipped} items (already existed)")
+        print(f"  Errors:   {total_errors}")
+        print(f"  Images:   {len(downloaded_images)}")
+        print(f"  Output:   {OUTPUT_BASE.relative_to(PROJECT_ROOT)}")
+        for lang in LANGUAGES:
+            count = len(used_slugs.get(lang, set()))
+            print(f"    {lang}: {count} files")
 
-    # Per-language counts
-    for lang in ("nl", "en", "es"):
-        count = len(used_slugs.get(lang, set()))
-        print(f"    {lang}: {count} files")
+        # Save timestamp for next incremental run
+        save_last_run()
+    print("=" * 60)
 
 
 if __name__ == "__main__":

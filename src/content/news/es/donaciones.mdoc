@@ -3,8 +3,67 @@ title: "Donaciones"
 date: 2019-03-22
 status: publish
 slug: "donaciones"
-author: "vanderende.jacob@gmail.com"
+author: "Quina Care"
 language: "es"
+featured_image: "../../../assets/media/other/ideal.png"
 ---
 
+One-time donation
+Monthly
+Each quarter
+Annually
 
+Name\*
+
+Email address\*
+
+Amount () \*Enter your own amount2550100250
+
+  
+  
+
+function dmm\_recurring\_methods(value) {
+var x = document.getElementsByClassName("dmm\_recurring");
+var i;
+for (i = 0; i < x.length; i++) {
+x[i].style.display = (value!="one" ? "none" : "block");
+x[i].disabled = (value!="one" ? "disabled" : "");
+}
+document.getElementById("dmm\_permission").style.display = (value == "one" ? "none" : "block");
+}
+
+function dmm\_multicurrency\_methods(value) {
+let dmm\_currencies = {"AED":"AED","AUD":"AUD","BGN":"BGN","CAD":"CAD","CHF":"CHF","CZK":"CZK","DKK":"DKK","EUR":"€","GBP":"£","HKD":"HKD","HRK":"HRK","HUF":"HUF","ILS":"ILS","ISK":"ISK","JPY":"¥","NOK":"NOK","NZD":"NZD","PHP":"PHP","PLN":"PLN","RON":"RON","RUB":"RUB","SEK":"SEK","SGD":"SGD","USD":"US$","ZAR":"ZAR"};
+document.getElementById("dmm\_currency\_symbol").innerHTML = dmm\_currencies[value];
+let x = document.getElementsByClassName("dmm\_nomc");
+for (let i = 0; i < x.length; i++) {
+x[i].style.display = (value!="EUR" ? "none" : "block");
+x[i].disabled = (value!="EUR" ? "disabled" : "");
+}
+}
+ 
+
+ iDEAL | Wero  
+ {% image src="/media/other/creditcard.png" align="center" /%}
+
+ Card
+
+  
+  
+
+window.onload = function () {
+var dmm\_dd = document.getElementById('dmm\_dd');
+if (dmm\_dd !== null) {
+if (dmm\_dd.value !== '--') {
+document.getElementById('dmm\_amount').value = document.getElementById('dmm\_dd').value.replace(',', '.');
+document.getElementById('dmm\_amount').style.display = 'none';
+}
+}
+if (document.getElementById('dmm\_interval').value !== 'one') {
+document.getElementById('dmm\_permission').style.display = 'block';
+}
+dmm\_recurring\_methods(document.getElementById('dmm\_interval').value);
+dmm\_multicurrency\_methods(document.getElementById('dmm\_currency').value);
+}
+
+I hereby authorize Quina Care Foundation to collect the amount shown above from my account periodically.

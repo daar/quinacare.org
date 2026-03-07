@@ -88,10 +88,13 @@ wheels = [
 ]
 
 [[package]]
-name = "phpserialize"
-version = "1.3"
+name = "python-dotenv"
+version = "1.2.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ec/6d/437efc62d7327bcbcfa18f6bb27a0de3c8621e9af045dfc322d12eb310c9/phpserialize-1.3.tar.gz", hash = "sha256:bf672d312d203d09a84c26366fab8f438a3ffb355c407e69974b7ef2d39a0fa7", size = 7466, upload-time = "2012-01-22T12:48:05.828Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/82/ed/0301aeeac3e5353ef3d94b6ec08bbcabd04a72018415dcb29e588514bba8/python_dotenv-1.2.2.tar.gz", hash = "sha256:2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3", size = 50135, upload-time = "2026-03-01T16:00:26.196Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0b/d7/1959b9648791274998a9c3526f6d0ec8fd2233e4d4acce81bbae76b44b2a/python_dotenv-1.2.2-py3-none-any.whl", hash = "sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a", size = 22101, upload-time = "2026-03-01T16:00:25.09Z" },
+]
 
 [[package]]
 name = "requests"
@@ -132,15 +135,15 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "markdownify" },
+    { name = "python-dotenv" },
     { name = "requests" },
-    { name = "wpparser" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "markdownify", specifier = ">=1.2.2" },
+    { name = "python-dotenv", specifier = ">=1.0" },
     { name = "requests", specifier = ">=2.32.5" },
-    { name = "wpparser", specifier = ">=1.1.2" },
 ]
 
 [[package]]
@@ -160,12 +163,3 @@ sdist = { url = "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6
 wheels = [
     { url = "https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl", hash = "sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4", size = 131584, upload-time = "2026-01-07T16:24:42.685Z" },
 ]
-
-[[package]]
-name = "wpparser"
-version = "1.1.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "phpserialize" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/00/49/dc7ad78129af2c8b1f815adc1db1f60d8147f079e24ac28ad1daebb1ff8a/wpparser-1.1.2.tar.gz", hash = "sha256:c295368467345fbde9ef0f26e32cf74e53735b6e1cc1f35c3d2933ff8a4d4277", size = 6468, upload-time = "2020-09-09T16:51:00.761Z" }
