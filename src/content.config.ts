@@ -22,6 +22,7 @@ const pageSchema = ({ image }: SchemaContext) =>
     subtitle: z.string().optional(),
     category_label: z.string().optional(),
     slug: z.string(),
+    layout: z.enum(["article", "landing"]).default("article"),
     featured_image: image().optional(),
     featured_image_alt: z.string().optional(),
   });

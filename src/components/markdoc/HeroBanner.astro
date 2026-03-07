@@ -1,0 +1,51 @@
+---
+import OptimizedImage from "../OptimizedImage.astro";
+
+interface Props {
+  background: string;
+  label?: string;
+  title: string;
+  subtitle?: string;
+}
+
+const { background, label, title, subtitle } = Astro.props;
+---
+
+<header class="relative min-h-[70vh] flex items-end overflow-hidden font-arimo">
+  <div class="absolute inset-0 z-0">
+    <OptimizedImage
+      src={background}
+      alt=""
+      class="w-full h-full object-cover"
+      widths={[640, 1024, 1600]}
+      sizes="100vw"
+      loading="eager"
+    />
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-qcBlack via-qcBlack/60 to-transparent"
+    >
+    </div>
+  </div>
+
+  <div class="relative z-10 max-w-[1600px] mx-auto px-6 w-full pb-20 pt-40">
+    {
+      label && (
+        <span class="text-qcRed font-bold text-[10px] uppercase tracking-[0.5em] block mb-6">
+          {label}
+        </span>
+      )
+    }
+    <h1
+      class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] tracking-tighter mb-6 uppercase max-w-3xl"
+    >
+      {title}
+    </h1>
+    {
+      subtitle && (
+        <p class="text-white/70 text-lg md:text-xl max-w-2xl leading-relaxed font-light">
+          {subtitle}
+        </p>
+      )
+    }
+  </div>
+</header>

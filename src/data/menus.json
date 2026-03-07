@@ -23,7 +23,7 @@
           "labelKey": "submenu.yuraBoom",
           "path": "/yura-boom",
           "icon": "fa-solid fa-tree",
-          "image": "https://picsum.photos/seed/yura-boom/440/250",
+          "image": "/images/yura-boom/featured.webp",
           "descriptionKey": "submenu.yuraBoomDesc"
         },
         {

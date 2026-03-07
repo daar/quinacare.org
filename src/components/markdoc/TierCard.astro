@@ -1,0 +1,66 @@
+---
+import OptimizedImage from "../OptimizedImage.astro";
+
+interface Props {
+  image: string;
+  title: string;
+  price: string;
+  frequency: string;
+  impact: string;
+  yearly: string;
+  href: string;
+  featured?: boolean;
+}
+
+const {
+  image,
+  title,
+  price,
+  frequency,
+  impact,
+  yearly,
+  href,
+  featured = false,
+} = Astro.props;
+---
+
+<div
+  class={`group border p-8 md:p-10 transition-all duration-500 relative overflow-hidden rounded-xl flex flex-col items-center text-center ${featured ? "border-qcRed bg-red-50/30 scale-[1.02] shadow-lg" : "border-gray-100 hover:border-qcRed"}`}
+>
+  <div class="w-32 h-32 mb-6 relative">
+    <OptimizedImage
+      src={image}
+      alt={title}
+      width={128}
+      height={128}
+      class="w-full h-full object-contain drop-shadow-lg"
+    />
+  </div>
+
+  <h3 class="text-xl font-bold uppercase tracking-tight mb-2">{title}</h3>
+
+  <div class="mb-4">
+    <span class="text-qcRed font-bold text-4xl tracking-tighter">{price}</span>
+    <span class="text-gray-400 text-sm block">{frequency}</span>
+  </div>
+
+  <p class="text-gray-500 text-sm leading-relaxed mb-2 min-h-[3rem]">
+    {impact}
+  </p>
+
+  <span class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-6">
+    {yearly}
+  </span>
+
+  <a
+    href={href}
+    class={`block w-full py-3.5 text-[10px] font-bold uppercase tracking-widest transition-all rounded-md text-center ${
+      featured
+        ? "bg-qcRed text-white hover:bg-qcBlack"
+        : "border border-qcBlack hover:bg-qcBlack hover:text-white"
+    }`}
+  >
+    <i class="fa-solid fa-heart mr-2"></i>
+    {title}
+  </a>
+</div>

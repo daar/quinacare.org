@@ -1,0 +1,68 @@
+---
+import OptimizedImage from "../OptimizedImage.astro";
+
+interface Props {
+  image: string;
+  name: string;
+  role: string;
+  quote?: string;
+}
+
+const { image, name, role, quote } = Astro.props;
+---
+
+<section class="py-24 bg-qcGray font-arimo border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div class="relative group">
+        <div class="overflow-hidden rounded-xl bg-gray-100 relative z-10">
+          <OptimizedImage
+            src={image}
+            alt={name}
+            class="w-full aspect-[4/5] object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
+            widths={[400, 800]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </div>
+        <div
+          class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700"
+        >
+        </div>
+        <div
+          class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gray-200 opacity-40 rounded-xl"
+        >
+        </div>
+      </div>
+
+      <div>
+        <span
+          class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
+        >
+          {role}
+        </span>
+        <h2 class="text-4xl font-bold tracking-tighter uppercase mb-8">
+          {name}
+        </h2>
+
+        <div
+          class="prose-article space-y-4 text-gray-600 text-sm leading-relaxed mb-8"
+        >
+          <slot />
+        </div>
+
+        {
+          quote && (
+            <blockquote class="border-l-4 border-qcRed pl-6 py-2 mt-8">
+              <p class="text-lg italic text-gray-700 leading-relaxed">
+                &ldquo;{quote}&rdquo;
+              </p>
+              <cite class="text-xs font-bold uppercase tracking-wider text-gray-400 mt-3 block not-italic">
+                — {name}
+              </cite>
+            </blockquote>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

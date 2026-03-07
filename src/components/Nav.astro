@@ -1,4 +1,5 @@
 ---
+import OptimizedImage from "./OptimizedImage.astro";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 import {
   getLangFromUrl,
@@ -114,10 +115,12 @@ const searchPath = getLocalizedPath("/search", lang);
                             class="block rounded-lg overflow-hidden transition group/item"
                           >
                             <div class="relative">
-                              <img
+                              <OptimizedImage
                                 src={sub.image}
                                 alt=""
                                 class="w-full h-36 object-cover bg-gray-100"
+                                widths={[440]}
+                                sizes="440px"
                               />
                               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                               <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
@@ -352,10 +355,12 @@ const searchPath = getLocalizedPath("/search", lang);
                       class="mobile-menu-link block rounded-lg overflow-hidden transition group/mitem"
                     >
                       <div class="relative mt-1">
-                        <img
+                        <OptimizedImage
                           src={sub.image}
                           alt=""
                           class="w-full h-44 object-cover bg-gray-100 rounded-lg"
+                          widths={[400, 600]}
+                          sizes="(max-width: 768px) 100vw, 400px"
                         />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
                         <div class="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-2.5">

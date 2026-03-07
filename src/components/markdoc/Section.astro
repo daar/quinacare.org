@@ -1,0 +1,47 @@
+---
+interface Props {
+  label?: string;
+  title?: string;
+  subtitle?: string;
+  background?: "white" | "gray" | "dark";
+}
+
+const { label, title, subtitle, background = "white" } = Astro.props;
+
+const bgClass = {
+  white: "bg-white",
+  gray: "bg-qcGray",
+  dark: "bg-qcBlack text-white",
+}[background];
+---
+
+<section class={`py-24 font-arimo border-b border-gray-100 ${bgClass}`}>
+  <div class="max-w-7xl mx-auto px-6">
+    {
+      (label || title) && (
+        <div class="text-center mb-16">
+          {label && (
+            <span class="font-bold text-[10px] uppercase tracking-[0.4em] block mb-4 text-qcRed">
+              {label}
+            </span>
+          )}
+          {title && (
+            <h2
+              class={`text-4xl font-bold tracking-tighter uppercase mb-4 ${background === "dark" ? "text-white" : ""}`}
+            >
+              {title}
+            </h2>
+          )}
+          {subtitle && (
+            <p
+              class={`max-w-xl mx-auto text-sm leading-relaxed ${background === "dark" ? "text-white/60" : "text-gray-500"}`}
+            >
+              {subtitle}
+            </p>
+          )}
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>
