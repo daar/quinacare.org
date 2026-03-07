@@ -93,14 +93,14 @@ const t = useTranslations(lang);
         <button
           type="button"
           data-frequency="one-time"
-          class="flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white"
+          class="flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white"
         >
           {t("donate.oneTime")}
         </button>
         <button
           type="button"
           data-frequency="monthly"
-          class="flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack"
+          class="flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack"
         >
           {t("donate.monthly")}
         </button>
@@ -226,7 +226,7 @@ const t = useTranslations(lang);
       <button
         type="button"
         id="donate-submit"
-        class="w-full py-4 bg-qcRed text-white font-bold text-[11px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all shadow-lg"
+        class="w-full py-4 bg-qcRed text-white font-bold font-georgia text-[14px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all shadow-lg"
       >
         <i class="fa-solid fa-heart mr-2"></i>
         {t("donate.submitButton")} &euro;<span id="submit-amount">50</span>
@@ -596,7 +596,7 @@ const t = useTranslations(lang);
     </p>
     <a
       href={getLocalizedPath("/", lang)}
-      class="inline-block bg-qcRed text-white px-8 py-4 font-bold text-[11px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all"
+      class="inline-block bg-qcRed text-white px-8 py-4 font-bold font-georgia text-[14px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all"
     >
       {t("donate.backHome")}
     </a>
@@ -655,10 +655,10 @@ const t = useTranslations(lang);
       frequencyToggle!.querySelectorAll("button").forEach((btn) => {
         if (btn.dataset.frequency === frequency) {
           btn.className =
-            "flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white";
+            "flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white";
         } else {
           btn.className =
-            "flex-1 py-3 text-[11px] font-bold uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack";
+            "flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack";
         }
       });
 
