@@ -5,6 +5,8 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../i18n";
+import { premiumPartners } from "../data/partners";
+import OptimizedImage from "./OptimizedImage.astro";
 
 interface Props {
   lang?: Lang;
@@ -31,56 +33,27 @@ const t = useTranslations(lang);
         <div
           class="flex flex-wrap items-center justify-start gap-x-12 gap-y-10"
         >
-          <div
-            class="group relative flex items-center justify-center transition-all duration-300"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-              alt="Partner"
-              class="h-6 w-auto grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-            />
-          </div>
-          <div
-            class="group relative flex items-center justify-center transition-all duration-300"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg"
-              alt="Partner"
-              class="h-8 w-auto grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-            />
-          </div>
-          <div
-            class="group relative flex items-center justify-center transition-all duration-300"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg"
-              alt="Partner"
-              class="h-10 w-auto grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-            />
-          </div>
-          <div
-            class="group relative flex items-center justify-center transition-all duration-300"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg"
-              alt="Partner"
-              class="h-6 w-auto grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-            />
-          </div>
-          <div
-            class="group relative flex items-center justify-center transition-all duration-300"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
-              alt="Partner"
-              class="h-6 w-auto grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-            />
-          </div>
+          {
+            premiumPartners.map((partner) => (
+              <a
+                href={partner.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group relative flex items-center justify-center transition-all duration-300"
+              >
+                <OptimizedImage
+                  src={partner.logo}
+                  alt={partner.name}
+                  class="h-20 w-auto max-w-[140px] object-contain grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
+                />
+              </a>
+            ))
+          }
         </div>
 
         <div class="flex items-center gap-6 pt-4 border-t border-gray-100">
           <a
-            href={getLocalizedPath("/partners", lang)}
+            href={getLocalizedPath("/become-partner", lang)}
             class="qc-btn qc-btn--secondary group flex items-center gap-3 px-6 py-3"
           >
             <span>{t("partners.viewAll")}</span>

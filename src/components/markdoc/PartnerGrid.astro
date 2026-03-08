@@ -1,0 +1,42 @@
+---
+import OptimizedImage from "../OptimizedImage.astro";
+import { partners, sponsors } from "../../data/partners";
+
+interface Props {
+  type: "partners" | "sponsors";
+}
+
+const { type } = Astro.props;
+const items = type === "partners" ? partners : sponsors;
+---
+
+<div
+  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+>
+  {
+    items.map((item) => {
+      const inner = (
+        <div class="group flex items-center justify-center aspect-[3/2] transition-all duration-300">
+          <OptimizedImage
+            src={item.logo}
+            alt={item.name}
+            class="max-h-32 w-auto max-w-full object-contain group-hover:scale-110 transition-transform duration-500 ease-out !rounded-none !m-0"
+          />
+        </div>
+      );
+
+      return item.url ? (
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={item.name}
+        >
+          {inner}
+        </a>
+      ) : (
+        <div title={item.name}>{inner}</div>
+      );
+    })
+  }
+</div>

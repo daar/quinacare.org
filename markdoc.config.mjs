@@ -73,6 +73,12 @@ export default defineMarkdocConfig({
         image: { type: String },
       },
     },
+    "partner-grid": {
+      render: component("./src/components/markdoc/PartnerGrid.astro"),
+      attributes: {
+        type: { type: String, required: true },
+      },
+    },
     "cta-banner": {
       render: component("./src/components/markdoc/CtaBanner.astro"),
       attributes: {
