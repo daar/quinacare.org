@@ -47,7 +47,7 @@ function getTeaser(body: string, wordCount = 25): string {
   const text = body
     .replace(/---[\s\S]*?---/, "")
     .replace(/\{%.*?%\}/gs, "")
-    .replace(/[*_#`>\[\]()!|]/g, "")
+    .replace(/[*_#`>[\]()!|]/g, "")
     .replace(/\n+/g, " ")
     .trim();
   const words = text.split(/\s+/).slice(0, wordCount).join(" ");

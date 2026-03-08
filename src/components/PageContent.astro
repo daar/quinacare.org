@@ -1,14 +1,15 @@
 ---
-import { render } from "astro:content";
+import { render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
-import type { Lang } from "../i18n";
 
 interface Props {
-  page: any;
-  lang?: Lang;
+  page:
+    | CollectionEntry<"pages-nl">
+    | CollectionEntry<"pages-en">
+    | CollectionEntry<"pages-es">;
 }
 
-const { page, lang } = Astro.props;
+const { page } = Astro.props;
 const { Content } = await render(page);
 const isLanding = page.data.layout === "landing";
 ---
