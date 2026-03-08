@@ -1,11 +1,35 @@
 ---
+import { getLangFromUrl } from "../../i18n";
+
 interface Props {}
+
+const lang = getLangFromUrl(Astro.url);
+
+const t = {
+  nl: {
+    description:
+      "Stichting Quina Care is een in Nederland geregistreerde stichting met ANBI-status. Uw donaties zijn hierdoor fiscaal aftrekbaar.",
+    bankAccount: "Bankrekening",
+    chamberOfCommerce: "KvK-nummer",
+  },
+  en: {
+    description:
+      "Quina Care is a registered foundation in the Netherlands with ANBI status. Your donations are therefore tax-deductible.",
+    bankAccount: "Bank account",
+    chamberOfCommerce: "Chamber of Commerce",
+  },
+  es: {
+    description:
+      "Quina Care es una fundación registrada en los Países Bajos con estatus ANBI. Sus donaciones son deducibles de impuestos.",
+    bankAccount: "Cuenta bancaria",
+    chamberOfCommerce: "Cámara de Comercio",
+  },
+}[lang];
 ---
 
 <div class="max-w-4xl mx-auto">
   <p class="text-gray-500 text-center mb-12 text-lg leading-relaxed">
-    Stichting Quina Care is een in Nederland geregistreerde stichting met
-    ANBI-status. Uw donaties zijn hierdoor fiscaal aftrekbaar.
+    {t.description}
   </p>
 
   <div class="grid sm:grid-cols-3 gap-6">
@@ -16,7 +40,7 @@ interface Props {}
         <i class="fa-solid fa-building-columns text-qcRed text-lg"></i>
       </div>
       <p class="text-sm text-gray-400 uppercase tracking-wider mb-1">
-        Bankrekening
+        {t.bankAccount}
       </p>
       <p class="text-lg font-bold text-qcBlack tracking-wide">
         NL44 TRIO 0338 5550 48
@@ -30,7 +54,7 @@ interface Props {}
         <i class="fa-solid fa-briefcase text-qcRed text-lg"></i>
       </div>
       <p class="text-sm text-gray-400 uppercase tracking-wider mb-1">
-        KvK-nummer
+        {t.chamberOfCommerce}
       </p>
       <p class="text-lg font-bold text-qcBlack tracking-wide">67959091</p>
     </div>

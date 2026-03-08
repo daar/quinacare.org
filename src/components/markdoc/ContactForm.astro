@@ -1,15 +1,103 @@
 ---
+import { getLangFromUrl } from "../../i18n";
+
 interface Props {}
+
+const lang = getLangFromUrl(Astro.url);
+
+const t = {
+  nl: {
+    contactDetails: "Contactgegevens",
+    contactIntro:
+      "Heeft u een vraag of wilt u meer weten? Vul het formulier in of neem direct contact met ons op.",
+    email: "E-mail",
+    phone: "Telefoon",
+    phoneRegion: "Nederland",
+    postalAddress: "Postadres",
+    postalOnly: "Alleen postadres, geen bezoekadres",
+    followUs: "Volg ons",
+    name: "Naam",
+    emailLabel: "E-mail",
+    subject: "Onderwerp",
+    subjectPlaceholder: "Kies een onderwerp",
+    subjectGeneral: "Algemene vraag",
+    subjectVolunteer: "Vrijwilligerswerk",
+    subjectDonate: "Doneren & Sponsoring",
+    subjectCollaboration: "Samenwerking",
+    subjectPress: "Pers & Media",
+    subjectOther: "Anders",
+    message: "Bericht",
+    namePlaceholder: "Uw naam",
+    emailPlaceholder: "uw@email.nl",
+    messagePlaceholder: "Uw bericht...",
+    send: "Verstuur bericht",
+    messageFrom: "Bericht van",
+    from: "Van",
+  },
+  en: {
+    contactDetails: "Contact details",
+    contactIntro:
+      "Have a question or want to learn more? Fill out the form or contact us directly.",
+    email: "Email",
+    phone: "Phone",
+    phoneRegion: "Netherlands",
+    postalAddress: "Postal address",
+    postalOnly: "Postal address only, no visiting address",
+    followUs: "Follow us",
+    name: "Name",
+    emailLabel: "Email",
+    subject: "Subject",
+    subjectPlaceholder: "Choose a subject",
+    subjectGeneral: "General question",
+    subjectVolunteer: "Volunteering",
+    subjectDonate: "Donations & Sponsoring",
+    subjectCollaboration: "Collaboration",
+    subjectPress: "Press & Media",
+    subjectOther: "Other",
+    message: "Message",
+    namePlaceholder: "Your name",
+    emailPlaceholder: "your@email.com",
+    messagePlaceholder: "Your message...",
+    send: "Send message",
+    messageFrom: "Message from",
+    from: "From",
+  },
+  es: {
+    contactDetails: "Datos de contacto",
+    contactIntro:
+      "¿Tiene alguna pregunta o quiere saber más? Complete el formulario o contáctenos directamente.",
+    email: "Correo electrónico",
+    phone: "Teléfono",
+    phoneRegion: "Países Bajos",
+    postalAddress: "Dirección postal",
+    postalOnly: "Solo dirección postal, sin dirección de visita",
+    followUs: "Síguenos",
+    name: "Nombre",
+    emailLabel: "Correo electrónico",
+    subject: "Asunto",
+    subjectPlaceholder: "Elija un tema",
+    subjectGeneral: "Pregunta general",
+    subjectVolunteer: "Voluntariado",
+    subjectDonate: "Donaciones y patrocinio",
+    subjectCollaboration: "Colaboración",
+    subjectPress: "Prensa y medios",
+    subjectOther: "Otro",
+    message: "Mensaje",
+    namePlaceholder: "Su nombre",
+    emailPlaceholder: "su@correo.com",
+    messagePlaceholder: "Su mensaje...",
+    send: "Enviar mensaje",
+    messageFrom: "Mensaje de",
+    from: "De",
+  },
+}[lang];
 ---
 
 <div class="grid lg:grid-cols-5 gap-16 max-w-6xl mx-auto">
   <div class="lg:col-span-2 space-y-8">
     <div>
-      <h3 class="text-2xl font-bold text-qcBlack mb-4">Contactgegevens</h3>
-      <p class="text-gray-500 leading-relaxed">
-        Heeft u een vraag of wilt u meer weten? Vul het formulier in of neem
-        direct contact met ons op.
-      </p>
+      <h3 class="text-2xl font-bold text-qcBlack mb-4">{t.contactDetails}</h3>
+      <p class="text-gray-500 leading-relaxed">{t.contactIntro}</p>
     </div>
 
     <div class="space-y-6">
@@ -22,7 +110,7 @@ interface Props {}
           ></i>
         </div>
         <div>
-          <p class="text-sm text-gray-400">E-mail</p>
+          <p class="text-sm text-gray-400">{t.email}</p>
           <p
             class="font-semibold text-qcBlack group-hover:text-qcRed transition-colors"
           >
@@ -40,7 +128,7 @@ interface Props {}
           ></i>
         </div>
         <div>
-          <p class="text-sm text-gray-400">Telefoon</p>
+          <p class="text-sm text-gray-400">{t.phone}</p>
           <p
             class="font-semibold text-qcBlack group-hover:text-qcRed transition-colors"
           >
@@ -56,7 +144,7 @@ interface Props {}
           <i class="fa-solid fa-location-dot text-qcRed"></i>
         </div>
         <div>
-          <p class="text-sm text-gray-400">Postadres</p>
+          <p class="text-sm text-gray-400">{t.postalAddress}</p>
           <address class="font-semibold text-qcBlack not-italic">
             IJsvogellaan 76, 2261 DK Leidschendam
           </address>
@@ -65,7 +153,7 @@ interface Props {}
     </div>
 
     <div class="pt-4">
-      <p class="text-sm text-gray-400 mb-3">Volg ons</p>
+      <p class="text-sm text-gray-400 mb-3">{t.followUs}</p>
       <div class="flex gap-3">
         <a
           href="https://facebook.com/quinacare/"
@@ -107,11 +195,16 @@ interface Props {}
     </div>
   </div>
 
-  <form class="lg:col-span-3 space-y-6" id="contact-form">
+  <form
+    class="lg:col-span-3 space-y-6"
+    id="contact-form"
+    data-msg-from={t.messageFrom}
+    data-from={t.from}
+  >
     <div class="grid sm:grid-cols-2 gap-6">
       <div>
         <label for="name" class="block text-sm font-semibold text-qcBlack mb-2"
-          >Naam *</label
+          >{t.name} *</label
         >
         <input
           type="text"
@@ -119,12 +212,12 @@ interface Props {}
           name="name"
           required
           class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all"
-          placeholder="Uw naam"
+          placeholder={t.namePlaceholder}
         />
       </div>
       <div>
         <label for="email" class="block text-sm font-semibold text-qcBlack mb-2"
-          >E-mail *</label
+          >{t.emailLabel} *</label
         >
         <input
           type="email"
@@ -132,14 +225,14 @@ interface Props {}
           name="email"
           required
           class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all"
-          placeholder="uw@email.nl"
+          placeholder={t.emailPlaceholder}
         />
       </div>
     </div>
 
     <div>
       <label for="subject" class="block text-sm font-semibold text-qcBlack mb-2"
-        >Onderwerp *</label
+        >{t.subject} *</label
       >
       <select
         id="subject"
@@ -147,19 +240,19 @@ interface Props {}
         required
         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all"
       >
-        <option value="" disabled selected>Kies een onderwerp</option>
-        <option value="general">Algemene vraag</option>
-        <option value="volunteer">Vrijwilligerswerk</option>
-        <option value="donate">Doneren & Sponsoring</option>
-        <option value="collaboration">Samenwerking</option>
-        <option value="press">Pers & Media</option>
-        <option value="other">Anders</option>
+        <option value="" disabled selected>{t.subjectPlaceholder}</option>
+        <option value="general">{t.subjectGeneral}</option>
+        <option value="volunteer">{t.subjectVolunteer}</option>
+        <option value="donate">{t.subjectDonate}</option>
+        <option value="collaboration">{t.subjectCollaboration}</option>
+        <option value="press">{t.subjectPress}</option>
+        <option value="other">{t.subjectOther}</option>
       </select>
     </div>
 
     <div>
       <label for="message" class="block text-sm font-semibold text-qcBlack mb-2"
-        >Bericht *</label
+        >{t.message} *</label
       >
       <textarea
         id="message"
@@ -167,7 +260,7 @@ interface Props {}
         rows="6"
         required
         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all resize-none"
-        placeholder="Uw bericht..."></textarea>
+        placeholder={t.messagePlaceholder}></textarea>
     </div>
 
     <button
@@ -175,7 +268,7 @@ interface Props {}
       class="qc-btn qc-btn--primary w-full sm:w-auto px-10 py-4 text-base"
     >
       <i class="fa-solid fa-paper-plane mr-2"></i>
-      Verstuur bericht
+      {t.send}
     </button>
   </form>
 </div>
@@ -189,7 +282,9 @@ interface Props {}
     const name = data.get("name");
     const message = data.get("message");
     const email = data.get("email");
-    const mailtoLink = `mailto:care@quinacare.org?subject=${encodeURIComponent(`[${subject}] Bericht van ${name}`)}&body=${encodeURIComponent(`Van: ${name} (${email})\n\n${message}`)}`;
+    const msgFrom = form.dataset.msgFrom;
+    const from = form.dataset.from;
+    const mailtoLink = `mailto:care@quinacare.org?subject=${encodeURIComponent(`[${subject}] ${msgFrom} ${name}`)}&body=${encodeURIComponent(`${from}: ${name} (${email})\n\n${message}`)}`;
     window.location.href = mailtoLink;
   });
 </script>
