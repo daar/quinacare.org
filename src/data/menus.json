@@ -53,7 +53,7 @@
           "labelKey": "submenu.hospital",
           "path": "/hospital",
           "icon": "fa-solid fa-hospital",
-          "image": "https://picsum.photos/seed/hospital/440/250",
+          "image": "/media/2024/09/2023.07.26-entrance-hospital.IMG_2644.jpg",
           "descriptionKey": "submenu.hospitalDesc"
         }
       ]
