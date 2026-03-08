@@ -239,26 +239,6 @@ function getNewsPath(slug: string): string {
         <article class="prose prose-article">
           <Content />
         </article>
-
-        <div
-          class="mt-20 p-8 border border-gray-100 bg-gray-50 flex flex-col sm:flex-row items-center gap-8 rounded-xl"
-          data-pagefind-ignore
-        >
-          <div
-            class="w-20 h-20 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
-          >
-            <i class="fa-solid fa-user text-2xl text-qcRed"></i>
-          </div>
-          <div class="text-center sm:text-left">
-            <span class="qc-label mb-1">{t("post.aboutAuthor")}</span>
-            <h4 class="text-xl font-bold mb-2 uppercase tracking-tighter">
-              {post.data.author || "Team QC"}
-            </h4>
-            <p class="text-xs text-gray-500 leading-relaxed">
-              {t("post.authorBio")}
-            </p>
-          </div>
-        </div>
       </div>
     </main>
 
