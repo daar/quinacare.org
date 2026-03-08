@@ -21,19 +21,19 @@ const t = useTranslations(lang);
         <img
           src="/logo-quina-care.svg"
           alt="Quina Care"
-          class="h-8 brightness-0 invert"
+          class="h-12 brightness-0 invert"
         />
-        <p class="text-white/50 text-sm leading-relaxed max-w-xs">
+        <p class="text-white/50 text-lg leading-relaxed max-w-xs">
           {t("footer.description")}
         </p>
         <div class="flex gap-4 text-white/40">
-          <a href="#" class="hover:text-qcRed transition-colors text-lg"
+          <a href="#" class="hover:text-white transition-colors text-lg"
             ><i class="fa-brands fa-instagram"></i></a
           >
-          <a href="#" class="hover:text-qcRed transition-colors text-lg"
+          <a href="#" class="hover:text-white transition-colors text-lg"
             ><i class="fa-brands fa-linkedin"></i></a
           >
-          <a href="#" class="hover:text-qcRed transition-colors text-lg"
+          <a href="#" class="hover:text-white transition-colors text-lg"
             ><i class="fa-brands fa-facebook"></i></a
           >
         </div>
@@ -43,7 +43,7 @@ const t = useTranslations(lang);
         <h4 class="qc-footer-heading mb-8">
           {t("footer.organization")}
         </h4>
-        <ul class="space-y-4 text-white/50 text-xs uppercase tracking-widest">
+        <ul class="space-y-4 text-white/50 text-base uppercase tracking-widest">
           <li>
             <a href="#" class="hover:text-white transition-colors"
               >{t("footer.aboutUs")}</a
@@ -73,10 +73,13 @@ const t = useTranslations(lang);
         <h4 class="qc-footer-heading mb-8">
           {t("footer.contact")}
         </h4>
-        <ul class="space-y-4 text-white/50 text-xs">
+        <ul class="space-y-4 text-white/50 text-base">
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-envelope mt-1 text-white/50"></i>
-            <span>info@quinacare.org</span>
+            <a
+              href="mailto:info@quinacare.org"
+              class="hover:text-white transition-colors">info@quinacare.org</a
+            >
           </li>
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-location-dot mt-1 text-white/50"></i>
@@ -85,39 +88,53 @@ const t = useTranslations(lang);
         </ul>
       </div>
 
-      {
-        (lang === "nl" || lang === "en") && (
-          <div>
-            <h4 class="qc-footer-heading mb-8">{t("footer.certifications")}</h4>
-            <div class="flex flex-wrap gap-4">
-              {lang === "en" && (
+      <div>
+        <h4 class="qc-footer-heading mb-8">{t("footer.certifications")}</h4>
+        <div class="flex flex-wrap gap-4">
+          <a
+            href="https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/bijzondere_regelingen/goede_doelen/algemeen_nut_beogende_instellingen/wat_is_een_anbi"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/certifications/anbi.png"
+              alt="ANBI"
+              class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+            />
+          </a>
+          <a
+            href="https://www.cbf.nl/organisatie/quina-care"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/certifications/cbf.png"
+              alt="CBF Erkend Goed Doel"
+              class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+            />
+          </a>
+          {
+            lang === "en" && (
+              <a
+                href="https://www.centerfornonprofits.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img
                   src="/images/certifications/certified-nonprofit.png"
                   alt="Certified Nonprofit"
                   class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
                 />
-              )}
-              {lang === "nl" && (
-                <>
-                  <img
-                    src="/images/certifications/anbi.png"
-                    alt="ANBI"
-                    class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                  />
-                  <img
-                    src="/images/certifications/cbf.png"
-                    alt="CBF Erkend Goed Doel"
-                    class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                  />
-                </>
-              )}
-            </div>
-            <p class="mt-6 text-[9px] text-white/30 leading-relaxed uppercase tracking-widest">
-              {t("footer.certifiedCharity")}
-            </p>
-          </div>
-        )
-      }
+              </a>
+            )
+          }
+        </div>
+        <p
+          class="mt-6 text-sm text-white/30 leading-relaxed uppercase tracking-widest"
+        >
+          {t("footer.certifiedCharity")}
+        </p>
+      </div>
     </div>
 
     <div
