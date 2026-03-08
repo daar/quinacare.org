@@ -79,6 +79,13 @@ export default defineMarkdocConfig({
         type: { type: String, required: true },
       },
     },
+    video: {
+      render: component("./src/components/markdoc/Video.astro"),
+      attributes: {
+        src: { type: String, required: true },
+        poster: { type: String },
+      },
+    },
     "contact-cards": {
       render: component("./src/components/markdoc/ContactCards.astro"),
       attributes: {
