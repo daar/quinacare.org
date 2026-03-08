@@ -144,26 +144,32 @@ const t = useTranslations(lang);
       }
     }
 
+    function esc(s: string): string {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
     function renderCard(item: any): string {
       const hasImage = item.meta?.image;
       return `
         <article class="group cursor-pointer">
-          <a href="${item.url}">
+          <a href="${esc(item.url)}">
             <div class="aspect-[4/3] mb-6 overflow-hidden bg-gray-100 rounded-xl relative">
               ${
                 hasImage
-                  ? `<img src="${item.meta.image}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />`
+                  ? `<img src="${esc(item.meta.image)}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />`
                   : `<div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                       <i class="fa-solid fa-file-lines text-gray-300 text-3xl"></i>
                     </div>`
               }
             </div>
             <h3 class="text-xl font-bold group-hover:text-qcRed transition uppercase leading-tight tracking-tighter">
-              ${item.meta?.title || ""}
+              ${esc(item.meta?.title || "")}
             </h3>
             ${
               item.excerpt
-                ? `<p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">${item.excerpt}</p>`
+                ? `<p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">${esc(item.excerpt)}</p>`
                 : ""
             }
           </a>

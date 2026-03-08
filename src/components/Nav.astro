@@ -488,6 +488,12 @@ const searchPath = getLocalizedPath("/search", lang);
 
       const search = await pf.search(query);
 
+      function esc(s: string): string {
+        const d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
       if (search.results.length === 0) {
         if (resultsList) resultsList.innerHTML = "";
         noResults?.classList.remove("hidden");
@@ -506,17 +512,17 @@ const searchPath = getLocalizedPath("/search", lang);
         resultsList.innerHTML = items
           .map(
             (item: any) => `
-          <a href="${item.url}" class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition group">
+          <a href="${esc(item.url)}" class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition group">
             ${
               item.meta?.image
-                ? `<img src="${item.meta.image}" alt="" class="w-16 h-16 object-cover rounded-lg bg-gray-100 flex-shrink-0" />`
+                ? `<img src="${esc(item.meta.image)}" alt="" class="w-16 h-16 object-cover rounded-lg bg-gray-100 flex-shrink-0" />`
                 : `<div class="w-16 h-16 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-file-lines text-gray-300"></i>
                   </div>`
             }
             <div class="min-w-0 flex-1">
-              <h4 class="text-sm font-bold uppercase tracking-tight group-hover:text-qcRed transition truncate">${item.meta?.title || ""}</h4>
-              <p class="text-xs text-gray-400 line-clamp-1 mt-1">${item.excerpt || ""}</p>
+              <h4 class="text-sm font-bold uppercase tracking-tight group-hover:text-qcRed transition truncate">${esc(item.meta?.title || "")}</h4>
+              <p class="text-xs text-gray-400 line-clamp-1 mt-1">${esc(item.excerpt || "")}</p>
             </div>
           </a>
         `,
