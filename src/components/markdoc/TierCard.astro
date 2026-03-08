@@ -44,22 +44,18 @@ const {
     <span class="text-gray-400 text-sm block">{frequency}</span>
   </div>
 
-  <p
-    class="text-gray-500 text-lg leading-relaxed mb-2 min-h-[3rem] font-georgia"
-  >
+  <p class="qc-body leading-relaxed mb-2 min-h-[3rem]">
     {impact}
   </p>
 
-  <span class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-6">
+  <span class="qc-meta mb-6">
     {yearly}
   </span>
 
   <a
     href={href}
-    class={`block w-full py-3.5 text-[10px] font-bold uppercase tracking-widest transition-all rounded-md text-center ${
-      featured
-        ? "bg-qcRed text-white hover:bg-qcBlack"
-        : "border border-qcBlack hover:bg-qcBlack hover:text-white"
+    class={`qc-btn block w-full py-3.5 text-center ${
+      featured ? "qc-btn--primary" : "qc-btn--outline"
     }`}
   >
     <i class="fa-solid fa-heart mr-2"></i>

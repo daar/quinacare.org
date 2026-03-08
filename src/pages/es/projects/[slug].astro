@@ -101,7 +101,7 @@ const shareTitle = entry.data.title;
       <div class="max-w-3xl mx-auto px-6 text-center">
         <div class="flex items-center justify-center gap-3 mb-8">
           <span
-            class={`${getStatusColor(entry.data.status)} text-white text-[9px] font-bold uppercase tracking-[0.3em] px-3 py-1 rounded-sm`}
+            class={`qc-meta ${getStatusColor(entry.data.status)} !text-white px-3 py-1 rounded-sm`}
           >
             {getStatusLabel(entry.data.status)}
           </span>
@@ -113,9 +113,7 @@ const shareTitle = entry.data.title;
           {entry.data.title}
         </h1>
 
-        <div
-          class="flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 flex-wrap"
-        >
+        <div class="qc-meta flex items-center justify-center gap-4 flex-wrap">
           <span>{formatDate(entry.data.date)}</span>
         </div>
       </div>
@@ -147,7 +145,7 @@ const shareTitle = entry.data.title;
       <aside class="hidden lg:block w-32 sticky top-32 h-fit">
         <div class="flex flex-col gap-6">
           <span
-            class="text-[9px] font-bold uppercase tracking-widest text-gray-300 transform -rotate-90 origin-left translate-y-8"
+            class="qc-meta !text-gray-300 transform -rotate-90 origin-left translate-y-8"
           >
             {t("post.shareStory")}
           </span>
@@ -193,7 +191,7 @@ const shareTitle = entry.data.title;
         <div class="mt-20 pt-12 border-t border-gray-100">
           <a
             href={getLocalizedPath("/projects", lang)}
-            class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcRed transition-colors group"
+            class="qc-meta inline-flex items-center gap-2 hover:text-qcRed transition-colors group"
           >
             <svg
               class="w-4 h-4 group-hover:-translate-x-1 transition-transform"

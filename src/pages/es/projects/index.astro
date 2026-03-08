@@ -64,9 +64,7 @@ function getStatusLabel(status: string): string {
 
   <header class="pt-40 pb-16 border-b border-gray-100">
     <div class="max-w-[1600px] mx-auto px-6">
-      <span
-        class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4"
-      >
+      <span class="qc-label mb-4">
         {t("projects.subtitle")}
       </span>
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-none">
@@ -107,7 +105,7 @@ function getStatusLabel(status: string): string {
                   )}
                   <div class="absolute top-4 left-4">
                     <span
-                      class={`${getStatusColor(project.data.status)} text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm`}
+                      class={`qc-meta ${getStatusColor(project.data.status)} !text-white px-3 py-1.5 rounded-sm`}
                     >
                       {getStatusLabel(project.data.status)}
                     </span>
@@ -115,18 +113,18 @@ function getStatusLabel(status: string): string {
                 </div>
 
                 <div class="p-5 md:p-6">
-                  <div class="text-[10px] uppercase tracking-widest text-gray-400 mb-3 font-bold">
+                  <div class="qc-meta mb-3">
                     {formatDate(project.data.date)}
                   </div>
                   <h3 class="text-base md:text-lg font-bold uppercase tracking-tight leading-tight group-hover:text-qcRed transition">
                     {project.data.title}
                   </h3>
                   {project.data.excerpt && (
-                    <p class="text-[18px] font-georgia text-gray-500 mt-4 line-clamp-2 leading-relaxed">
+                    <p class="qc-body mt-4 line-clamp-2">
                       {project.data.excerpt}
                     </p>
                   )}
-                  <div class="mt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-qcRed">
+                  <div class="qc-meta mt-6 flex items-center gap-2 !text-qcRed">
                     {t("projects.readMore")}
                     <svg
                       class="w-4 h-4 group-hover:translate-x-1 transition-transform"

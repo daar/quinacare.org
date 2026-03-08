@@ -69,10 +69,7 @@ function getNewsPath(slug: string): string {
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <span
-            class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4"
-            >{t("news.subtitle")}</span
-          >
+          <span class="qc-label mb-4">{t("news.subtitle")}</span>
           <h1
             class="text-6xl md:text-8xl font-bold tracking-tighter leading-none"
           >
@@ -81,7 +78,7 @@ function getNewsPath(slug: string): string {
             >
           </h1>
         </div>
-        <div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest">
+        <div class="qc-meta flex gap-6">
           <button class="text-qcRed border-b border-qcRed pb-2"
             >{t("news.all")}</button
           >
@@ -120,12 +117,12 @@ function getNewsPath(slug: string): string {
                   <div class="w-full h-full bg-gradient-to-br from-qcBlack to-gray-800" />
                 )}
                 <div class="absolute top-4 left-4">
-                  <span class="bg-qcRed text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5">
+                  <span class="qc-meta bg-qcRed !text-white px-3 py-1.5">
                     {getCategoryLabel(featuredPost.data.categories)}
                   </span>
                 </div>
               </div>
-              <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest text-gray-400 mb-4 font-bold">
+              <div class="qc-meta flex items-center gap-3 mb-4">
                 <span class="text-qcBlack">
                   {featuredPost.data.author || "Team QC"}
                 </span>
@@ -164,7 +161,7 @@ function getNewsPath(slug: string): string {
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
               </div>
               <div class="relative p-8 flex flex-col justify-between h-full min-h-[320px]">
-                <span class="text-white/60 text-[9px] font-bold uppercase tracking-widest block">
+                <span class="qc-meta !text-white/60 block">
                   {getCategoryLabel(remainingPosts[0].data.categories)}
                 </span>
                 <div>
@@ -172,9 +169,7 @@ function getNewsPath(slug: string): string {
                     {remainingPosts[0].data.title}
                   </h2>
                   <div class="mt-6 flex items-center justify-between text-white/60">
-                    <span class="text-[10px] font-bold uppercase tracking-widest">
-                      {t("news.readPost")}
-                    </span>
+                    <span class="qc-meta">{t("news.readPost")}</span>
                     <svg
                       class="w-5 h-5 group-hover:translate-x-2 transition-transform"
                       fill="none"
@@ -208,12 +203,12 @@ function getNewsPath(slug: string): string {
                   <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
                 )}
                 <div class="absolute top-4 left-4">
-                  <span class="bg-white text-qcBlack text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 border border-gray-100">
+                  <span class="qc-meta bg-white !text-qcBlack px-3 py-1.5 border border-gray-100">
                     {getCategoryLabel(post.data.categories)}
                   </span>
                 </div>
               </div>
-              <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest text-gray-400 mb-3 font-bold">
+              <div class="qc-meta flex items-center gap-3 mb-3">
                 <span class="text-qcBlack">
                   {post.data.author || "Team QC"}
                 </span>
@@ -224,9 +219,7 @@ function getNewsPath(slug: string): string {
                 {post.data.title}
               </h3>
               {post.data.excerpt && (
-                <p class="text-gray-500 text-[18px] font-georgia mt-4 line-clamp-2 leading-relaxed">
-                  {post.data.excerpt}
-                </p>
+                <p class="qc-body mt-4 line-clamp-2">{post.data.excerpt}</p>
               )}
             </a>
           </article>
@@ -237,9 +230,7 @@ function getNewsPath(slug: string): string {
     <div
       class="mt-32 pt-12 border-t border-gray-100 flex justify-between items-center"
     >
-      <span
-        class="text-[10px] font-bold uppercase tracking-widest text-gray-400"
-      >
+      <span class="qc-meta">
         {t("news.page")}
         {String(page.currentPage).padStart(2, "0")} / {
           String(page.lastPage).padStart(2, "0")

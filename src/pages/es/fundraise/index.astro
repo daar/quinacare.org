@@ -66,9 +66,7 @@ function getStatusLabel(status: string): string {
 
   <header class="pt-40 pb-16 border-b border-gray-100">
     <div class="max-w-[1600px] mx-auto px-6">
-      <span
-        class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4"
-      >
+      <span class="qc-label mb-4">
         {t("fundraise.subtitle")}
       </span>
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-none">
@@ -124,7 +122,7 @@ function getStatusLabel(status: string): string {
                       )}
                       <div class="absolute top-4 left-4">
                         <span
-                          class={`${getStatusColor(fundraiser.data.status)} text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm`}
+                          class={`qc-meta ${getStatusColor(fundraiser.data.status)} !text-white px-3 py-1.5 rounded-sm`}
                         >
                           {getStatusLabel(fundraiser.data.status)}
                         </span>

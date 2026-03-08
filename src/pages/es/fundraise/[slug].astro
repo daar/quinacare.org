@@ -90,7 +90,7 @@ const shareTitle = entry.data.title;
   <div class="max-w-[1600px] mx-auto px-6 pt-32 pb-6">
     <a
       href={getLocalizedPath("/fundraise", lang)}
-      class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcRed transition-colors group"
+      class="qc-meta inline-flex items-center gap-2 hover:text-qcRed transition-colors group"
     >
       <svg
         class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
@@ -106,7 +106,7 @@ const shareTitle = entry.data.title;
     <div class="mt-6 mb-8">
       <div class="flex items-center gap-3 mb-4">
         <span
-          class={`${getStatusColor(entry.data.status)} text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full`}
+          class={`qc-meta ${getStatusColor(entry.data.status)} !text-white px-3 py-1.5 rounded-full`}
         >
           {getStatusLabel(entry.data.status)}
         </span>
@@ -188,9 +188,7 @@ const shareTitle = entry.data.title;
             >
               <div>
                 <div class="text-2xl font-bold tracking-tight">{pct}%</div>
-                <div
-                  class="text-[10px] text-gray-400 font-bold uppercase tracking-wide"
-                >
+                <div class="qc-meta">
                   {t("fundraise.funded")}
                 </div>
               </div>
@@ -198,9 +196,7 @@ const shareTitle = entry.data.title;
                 <div class="text-2xl font-bold tracking-tight">
                   {entry.data.backers}
                 </div>
-                <div
-                  class="text-[10px] text-gray-400 font-bold uppercase tracking-wide"
-                >
+                <div class="qc-meta">
                   {t("fundraise.backers")}
                 </div>
               </div>
@@ -216,9 +212,7 @@ const shareTitle = entry.data.title;
               </div>
               <div>
                 <div class="text-xl font-bold tracking-tight">{daysToGo}</div>
-                <div
-                  class="text-[10px] text-gray-400 font-bold uppercase tracking-wide"
-                >
+                <div class="qc-meta">
                   {t("fundraise.daysToGo")}
                 </div>
               </div>
@@ -237,8 +231,7 @@ const shareTitle = entry.data.title;
             </a>
 
             <div class="flex items-center justify-center gap-3 mt-auto pt-4">
-              <span
-                class="text-[9px] font-bold uppercase tracking-widest text-gray-300 mr-1"
+              <span class="qc-meta !text-gray-300 mr-1"
                 >{t("post.shareStory")}</span
               >
               <a
@@ -294,9 +287,7 @@ const shareTitle = entry.data.title;
                 <i class="fa-solid fa-user text-lg text-qcRed"></i>
               </div>
               <div>
-                <div
-                  class="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5"
-                >
+                <div class="qc-meta mb-0.5">
                   {t("fundraise.campaignBy")}
                 </div>
                 <div class="font-bold tracking-tight">
@@ -317,9 +308,7 @@ const shareTitle = entry.data.title;
                 <i class="fa-regular fa-calendar text-gray-400"></i>
               </div>
               <div>
-                <div
-                  class="text-[9px] font-bold uppercase tracking-widest text-gray-400"
-                >
+                <div class="qc-meta">
                   {t("fundraise.endDate")}
                 </div>
                 <div class="font-bold tracking-tight">

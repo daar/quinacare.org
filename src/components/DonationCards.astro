@@ -17,16 +17,11 @@ const t = useTranslations(lang);
 <section class="py-24 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
-      <span
-        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
-        >{t("donation.directImpact")}</span
-      >
+      <span class="qc-label mb-4">{t("donation.directImpact")}</span>
       <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">
         {t("donation.title")}
       </h2>
-      <p
-        class="text-gray-500 max-w-xl mx-auto text-lg leading-relaxed font-georgia"
-      >
+      <p class="qc-body max-w-xl mx-auto leading-relaxed">
         {t("donation.subtitle")}
       </p>
     </div>
@@ -44,12 +39,12 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.medication")}
         </h4>
-        <p class="text-gray-500 text-lg leading-relaxed mb-8 font-georgia">
+        <p class="qc-body leading-relaxed mb-8">
           {t("donation.medicationDesc")}
         </p>
         <a
           href={`${getLocalizedPath("/donate", lang)}?amount=15`}
-          class="block w-full py-3 border border-qcBlack text-[14px] font-bold font-georgia uppercase tracking-widest hover:bg-qcBlack hover:text-white transition-all rounded-md text-center"
+          class="qc-btn qc-btn--outline block w-full py-3 text-center"
         >
           {t("donation.donate")} &euro;15
         </a>
@@ -67,12 +62,12 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.prenatal")}
         </h4>
-        <p class="text-gray-500 text-lg leading-relaxed mb-8 font-georgia">
+        <p class="qc-body leading-relaxed mb-8">
           {t("donation.prenatalDesc")}
         </p>
         <a
           href={`${getLocalizedPath("/donate", lang)}?amount=35`}
-          class="block w-full py-3 bg-qcBlack text-white text-[14px] font-bold font-georgia uppercase tracking-widest hover:bg-qcRed transition-all rounded-md text-center"
+          class="qc-btn qc-btn--secondary block w-full py-3 text-center"
         >
           {t("donation.donate")} &euro;35
         </a>
@@ -90,12 +85,12 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.surgery")}
         </h4>
-        <p class="text-gray-500 text-lg leading-relaxed mb-8 font-georgia">
+        <p class="qc-body leading-relaxed mb-8">
           {t("donation.surgeryDesc")}
         </p>
         <a
           href={`${getLocalizedPath("/donate", lang)}?amount=75`}
-          class="block w-full py-3 border border-qcBlack text-[14px] font-bold font-georgia uppercase tracking-widest hover:bg-qcBlack hover:text-white transition-all rounded-md text-center"
+          class="qc-btn qc-btn--outline block w-full py-3 text-center"
         >
           {t("donation.donate")} &euro;75
         </a>
@@ -105,7 +100,7 @@ const t = useTranslations(lang);
     <div class="mt-16 text-center">
       <a
         href={getLocalizedPath("/donate", lang)}
-        class="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcRed transition-colors"
+        class="qc-btn qc-btn--ghost text-gray-400"
       >
         {t("donation.chooseAmount")}
         <i class="fa-solid fa-chevron-right ml-2 text-[8px]"></i>

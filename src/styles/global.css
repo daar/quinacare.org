@@ -9,12 +9,167 @@
   descent-override: 20%;
 }
 
+@font-face {
+  font-family: "Arimo";
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/Arimo-Regular.ttf") format("truetype");
+}
+
 @theme {
   --color-qcRed: #ee172c;
   --color-qcBlack: #111111;
   --color-qcGray: #fcfcfc;
   --font-effra: "Effra", sans-serif;
-  --font-georgia: Georgia, "Times New Roman", serif;
+  --font-sans: "Arimo", sans-serif;
+}
+
+/* ──────────────────────────────────────────────
+   Design tokens: typography & buttons
+   ────────────────────────────────────────────── */
+:root {
+  /* Section labels (small red uppercase) */
+  --label-font: var(--font-sans);
+  --label-size: 14px;
+  --label-weight: 700;
+  --label-tracking: 0.4em;
+  --label-color: var(--color-qcRed);
+
+  /* Section headings */
+  --heading-font: var(--font-effra);
+  --heading-weight: 700;
+  --heading-tracking: -0.025em;
+  --heading-color: var(--color-qcBlack);
+
+  /* Body / description text */
+  --body-font: var(--font-sans);
+  --body-size: 18px;
+  --body-line-height: 1.6;
+  --body-color: #6b7280;
+
+  /* Buttons */
+  --btn-font: var(--font-sans);
+  --btn-size: 14px;
+  --btn-weight: 700;
+  --btn-tracking: 0.15em;
+
+  /* Meta text (dates, categories, badges) */
+  --meta-font: var(--font-sans);
+  --meta-size: 10px;
+  --meta-weight: 700;
+  --meta-tracking: 0.2em;
+  --meta-color: #9ca3af;
+
+  /* Footer headings */
+  --footer-heading-font: var(--font-sans);
+  --footer-heading-size: 11px;
+  --footer-heading-weight: 700;
+  --footer-heading-tracking: 0.3em;
+}
+
+/* Section label */
+.qc-label {
+  font-family: var(--label-font);
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-tracking);
+  color: var(--label-color);
+  text-transform: uppercase;
+  display: block;
+}
+
+/* Body text (Georgia) */
+.qc-body {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  line-height: var(--body-line-height);
+  color: var(--body-color);
+}
+
+.qc-body--light {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  line-height: var(--body-line-height);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Button base */
+.qc-btn {
+  font-family: var(--btn-font);
+  font-size: var(--btn-size);
+  font-weight: var(--btn-weight);
+  letter-spacing: var(--btn-tracking);
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+/* Button variants */
+.qc-btn--primary {
+  background-color: var(--color-qcRed);
+  color: white;
+  border-radius: 0.375rem;
+}
+.qc-btn--primary:hover {
+  background-color: var(--color-qcBlack);
+  color: white;
+}
+
+.qc-btn--secondary {
+  background-color: var(--color-qcBlack);
+  color: white;
+  border-radius: 0.375rem;
+}
+.qc-btn--secondary:hover {
+  background-color: var(--color-qcRed);
+  color: white;
+}
+
+.qc-btn--outline {
+  border: 1px solid var(--color-qcBlack);
+  background: transparent;
+  border-radius: 0.375rem;
+}
+.qc-btn--outline:hover {
+  background-color: var(--color-qcBlack);
+  color: white;
+}
+
+.qc-btn--ghost {
+  color: var(--color-qcRed);
+  background: transparent;
+}
+.qc-btn--ghost:hover {
+  color: var(--color-qcBlack);
+}
+
+.qc-btn--white {
+  background-color: white;
+  color: var(--color-qcRed);
+  border-radius: 0.375rem;
+}
+.qc-btn--white:hover {
+  background-color: var(--color-qcBlack);
+  color: white;
+}
+
+/* Meta text */
+.qc-meta {
+  font-family: var(--meta-font);
+  font-size: var(--meta-size);
+  font-weight: var(--meta-weight);
+  letter-spacing: var(--meta-tracking);
+  color: var(--meta-color);
+  text-transform: uppercase;
+}
+
+/* Footer heading */
+.qc-footer-heading {
+  font-family: var(--footer-heading-font);
+  font-size: var(--footer-heading-size);
+  font-weight: var(--footer-heading-weight);
+  letter-spacing: var(--footer-heading-tracking);
+  text-transform: uppercase;
+  color: white;
 }
 
 body {
@@ -146,7 +301,7 @@ mark {
 /* Body text: Georgia 18px for long-form content */
 .prose-article,
 .prose-landing > p {
-  font-family: var(--font-georgia);
+  font-family: var(--font-sans);
   font-size: 18px;
   line-height: 1.8;
   color: #374151;

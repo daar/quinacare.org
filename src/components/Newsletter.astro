@@ -13,10 +13,7 @@ const t = useTranslations(lang);
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid lg:grid-cols-2 gap-16 items-center">
       <div>
-        <span
-          class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
-          >{t("newsletter.label")}</span
-        >
+        <span class="qc-label mb-4">{t("newsletter.label")}</span>
         <h2
           class="text-3xl md:text-4xl font-bold tracking-tighter uppercase leading-tight mb-6"
         >
@@ -25,7 +22,7 @@ const t = useTranslations(lang);
             >{t("newsletter.titleHighlight")}</span
           >
         </h2>
-        <p class="text-gray-500 text-lg leading-relaxed max-w-md font-georgia">
+        <p class="qc-body leading-relaxed max-w-md">
           {t("newsletter.subtitle")}
         </p>
       </div>
@@ -44,9 +41,7 @@ const t = useTranslations(lang);
             >
             </div>
           </div>
-          <button
-            class="bg-qcBlack text-white px-10 py-4 font-bold font-georgia text-[14px] uppercase tracking-widest hover:bg-qcRed transition-all duration-300 flex-shrink-0 rounded-md"
-          >
+          <button class="qc-btn qc-btn--secondary px-10 py-4 flex-shrink-0">
             {t("newsletter.submit")}
           </button>
         </form>

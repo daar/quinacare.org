@@ -27,17 +27,14 @@ const t = useTranslations(lang);
       />
     </div>
     <div>
-      <span
-        class="text-qcRed font-bold text-xs uppercase tracking-widest mb-4 block"
-        >{t("focus.label")}</span
-      >
+      <span class="qc-label mb-4">{t("focus.label")}</span>
       <h2 class="text-4xl font-bold mb-6">{t("focus.title")}</h2>
-      <p class="text-gray-600 text-lg mb-8 leading-relaxed font-georgia">
+      <p class="qc-body mb-8 leading-relaxed">
         {t("focus.description")}
       </p>
       <a
         href={getLocalizedPath("/projects/hpv-screening", lang)}
-        class="inline-block bg-qcRed text-white px-10 py-4 font-bold font-georgia uppercase text-[14px] tracking-widest hover:bg-qcBlack transition rounded-md"
+        class="qc-btn qc-btn--primary inline-block px-10 py-4"
       >
         {t("focus.cta")}
       </a>

@@ -28,9 +28,7 @@ const t = useTranslations(lang);
 
   <div class="relative z-20 max-w-[1600px] mx-auto px-6 w-full">
     <div class="max-w-3xl">
-      <span
-        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.5em] block mb-8"
-      >
+      <span class="qc-label mb-8">
         {t("hero.foundation")}
       </span>
       <h1
@@ -39,20 +37,18 @@ const t = useTranslations(lang);
         {t("hero.title1")}<br />
         <span class="text-qcRed">{t("hero.title2")}</span>
       </h1>
-      <p
-        class="text-white/70 text-lg md:text-xl max-w-lg mb-12 font-light leading-relaxed font-georgia"
-      >
+      <p class="qc-body--light max-w-lg mb-12 font-light md:text-xl">
         {t("hero.subtitle")}
       </p>
 
       <div class="flex flex-wrap gap-6 items-center">
         <button
-          class="bg-qcRed rounded-md text-white px-12 py-5 font-bold text-[14px] font-georgia uppercase tracking-[0.25em] hover:bg-white hover:text-qcBlack transition-all duration-500"
+          class="qc-btn qc-btn--primary px-12 py-5 hover:bg-white hover:text-qcBlack"
         >
           {t("hero.cta1")}
         </button>
         <button
-          class="group flex items-center text-white text-[14px] font-bold font-georgia uppercase tracking-[0.25em] hover:text-qcRed transition-colors"
+          class="qc-btn group flex items-center text-white hover:text-qcRed"
         >
           <span
             class="w-12 h-12 rounded-full flex items-center justify-center group-hover:border-qcRed transition-colors"

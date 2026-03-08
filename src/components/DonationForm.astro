@@ -39,9 +39,7 @@ const t = useTranslations(lang);
   >
     <!-- Left: Title + Counter -->
     <div class="flex-1 text-center lg:text-left">
-      <span
-        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.5em] block mb-8"
-      >
+      <span class="qc-label mb-8">
         {t("hero.foundation")}
       </span>
       <h1
@@ -50,7 +48,7 @@ const t = useTranslations(lang);
         {t("donate.pageTitle")}
       </h1>
       <p
-        class="text-white/60 text-lg max-w-lg mb-12 font-light leading-relaxed mx-auto lg:mx-0 font-georgia"
+        class="qc-body--light max-w-lg mb-12 font-light leading-relaxed mx-auto lg:mx-0"
       >
         {t("donate.pageSubtitle")}
       </p>
@@ -93,14 +91,14 @@ const t = useTranslations(lang);
         <button
           type="button"
           data-frequency="one-time"
-          class="flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white"
+          class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
         >
           {t("donate.oneTime")}
         </button>
         <button
           type="button"
           data-frequency="monthly"
-          class="flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack"
+          class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
         >
           {t("donate.monthly")}
         </button>
@@ -138,15 +136,10 @@ const t = useTranslations(lang);
         id="impact-preview"
         class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6"
       >
-        <span
-          class="text-qcRed font-bold text-[9px] uppercase tracking-[0.4em] block mb-1"
-        >
+        <span class="qc-label mb-1">
           {t("donate.impactLabel")}
         </span>
-        <p
-          id="impact-text"
-          class="text-gray-600 text-lg leading-relaxed font-georgia"
-        >
+        <p id="impact-text" class="qc-body leading-relaxed">
           {t("donate.impactGeneric")}
         </p>
         <span id="impact-medication" class="hidden" data-impact="medication">
@@ -226,7 +219,7 @@ const t = useTranslations(lang);
       <button
         type="button"
         id="donate-submit"
-        class="w-full py-4 bg-qcRed text-white font-bold font-georgia text-[14px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all shadow-lg"
+        class="qc-btn qc-btn--primary w-full py-4 shadow-lg"
       >
         <i class="fa-solid fa-heart mr-2"></i>
         {t("donate.submitButton")} &euro;<span id="submit-amount">50</span>
@@ -257,16 +250,11 @@ const t = useTranslations(lang);
 <section class="py-24 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
-      <span
-        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
-        >{t("donation.directImpact")}</span
-      >
+      <span class="qc-label mb-4">{t("donation.directImpact")}</span>
       <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">
         {t("donation.title")}
       </h2>
-      <p
-        class="text-gray-500 max-w-xl mx-auto text-lg leading-relaxed font-georgia"
-      >
+      <p class="qc-body max-w-xl mx-auto leading-relaxed">
         {t("donation.subtitle")}
       </p>
     </div>
@@ -286,7 +274,7 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.medication")}
         </h4>
-        <p class="text-gray-500 text-lg leading-relaxed font-georgia">
+        <p class="qc-body leading-relaxed">
           {t("donation.medicationDesc")}
         </p>
       </div>
@@ -305,7 +293,7 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.prenatal")}
         </h4>
-        <p class="text-gray-500 text-lg leading-relaxed font-georgia">
+        <p class="qc-body leading-relaxed">
           {t("donation.prenatalDesc")}
         </p>
       </div>
@@ -324,7 +312,7 @@ const t = useTranslations(lang);
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.surgery")}
         </h4>
-        <p class="text-gray-500 text-lg leading-relaxed font-georgia">
+        <p class="qc-body leading-relaxed">
           {t("donation.surgeryDesc")}
         </p>
       </div>
@@ -336,10 +324,7 @@ const t = useTranslations(lang);
 <section class="py-24 bg-qcGray border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
-      <span
-        class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
-        >{t("donate.notesLabel")}</span
-      >
+      <span class="qc-label mb-4">{t("donate.notesLabel")}</span>
       <h2 class="text-4xl font-bold tracking-tighter uppercase">
         {t("donate.notesTitle")}
       </h2>
@@ -396,10 +381,7 @@ const t = useTranslations(lang);
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid md:grid-cols-2 gap-16 items-center">
       <div>
-        <span
-          class="text-qcRed font-bold text-[10px] uppercase tracking-[0.4em] block mb-4"
-          >{t("donate.achievedLabel")}</span
-        >
+        <span class="qc-label mb-4">{t("donate.achievedLabel")}</span>
         <h2 class="text-4xl font-bold tracking-tighter uppercase mb-8">
           {t("donate.achievedTitle")}
         </h2>
@@ -410,7 +392,7 @@ const t = useTranslations(lang);
             >
               <i class="fa-solid fa-check text-qcRed text-xs"></i>
             </div>
-            <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+            <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
                 >{
                   t("donate.achieved1").split(" ").slice(0, 3).join(" ")
@@ -425,7 +407,7 @@ const t = useTranslations(lang);
             >
               <i class="fa-solid fa-check text-qcRed text-xs"></i>
             </div>
-            <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+            <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
                 >{
                   t("donate.achieved2").split(" ").slice(0, 3).join(" ")
@@ -440,7 +422,7 @@ const t = useTranslations(lang);
             >
               <i class="fa-solid fa-check text-qcRed text-xs"></i>
             </div>
-            <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+            <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
                 >{
                   t("donate.achieved3").split(" ").slice(0, 3).join(" ")
@@ -455,7 +437,7 @@ const t = useTranslations(lang);
             >
               <i class="fa-solid fa-check text-qcRed text-xs"></i>
             </div>
-            <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+            <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
                 >{
                   t("donate.achieved4").split(" ").slice(0, 3).join(" ")
@@ -532,7 +514,7 @@ const t = useTranslations(lang);
           ></i>
         </button>
         <div class="faq-content hidden px-6 pb-6">
-          <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+          <p class="qc-body leading-relaxed">
             {t("donate.faq1A")}
           </p>
         </div>
@@ -550,7 +532,7 @@ const t = useTranslations(lang);
           ></i>
         </button>
         <div class="faq-content hidden px-6 pb-6">
-          <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+          <p class="qc-body leading-relaxed">
             {t("donate.faq2A")}
           </p>
         </div>
@@ -568,7 +550,7 @@ const t = useTranslations(lang);
           ></i>
         </button>
         <div class="faq-content hidden px-6 pb-6">
-          <p class="text-gray-600 text-lg leading-relaxed font-georgia">
+          <p class="qc-body leading-relaxed">
             {t("donate.faq3A")}
           </p>
         </div>
@@ -596,7 +578,7 @@ const t = useTranslations(lang);
     </p>
     <a
       href={getLocalizedPath("/", lang)}
-      class="inline-block bg-qcRed text-white px-8 py-4 font-bold font-georgia text-[14px] uppercase tracking-[0.2em] rounded-md hover:bg-qcBlack transition-all"
+      class="qc-btn qc-btn--primary inline-block px-8 py-4"
     >
       {t("donate.backHome")}
     </a>
@@ -655,10 +637,10 @@ const t = useTranslations(lang);
       frequencyToggle!.querySelectorAll("button").forEach((btn) => {
         if (btn.dataset.frequency === frequency) {
           btn.className =
-            "flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-qcRed text-white";
+            "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white";
         } else {
           btn.className =
-            "flex-1 py-3 text-[14px] font-bold font-georgia uppercase tracking-[0.2em] rounded-md border border-gray-200 transition-all bg-white text-qcBlack";
+            "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack";
         }
       });
 

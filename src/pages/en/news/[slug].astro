@@ -101,7 +101,7 @@ function getNewsPath(slug: string): string {
       <div class="max-w-3xl mx-auto px-6 text-center">
         {
           post.data.categories && post.data.categories.length > 0 && (
-            <span class="bg-gray-100 text-qcBlack text-[9px] font-bold uppercase tracking-[0.3em] px-3 py-1 rounded-sm mb-8 inline-block">
+            <span class="qc-meta bg-gray-100 !text-qcBlack px-3 py-1 rounded-sm mb-8 inline-block">
               {getCategoryLabel(post.data.categories)}
             </span>
           )
@@ -111,9 +111,7 @@ function getNewsPath(slug: string): string {
         >
           {post.data.title}
         </h1>
-        <div
-          class="flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 flex-wrap"
-        >
+        <div class="qc-meta flex items-center justify-center gap-4 flex-wrap">
           <span class="text-qcBlack">{post.data.author || "Team QC"}</span>
           <span class="w-1 h-1 rounded-full bg-gray-200"></span>
           <span>{formatDate(post.data.date)}</span>
@@ -163,7 +161,7 @@ function getNewsPath(slug: string): string {
                         d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <p class="text-[10px] tracking-widest uppercase font-bold text-gray-400">
+                    <p class="qc-meta">
                       <span class="mx-2 text-gray-200">|</span>
                       {post.data.featured_image_caption}
                     </p>
@@ -193,7 +191,7 @@ function getNewsPath(slug: string): string {
       >
         <div class="flex flex-col gap-6">
           <span
-            class="text-[9px] font-bold uppercase tracking-widest text-gray-300 transform -rotate-90 origin-left translate-y-8"
+            class="qc-meta !text-gray-300 transform -rotate-90 origin-left translate-y-8"
             >{t("post.shareStory")}</span
           >
           <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
@@ -238,10 +236,7 @@ function getNewsPath(slug: string): string {
             <i class="fa-solid fa-user text-2xl text-qcRed"></i>
           </div>
           <div class="text-center sm:text-left">
-            <span
-              class="text-[9px] font-bold uppercase tracking-widest text-qcRed mb-1 block"
-              >{t("post.aboutAuthor")}</span
-            >
+            <span class="qc-label mb-1">{t("post.aboutAuthor")}</span>
             <h4 class="text-xl font-bold mb-2 uppercase tracking-tighter">
               {post.data.author || "Team QC"}
             </h4>
@@ -286,9 +281,7 @@ function getNewsPath(slug: string): string {
                   )}
                 </div>
                 <div>
-                  <span class="text-[9px] font-bold uppercase tracking-widest text-qcRed">
-                    {t("post.next")}
-                  </span>
+                  <span class="qc-label">{t("post.next")}</span>
                   <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
                     {nextPost.data.title}
                   </h3>
@@ -316,9 +309,7 @@ function getNewsPath(slug: string): string {
                   )}
                 </div>
                 <div>
-                  <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400">
-                    {t("post.previous")}
-                  </span>
+                  <span class="qc-meta">{t("post.previous")}</span>
                   <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
                     {prevPost.data.title}
                   </h3>

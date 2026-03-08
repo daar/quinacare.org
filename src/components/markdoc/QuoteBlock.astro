@@ -35,14 +35,10 @@ const { quote, name, role, image } = Astro.props;
         </div>
         <div>
           <h4 class="font-bold text-sm">{name}</h4>
-          <span class="text-gray-400 text-xs font-bold uppercase tracking-wider"
-            >{role}</span
-          >
+          <span class="qc-meta">{role}</span>
         </div>
       </div>
-      <blockquote
-        class="text-gray-600 text-lg leading-relaxed italic font-georgia"
-      >
+      <blockquote class="qc-body leading-relaxed italic">
         &ldquo;{quote}&rdquo;
       </blockquote>
     </div>

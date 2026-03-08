@@ -83,7 +83,7 @@ function getTeaser(body: string, wordCount = 25): string {
             <a href={postUrl} class="block">
               <div class="aspect-video mb-6 overflow-hidden bg-gray-100 rounded-md relative">
                 <div class="absolute top-3 left-3 z-10">
-                  <span class="bg-white/90 backdrop-blur-sm text-qcBlack text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded shadow-sm border border-gray-100">
+                  <span class="qc-meta bg-white/90 backdrop-blur-sm !text-qcBlack px-2.5 py-1 rounded shadow-sm border border-gray-100">
                     {getCategoryLabel(post.data.categories)}
                   </span>
                 </div>
@@ -100,7 +100,7 @@ function getTeaser(body: string, wordCount = 25): string {
                 )}
               </div>
 
-              <div class="flex items-center gap-3 text-[10px] uppercase tracking-wider text-gray-400 mb-3">
+              <div class="qc-meta flex items-center gap-3 mb-3">
                 <span class="font-bold text-qcBlack">
                   {post.data.author || "Team QC"}
                 </span>
@@ -114,14 +114,12 @@ function getTeaser(body: string, wordCount = 25): string {
             </a>
 
             {teaser && (
-              <p class="text-gray-500 text-lg mt-4 line-clamp-3 font-georgia leading-relaxed">
-                {teaser}
-              </p>
+              <p class="qc-body mt-4 line-clamp-3 leading-relaxed">{teaser}</p>
             )}
 
             <a
               href={postUrl}
-              class="mt-auto pt-4 text-[10px] font-bold uppercase tracking-widest leading-none text-qcRed hover:text-qcBlack transition self-start"
+              class="qc-btn qc-btn--ghost mt-auto pt-4 leading-none self-start"
             >
               {t("homeNews.readMore")}{" "}
               <i class="fa-solid fa-arrow-right ml-1" />
