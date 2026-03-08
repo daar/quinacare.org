@@ -55,11 +55,6 @@
           "icon": "fa-solid fa-hospital",
           "image": "https://picsum.photos/seed/hospital/440/250",
           "descriptionKey": "submenu.hospitalDesc"
-        },
-        {
-          "labelKey": "submenu.contact",
-          "path": "/contact",
-          "icon": "fa-solid fa-envelope"
         }
       ]
     },
@@ -86,6 +81,11 @@
           "labelKey": "submenu.goals",
           "path": "/goals",
           "icon": "fa-solid fa-bullseye"
+        },
+        {
+          "labelKey": "submenu.contact",
+          "path": "/contact",
+          "icon": "fa-solid fa-envelope"
         }
       ]
     },

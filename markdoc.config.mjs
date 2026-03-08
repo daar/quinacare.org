@@ -79,6 +79,12 @@ export default defineMarkdocConfig({
         type: { type: String, required: true },
       },
     },
+    "contact-cards": {
+      render: component("./src/components/markdoc/ContactCards.astro"),
+      attributes: {
+        variant: { type: String, required: true },
+      },
+    },
     "cta-banner": {
       render: component("./src/components/markdoc/CtaBanner.astro"),
       attributes: {
