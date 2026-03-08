@@ -1,22 +1,22 @@
 ---
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
-import Layout from "../../../layouts/Layout.astro";
-import Nav from "../../../components/Nav.astro";
-import Footer from "../../../components/Footer.astro";
+import Layout from "../../layouts/Layout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
 import {
   useTranslations,
   getDateLocale,
   getLocalizedPath,
   type Lang,
-} from "../../../i18n";
+} from "../../i18n";
 
-const lang: Lang = "es";
+const lang: Lang = "nl";
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
 export async function getStaticPaths() {
-  const fundraisers = await getCollection("fundraisers-es");
+  const fundraisers = await getCollection("fundraisers-nl");
   return fundraisers.map((entry) => ({
     params: { slug: entry.data.slug },
     props: { entry },
@@ -38,7 +38,7 @@ const daysToGo = Math.max(
 );
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("es-ES", {
+  return new Intl.NumberFormat("nl-NL", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
@@ -80,7 +80,7 @@ function getStatusLabel(status: string): string {
   }
 }
 
-const shareUrl = `https://quinacare.org${getLocalizedPath(`/sponsor-acties/${entry.data.slug}`, lang)}`;
+const shareUrl = `https://quinacare.org${getLocalizedPath(`/fundraisers/${entry.data.slug}`, lang)}`;
 const shareTitle = entry.data.title;
 ---
 
@@ -88,8 +88,9 @@ const shareTitle = entry.data.title;
   <Nav />
 
   <div class="max-w-[1600px] mx-auto px-6 pt-32 pb-6">
+    <!-- Back link -->
     <a
-      href={getLocalizedPath("/sponsor-acties", lang)}
+      href={getLocalizedPath("/fundraisers", lang)}
       class="qc-meta inline-flex items-center gap-2 hover:text-qcRed transition-colors group"
     >
       <svg
@@ -103,6 +104,7 @@ const shareTitle = entry.data.title;
       {t("fundraise.backToList")}
     </a>
 
+    <!-- Title + organizer -->
     <div class="mt-6 mb-8">
       <div class="flex items-center gap-3 mb-4">
         <span
@@ -123,8 +125,10 @@ const shareTitle = entry.data.title;
     </div>
   </div>
 
+  <!-- Two-column hero: image left, stats right -->
   <div class="max-w-[1600px] mx-auto px-6 pb-12">
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10">
+      <!-- Left: featured image (3/5) -->
       <div class="lg:col-span-3">
         <div
           class="aspect-video rounded-xl overflow-hidden bg-gray-100 relative"
@@ -147,16 +151,19 @@ const shareTitle = entry.data.title;
         </div>
       </div>
 
+      <!-- Right: stats sidebar (2/5) -->
       <div class="lg:col-span-2">
         <div
           class="relative rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col"
         >
+          <!-- Accent gradient line -->
           <div
             class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-qcRed via-rose-400 to-qcRed"
           >
           </div>
 
           <div class="p-6 md:p-8 flex flex-col flex-1">
+            <!-- Progress bar -->
             <div class="mb-6">
               <div
                 class="w-full bg-gray-100 rounded-full h-3 overflow-hidden mb-4"
@@ -172,6 +179,7 @@ const shareTitle = entry.data.title;
                 </div>
               </div>
 
+              <!-- Pledged amount -->
               <div class="text-3xl md:text-4xl font-bold tracking-tight mb-1">
                 {formatCurrency(entry.data.raised_amount)}
               </div>
@@ -183,6 +191,7 @@ const shareTitle = entry.data.title;
               </p>
             </div>
 
+            <!-- Stats -->
             <div
               class="grid grid-cols-2 gap-4 py-5 border-t border-gray-100 mb-6"
             >
@@ -218,6 +227,7 @@ const shareTitle = entry.data.title;
               </div>
             </div>
 
+            <!-- CTA button -->
             <a
               href={getLocalizedPath("/donate", lang)}
               class="group relative block w-full text-center font-bold text-sm uppercase tracking-widest py-4 rounded-lg overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg mb-4"
@@ -230,6 +240,7 @@ const shareTitle = entry.data.title;
               >
             </a>
 
+            <!-- Share row -->
             <div class="flex items-center justify-center gap-3 mt-auto pt-4">
               <span class="qc-meta !text-gray-300 mr-1"
                 >{t("post.shareStory")}</span
@@ -267,6 +278,7 @@ const shareTitle = entry.data.title;
     </div>
   </div>
 
+  <!-- Campaign content -->
   <div class="border-t border-gray-100"></div>
   <main class="max-w-[1600px] mx-auto px-6 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
@@ -277,6 +289,7 @@ const shareTitle = entry.data.title;
       </div>
       <div class="lg:col-span-2">
         <div class="sticky top-28 space-y-6">
+          <!-- Organizer card -->
           <div
             class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
           >
@@ -300,6 +313,7 @@ const shareTitle = entry.data.title;
             </p>
           </div>
 
+          <!-- End date card -->
           <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div class="flex items-center gap-3">
               <div
@@ -350,6 +364,7 @@ const shareTitle = entry.data.title;
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Animate progress bar
     document.querySelectorAll(".progress-fill").forEach((bar) => {
       const el = bar as HTMLElement;
       el.style.setProperty("--target-width", el.style.width);

@@ -1,15 +1,15 @@
 ---
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
-import Layout from "../../../layouts/Layout.astro";
-import Nav from "../../../components/Nav.astro";
-import Footer from "../../../components/Footer.astro";
-import { useTranslations, getLocalizedPath, type Lang } from "../../../i18n";
+import Layout from "../../layouts/Layout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import { useTranslations, getLocalizedPath, type Lang } from "../../i18n";
 
-const lang: Lang = "es";
+const lang: Lang = "nl";
 const t = useTranslations(lang);
 
-const fundraisers = await getCollection("fundraisers-es");
+const fundraisers = await getCollection("fundraisers-nl");
 const sorted = fundraisers.sort((a, b) => {
   return (
     new Date(b.data.start_date).getTime() -
@@ -28,7 +28,7 @@ function getDaysToGo(endDate: Date): number {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("es-ES", {
+  return new Intl.NumberFormat("nl-NL", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
@@ -100,7 +100,7 @@ function getStatusLabel(status: string): string {
               return (
                 <a
                   href={getLocalizedPath(
-                    `/sponsor-acties/${fundraiser.data.slug}`,
+                    `/fundraisers/${fundraiser.data.slug}`,
                     lang,
                   )}
                   class="group cursor-pointer block fundraise-card"

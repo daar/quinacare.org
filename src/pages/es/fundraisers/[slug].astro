@@ -11,12 +11,12 @@ import {
   type Lang,
 } from "../../../i18n";
 
-const lang: Lang = "en";
+const lang: Lang = "es";
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
 export async function getStaticPaths() {
-  const fundraisers = await getCollection("fundraisers-en");
+  const fundraisers = await getCollection("fundraisers-es");
   return fundraisers.map((entry) => ({
     params: { slug: entry.data.slug },
     props: { entry },
@@ -38,7 +38,7 @@ const daysToGo = Math.max(
 );
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("es-ES", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
@@ -80,7 +80,7 @@ function getStatusLabel(status: string): string {
   }
 }
 
-const shareUrl = `https://quinacare.org${getLocalizedPath(`/sponsor-acties/${entry.data.slug}`, lang)}`;
+const shareUrl = `https://quinacare.org${getLocalizedPath(`/fundraisers/${entry.data.slug}`, lang)}`;
 const shareTitle = entry.data.title;
 ---
 
@@ -89,7 +89,7 @@ const shareTitle = entry.data.title;
 
   <div class="max-w-[1600px] mx-auto px-6 pt-32 pb-6">
     <a
-      href={getLocalizedPath("/sponsor-acties", lang)}
+      href={getLocalizedPath("/fundraisers", lang)}
       class="qc-meta inline-flex items-center gap-2 hover:text-qcRed transition-colors group"
     >
       <svg
