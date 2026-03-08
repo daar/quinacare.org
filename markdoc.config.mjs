@@ -105,6 +105,22 @@ export default defineMarkdocConfig({
         email: { type: String },
       },
     },
+    "foundation-details": {
+      render: component("./src/components/markdoc/FoundationDetails.astro"),
+      attributes: {},
+    },
+    "contact-form": {
+      render: component("./src/components/markdoc/ContactForm.astro"),
+      attributes: {},
+    },
+    "feature-card": {
+      render: component("./src/components/markdoc/FeatureCard.astro"),
+      attributes: {
+        title: { type: String, required: true },
+        icon: { type: String, required: true },
+        href: { type: String },
+      },
+    },
     "cta-banner": {
       render: component("./src/components/markdoc/CtaBanner.astro"),
       attributes: {

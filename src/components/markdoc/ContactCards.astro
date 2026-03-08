@@ -8,52 +8,52 @@ const { variant } = Astro.props;
 
 {
   variant === "info" ? (
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-        <div class="w-12 h-12 bg-qcRed/10 rounded-xl flex items-center justify-center mb-6">
-          <i class="fa-solid fa-envelope text-qcRed text-xl" />
+    <div class="grid md:grid-cols-3 gap-0 max-w-5xl mx-auto rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+      <a
+        href="mailto:care@quinacare.org"
+        class="group relative bg-white p-10 flex flex-col items-center text-center hover:bg-qcRed transition-all duration-500 border-b md:border-b-0 md:border-r border-gray-100"
+      >
+        <div class="w-16 h-16 rounded-full bg-qcRed/10 group-hover:bg-white/20 flex items-center justify-center mb-6 transition-colors duration-500">
+          <i class="fa-solid fa-envelope text-qcRed group-hover:text-white text-2xl transition-colors duration-500" />
         </div>
-        <h3 class="text-lg font-bold text-qcBlack mb-2">E-mail</h3>
-        <p class="text-sm text-gray-500 mb-4">
+        <h3 class="text-xl font-bold text-qcBlack group-hover:text-white mb-2 transition-colors duration-500">
+          E-mail
+        </h3>
+        <p class="text-sm text-gray-400 group-hover:text-white/70 mb-4 transition-colors duration-500">
           Voor algemene vragen en informatie
         </p>
-        <a
-          href="mailto:care@quinacare.org"
-          class="text-qcRed font-medium hover:underline text-sm"
-        >
+        <span class="text-qcRed group-hover:text-white font-semibold transition-colors duration-500">
           care@quinacare.org
-        </a>
-      </div>
+        </span>
+      </a>
 
-      <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-        <div class="w-12 h-12 bg-qcRed/10 rounded-xl flex items-center justify-center mb-6">
-          <i class="fa-solid fa-phone text-qcRed text-xl" />
+      <a
+        href="tel:+31641357796"
+        class="group relative bg-white p-10 flex flex-col items-center text-center hover:bg-qcRed transition-all duration-500 border-b md:border-b-0 md:border-r border-gray-100"
+      >
+        <div class="w-16 h-16 rounded-full bg-qcRed/10 group-hover:bg-white/20 flex items-center justify-center mb-6 transition-colors duration-500">
+          <i class="fa-solid fa-phone text-qcRed group-hover:text-white text-2xl transition-colors duration-500" />
         </div>
-        <h3 class="text-lg font-bold text-qcBlack mb-2">Telefoon</h3>
-        <p class="text-sm text-gray-500 mb-4">Nederland</p>
-        <a
-          href="tel:+31303660030"
-          class="text-qcRed font-medium hover:underline text-sm block"
-        >
-          06 30 36 60 30
-        </a>
-        <a
-          href="tel:+31641357796"
-          class="text-qcRed font-medium hover:underline text-sm block mt-1"
-        >
+        <h3 class="text-xl font-bold text-qcBlack group-hover:text-white mb-2 transition-colors duration-500">
+          Telefoon
+        </h3>
+        <p class="text-sm text-gray-400 group-hover:text-white/70 mb-4 transition-colors duration-500">
+          Nederland
+        </p>
+        <span class="text-qcRed group-hover:text-white font-semibold transition-colors duration-500">
           +31 6 41 35 77 96
-        </a>
-      </div>
+        </span>
+      </a>
 
-      <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300">
-        <div class="w-12 h-12 bg-qcRed/10 rounded-xl flex items-center justify-center mb-6">
-          <i class="fa-solid fa-location-dot text-qcRed text-xl" />
+      <div class="group relative bg-white p-10 flex flex-col items-center text-center">
+        <div class="w-16 h-16 rounded-full bg-qcRed/10 flex items-center justify-center mb-6">
+          <i class="fa-solid fa-location-dot text-qcRed text-2xl" />
         </div>
-        <h3 class="text-lg font-bold text-qcBlack mb-2">Postadres</h3>
-        <p class="text-sm text-gray-500 mb-4">
+        <h3 class="text-xl font-bold text-qcBlack mb-2">Postadres</h3>
+        <p class="text-sm text-gray-400 mb-4">
           Alleen postadres, geen bezoekadres
         </p>
-        <address class="text-sm text-gray-700 not-italic leading-relaxed">
+        <address class="text-gray-700 not-italic leading-relaxed font-semibold">
           IJsvogellaan 76
           <br />
           2261 DK Leidschendam
@@ -63,53 +63,42 @@ const { variant } = Astro.props;
       </div>
     </div>
   ) : (
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+    <div class="flex items-center justify-center gap-6">
       <a
         href="https://facebook.com/quinacare/"
         target="_blank"
         rel="noopener noreferrer"
-        class="group flex flex-col items-center gap-3 bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg hover:border-qcRed/20 transition-all duration-300"
+        class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all duration-300"
+        aria-label="Facebook"
       >
-        <i class="fa-brands fa-facebook text-3xl text-gray-400 group-hover:text-[#1877F2] transition-colors duration-300" />
-        <span class="text-xs font-bold uppercase tracking-wider text-gray-400 group-hover:text-qcBlack transition-colors">
-          Facebook
-        </span>
+        <i class="fa-brands fa-facebook text-xl" />
       </a>
-
       <a
         href="https://instagram.com/quinacare/"
         target="_blank"
         rel="noopener noreferrer"
-        class="group flex flex-col items-center gap-3 bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg hover:border-qcRed/20 transition-all duration-300"
+        class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all duration-300"
+        aria-label="Instagram"
       >
-        <i class="fa-brands fa-instagram text-3xl text-gray-400 group-hover:text-[#E4405F] transition-colors duration-300" />
-        <span class="text-xs font-bold uppercase tracking-wider text-gray-400 group-hover:text-qcBlack transition-colors">
-          Instagram
-        </span>
+        <i class="fa-brands fa-instagram text-xl" />
       </a>
-
       <a
         href="https://youtube.com/channel/UCyizISjNUBws4KdIIda9K7w"
         target="_blank"
         rel="noopener noreferrer"
-        class="group flex flex-col items-center gap-3 bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg hover:border-qcRed/20 transition-all duration-300"
+        class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all duration-300"
+        aria-label="YouTube"
       >
-        <i class="fa-brands fa-youtube text-3xl text-gray-400 group-hover:text-[#FF0000] transition-colors duration-300" />
-        <span class="text-xs font-bold uppercase tracking-wider text-gray-400 group-hover:text-qcBlack transition-colors">
-          YouTube
-        </span>
+        <i class="fa-brands fa-youtube text-xl" />
       </a>
-
       <a
         href="https://www.linkedin.com/company/quina-care/"
         target="_blank"
         rel="noopener noreferrer"
-        class="group flex flex-col items-center gap-3 bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg hover:border-qcRed/20 transition-all duration-300"
+        class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all duration-300"
+        aria-label="LinkedIn"
       >
-        <i class="fa-brands fa-linkedin text-3xl text-gray-400 group-hover:text-[#0A66C2] transition-colors duration-300" />
-        <span class="text-xs font-bold uppercase tracking-wider text-gray-400 group-hover:text-qcBlack transition-colors">
-          LinkedIn
-        </span>
+        <i class="fa-brands fa-linkedin text-xl" />
       </a>
     </div>
   )
