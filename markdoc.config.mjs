@@ -92,6 +92,19 @@ export default defineMarkdocConfig({
         variant: { type: String, required: true },
       },
     },
+    "team-grid": {
+      render: component("./src/components/markdoc/TeamGrid.astro"),
+      attributes: {},
+    },
+    "team-member": {
+      render: component("./src/components/markdoc/TeamMember.astro"),
+      attributes: {
+        image: { type: String, required: true },
+        name: { type: String, required: true },
+        role: { type: String, required: true },
+        email: { type: String },
+      },
+    },
     "cta-banner": {
       render: component("./src/components/markdoc/CtaBanner.astro"),
       attributes: {
