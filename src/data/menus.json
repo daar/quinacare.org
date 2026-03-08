@@ -30,7 +30,7 @@
           "labelKey": "submenu.sponsorBooklet",
           "path": "/donate/sponsor-booklet",
           "icon": "fa-solid fa-book-open",
-          "image": "https://picsum.photos/seed/sponsor-booklet/440/250",
+          "image": "/images/sponsor-booklet/sponsorboekje-nl.jpg",
           "descriptionKey": "submenu.sponsorBookletDesc"
         }
       ],
