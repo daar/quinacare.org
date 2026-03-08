@@ -22,7 +22,7 @@ const { page } = Astro.props;
 <Layout title={`${page.data.title} - Quina Care`} lang={lang}>
   <Nav />
   <div data-pagefind-body>
-    <PageContent page={page} lang={lang} />
+    <PageContent page={page} />
   </div>
   <Footer lang={lang} />
 </Layout>
