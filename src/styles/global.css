@@ -32,7 +32,7 @@
   --label-font: var(--font-sans);
   --label-size: 14px;
   --label-weight: 700;
-  --label-tracking: 0.4em;
+  --label-tracking: 0.1em;
   --label-color: var(--color-qcRed);
 
   /* Section headings */
@@ -51,7 +51,7 @@
   --btn-font: var(--font-sans);
   --btn-size: 14px;
   --btn-weight: 700;
-  --btn-tracking: 0.15em;
+  --btn-tracking: 0.1em;
 
   /* Meta text (dates, categories, badges) */
   --meta-font: var(--font-sans);
