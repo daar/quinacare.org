@@ -11,8 +11,10 @@ const t = useTranslations(lang);
 
 const fundraisers = await getCollection("fundraisers-en");
 const sorted = fundraisers.sort((a, b) => {
-  const order = { active: 0, upcoming: 1, completed: 2 };
-  return (order[a.data.status] ?? 3) - (order[b.data.status] ?? 3);
+  return (
+    new Date(b.data.start_date).getTime() -
+    new Date(a.data.start_date).getTime()
+  );
 });
 
 function getPercentage(raised: number, goal: number): number {
