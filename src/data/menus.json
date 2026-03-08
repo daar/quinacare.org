@@ -6,7 +6,7 @@
       "submenu": [
         {
           "labelKey": "submenu.fundraise",
-          "path": "/fundraise",
+          "path": "/sponsor-acties",
           "icon": "fa-solid fa-hand-holding-heart"
         },
         {

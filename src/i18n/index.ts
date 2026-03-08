@@ -185,7 +185,7 @@ export const ui = {
     "donate.faq3A":
       "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via info@quinacare.org.",
     // Fundraise section
-    "fundraise.title": "FONDSENWERVING",
+    "fundraise.title": "SPONSOR ACTIES",
     "fundraise.subtitle": "Acties",
     "fundraise.raised": "opgehaald",
     "fundraise.goal": "doel",
@@ -202,7 +202,7 @@ export const ui = {
     "fundraise.backToList": "Terug naar acties",
     "fundraise.campaignBy": "Een actie van",
     "fundraise.endDate": "Einddatum",
-    "fundraise.noFundraisers": "Er zijn momenteel geen fondsenwerving acties.",
+    "fundraise.noFundraisers": "Er zijn momenteel geen sponsor acties.",
     // Projects section
     "projects.title": "PROJECTEN",
     "projects.subtitle": "Onze Projecten",
@@ -218,7 +218,7 @@ export const ui = {
     "404.description": "Je bent verdwaald... maar wij laten niemand achter.",
     "404.backHome": "Terug naar home",
     // Submenu - Wat kun jij doen?
-    "submenu.fundraise": "Fondsenwerving acties",
+    "submenu.fundraise": "Sponsor acties",
     "submenu.joinTeam": "Word vrijwilliger",
     "submenu.becomePartner": "Word partner",
     "submenu.yuraBoom": "De Yura Boom",
