@@ -9,6 +9,9 @@ npm install        # Installeer dependencies
 npm run dev        # Start de ontwikkelserver op localhost:4321
 npm run build      # Bouw de productiesite naar ./dist/
 npm run preview    # Bekijk de productie-build lokaal
+npm run lint       # ESLint controle
+npm run spellcheck # Spellingcontrole van alle .mdoc bestanden
+npm run format:check # Prettier formatting controle
 ```
 
 ## Projectstructuur
@@ -120,7 +123,7 @@ Sponsors staan in de `sponsors` array in hetzelfde bestand en verschijnen in een
 
 ### Teamlid toevoegen
 
-Bewerk de organisatiepagina's rechtstreeks: `src/content/pages/{nl,en,es}/organisation.mdoc`. Voeg een `team-member` tag toe binnen de juiste `team-grid`:
+Bewerk de organisatiepagina's rechtstreeks: `src/content/pages/{nl,en,es}/organization.mdoc`. Voeg een `team-member` tag toe binnen de juiste `team-grid`:
 
 ```markdoc
 {% team-member image="/media/2024/01/foto.png" name="Volledige Naam" role="Functie" email="naam@quinacare.org" %}
@@ -220,13 +223,39 @@ Deze zijn beschikbaar als Tailwind-klassen: `text-qcRed`, `bg-qcBlack`, `bg-qcGr
 
 Het lettertype is gedefinieerd in `src/styles/global.css` als `--font-effra`. Lettertypebestanden en de `@font-face` declaraties staan ook in global.css.
 
+## Pre-commit hooks
+
+Bij elke commit draait [Husky](https://typicode.github.io/husky/) automatisch [lint-staged](https://github.com/lint-staged/lint-staged) met de volgende controles:
+
+| Bestanden                       | Actie                                  |
+| ------------------------------- | -------------------------------------- |
+| `*.{js,ts,mjs,cjs,json,css,md}` | Prettier formatting                    |
+| `*.astro`                       | Prettier formatting (met astro-plugin) |
+| `*.mdoc`                        | cspell spellingcontrole                |
+
+### Spellingcontrole (cspell)
+
+De configuratie staat in `cspell.json` en ondersteunt drie talen met per-map taalherkenning:
+
+- `src/content/**/nl/**` → Nederlands + Engels
+- `src/content/**/en/**` → Engels
+- `src/content/**/es/**` → Spaans + Engels
+
+Projectspecifieke woorden (namen, plaatsen, medische termen) staan in `project-words.txt`. Voeg nieuwe woorden toe in de juiste categorie, altijd in lowercase.
+
+Om de spellingcontrole handmatig op alle content te draaien:
+
+```sh
+npm run spellcheck
+```
+
 ## Pagina-layouts
 
 Er zijn twee pagina-layouts:
 
 - **article** (standaard) — Standaard contentpagina met optionele full-width hero-afbeelding. Stel `featured_image` in de frontmatter in om een hero te tonen. Gebruikt voor nieuwsberichten en tekst-zware pagina's zoals `/hospital` en `/join-team`.
 
-- **landing** — Sectie-gebaseerde layout die volledig wordt opgebouwd met markdoc-tags. Geen standaard opmaak — je stelt de pagina samen met `hero-banner`, `section`, `cta-banner`, etc. Gebruikt voor `/organisation`, `/become-partner`, `/contact`, `/about`.
+- **landing** — Sectie-gebaseerde layout die volledig wordt opgebouwd met markdoc-tags. Geen standaard opmaak — je stelt de pagina samen met `hero-banner`, `section`, `cta-banner`, etc. Gebruikt voor `/organization`, `/become-partner`, `/contact`, `/about`.
 
 Stel de layout in via frontmatter:
 
