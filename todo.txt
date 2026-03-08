@@ -1,0 +1,6 @@
+  - [ ] svg minify : https://github.com/svg/svgo
+  - [x] check spelling and grammer (pre-commit) : cspell
+  - [ ] check broken links : npm install astro-link-checker --save-dev
+  - [x] font configurable : css classes and variable
+  - [ ] pre-commit missing translations
+  - [ ] signal when the image used is too small resolution (for now npm run command)

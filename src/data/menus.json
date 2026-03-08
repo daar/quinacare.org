@@ -68,8 +68,8 @@
           "icon": "fa-solid fa-users"
         },
         {
-          "labelKey": "submenu.organisation",
-          "path": "/organisation",
+          "labelKey": "submenu.organization",
+          "path": "/organization",
           "icon": "fa-solid fa-sitemap"
         },
         {

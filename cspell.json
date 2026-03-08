@@ -1,0 +1,50 @@
+{
+  "version": "0.2",
+  "language": "en,nl,es",
+  "enableFiletypes": ["markdoc"],
+  "overrides": [
+    {
+      "filename": "src/content/**/nl/**",
+      "language": "nl,en"
+    },
+    {
+      "filename": "src/content/**/en/**",
+      "language": "en"
+    },
+    {
+      "filename": "src/content/**/es/**",
+      "language": "es,en"
+    }
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./project-words.txt",
+      "addWords": true,
+      "noSuggest": true
+    }
+  ],
+  "dictionaries": ["nl-nl", "es-es", "project-words"],
+  "import": [
+    "@cspell/dict-nl-nl/cspell-ext.json",
+    "@cspell/dict-es-es/cspell-ext.json"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    ".git",
+    "package-lock.json",
+    "public"
+  ],
+  "ignoreRegExpList": [
+    "/\\{%[\\s\\S]*?%\\}/g",
+    "/\\{%[\\s\\S]*?\\/%\\}/g",
+    "/(https?|mailto):\\/\\/[^\\s)\"]+/g",
+    "/[\\w.-]+@[\\w.-]+\\.[\\w]+/g",
+    "/\\/media\\/[^\\s)\"]+/g",
+    "/\\.\\.\\/.+?\\.(jpg|jpeg|png|gif|svg|webp)/g",
+    "/NL\\d{2}\\s?[A-Z]{4}\\s?[\\d\\s]+/g",
+    "/[A-Z]{5,}/g",
+    "/slug:\\s*\"[^\"]+\"/g"
+  ]
+}

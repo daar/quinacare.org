@@ -13,66 +13,6 @@ featured_image: "../../../assets/media/2023/10/esther.jpg"
 
   Running for Running costs
 
-var htmlDiv = document.getElementById("rs-plugin-settings-inline-css"); var htmlDivCss="";
-if(htmlDiv) {
-htmlDiv.innerHTML = htmlDiv.innerHTML + htmlDivCss;
-}else{
-var htmlDiv = document.createElement("div");
-htmlDiv.innerHTML = "<style>" + htmlDivCss + "</style>";
-document.getElementsByTagName("head")[0].appendChild(htmlDiv.childNodes[0]);
-}
-
-if (setREVStartSize!==undefined) setREVStartSize(
-{c: '#rev\_slider\_23\_1', gridwidth: [1240], gridheight: [868], sliderLayout: 'fullscreen', fullScreenAutoWidth:'off', fullScreenAlignForce:'off', fullScreenOffsetContainer:'', fullScreenOffset:''});
-var revapi23,
-tpj;
-(function() {
-if (!/loaded|interactive|complete/.test(document.readyState)) document.addEventListener("DOMContentLoaded",onLoad); else onLoad();
-function onLoad() {
-if (tpj===undefined) { tpj = jQuery; if("off" == "on") tpj.noConflict();}
-if(tpj("#rev\_slider\_23\_1").revolution == undefined){
-revslider\_showDoubleJqueryError("#rev\_slider\_23\_1");
-}else{
-revapi23 = tpj("#rev\_slider\_23\_1").show().revolution({
-sliderType:"standard",
-jsFileLocation:"//www.quinacare.org/wp-content/plugins/revslider/public/assets/js/",
-sliderLayout:"fullscreen",
-dottedOverlay:"none",
-delay:9000,
-navigation: {
-onHoverStop:"off",
-},
-visibilityLevels:[1240,1024,778,480],
-gridwidth:1240,
-gridheight:868,
-lazyType:"none",
-shadow:0,
-spinner:"spinner0",
-stopLoop:"off",
-stopAfterLoops:-1,
-stopAtSlide:-1,
-shuffle:"off",
-autoHeight:"off",
-fullScreenAutoWidth:"off",
-fullScreenAlignForce:"off",
-fullScreenOffsetContainer: "",
-fullScreenOffset: "",
-disableProgressBar:"on",
-hideThumbsOnMobile:"off",
-hideSliderAtLimit:0,
-hideCaptionAtLimit:0,
-hideAllCaptionAtLilmit:0,
-debugMode:false,
-fallbacks: {
-simplifyAll:"off",
-nextSlideOnWindowFocus:"off",
-disableFocusListener:false,
-}
-});
-}; /\* END OF revapi call \*/
-}; /\* END OF ON LOAD FUNCTION \*/
-}()); /\* END OF WRAPPING FUNCTION \*/
-
 **…voor de lopende kosten van Hospital San Miguel**
 
 ***"Nuestra Meta es una Enfermera"***

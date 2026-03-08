@@ -235,7 +235,7 @@ export const ui = {
     "submenu.contact": "Contact",
     // Submenu - Wie zijn wij?
     "submenu.aboutUs": "Over ons",
-    "submenu.organisation": "Organisatie",
+    "submenu.organization": "Organisatie",
     "submenu.media": "Media",
     "submenu.goals": "Onze doelstellingen",
     // Search
@@ -474,7 +474,7 @@ export const ui = {
     "submenu.contact": "Contact",
     // Submenu - Who are we?
     "submenu.aboutUs": "About Us",
-    "submenu.organisation": "Organisation",
+    "submenu.organization": "Organization",
     "submenu.media": "Media",
     "submenu.goals": "Our Goals",
     // Search
@@ -712,7 +712,7 @@ export const ui = {
     "submenu.contact": "Contacto",
     // Submenu - ¿Quiénes somos?
     "submenu.aboutUs": "Sobre nosotros",
-    "submenu.organisation": "Organización",
+    "submenu.organization": "Organización",
     "submenu.media": "Medios",
     "submenu.goals": "Nuestros objetivos",
     // Search
