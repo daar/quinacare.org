@@ -1,0 +1,60 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import { useTranslations, getLocalizedPath } from "../../i18n";
+
+const lang = "nl";
+const t = useTranslations(lang);
+---
+
+<Layout title={`${t("donate.thankYouTitle")} - Quina Care`} lang={lang}>
+  <Nav />
+
+  <section class="bg-white pt-28 pb-24">
+    <div class="max-w-5xl mx-auto px-6 w-full">
+      <div class="relative max-w-4xl mx-auto mb-10">
+        <div
+          class="absolute -inset-1 bg-gradient-to-r from-qcRed/10 via-rose-400/10 to-qcRed/10 rounded-2xl blur-xl"
+        >
+        </div>
+        <div
+          class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-100"
+        >
+          <video
+            id="thank-you-video"
+            controls
+            playsinline
+            preload="auto"
+            class="w-full aspect-video bg-black"
+          >
+            <source src="/videos/thank-you-nl.webm" type="video/webm" />
+          </video>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <h1
+          class="text-3xl md:text-4xl font-bold tracking-tighter uppercase mb-4"
+        >
+          {t("donate.thankYouTitle")}
+        </h1>
+        <p
+          class="text-gray-500 text-[18px] font-sans leading-relaxed max-w-lg mx-auto mb-8"
+        >
+          {t("donate.thankYouMessage")}
+        </p>
+
+        <a
+          href={getLocalizedPath("/", lang)}
+          class="qc-btn qc-btn--primary px-8 py-4"
+        >
+          <i class="fa-solid fa-arrow-left mr-2"></i>
+          {t("donate.backHome")}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

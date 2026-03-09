@@ -74,7 +74,10 @@ export const ui = {
       "Elke euro gaat rechtstreeks naar de kliniek in Ecuador. Hier zie je exact wat wij met jouw specifieke bijdrage kunnen realiseren.",
     "donation.medication": "Essentiële Medicatie",
     "donation.medicationDesc":
-      "Voor €15 verzorgen wij een volledige kuur van antibiotica of antimalariamiddelen voor een patiënt.",
+      "Met je donatie verzorgen wij een volledige kuur van antibiotica of antimalariamiddelen voor een patiënt.",
+    "donation.consultation": "Consult & Diagnostiek",
+    "donation.consultationDesc":
+      "Met je donatie financier je een volledig consult inclusief laboratoriumonderzoek en medicatie voor een patiënt.",
     "donation.prenatal": "Prenatale Check-up",
     "donation.prenatalDesc":
       "Een volledige medische controle inclusief echo voor een aanstaande moeder, essentieel voor een veilige bevalling.",
@@ -184,6 +187,15 @@ export const ui = {
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
       "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via info@quinacare.org.",
+    // Sponsor form (yura-boom)
+    "sponsor.nameLabel": "Naam",
+    "sponsor.namePlaceholder": "Je volledige naam",
+    "sponsor.emailLabel": "E-mail",
+    "sponsor.emailPlaceholder": "je@email.nl",
+    "sponsor.monthly": "Maandelijks",
+    "sponsor.yearly": "Jaarlijks",
+    "sponsor.submitButton": "Sponsoren",
+    "sponsor.yearlyNote": "Jaarlijks bedrag",
     // Fundraise section
     "fundraise.title": "SPONSOR ACTIES",
     "fundraise.subtitle": "Acties",
@@ -312,7 +324,10 @@ export const ui = {
       "Every euro goes directly to the clinic in Ecuador. Here you can see exactly what we can achieve with your specific contribution.",
     "donation.medication": "Essential Medication",
     "donation.medicationDesc":
-      "For €15 we provide a complete course of antibiotics or antimalarial drugs for a patient.",
+      "With your donation we provide a complete course of antibiotics or antimalarial drugs for a patient.",
+    "donation.consultation": "Consultation & Diagnostics",
+    "donation.consultationDesc":
+      "With your donation you fund a full consultation including laboratory tests and medication for a patient.",
     "donation.prenatal": "Prenatal Check-up",
     "donation.prenatalDesc":
       "A complete medical check-up including ultrasound for an expectant mother, essential for a safe delivery.",
@@ -422,6 +437,15 @@ export const ui = {
     "donate.faq3Q": "Can I cancel my monthly donation?",
     "donate.faq3A":
       "Yes, you can cancel your monthly donation at any time by contacting us at info@quinacare.org.",
+    // Sponsor form (yura-boom)
+    "sponsor.nameLabel": "Name",
+    "sponsor.namePlaceholder": "Your full name",
+    "sponsor.emailLabel": "Email",
+    "sponsor.emailPlaceholder": "you@email.com",
+    "sponsor.monthly": "Monthly",
+    "sponsor.yearly": "Yearly",
+    "sponsor.submitButton": "Sponsor",
+    "sponsor.yearlyNote": "Yearly amount",
     // Fundraise section
     "fundraise.title": "FUNDRAISING",
     "fundraise.subtitle": "Campaigns",
@@ -550,8 +574,11 @@ export const ui = {
     "donation.subtitle":
       "Cada euro va directamente a la clínica en Ecuador. Aquí puedes ver exactamente lo que podemos lograr con tu contribución específica.",
     "donation.medication": "Medicación Esencial",
+    "donation.consultation": "Consulta y Diagnóstico",
+    "donation.consultationDesc":
+      "Con tu donación financias una consulta completa incluyendo análisis de laboratorio y medicación para un paciente.",
     "donation.medicationDesc":
-      "Por €15 proporcionamos un curso completo de antibióticos o medicamentos antipalúdicos para un paciente.",
+      "Con tu donación proporcionamos un curso completo de antibióticos o medicamentos antipalúdicos para un paciente.",
     "donation.prenatal": "Control Prenatal",
     "donation.prenatalDesc":
       "Un control médico completo incluyendo ecografía para una futura madre, esencial para un parto seguro.",
@@ -661,6 +688,15 @@ export const ui = {
     "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
     "donate.faq3A":
       "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en info@quinacare.org.",
+    // Sponsor form (yura-boom)
+    "sponsor.nameLabel": "Nombre",
+    "sponsor.namePlaceholder": "Tu nombre completo",
+    "sponsor.emailLabel": "Correo electrónico",
+    "sponsor.emailPlaceholder": "tu@email.com",
+    "sponsor.monthly": "Mensual",
+    "sponsor.yearly": "Anual",
+    "sponsor.submitButton": "Patrocinar",
+    "sponsor.yearlyNote": "Importe anual",
     // Fundraise section
     "fundraise.title": "RECAUDACIÓN",
     "fundraise.subtitle": "Campañas",

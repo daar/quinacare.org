@@ -31,3 +31,6 @@ temp/qc
 .last_migration
 __pycache__
 *.pyc
+
+# Local Netlify folder
+.netlify

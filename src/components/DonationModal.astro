@@ -1,0 +1,73 @@
+---
+interface Props {
+  id?: string;
+}
+
+const { id = "donation-modal" } = Astro.props;
+---
+
+<dialog
+  id={id}
+  class="donation-modal fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
+>
+  <div
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+    data-modal-backdrop
+  >
+  </div>
+  <div
+    class="relative z-10 w-full max-w-[480px] mx-4 max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl"
+  >
+    <button
+      type="button"
+      data-modal-close
+      class="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      aria-label="Close"
+    >
+      <i class="fa-solid fa-xmark text-sm text-gray-500"></i>
+    </button>
+    <div class="p-8">
+      <slot />
+    </div>
+  </div>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .querySelectorAll<HTMLDialogElement>(".donation-modal")
+      .forEach((dialog) => {
+        const modalId = dialog.id;
+
+        // Open triggers
+        document
+          .querySelectorAll(`[data-open-modal="${modalId}"]`)
+          .forEach((trigger) => {
+            trigger.addEventListener("click", (e) => {
+              e.preventDefault();
+              dialog.showModal();
+              document.body.style.overflow = "hidden";
+
+              // Dispatch event with trigger's data attributes for the form to read
+              const detail = { ...(trigger as HTMLElement).dataset };
+              dialog.dispatchEvent(new CustomEvent("modal-open", { detail }));
+            });
+          });
+
+        // Close triggers
+        dialog
+          .querySelectorAll("[data-modal-close], [data-modal-backdrop]")
+          .forEach((el) => {
+            el.addEventListener("click", () => {
+              dialog.close();
+              document.body.style.overflow = "";
+            });
+          });
+
+        // Esc key
+        dialog.addEventListener("close", () => {
+          document.body.style.overflow = "";
+        });
+      });
+  });
+</script>

@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "^0.15.10",
+    "@astrojs/netlify": "^6.6.4",
+    "@libsql/client": "^0.17.0",
+    "@mollie/api-client": "^4.4.0",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.17.1",
     "tailwindcss": "^4.2.1"

@@ -1,0 +1,390 @@
+---
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+import {
+  currencies,
+  paymentMethodsByLocale,
+  getCurrency,
+  formatCurrency,
+} from "../lib/currency";
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const cc = getCurrency(lang);
+---
+
+<div
+  class="sponsor-form-card"
+  data-currencies={JSON.stringify(currencies)}
+  data-methods-by-locale={JSON.stringify(paymentMethodsByLocale)}
+>
+  <h2 class="text-2xl font-bold tracking-tighter uppercase mb-6 text-center">
+    {t("sponsor.submitButton")}
+  </h2>
+
+  <!-- Name -->
+  <div class="mb-4">
+    <label
+      class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-2"
+    >
+      {t("sponsor.nameLabel")}
+    </label>
+    <input
+      type="text"
+      class="sfc-name w-full py-3 px-4 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all"
+      placeholder={t("sponsor.namePlaceholder")}
+      required
+    />
+  </div>
+
+  <!-- Email -->
+  <div class="mb-6">
+    <label
+      class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-2"
+    >
+      {t("sponsor.emailLabel")}
+    </label>
+    <input
+      type="email"
+      class="sfc-email w-full py-3 px-4 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all"
+      placeholder={t("sponsor.emailPlaceholder")}
+      required
+    />
+  </div>
+
+  <!-- Frequency toggle: monthly / yearly -->
+  <div class="flex gap-2 mb-6 sfc-frequency">
+    <button
+      type="button"
+      data-frequency="monthly"
+      class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
+    >
+      {t("sponsor.monthly")}
+    </button>
+    <button
+      type="button"
+      data-frequency="yearly"
+      class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
+    >
+      {t("sponsor.yearly")}
+    </button>
+  </div>
+
+  <!-- Amount display (set from tier card data) -->
+  <div
+    class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6 text-center"
+  >
+    <span
+      class="text-qcRed font-bold text-3xl tracking-tighter sfc-display-amount"
+      >{formatCurrency(0, cc, false)}</span
+    >
+    <span class="text-gray-400 text-sm block mt-1 sfc-freq-label"
+      >{t("sponsor.monthly")}</span
+    >
+    <div class="sfc-yearly-note hidden mt-2 text-xs text-gray-400">
+      {t("sponsor.yearlyNote")}: <span
+        class="sfc-yearly-amount font-bold text-qcBlack"></span>
+    </div>
+  </div>
+
+  <!-- Payment methods -->
+  <div class="mb-6">
+    <span
+      class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3"
+    >
+      {t("donate.paymentMethod")}
+    </span>
+    <div class="grid grid-cols-2 gap-2 sfc-methods">
+      <button
+        type="button"
+        data-method="card"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
+      >
+        <i class="fa-solid fa-credit-card"></i>
+        {t("donate.creditCard")}
+      </button>
+      <button
+        type="button"
+        data-method="ideal"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <svg
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="2"
+            y="4"
+            width="20"
+            height="16"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"></rect>
+          <path d="M7 12h10M7 8h6" stroke="currentColor" stroke-width="2"
+          ></path>
+        </svg>
+        iDEAL
+      </button>
+      <button
+        type="button"
+        data-method="paypal"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <i class="fa-brands fa-paypal"></i>
+        PayPal
+      </button>
+      <button
+        type="button"
+        data-method="bank"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <i class="fa-solid fa-building-columns"></i>
+        {t("donate.bankTransfer")}
+      </button>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button
+    type="button"
+    class="sfc-submit qc-btn qc-btn--primary w-full py-4 shadow-lg"
+  >
+    <i class="sfc-icon fa-solid fa-heart mr-2"></i>
+    <span
+      >{t("sponsor.submitButton")} <span class="sfc-submit-amount"></span></span
+    >
+  </button>
+
+  <!-- Trust badges -->
+  <div
+    class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400"
+  >
+    <span class="flex items-center gap-1"
+      ><i class="fa-solid fa-lock"></i> {t("cta.securePayment")}</span
+    >
+    <span class="flex items-center gap-1"
+      ><i class="fa-solid fa-certificate"></i> {t("cta.certified")}</span
+    >
+    <span class="flex items-center gap-1"
+      ><i class="fa-solid fa-shield-halved"></i> SSL</span
+    >
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .querySelectorAll<HTMLElement>(".sponsor-form-card")
+      .forEach((card) => {
+        interface CurrencyConfig {
+          symbol: string;
+          precision: number;
+          thousand: string;
+          decimal: string;
+          pattern: string;
+          presets: number[];
+        }
+
+        const allCurrencies: Record<string, CurrencyConfig> = JSON.parse(
+          card.dataset.currencies || "{}",
+        );
+        const methodsByLocale: Record<string, string[]> = JSON.parse(
+          card.dataset.methodsByLocale || "{}",
+        );
+
+        const locale = document.documentElement.lang || "nl";
+        const cc = allCurrencies[locale] || allCurrencies.en;
+
+        function fmt(n: number, decimals = false): string {
+          const prec = decimals ? cc.precision : 0;
+          const fixed = Math.abs(n).toFixed(prec);
+          const [intPart, decPart] = fixed.split(".");
+          const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, cc.thousand);
+          const value =
+            prec > 0 && decPart ? `${grouped}${cc.decimal}${decPart}` : grouped;
+          return cc.pattern.replace("%s", cc.symbol).replace("%v", value);
+        }
+
+        const nameInput = card.querySelector<HTMLInputElement>(".sfc-name")!;
+        const emailInput = card.querySelector<HTMLInputElement>(".sfc-email")!;
+        const freqToggle = card.querySelector<HTMLElement>(".sfc-frequency")!;
+        const methodsEl = card.querySelector<HTMLElement>(".sfc-methods")!;
+        const submitBtn = card.querySelector<HTMLButtonElement>(".sfc-submit")!;
+        const submitAmount =
+          card.querySelector<HTMLElement>(".sfc-submit-amount")!;
+        const submitIcon = card.querySelector<HTMLElement>(".sfc-icon")!;
+        const displayAmount = card.querySelector<HTMLElement>(
+          ".sfc-display-amount",
+        )!;
+        const freqLabel = card.querySelector<HTMLElement>(".sfc-freq-label")!;
+        const yearlyNote = card.querySelector<HTMLElement>(".sfc-yearly-note")!;
+        const yearlyAmount =
+          card.querySelector<HTMLElement>(".sfc-yearly-amount")!;
+
+        let frequency = "monthly";
+        let monthlyAmount = 0;
+        let cardType = "";
+        const defaultMethods = methodsByLocale[locale] ||
+          methodsByLocale.en || ["card"];
+        let method = defaultMethods[0];
+
+        function filterPaymentMethods() {
+          const allowed = methodsByLocale[locale] || methodsByLocale.en || [];
+          methodsEl.querySelectorAll("button").forEach((btn) => {
+            const m = btn.dataset.method;
+            if (m && !allowed.includes(m)) btn.classList.add("hidden");
+            else btn.classList.remove("hidden");
+          });
+          if (!allowed.includes(method)) method = allowed[0] || "card";
+        }
+
+        function getPayAmount(): number {
+          return frequency === "yearly" ? monthlyAmount * 12 : monthlyAmount;
+        }
+
+        function updateUI() {
+          const payAmount = getPayAmount();
+
+          displayAmount.textContent = fmt(payAmount);
+          submitAmount.textContent = fmt(payAmount);
+
+          // Show yearly note when monthly is selected (to show what yearly would be)
+          if (frequency === "monthly") {
+            yearlyNote.classList.add("hidden");
+            freqLabel.textContent =
+              freqToggle
+                .querySelector("[data-frequency='monthly']")
+                ?.textContent?.trim() || "";
+          } else {
+            yearlyNote.classList.remove("hidden");
+            yearlyAmount.textContent = fmt(monthlyAmount * 12);
+            freqLabel.textContent =
+              freqToggle
+                .querySelector("[data-frequency='yearly']")
+                ?.textContent?.trim() || "";
+          }
+
+          freqToggle.querySelectorAll("button").forEach((btn) => {
+            btn.className =
+              btn.dataset.frequency === frequency
+                ? "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
+                : "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack";
+          });
+
+          methodsEl.querySelectorAll("button").forEach((btn) => {
+            btn.className =
+              btn.dataset.method === method
+                ? "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
+                : "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all";
+          });
+
+          filterPaymentMethods();
+        }
+
+        freqToggle.addEventListener("click", (e) => {
+          const btn = (e.target as HTMLElement).closest("button");
+          if (!btn?.dataset.frequency) return;
+          frequency = btn.dataset.frequency;
+          updateUI();
+        });
+
+        methodsEl.addEventListener("click", (e) => {
+          const btn = (e.target as HTMLElement).closest("button");
+          if (!btn?.dataset.method) return;
+          method = btn.dataset.method;
+          updateUI();
+        });
+
+        // Listen for modal-open event to receive tier card data
+        const modal = card.closest("dialog");
+        if (modal) {
+          modal.addEventListener("modal-open", ((e: CustomEvent) => {
+            const detail = e.detail || {};
+            if (detail.amount) {
+              monthlyAmount = parseFloat(detail.amount);
+            }
+            if (detail.cardType) {
+              cardType = detail.cardType;
+            }
+            // Reset frequency on each open
+            frequency = "monthly";
+            updateUI();
+          }) as EventListener);
+        }
+
+        // Also check query params
+        const params = new URLSearchParams(window.location.search);
+        const paramAmount = parseFloat(params.get("amount") || "");
+        if (paramAmount > 0) monthlyAmount = paramAmount;
+        const paramCard = params.get("card") || "";
+        if (paramCard) cardType = paramCard;
+
+        submitBtn.addEventListener("click", async () => {
+          // Validate name and email
+          if (!nameInput.value.trim()) {
+            nameInput.focus();
+            nameInput.classList.add("!border-qcRed");
+            return;
+          }
+          if (!emailInput.value.trim() || !emailInput.validity.valid) {
+            emailInput.focus();
+            emailInput.classList.add("!border-qcRed");
+            return;
+          }
+
+          submitBtn.setAttribute("disabled", "true");
+          submitIcon.className = "sfc-icon fa-solid fa-spinner fa-spin mr-2";
+
+          try {
+            const payAmount = getPayAmount();
+            const metadata = {
+              donor_name: nameInput.value.trim(),
+              donor_email: emailInput.value.trim(),
+              card_type: cardType,
+              monthly_amount: monthlyAmount,
+            };
+
+            const res = await fetch("/api/mollie/create-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                amount: payAmount,
+                frequency,
+                method,
+                locale,
+                context: "yura-boom",
+                metadata,
+              }),
+            });
+
+            const data = await res.json();
+            if (data.checkoutUrl) {
+              window.location.href = data.checkoutUrl;
+              return;
+            }
+            if (data.error) alert(data.error);
+          } catch {
+            alert("Something went wrong. Please try again.");
+          }
+
+          submitBtn.removeAttribute("disabled");
+          submitIcon.className = "sfc-icon fa-solid fa-heart mr-2";
+        });
+
+        // Remove validation styling on input
+        nameInput.addEventListener("input", () =>
+          nameInput.classList.remove("!border-qcRed"),
+        );
+        emailInput.addEventListener("input", () =>
+          emailInput.classList.remove("!border-qcRed"),
+        );
+
+        updateUI();
+      });
+  });
+</script>

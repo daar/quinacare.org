@@ -1,0 +1,423 @@
+---
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+import {
+  currencies,
+  paymentMethodsByLocale,
+  getCurrency,
+  formatCurrency,
+} from "../lib/currency";
+
+interface Props {
+  lang?: Lang;
+  context?: "donate" | "fundraiser";
+  fundraiserSlug?: string;
+  fundraiserTitle?: string;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const cc = getCurrency(lang);
+const context = Astro.props.context ?? "donate";
+const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div
+  class="donation-form-card"
+  data-uid={uid}
+  data-context={context}
+  data-fundraiser-slug={Astro.props.fundraiserSlug ?? ""}
+  data-fundraiser-title={Astro.props.fundraiserTitle ?? ""}
+  data-currencies={JSON.stringify(currencies)}
+  data-methods-by-locale={JSON.stringify(paymentMethodsByLocale)}
+>
+  <h2 class="text-2xl font-bold tracking-tighter uppercase mb-6 text-center">
+    {t("donate.submitButton")}
+  </h2>
+
+  <!-- Frequency toggle -->
+  <div class="flex gap-2 mb-6 dfc-frequency">
+    <button
+      type="button"
+      data-frequency="one-time"
+      class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
+    >
+      {t("donate.oneTime")}
+    </button>
+    <button
+      type="button"
+      data-frequency="monthly"
+      class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
+    >
+      {t("donate.monthly")}
+    </button>
+  </div>
+
+  <!-- Preset amounts -->
+  <div class="grid grid-cols-4 gap-2 mb-2 dfc-amounts">
+    {
+      cc.presets.map((amount) => (
+        <button
+          type="button"
+          data-amount={amount}
+          class:list={[
+            "py-3 text-center font-bold text-base rounded-md border transition-all",
+            amount === cc.presets[2]
+              ? "bg-qcRed text-white border-qcRed"
+              : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
+          ]}
+        >
+          {formatCurrency(amount, cc, false)}
+        </button>
+      ))
+    }
+  </div>
+  <input
+    type="text"
+    inputmode="decimal"
+    class="dfc-custom w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
+    placeholder={t("donate.customPlaceholder")}
+  />
+
+  <!-- Impact preview -->
+  <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+    <span class="qc-label mb-1">{t("donate.impactLabel")}</span>
+    <p class="dfc-impact qc-body leading-relaxed">
+      {t("donate.impactGeneric")}
+    </p>
+    <span class="hidden" data-impact="medication"
+      >{t("donation.medicationDesc")}</span
+    >
+    <span class="hidden" data-impact="consultation"
+      >{t("donation.consultationDesc")}</span
+    >
+    <span class="hidden" data-impact="prenatal"
+      >{t("donation.prenatalDesc")}</span
+    >
+    <span class="hidden" data-impact="surgery">{t("donation.surgeryDesc")}</span
+    >
+    <span class="hidden" data-impact="generic">{t("donate.impactGeneric")}</span
+    >
+  </div>
+
+  <!-- Payment methods -->
+  <div class="mb-6">
+    <span
+      class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3"
+    >
+      {t("donate.paymentMethod")}
+    </span>
+    <div class="grid grid-cols-2 gap-2 dfc-methods">
+      <button
+        type="button"
+        data-method="card"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
+      >
+        <i class="fa-solid fa-credit-card"></i>
+        {t("donate.creditCard")}
+      </button>
+      <button
+        type="button"
+        data-method="ideal"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <svg
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="2"
+            y="4"
+            width="20"
+            height="16"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"></rect>
+          <path d="M7 12h10M7 8h6" stroke="currentColor" stroke-width="2"
+          ></path>
+        </svg>
+        iDEAL
+      </button>
+      <button
+        type="button"
+        data-method="paypal"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <i class="fa-brands fa-paypal"></i>
+        PayPal
+      </button>
+      <button
+        type="button"
+        data-method="bank"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <i class="fa-solid fa-building-columns"></i>
+        {t("donate.bankTransfer")}
+      </button>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button
+    type="button"
+    class="dfc-submit qc-btn qc-btn--primary w-full py-4 shadow-lg"
+  >
+    <i class="dfc-icon fa-solid fa-heart mr-2"></i>
+    <span
+      >{t("donate.submitButton")}
+      <span class="dfc-amount">{formatCurrency(cc.presets[2], cc, false)}</span
+      ></span
+    >
+  </button>
+
+  <!-- Trust badges -->
+  <div
+    class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400"
+  >
+    <span class="flex items-center gap-1"
+      ><i class="fa-solid fa-lock"></i> {t("cta.securePayment")}</span
+    >
+    <span class="flex items-center gap-1"
+      ><i class="fa-solid fa-certificate"></i> {t("cta.certified")}</span
+    >
+    <span class="flex items-center gap-1"
+      ><i class="fa-solid fa-shield-halved"></i> SSL</span
+    >
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .querySelectorAll<HTMLElement>(".donation-form-card")
+      .forEach((card) => {
+        interface CurrencyConfig {
+          symbol: string;
+          precision: number;
+          thousand: string;
+          decimal: string;
+          pattern: string;
+          presets: number[];
+        }
+
+        const allCurrencies: Record<string, CurrencyConfig> = JSON.parse(
+          card.dataset.currencies || "{}",
+        );
+        const methodsByLocale: Record<string, string[]> = JSON.parse(
+          card.dataset.methodsByLocale || "{}",
+        );
+        const context = card.dataset.context || "donate";
+        const fundraiserSlug = card.dataset.fundraiserSlug || "";
+        const fundraiserTitle = card.dataset.fundraiserTitle || "";
+
+        const locale = document.documentElement.lang || "nl";
+        const cc = allCurrencies[locale] || allCurrencies.en;
+
+        function fmt(n: number, decimals = false): string {
+          const prec = decimals ? cc.precision : 0;
+          const fixed = Math.abs(n).toFixed(prec);
+          const [intPart, decPart] = fixed.split(".");
+          const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, cc.thousand);
+          const value =
+            prec > 0 && decPart ? `${grouped}${cc.decimal}${decPart}` : grouped;
+          return cc.pattern.replace("%s", cc.symbol).replace("%v", value);
+        }
+
+        function parse(input: string): number {
+          const cleaned = input
+            .replace(cc.symbol, "")
+            .replaceAll(cc.thousand, "")
+            .replace(cc.decimal, ".")
+            .replace(/[^\d.]/g, "")
+            .trim();
+          const n = parseFloat(cleaned);
+          return isNaN(n) ? 0 : Math.floor(n);
+        }
+
+        const amountGrid = card.querySelector<HTMLElement>(".dfc-amounts")!;
+        const customInput =
+          card.querySelector<HTMLInputElement>(".dfc-custom")!;
+        const freqToggle = card.querySelector<HTMLElement>(".dfc-frequency")!;
+        const methodsEl = card.querySelector<HTMLElement>(".dfc-methods")!;
+        const submitBtn = card.querySelector<HTMLButtonElement>(".dfc-submit")!;
+        const submitAmount = card.querySelector<HTMLElement>(".dfc-amount")!;
+        const impactText = card.querySelector<HTMLElement>(".dfc-impact")!;
+        const submitIcon = card.querySelector<HTMLElement>(".dfc-icon")!;
+
+        let frequency = "one-time";
+        let amount = cc.presets[2] || 50;
+        const defaultMethods = methodsByLocale[locale] ||
+          methodsByLocale.en || ["card"];
+        let method = defaultMethods[0];
+
+        // Session restore
+        const storageKey = `donate:${context}`;
+        const saved = sessionStorage.getItem(storageKey);
+        if (saved) {
+          try {
+            const s = JSON.parse(saved);
+            if (s.amount > 0) amount = s.amount;
+            if (s.frequency) frequency = s.frequency;
+            if (s.method) method = s.method;
+            if (s.custom) customInput.value = fmt(s.amount);
+          } catch {
+            /* ignore */
+          }
+        }
+
+        // Query param override
+        const paramAmount = parseInt(
+          new URLSearchParams(window.location.search).get("amount") || "",
+          10,
+        );
+        if (paramAmount > 0) amount = paramAmount;
+
+        function saveState() {
+          sessionStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              amount,
+              frequency,
+              method,
+              locale,
+              custom: customInput.value !== "",
+            }),
+          );
+        }
+
+        function filterPaymentMethods() {
+          const allowed = methodsByLocale[locale] || methodsByLocale.en || [];
+          methodsEl.querySelectorAll("button").forEach((btn) => {
+            const m = btn.dataset.method;
+            if (m && !allowed.includes(m)) btn.classList.add("hidden");
+            else btn.classList.remove("hidden");
+          });
+          if (!allowed.includes(method)) method = allowed[0] || "card";
+        }
+
+        function updateUI() {
+          amountGrid.querySelectorAll("button").forEach((btn) => {
+            const a = parseInt(btn.dataset.amount || "", 10);
+            btn.textContent = fmt(a);
+            btn.className =
+              a === amount && customInput.value === ""
+                ? "py-3 text-center font-bold text-base rounded-md border transition-all bg-qcRed text-white border-qcRed"
+                : "py-3 text-center font-bold text-base rounded-md border transition-all bg-white text-qcBlack border-gray-200 hover:border-qcRed";
+          });
+
+          freqToggle.querySelectorAll("button").forEach((btn) => {
+            btn.className =
+              btn.dataset.frequency === frequency
+                ? "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
+                : "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack";
+          });
+
+          methodsEl.querySelectorAll("button").forEach((btn) => {
+            btn.className =
+              btn.dataset.method === method
+                ? "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
+                : "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all";
+          });
+
+          filterPaymentMethods();
+          submitAmount.textContent = fmt(amount);
+
+          let impactKey = "generic";
+          if (amount >= 75) impactKey = "surgery";
+          else if (amount >= 35) impactKey = "prenatal";
+          else if (amount >= 25) impactKey = "consultation";
+          else if (amount >= 15) impactKey = "medication";
+
+          const span = card.querySelector(
+            `[data-impact="${impactKey}"]`,
+          ) as HTMLElement | null;
+          if (span) impactText.textContent = span.textContent || "";
+        }
+
+        amountGrid.addEventListener("click", (e) => {
+          const btn = (e.target as HTMLElement).closest("button");
+          if (!btn?.dataset.amount) return;
+          amount = parseInt(btn.dataset.amount, 10);
+          customInput.value = "";
+          updateUI();
+          saveState();
+        });
+
+        customInput.addEventListener("focus", () => {
+          const val = parse(customInput.value);
+          customInput.value = val > 0 ? String(val) : "";
+        });
+
+        customInput.addEventListener("input", () => {
+          const val = parseInt(customInput.value.replace(/[^\d]/g, ""), 10);
+          if (val > 0) {
+            amount = val;
+            updateUI();
+            saveState();
+          }
+        });
+
+        customInput.addEventListener("blur", () => {
+          const val = parse(customInput.value);
+          customInput.value = val > 0 ? fmt(val) : "";
+        });
+
+        freqToggle.addEventListener("click", (e) => {
+          const btn = (e.target as HTMLElement).closest("button");
+          if (!btn?.dataset.frequency) return;
+          frequency = btn.dataset.frequency;
+          updateUI();
+          saveState();
+        });
+
+        methodsEl.addEventListener("click", (e) => {
+          const btn = (e.target as HTMLElement).closest("button");
+          if (!btn?.dataset.method) return;
+          method = btn.dataset.method;
+          updateUI();
+          saveState();
+        });
+
+        submitBtn.addEventListener("click", async () => {
+          submitBtn.setAttribute("disabled", "true");
+          submitIcon.className = "dfc-icon fa-solid fa-spinner fa-spin mr-2";
+
+          try {
+            const metadata: Record<string, unknown> = {};
+            if (context === "fundraiser") {
+              metadata.fundraiser_slug = fundraiserSlug;
+              metadata.fundraiser_title = fundraiserTitle;
+            }
+
+            const res = await fetch("/api/mollie/create-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                amount,
+                frequency,
+                method,
+                locale,
+                context,
+                metadata,
+              }),
+            });
+
+            const data = await res.json();
+            if (data.checkoutUrl) {
+              window.location.href = data.checkoutUrl;
+              return;
+            }
+            if (data.error) alert(data.error);
+          } catch {
+            alert("Something went wrong. Please try again.");
+          }
+
+          submitBtn.removeAttribute("disabled");
+          submitIcon.className = "dfc-icon fa-solid fa-heart mr-2";
+        });
+
+        updateUI();
+      });
+  });
+</script>

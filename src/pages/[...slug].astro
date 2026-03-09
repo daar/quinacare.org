@@ -4,6 +4,8 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import PageContent from "../components/PageContent.astro";
+import DonationModal from "../components/DonationModal.astro";
+import SponsorFormCard from "../components/SponsorFormCard.astro";
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages-nl");
@@ -14,6 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { page } = Astro.props;
+const isYuraBoom = page.data.slug === "yura-boom";
 ---
 
 <Layout title={`${page.data.title} - Quina Care`}>
@@ -21,5 +24,12 @@ const { page } = Astro.props;
   <div data-pagefind-body>
     <PageContent page={page} />
   </div>
+  {
+    isYuraBoom && (
+      <DonationModal id="sponsor-modal">
+        <SponsorFormCard lang="nl" />
+      </DonationModal>
+    )
+  }
   <Footer />
 </Layout>

@@ -5,6 +5,8 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../i18n";
+import { getCurrency, formatCurrency } from "../lib/currency";
+import DonationFormCard from "./DonationFormCard.astro";
 
 interface Props {
   lang?: Lang;
@@ -12,6 +14,7 @@ interface Props {
 
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const cc = getCurrency(lang);
 ---
 
 <!-- SECTION 1: Hero with floating donation form -->
@@ -80,168 +83,7 @@ const t = useTranslations(lang);
     <div
       class="w-full lg:w-[460px] flex-shrink-0 bg-white rounded-xl shadow-2xl p-8"
     >
-      <h2
-        class="text-2xl font-bold tracking-tighter uppercase mb-6 text-center"
-      >
-        {t("donate.submitButton")}
-      </h2>
-
-      <!-- Frequency toggle -->
-      <div class="flex gap-2 mb-6" id="frequency-toggle">
-        <button
-          type="button"
-          data-frequency="one-time"
-          class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
-        >
-          {t("donate.oneTime")}
-        </button>
-        <button
-          type="button"
-          data-frequency="monthly"
-          class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
-        >
-          {t("donate.monthly")}
-        </button>
-      </div>
-
-      <!-- Preset amounts -->
-      <div class="grid grid-cols-4 gap-2 mb-2" id="amount-grid">
-        {
-          [15, 25, 50, 100].map((amount) => (
-            <button
-              type="button"
-              data-amount={amount}
-              class:list={[
-                "py-3 text-center font-bold text-base rounded-md border transition-all",
-                amount === 50
-                  ? "bg-qcRed text-white border-qcRed"
-                  : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
-              ]}
-            >
-              &euro;{amount}
-            </button>
-          ))
-        }
-      </div>
-      <input
-        type="number"
-        id="custom-amount"
-        min="1"
-        placeholder={t("donate.customPlaceholder")}
-        class="w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
-      />
-
-      <!-- Impact preview -->
-      <div
-        id="impact-preview"
-        class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6"
-      >
-        <span class="qc-label mb-1">
-          {t("donate.impactLabel")}
-        </span>
-        <p id="impact-text" class="qc-body leading-relaxed">
-          {t("donate.impactGeneric")}
-        </p>
-        <span id="impact-medication" class="hidden" data-impact="medication">
-          {t("donation.medicationDesc")}
-        </span>
-        <span id="impact-prenatal" class="hidden" data-impact="prenatal">
-          {t("donation.prenatalDesc")}
-        </span>
-        <span id="impact-surgery" class="hidden" data-impact="surgery">
-          {t("donation.surgeryDesc")}
-        </span>
-        <span id="impact-generic" class="hidden" data-impact="generic">
-          {t("donate.impactGeneric")}
-        </span>
-      </div>
-
-      <!-- Payment method grid -->
-      <div class="mb-6">
-        <span
-          class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3"
-        >
-          {t("donate.paymentMethod")}
-        </span>
-        <div class="grid grid-cols-2 gap-2" id="payment-methods">
-          <button
-            type="button"
-            data-method="card"
-            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
-          >
-            <i class="fa-solid fa-credit-card"></i>
-            {t("donate.creditCard")}
-          </button>
-          <button
-            type="button"
-            data-method="ideal"
-            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
-          >
-            <svg
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="2"
-                y="4"
-                width="20"
-                height="16"
-                rx="2"
-                stroke="currentColor"
-                stroke-width="2"></rect>
-              <path d="M7 12h10M7 8h6" stroke="currentColor" stroke-width="2"
-              ></path>
-            </svg>
-            iDEAL
-          </button>
-          <button
-            type="button"
-            data-method="paypal"
-            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
-          >
-            <i class="fa-brands fa-paypal"></i>
-            PayPal
-          </button>
-          <button
-            type="button"
-            data-method="bank"
-            class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
-          >
-            <i class="fa-solid fa-building-columns"></i>
-            {t("donate.bankTransfer")}
-          </button>
-        </div>
-      </div>
-
-      <!-- Submit button -->
-      <button
-        type="button"
-        id="donate-submit"
-        class="qc-btn qc-btn--primary w-full py-4 shadow-lg"
-      >
-        <i class="fa-solid fa-heart mr-2"></i>
-        {t("donate.submitButton")} &euro;<span id="submit-amount">50</span>
-      </button>
-
-      <!-- Trust badges -->
-      <div
-        class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400"
-      >
-        <span class="flex items-center gap-1">
-          <i class="fa-solid fa-lock"></i>
-          {t("cta.securePayment")}
-        </span>
-        <span class="flex items-center gap-1">
-          <i class="fa-solid fa-certificate"></i>
-          {t("cta.certified")}
-        </span>
-        <span class="flex items-center gap-1">
-          <i class="fa-solid fa-shield-halved"></i>
-          SSL
-        </span>
-      </div>
+      <DonationFormCard lang={lang} context="donate" />
     </div>
   </div>
 </header>
@@ -269,7 +111,7 @@ const t = useTranslations(lang);
           <i class="fa-solid fa-pills text-6xl"></i>
         </div>
         <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-          &euro;15
+          {formatCurrency(15, cc, false)}
         </h3>
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.medication")}
@@ -288,7 +130,7 @@ const t = useTranslations(lang);
           <i class="fa-solid fa-baby text-6xl"></i>
         </div>
         <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-          &euro;35
+          {formatCurrency(35, cc, false)}
         </h3>
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.prenatal")}
@@ -307,7 +149,7 @@ const t = useTranslations(lang);
           <i class="fa-solid fa-stethoscope text-6xl"></i>
         </div>
         <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-          &euro;75
+          {formatCurrency(75, cc, false)}
         </h3>
         <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
           {t("donation.surgery")}
@@ -586,133 +428,14 @@ const t = useTranslations(lang);
 </div>
 
 <script>
-  document.addEventListener("astro:page-load", () => {
-    // === Donation form logic ===
-    let frequency = "one-time";
-    let amount = 50;
-    let method = "card";
-
-    const amountGrid = document.getElementById("amount-grid");
-    const customInput = document.getElementById(
-      "custom-amount",
-    ) as HTMLInputElement | null;
-    const frequencyToggle = document.getElementById("frequency-toggle");
-    const paymentMethods = document.getElementById("payment-methods");
-    const submitBtn = document.getElementById("donate-submit");
-    const submitAmount = document.getElementById("submit-amount");
-    const impactText = document.getElementById("impact-text");
-    const overlay = document.getElementById("success-overlay");
-
-    if (
-      !amountGrid ||
-      !customInput ||
-      !frequencyToggle ||
-      !paymentMethods ||
-      !submitBtn ||
-      !submitAmount ||
-      !impactText ||
-      !overlay
-    )
-      return;
-
-    // Read ?amount= query param
-    const params = new URLSearchParams(window.location.search);
-    const paramAmount = parseInt(params.get("amount") || "", 10);
-    if (paramAmount > 0) {
-      amount = paramAmount;
-    }
-
-    function updateUI() {
-      amountGrid!.querySelectorAll("button").forEach((btn) => {
-        const btnAmount = parseInt(btn.dataset.amount || "", 10);
-        if (btnAmount === amount) {
-          btn.className =
-            "py-3 text-center font-bold text-base rounded-md border transition-all bg-qcRed text-white border-qcRed";
-        } else {
-          btn.className =
-            "py-3 text-center font-bold text-base rounded-md border transition-all bg-white text-qcBlack border-gray-200 hover:border-qcRed";
-        }
-      });
-
-      frequencyToggle!.querySelectorAll("button").forEach((btn) => {
-        if (btn.dataset.frequency === frequency) {
-          btn.className =
-            "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white";
-        } else {
-          btn.className =
-            "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack";
-        }
-      });
-
-      paymentMethods!.querySelectorAll("button").forEach((btn) => {
-        if (btn.dataset.method === method) {
-          btn.className =
-            "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all";
-        } else {
-          btn.className =
-            "flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all";
-        }
-      });
-
-      submitAmount!.textContent = String(amount);
-
-      let impactKey = "generic";
-      if (amount >= 75) impactKey = "surgery";
-      else if (amount >= 35) impactKey = "prenatal";
-      else if (amount >= 15) impactKey = "medication";
-
-      const impactSpan = document.querySelector(
-        `[data-impact="${impactKey}"]`,
-      ) as HTMLElement | null;
-      if (impactSpan) {
-        impactText!.textContent = impactSpan.textContent || "";
-      }
-    }
-
-    amountGrid.addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest("button");
-      if (!btn?.dataset.amount) return;
-      amount = parseInt(btn.dataset.amount, 10);
-      customInput!.value = "";
-      updateUI();
-    });
-
-    customInput.addEventListener("input", () => {
-      const val = parseInt(customInput.value, 10);
-      if (val > 0) {
-        amount = val;
-        updateUI();
-      }
-    });
-
-    frequencyToggle.addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest("button");
-      if (!btn?.dataset.frequency) return;
-      frequency = btn.dataset.frequency;
-      updateUI();
-    });
-
-    paymentMethods.addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest("button");
-      if (!btn?.dataset.method) return;
-      method = btn.dataset.method;
-      updateUI();
-    });
-
-    submitBtn.addEventListener("click", () => {
-      overlay!.classList.remove("hidden");
-    });
-
-    updateUI();
-
-    // === FAQ accordion logic ===
+  document.addEventListener("DOMContentLoaded", () => {
+    // FAQ accordion logic
     document.querySelectorAll(".faq-toggle").forEach((toggle) => {
       toggle.addEventListener("click", () => {
         const content = toggle.nextElementSibling as HTMLElement | null;
         const icon = toggle.querySelector("i");
         const isOpen = toggle.getAttribute("aria-expanded") === "true";
 
-        // Close all others
         document.querySelectorAll(".faq-toggle").forEach((other) => {
           const otherContent = other.nextElementSibling as HTMLElement | null;
           const otherIcon = other.querySelector("i");
@@ -721,7 +444,6 @@ const t = useTranslations(lang);
           otherIcon?.classList.remove("rotate-180");
         });
 
-        // Toggle current
         if (!isOpen && content) {
           toggle.setAttribute("aria-expanded", "true");
           content.classList.remove("hidden");

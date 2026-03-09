@@ -52,13 +52,16 @@ const {
     {yearly}
   </span>
 
-  <a
-    href={href}
+  <button
+    type="button"
+    data-open-modal="sponsor-modal"
+    data-amount={href.match(/amount=(\d+)/)?.[1] || ""}
+    data-card-type={title.toLowerCase().replace(/\s+/g, "-")}
     class={`qc-btn block w-full py-3.5 text-center ${
       featured ? "qc-btn--primary" : "qc-btn--outline"
     }`}
   >
     <i class="fa-solid fa-heart mr-2"></i>
     {title}
-  </a>
+  </button>
 </div>

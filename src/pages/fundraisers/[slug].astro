@@ -10,6 +10,8 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../../i18n";
+import DonationModal from "../../components/DonationModal.astro";
+import DonationFormCard from "../../components/DonationFormCard.astro";
 
 const lang: Lang = "nl";
 const t = useTranslations(lang);
@@ -228,8 +230,9 @@ const shareTitle = entry.data.title;
             </div>
 
             <!-- CTA button -->
-            <a
-              href={getLocalizedPath("/donate", lang)}
+            <button
+              type="button"
+              data-open-modal="fundraiser-donate-modal"
               class="group relative block w-full text-center font-bold text-sm uppercase tracking-widest py-4 rounded-lg overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg mb-4"
             >
               <div
@@ -238,7 +241,7 @@ const shareTitle = entry.data.title;
               </div>
               <span class="relative text-white">{t("fundraise.donateNow")}</span
               >
-            </a>
+            </button>
 
             <!-- Share row -->
             <div class="flex items-center justify-center gap-3 mt-auto pt-4">
@@ -335,6 +338,15 @@ const shareTitle = entry.data.title;
       </div>
     </div>
   </main>
+
+  <DonationModal id="fundraiser-donate-modal">
+    <DonationFormCard
+      lang={lang}
+      context="fundraiser"
+      fundraiserSlug={entry.data.slug}
+      fundraiserTitle={entry.data.title}
+    />
+  </DonationModal>
 
   <Footer />
 </Layout>
