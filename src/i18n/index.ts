@@ -120,6 +120,9 @@ export const ui = {
     "newsletter.submit": "Inschrijven",
     "newsletter.privacy":
       "Wij respecteren je privacy. Geen spam, alleen impact.",
+    "newsletter.success": "Bedankt, je bent succesvol ingeschreven!",
+    "newsletter.invalidEmail": "Vul een geldig e-mailadres in.",
+    "newsletter.error": "Er ging iets mis. Probeer het opnieuw.",
     // Footer
     "footer.description":
       "Medische zorg op de meest afgelegen plekken. Stichting Quina Care zet zich in voor levensreddende hulp in de Ecuadoriaanse jungle.",
@@ -369,6 +372,9 @@ export const ui = {
     "newsletter.placeholder": "Your email address",
     "newsletter.submit": "Subscribe",
     "newsletter.privacy": "We respect your privacy. No spam, only impact.",
+    "newsletter.success": "Thank you, you have successfully subscribed!",
+    "newsletter.invalidEmail": "Please enter a valid email address.",
+    "newsletter.error": "Something went wrong. Please try again.",
     // Footer
     "footer.description":
       "Medical care in the most remote places. Quina Care Foundation is committed to life-saving care in the Ecuadorian jungle.",
@@ -620,6 +626,9 @@ export const ui = {
     "newsletter.placeholder": "Tu correo electrónico",
     "newsletter.submit": "Suscribirse",
     "newsletter.privacy": "Respetamos tu privacidad. Sin spam, solo impacto.",
+    "newsletter.success": "¡Gracias, te has suscrito exitosamente!",
+    "newsletter.invalidEmail": "Introduce una dirección de correo válida.",
+    "newsletter.error": "Algo salió mal. Inténtalo de nuevo.",
     // Footer
     "footer.description":
       "Atención médica en los lugares más remotos. La Fundación Quina Care está comprometida con la atención que salva vidas en la selva ecuatoriana.",

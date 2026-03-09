@@ -27,13 +27,13 @@ const t = useTranslations(lang);
         </p>
       </div>
 
-      <div class="relative">
-        <form class="flex flex-col sm:flex-row gap-4">
+      <div class="relative newsletter-widget">
+        <form class="newsletter-form flex flex-col sm:flex-row gap-4">
           <div class="relative flex-grow group">
             <input
               type="email"
               placeholder={t("newsletter.placeholder")}
-              class="w-full bg-white border border-gray-200 px-6 py-4 text-sm focus:outline-none focus:border-qcRed transition-colors placeholder:text-gray-300 placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+              class="newsletter-email w-full bg-white border border-gray-200 px-6 py-4 text-sm focus:outline-none focus:border-qcRed transition-colors placeholder:text-gray-300 placeholder:uppercase placeholder:text-xs placeholder:tracking-widest placeholder:font-sans"
               required
             />
             <div
@@ -41,18 +41,103 @@ const t = useTranslations(lang);
             >
             </div>
           </div>
-          <button class="qc-btn qc-btn--secondary px-10 py-4 flex-shrink-0">
-            {t("newsletter.submit")}
+          <button
+            class="newsletter-btn qc-btn qc-btn--secondary px-10 py-4 flex-shrink-0"
+          >
+            <span class="newsletter-btn-text">{t("newsletter.submit")}</span>
+            <i
+              class="newsletter-btn-spinner fa-solid fa-spinner fa-spin !hidden"
+            ></i>
           </button>
         </form>
 
         <p
-          class="mt-4 text-[9px] text-gray-400 uppercase tracking-widest flex items-center gap-2"
+          class="newsletter-privacy mt-4 text-xs text-gray-400 font-sans uppercase tracking-widest flex items-center gap-2"
         >
-          <i class="fa-solid fa-lock text-[8px]"></i>
+          <i class="fa-solid fa-lock text-[10px]"></i>
           {t("newsletter.privacy")}
+        </p>
+
+        <p class="newsletter-error hidden mt-4 text-sm font-sans text-qcRed">
+          {t("newsletter.error")}
+        </p>
+
+        <p class="newsletter-success hidden text-lg font-sans text-gray-600">
+          {t("newsletter.success")}
         </p>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>(".newsletter-widget")
+    .forEach((widget) => {
+      const form = widget.querySelector<HTMLFormElement>(".newsletter-form")!;
+      const email =
+        widget.querySelector<HTMLInputElement>(".newsletter-email")!;
+      const privacy = widget.querySelector<HTMLElement>(".newsletter-privacy")!;
+      const success = widget.querySelector<HTMLElement>(".newsletter-success")!;
+      const error = widget.querySelector<HTMLElement>(".newsletter-error")!;
+      const btn = widget.querySelector<HTMLButtonElement>(".newsletter-btn")!;
+      const btnText = widget.querySelector<HTMLElement>(
+        ".newsletter-btn-text",
+      )!;
+      const btnSpinner = widget.querySelector<HTMLElement>(
+        ".newsletter-btn-spinner",
+      )!;
+      const locale = document.documentElement.lang || "nl";
+
+      const validationMessages: Record<string, string> = {
+        nl: "Vul een geldig e-mailadres in.",
+        en: "Please enter a valid email address.",
+        es: "Introduce una dirección de correo válida.",
+      };
+      email.setCustomValidity("");
+      email.addEventListener("invalid", () => {
+        email.setCustomValidity(
+          validationMessages[locale] || validationMessages.en,
+        );
+      });
+      email.addEventListener("input", () => {
+        email.setCustomValidity("");
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        error.classList.add("hidden");
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        btn.disabled = true;
+        btnText.classList.add("hidden");
+        btnSpinner.classList.remove("!hidden");
+
+        try {
+          const res = await fetch("/api/newsletter/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email.value, locale }),
+          });
+
+          if (!res.ok) {
+            error.classList.remove("hidden");
+            return;
+          }
+
+          form.classList.add("hidden");
+          privacy.classList.add("hidden");
+          success.classList.remove("hidden");
+        } catch {
+          error.classList.remove("hidden");
+        } finally {
+          btn.disabled = false;
+          btnText.classList.remove("hidden");
+          btnSpinner.classList.add("!hidden");
+        }
+      });
+    });
+</script>

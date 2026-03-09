@@ -17,7 +17,7 @@ export function getDb(): Client {
   return client;
 }
 
-/** Ensures the donations table exists. Runs once per cold start. */
+/** Ensures all tables exist. Runs once per cold start. */
 export async function ensureSchema(): Promise<void> {
   if (migrated) return;
   const db = getDb();
@@ -40,6 +40,13 @@ export async function ensureSchema(): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_donations_mollie_id ON donations(mollie_id)`,
     `CREATE INDEX IF NOT EXISTS idx_donations_context ON donations(context)`,
     `CREATE INDEX IF NOT EXISTS idx_donations_status ON donations(status)`,
+    `CREATE TABLE IF NOT EXISTS subscribers (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      email      TEXT NOT NULL UNIQUE,
+      locale     TEXT NOT NULL DEFAULT 'nl',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email)`,
   ]);
   migrated = true;
 }
