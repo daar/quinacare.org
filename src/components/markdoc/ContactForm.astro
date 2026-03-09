@@ -29,6 +29,9 @@ const t = {
     emailPlaceholder: "uw@email.nl",
     messagePlaceholder: "Uw bericht...",
     send: "Verstuur bericht",
+    sending: "Verzenden...",
+    success: "Uw bericht is succesvol verzonden!",
+    error: "Er ging iets mis. Probeer het opnieuw.",
     messageFrom: "Bericht van",
     from: "Van",
   },
@@ -57,6 +60,9 @@ const t = {
     emailPlaceholder: "your@email.com",
     messagePlaceholder: "Your message...",
     send: "Send message",
+    sending: "Sending...",
+    success: "Your message has been sent successfully!",
+    error: "Something went wrong. Please try again.",
     messageFrom: "Message from",
     from: "From",
   },
@@ -85,6 +91,9 @@ const t = {
     emailPlaceholder: "su@correo.com",
     messagePlaceholder: "Su mensaje...",
     send: "Enviar mensaje",
+    sending: "Enviando...",
+    success: "¡Su mensaje ha sido enviado exitosamente!",
+    error: "Algo salió mal. Inténtelo de nuevo.",
     messageFrom: "Mensaje de",
     from: "De",
   },
@@ -263,26 +272,71 @@ const t = {
 
     <button
       type="submit"
-      class="qc-btn qc-btn--primary w-full sm:w-auto px-10 py-4 text-base"
+      class="contact-btn qc-btn qc-btn--primary w-full sm:w-auto px-10 py-4 text-base"
     >
-      <i class="fa-solid fa-paper-plane mr-2"></i>
-      {t.send}
+      <span class="contact-btn-text"
+        ><i class="fa-solid fa-paper-plane mr-2"></i>{t.send}</span
+      >
+      <span class="contact-btn-sending !hidden"
+        ><i class="fa-solid fa-spinner fa-spin mr-2"></i>{t.sending}</span
+      >
     </button>
+
+    <p class="contact-error !hidden mt-4 text-sm font-sans text-qcRed">
+      {t.error}
+    </p>
+    <p class="contact-success !hidden mt-4 text-lg font-sans text-green-600">
+      {t.success}
+    </p>
   </form>
 </div>
 
 <script>
   const form = document.getElementById("contact-form") as HTMLFormElement;
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = new FormData(form);
-    const subject = data.get("subject");
-    const name = data.get("name");
-    const message = data.get("message");
-    const email = data.get("email");
-    const msgFrom = form.dataset.msgFrom;
-    const from = form.dataset.from;
-    const mailtoLink = `mailto:care@quinacare.org?subject=${encodeURIComponent(`[${subject}] ${msgFrom} ${name}`)}&body=${encodeURIComponent(`${from}: ${name} (${email})\n\n${message}`)}`;
-    window.location.href = mailtoLink;
-  });
+  if (form) {
+    const btn = form.querySelector<HTMLButtonElement>(".contact-btn")!;
+    const btnText = form.querySelector<HTMLElement>(".contact-btn-text")!;
+    const btnSending = form.querySelector<HTMLElement>(".contact-btn-sending")!;
+    const errorEl = form.querySelector<HTMLElement>(".contact-error")!;
+    const successEl = form.querySelector<HTMLElement>(".contact-success")!;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.classList.add("!hidden");
+
+      const data = new FormData(form);
+
+      btn.disabled = true;
+      btnText.classList.add("!hidden");
+      btnSending.classList.remove("!hidden");
+
+      try {
+        const res = await fetch("/api/contact/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: data.get("name"),
+            email: data.get("email"),
+            subject: data.get("subject"),
+            message: data.get("message"),
+          }),
+        });
+
+        if (!res.ok) {
+          errorEl.classList.remove("!hidden");
+          return;
+        }
+
+        form.reset();
+        btn.classList.add("!hidden");
+        successEl.classList.remove("!hidden");
+      } catch {
+        errorEl.classList.remove("!hidden");
+      } finally {
+        btn.disabled = false;
+        btnText.classList.remove("!hidden");
+        btnSending.classList.add("!hidden");
+      }
+    });
+  }
 </script>
