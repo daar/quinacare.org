@@ -268,7 +268,12 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           new URLSearchParams(window.location.search).get("amount") || "",
           10,
         );
-        if (paramAmount > 0) amount = paramAmount;
+        if (paramAmount > 0) {
+          amount = paramAmount;
+          if (!cc.presets.includes(paramAmount)) {
+            customInput.value = fmt(paramAmount);
+          }
+        }
 
         function saveState() {
           sessionStorage.setItem(
