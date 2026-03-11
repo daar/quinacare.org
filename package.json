@@ -10,6 +10,7 @@
     "spellcheck": "cspell \"src/content/**/*.mdoc\"",
     "format:check": "prettier --check .",
     "svg:minify": "svgo -r src/assets public --quiet",
+    "check:images": "node scripts/check-image-sizes.mjs",
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "preview": "astro preview",
     "astro": "astro",
