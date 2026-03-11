@@ -164,7 +164,10 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       return new Response(
-        JSON.stringify({ checkoutUrl: payment.getCheckoutUrl() }),
+        JSON.stringify({
+          checkoutUrl: payment.getCheckoutUrl(),
+          paymentId: payment.id,
+        }),
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
@@ -195,7 +198,10 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     return new Response(
-      JSON.stringify({ checkoutUrl: payment.getCheckoutUrl() }),
+      JSON.stringify({
+        checkoutUrl: payment.getCheckoutUrl(),
+        paymentId: payment.id,
+      }),
       {
         status: 200,
         headers: { "Content-Type": "application/json" },

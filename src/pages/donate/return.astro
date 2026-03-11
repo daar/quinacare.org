@@ -115,6 +115,20 @@ const t = useTranslations(lang);
 </Layout>
 
 <script>
+  // Verify payment status with Mollie (ensures Turso is updated even without webhook)
+  const ctx =
+    new URLSearchParams(window.location.search).get("context") || "donate";
+  const paymentId = sessionStorage.getItem(`mollie:${ctx}`);
+  if (paymentId) {
+    fetch("/api/mollie/verify-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paymentId }),
+    })
+      .then(() => sessionStorage.removeItem(`mollie:${ctx}`))
+      .catch(() => {});
+  }
+
   document
     .querySelectorAll<HTMLElement>(".thank-you-widget")
     .forEach((widget) => {

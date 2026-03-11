@@ -80,6 +80,28 @@ export async function updateDonationStatus(
   });
 }
 
+/** Get fundraiser stats (total raised + donor count) for a given slug. */
+export async function getFundraiserStats(
+  slug: string,
+): Promise<{ raised_cents: number; donor_count: number }> {
+  await ensureSchema();
+  const db = getDb();
+  const result = await db.execute({
+    sql: `SELECT COALESCE(SUM(amount_cents), 0) AS raised_cents,
+                 COUNT(*) AS donor_count
+          FROM donations
+          WHERE context = 'fundraiser'
+            AND status = 'paid'
+            AND json_extract(metadata, '$.fundraiser_slug') = ?`,
+    args: [slug],
+  });
+  const row = result.rows[0];
+  return {
+    raised_cents: Number(row?.raised_cents ?? 0),
+    donor_count: Number(row?.donor_count ?? 0),
+  };
+}
+
 /** Get a donation by Mollie payment ID. */
 export async function getDonationByMollieId(
   mollieId: string,

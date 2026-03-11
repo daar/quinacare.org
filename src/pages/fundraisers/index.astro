@@ -105,6 +105,10 @@ function getStatusLabel(status: string): string {
                   )}
                   class="group cursor-pointer block fundraise-card"
                   data-card-index={idx}
+                  data-slug={fundraiser.data.slug}
+                  data-goal={fundraiser.data.goal_amount}
+                  data-initial-raised={fundraiser.data.raised_amount}
+                  data-initial-backers={fundraiser.data.backers}
                 >
                   <article class="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
@@ -134,17 +138,18 @@ function getStatusLabel(status: string): string {
                     <div class="p-5 md:p-6">
                       <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
                         <div
-                          class="bg-qcRed h-1.5 rounded-full transition-all duration-500"
+                          class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
                           style={`width: ${pct}%`}
                         />
                       </div>
 
                       <div class="flex items-baseline justify-between mb-1">
-                        <span class="text-xl md:text-2xl font-bold tracking-tight">
+                        <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
                           {formatCurrency(fundraiser.data.raised_amount)}
                         </span>
                         <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
-                          {pct}% {t("fundraise.funded")}
+                          <span class="fc-pct">{pct}</span>%{" "}
+                          {t("fundraise.funded")}
                         </span>
                       </div>
 
@@ -156,7 +161,10 @@ function getStatusLabel(status: string): string {
 
                       <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
                         <span>
-                          {fundraiser.data.backers} {t("fundraise.backers")}
+                          <span class="fc-backers">
+                            {fundraiser.data.backers}
+                          </span>{" "}
+                          {t("fundraise.backers")}
                         </span>
                         <span class="w-1 h-1 rounded-full bg-gray-200" />
                         <span>
@@ -318,5 +326,45 @@ function getStatusLabel(status: string): string {
     });
 
     render();
+
+    // Hydrate live stats from Turso
+    const locale = "nl-NL";
+    const currency = "EUR";
+    const fmt = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+
+    cards.forEach((card) => {
+      const slug = card.dataset.slug;
+      if (!slug) return;
+
+      const goal = Number(card.dataset.goal);
+      const initialRaised = Number(card.dataset.initialRaised);
+      const initialBackers = Number(card.dataset.initialBackers);
+
+      fetch(`/api/fundraisers/stats?slug=${encodeURIComponent(slug)}`)
+        .then((r) => r.json())
+        .then((data: { raised_cents: number; donor_count: number }) => {
+          const totalRaised = initialRaised + data.raised_cents / 100;
+          const totalBackers = initialBackers + data.donor_count;
+          const pct = Math.min(100, Math.round((totalRaised / goal) * 100));
+
+          const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
+          if (raisedEl) raisedEl.textContent = fmt.format(totalRaised);
+
+          const pctEl = card.querySelector<HTMLElement>(".fc-pct");
+          if (pctEl) pctEl.textContent = String(pct);
+
+          const backersEl = card.querySelector<HTMLElement>(".fc-backers");
+          if (backersEl) backersEl.textContent = String(totalBackers);
+
+          const bar = card.querySelector<HTMLElement>(".fc-bar");
+          if (bar) bar.style.width = `${pct}%`;
+        })
+        .catch(() => {});
+    });
   });
 </script>

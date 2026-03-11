@@ -182,7 +182,15 @@ const shareTitle = entry.data.title;
               </div>
 
               <!-- Pledged amount -->
-              <div class="text-3xl md:text-4xl font-bold tracking-tight mb-1">
+              <div
+                class="fundraiser-raised text-3xl md:text-4xl font-bold tracking-tight mb-1"
+                data-slug={entry.data.slug}
+                data-goal={entry.data.goal_amount}
+                data-locale="nl-NL"
+                data-currency="EUR"
+                data-initial-raised={entry.data.raised_amount}
+                data-initial-backers={entry.data.backers}
+              >
                 {formatCurrency(entry.data.raised_amount)}
               </div>
               <p class="text-sm text-gray-400">
@@ -198,13 +206,17 @@ const shareTitle = entry.data.title;
               class="grid grid-cols-2 gap-4 py-5 border-t border-gray-100 mb-6"
             >
               <div>
-                <div class="text-2xl font-bold tracking-tight">{pct}%</div>
+                <div class="fundraiser-pct text-2xl font-bold tracking-tight">
+                  {pct}%
+                </div>
                 <div class="qc-meta">
                   {t("fundraise.funded")}
                 </div>
               </div>
               <div>
-                <div class="text-2xl font-bold tracking-tight">
+                <div
+                  class="fundraiser-backers text-2xl font-bold tracking-tight"
+                >
                   {entry.data.backers}
                 </div>
                 <div class="qc-meta">
@@ -387,5 +399,54 @@ const shareTitle = entry.data.title;
         });
       });
     });
+
+    // Hydrate live stats from Turso
+    const raisedEl = document.querySelector<HTMLElement>(".fundraiser-raised");
+    if (!raisedEl) return;
+
+    const slug = raisedEl.dataset.slug!;
+    const goal = Number(raisedEl.dataset.goal);
+    const locale = raisedEl.dataset.locale!;
+    const currency = raisedEl.dataset.currency!;
+    const initialRaised = Number(raisedEl.dataset.initialRaised);
+    const initialBackers = Number(raisedEl.dataset.initialBackers);
+
+    fetch(`/api/fundraisers/stats?slug=${encodeURIComponent(slug)}`)
+      .then((r) => r.json())
+      .then((data: { raised_cents: number; donor_count: number }) => {
+        const dbRaised = data.raised_cents / 100;
+        const dbBackers = data.donor_count;
+
+        // Combine frontmatter seed values with live DB data
+        const totalRaised = initialRaised + dbRaised;
+        const totalBackers = initialBackers + dbBackers;
+        const pct = Math.min(100, Math.round((totalRaised / goal) * 100));
+
+        const fmt = new Intl.NumberFormat(locale, {
+          style: "currency",
+          currency,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        });
+
+        raisedEl.textContent = fmt.format(totalRaised);
+
+        const pctEl = document.querySelector<HTMLElement>(".fundraiser-pct");
+        if (pctEl) pctEl.textContent = `${pct}%`;
+
+        const backersEl = document.querySelector<HTMLElement>(
+          ".fundraiser-backers",
+        );
+        if (backersEl) backersEl.textContent = String(totalBackers);
+
+        // Update progress bar target
+        const bar = document.querySelector<HTMLElement>(".progress-fill");
+        if (bar) {
+          bar.style.setProperty("--target-width", `${pct}%`);
+        }
+      })
+      .catch(() => {
+        // Silently fall back to frontmatter values
+      });
   });
 </script>
