@@ -25,6 +25,7 @@ jobs:
       - run: npm run format:check
       - run: npm run check
       - run: npm run build
+      - run: npm run check:links
 
       - uses: nwtgck/actions-netlify@v3
         if: github.event_name == 'pull_request'

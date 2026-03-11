@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "spellcheck": "cspell \"src/content/**/*.mdoc\"",
     "format:check": "prettier --check .",
+    "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "preview": "astro preview",
     "astro": "astro",
     "prepare": "husky"
@@ -33,6 +34,7 @@
     "eslint": "^10.0.2",
     "eslint-plugin-astro": "^1.6.0",
     "husky": "^9.1.7",
+    "linkinator": "^7.6.1",
     "lint-staged": "^16.3.1",
     "pagefind": "^1.4.0",
     "prettier": "^3.8.1",
