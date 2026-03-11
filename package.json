@@ -27,23 +27,23 @@
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.6",
+    "@astrojs/check": "^0.9.7",
     "@cspell/dict-es-es": "^3.0.8",
     "@cspell/dict-nl-nl": "^2.4.2",
     "@eslint/js": "^10.0.1",
     "@types/nodemailer": "^7.0.11",
     "cspell": "^9.7.0",
-    "eslint": "^10.0.2",
+    "eslint": "^10.0.3",
     "eslint-plugin-astro": "^1.6.0",
     "husky": "^9.1.7",
     "linkinator": "^7.6.1",
-    "lint-staged": "^16.3.1",
+    "lint-staged": "^16.3.3",
     "pagefind": "^1.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "svgo": "^4.0.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.57.0"
   },
   "lint-staged": {
     "*.{js,ts,mjs,cjs,json,css,md}": "prettier --write",
