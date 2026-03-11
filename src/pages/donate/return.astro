@@ -12,49 +12,160 @@ const t = useTranslations(lang);
   <Nav />
 
   <section class="bg-white pt-28 pb-24">
-    <div class="max-w-5xl mx-auto px-6 w-full">
-      <div class="relative max-w-4xl mx-auto mb-10">
-        <div
-          class="absolute -inset-1 bg-gradient-to-r from-qcRed/10 via-rose-400/10 to-qcRed/10 rounded-2xl blur-xl"
-        >
+    <div class="max-w-6xl mx-auto px-6 w-full">
+      <div class="grid lg:grid-cols-2 gap-12 items-start">
+        <div>
+          <div class="relative">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-qcRed/10 via-rose-400/10 to-qcRed/10 rounded-2xl blur-xl"
+            >
+            </div>
+            <div
+              class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-100"
+            >
+              <video
+                controls
+                playsinline
+                preload="auto"
+                class="w-full aspect-video bg-black"
+              >
+                <source src="/videos/thank-you-nl.webm" type="video/webm" />
+              </video>
+            </div>
+          </div>
+
+          <div class="mt-8">
+            <h1
+              class="text-3xl md:text-4xl font-bold tracking-tighter uppercase mb-4"
+            >
+              {t("donate.thankYouTitle")}
+            </h1>
+            <p
+              class="text-gray-500 text-[18px] font-sans leading-relaxed max-w-lg mb-6"
+            >
+              {t("donate.thankYouMessage")}
+            </p>
+          </div>
         </div>
-        <div
-          class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-100"
-        >
-          <video
-            id="thank-you-video"
-            controls
-            playsinline
-            preload="auto"
-            class="w-full aspect-video bg-black"
+
+        <div class="thank-you-widget">
+          <div class="thank-you-form-wrap bg-gray-50 rounded-2xl p-8">
+            <p class="text-gray-500 font-sans text-[15px] leading-relaxed mb-6">
+              {t("donate.thankYouFormIntro")}
+            </p>
+
+            <form class="thank-you-form space-y-4">
+              <div>
+                <label
+                  class="block text-sm font-semibold text-qcBlack mb-2"
+                  for="ty-name">{t("donate.thankYouName")}</label
+                >
+                <input
+                  type="text"
+                  id="ty-name"
+                  required
+                  class="ty-name w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all"
+                  placeholder={t("donate.thankYouNamePlaceholder")}
+                />
+              </div>
+              <div>
+                <label
+                  class="block text-sm font-semibold text-qcBlack mb-2"
+                  for="ty-email">{t("donate.thankYouEmail")}</label
+                >
+                <input
+                  type="email"
+                  id="ty-email"
+                  required
+                  class="ty-email w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all"
+                  placeholder={t("donate.thankYouEmailPlaceholder")}
+                />
+              </div>
+              <label class="flex items-center gap-3 cursor-pointer py-1">
+                <input
+                  type="checkbox"
+                  class="ty-newsletter w-5 h-5 rounded border-gray-300 text-qcRed focus:ring-qcRed"
+                />
+                <span class="text-sm font-sans text-gray-600"
+                  >{t("donate.thankYouNewsletter")}</span
+                >
+              </label>
+              <button
+                type="submit"
+                class="ty-btn qc-btn qc-btn--primary w-full px-8 py-4"
+              >
+                <span class="ty-btn-text">{t("donate.thankYouSubmit")}</span>
+                <i class="ty-btn-spinner fa-solid fa-spinner fa-spin !hidden"
+                ></i>
+              </button>
+            </form>
+          </div>
+
+          <p
+            class="thank-you-success !hidden text-lg font-sans text-green-600 mt-6"
           >
-            <source src="/videos/thank-you-nl.webm" type="video/webm" />
-          </video>
+            {t("donate.thankYouSubmitted")}
+          </p>
         </div>
-      </div>
-
-      <div class="text-center">
-        <h1
-          class="text-3xl md:text-4xl font-bold tracking-tighter uppercase mb-4"
-        >
-          {t("donate.thankYouTitle")}
-        </h1>
-        <p
-          class="text-gray-500 text-[18px] font-sans leading-relaxed max-w-lg mx-auto mb-8"
-        >
-          {t("donate.thankYouMessage")}
-        </p>
-
-        <a
-          href={getLocalizedPath("/", lang)}
-          class="qc-btn qc-btn--primary px-8 py-4"
-        >
-          <i class="fa-solid fa-arrow-left mr-2"></i>
-          {t("donate.backHome")}
-        </a>
       </div>
     </div>
   </section>
 
   <Footer />
 </Layout>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>(".thank-you-widget")
+    .forEach((widget) => {
+      const form = widget.querySelector<HTMLFormElement>(".thank-you-form")!;
+      const formWrap = widget.querySelector<HTMLElement>(
+        ".thank-you-form-wrap",
+      )!;
+      const name = widget.querySelector<HTMLInputElement>(".ty-name")!;
+      const email = widget.querySelector<HTMLInputElement>(".ty-email")!;
+      const newsletter =
+        widget.querySelector<HTMLInputElement>(".ty-newsletter")!;
+      const btn = widget.querySelector<HTMLButtonElement>(".ty-btn")!;
+      const btnText = widget.querySelector<HTMLElement>(".ty-btn-text")!;
+      const btnSpinner = widget.querySelector<HTMLElement>(".ty-btn-spinner")!;
+      const success = widget.querySelector<HTMLElement>(".thank-you-success")!;
+      const locale = document.documentElement.lang || "nl";
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        btn.disabled = true;
+        btnText.classList.add("!hidden");
+        btnSpinner.classList.remove("!hidden");
+
+        try {
+          const res = await fetch("/api/donate/thank-you", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: name.value,
+              email: email.value,
+              newsletter: newsletter.checked,
+              locale,
+            }),
+          });
+
+          if (res.ok) {
+            formWrap.classList.add("!hidden");
+            success.classList.remove("!hidden");
+          }
+        } catch {
+          // silent
+        } finally {
+          btn.disabled = false;
+          btnText.classList.remove("!hidden");
+          btnSpinner.classList.add("!hidden");
+        }
+      });
+    });
+</script>

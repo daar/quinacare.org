@@ -47,6 +47,13 @@ export async function ensureSchema(): Promise<void> {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
     `CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email)`,
+    `CREATE TABLE IF NOT EXISTS donor_thanks (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      name       TEXT NOT NULL,
+      email      TEXT NOT NULL,
+      locale     TEXT NOT NULL DEFAULT 'nl',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
   ]);
   migrated = true;
 }

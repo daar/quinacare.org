@@ -154,6 +154,15 @@ export const ui = {
     "donate.thankYouMessage":
       "Jouw donatie maakt een wereld van verschil. Samen brengen we zorg waar het het hardst nodig is.",
     "donate.backHome": "Terug naar home",
+    "donate.thankYouFormIntro":
+      "Wil je een persoonlijk bedankje ontvangen? Laat je gegevens achter.",
+    "donate.thankYouName": "Naam",
+    "donate.thankYouNamePlaceholder": "Jouw naam",
+    "donate.thankYouEmail": "E-mail",
+    "donate.thankYouEmailPlaceholder": "jouw@email.nl",
+    "donate.thankYouNewsletter": "Ik wil ook de nieuwsbrief ontvangen",
+    "donate.thankYouSubmit": "Versturen",
+    "donate.thankYouSubmitted": "Bedankt, we nemen contact met je op!",
     // Donate page - Counter
     "donate.counterValue": "4.200+",
     "donate.counterLabel": "patiënten geholpen, en het telt door",
@@ -407,6 +416,15 @@ export const ui = {
     "donate.thankYouMessage":
       "Your donation makes a world of difference. Together we bring care where it is needed most.",
     "donate.backHome": "Back to home",
+    "donate.thankYouFormIntro":
+      "Would you like to receive a personal thank you? Leave your details below.",
+    "donate.thankYouName": "Name",
+    "donate.thankYouNamePlaceholder": "Your name",
+    "donate.thankYouEmail": "Email",
+    "donate.thankYouEmailPlaceholder": "your@email.com",
+    "donate.thankYouNewsletter": "I'd also like to receive the newsletter",
+    "donate.thankYouSubmit": "Submit",
+    "donate.thankYouSubmitted": "Thank you, we'll be in touch!",
     // Donate page - Counter
     "donate.counterValue": "4,200+",
     "donate.counterLabel": "patients helped, and counting",
@@ -661,6 +679,16 @@ export const ui = {
     "donate.thankYouMessage":
       "Tu donación marca una gran diferencia. Juntos llevamos atención donde más se necesita.",
     "donate.backHome": "Volver al inicio",
+    "donate.thankYouFormIntro":
+      "¿Te gustaría recibir un agradecimiento personal? Deja tus datos a continuación.",
+    "donate.thankYouName": "Nombre",
+    "donate.thankYouNamePlaceholder": "Tu nombre",
+    "donate.thankYouEmail": "Correo electrónico",
+    "donate.thankYouEmailPlaceholder": "tu@correo.com",
+    "donate.thankYouNewsletter":
+      "También quiero recibir el boletín informativo",
+    "donate.thankYouSubmit": "Enviar",
+    "donate.thankYouSubmitted": "¡Gracias, nos pondremos en contacto!",
     // Donate page - Counter
     "donate.counterValue": "4.200+",
     "donate.counterLabel": "pacientes atendidos, y contando",

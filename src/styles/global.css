@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap");
 
 @font-face {
   font-family: "Effra";
@@ -7,13 +8,6 @@
   src: url("../assets/fonts/Effra_Lt.ttf") format("truetype");
   ascent-override: 85%;
   descent-override: 20%;
-}
-
-@font-face {
-  font-family: "Arimo";
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("../assets/fonts/Arimo-Regular.ttf") format("truetype");
 }
 
 @theme {
