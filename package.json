@@ -3,12 +3,13 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && npx pagefind --site dist",
+    "dev": "npm run svg:minify && astro dev",
+    "build": "npm run svg:minify && astro build && npx pagefind --site dist",
     "check": "astro check",
     "lint": "eslint .",
     "spellcheck": "cspell \"src/content/**/*.mdoc\"",
     "format:check": "prettier --check .",
+    "svg:minify": "svgo -r src/assets public --quiet",
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "preview": "astro preview",
     "astro": "astro",
@@ -39,6 +40,7 @@
     "pagefind": "^1.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
+    "svgo": "^4.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
   },

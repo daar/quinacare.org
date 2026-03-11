@@ -1,4 +1,4 @@
-  - [ ] svg minify : https://github.com/svg/svgo
+  - [x] svg minify : https://github.com/svg/svgo
   - [x] check spelling and grammer (pre-commit) : cspell
   - [x] check broken links : npm install astro-link-checker --save-dev
   - [x] font configurable : css classes and variable
