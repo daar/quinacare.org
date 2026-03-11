@@ -60,6 +60,7 @@ lazzari
 londoño
 louisa
 magali
+magiel
 mamallacta
 manabi
 manabí
@@ -165,6 +166,7 @@ humacount
 iess
 istec
 knns
+miva
 niaid
 previder
 rnaes
@@ -183,6 +185,7 @@ crecermas
 ## Medical & scientific terms
 arbovirus
 arboviruses
+arbovirussen
 bioanálisis
 bioanalista
 bioanaliste
@@ -199,6 +202,8 @@ cocirculating
 cytometry
 denv
 diabético
+echocardiograaf
+echocardiographer
 echogel
 enfermería
 flowcytometrie
@@ -307,6 +312,7 @@ aqui
 articulos
 asertividad
 autoadministrar
+biomédico
 boletin
 conoci
 conocidade
@@ -318,22 +324,30 @@ dependia
 despues
 deteccionvph
 dias
+dietista
+ecocardiografista
 enfermería
+exoficial
+exsecretaria
 fundacion
 galeria
 gatitos
 gradue
 habia
+honorem
 impartición
 imprevistamente
+inmunóloga
 inscríbese
 inscríbete
 multifuncionales
 obviedad
 ofrecerlo
+oncológica
 perez
 preprofesionales
 quiteña
+radioterapeuta
 rapido
 registración
 reinfección
