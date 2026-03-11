@@ -1,0 +1,4 @@
+Contact: mailto:care@quinacare.org
+Expires: 2027-03-11T00:00:00.000Z
+Preferred-Languages: nl, en, es
+Canonical: https://www.quinacare.org/.well-known/security.txt
