@@ -141,6 +141,26 @@ async function handleApi(body) {
       };
     }
 
+    case "get-payment": {
+      if (!body.paymentId) throw new Error("paymentId required");
+      const p = await mollieClient.payments.get(body.paymentId);
+      return {
+        id: p.id,
+        status: p.status,
+        amount: p.amount,
+        description: p.description,
+        method: p.method,
+        createdAt: p.createdAt,
+        paidAt: p.paidAt,
+        customerId: p.customerId,
+        subscriptionId: p.subscriptionId,
+        settlementAmount: p.settlementAmount,
+        amountRefunded: p.amountRefunded,
+        amountRemaining: p.amountRemaining,
+        metadata: p.metadata,
+      };
+    }
+
     default:
       throw new Error(`Unknown action: ${action}`);
   }

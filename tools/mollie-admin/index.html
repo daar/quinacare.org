@@ -47,6 +47,12 @@
     .btn-primary:hover { background: #ee172c; }
     .btn-load { display: block; margin: 16px auto; padding: 10px 32px; }
 
+    /* Pagination */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; padding: 12px; }
+    .pagination .btn { min-width: 80px; }
+    .pagination .btn:disabled { opacity: 0.4; cursor: default; }
+    .page-info { font-size: 13px; color: #6b7280; font-weight: 600; min-width: 80px; text-align: center; }
+
     /* Detail panel */
     .detail-row td { background: #f9fafb; padding: 16px 14px; }
     .detail-section { margin-bottom: 16px; }
@@ -88,7 +94,8 @@
   <!-- Customers Tab -->
   <div id="tab-customers" class="tab-content">
     <div class="search-bar">
-      <input type="text" id="customer-search" placeholder="Filter by name or email...">
+      <input type="text" id="customer-search" placeholder="Search by ID (cst_xxx), name, or email...">
+      <button class="btn btn-primary" id="customer-lookup-btn">Lookup</button>
     </div>
     <table>
       <thead>
@@ -101,14 +108,19 @@
       </thead>
       <tbody id="customers-body"></tbody>
     </table>
-    <button class="btn btn-primary btn-load" id="customers-load-more" style="display:none">Load More</button>
+    <div class="pagination" id="customers-pagination" style="display:none">
+      <button class="btn btn-primary" id="customers-prev" disabled>← Prev</button>
+      <span class="page-info" id="customers-page-info">Page 1</span>
+      <button class="btn btn-primary" id="customers-next">Next →</button>
+    </div>
     <div id="customers-loading" class="loading">Loading customers...</div>
   </div>
 
   <!-- Payments Tab -->
   <div id="tab-payments" class="tab-content" style="display:none">
     <div class="search-bar">
-      <input type="text" id="payment-search" placeholder="Filter by ID, description, or customer...">
+      <input type="text" id="payment-search" placeholder="Search by ID (tr_xxx), customer (cst_xxx), or description...">
+      <button class="btn btn-primary" id="payment-lookup-btn">Lookup</button>
     </div>
     <table>
       <thead>
@@ -125,7 +137,11 @@
       </thead>
       <tbody id="payments-body"></tbody>
     </table>
-    <button class="btn btn-primary btn-load" id="payments-load-more" style="display:none">Load More</button>
+    <div class="pagination" id="payments-pagination" style="display:none">
+      <button class="btn btn-primary" id="payments-prev" disabled>← Prev</button>
+      <span class="page-info" id="payments-page-info">Page 1</span>
+      <button class="btn btn-primary" id="payments-next">Next →</button>
+    </div>
     <div id="payments-loading" class="loading">Loading payments...</div>
   </div>
 </div>
@@ -150,9 +166,13 @@ const api = (body) => fetch('/api', { method: 'POST', headers: {'Content-Type':'
 
 // ── State ──────────────────────────────────────────────────
 let customersData = [];
-let customersCursor = null;
+let customersPage = 1;
+let customersCursors = [null]; // cursor history: [null, cursor_for_page2, ...]
+let customersNextCursor = null;
 let paymentsData = [];
-let paymentsCursor = null;
+let paymentsPage = 1;
+let paymentsCursors = [null];
+let paymentsNextCursor = null;
 let activeTab = 'customers';
 let expandedCustomer = null;
 
@@ -168,14 +188,20 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ── Customers ──────────────────────────────────────────────
-async function loadCustomers(append = false) {
+async function loadCustomers(page) {
+  document.getElementById('customers-loading').style.display = '';
+  expandedCustomer = null;
   try {
     const params = { action: 'list-customers' };
-    if (append && customersCursor) params.from = customersCursor;
+    const cursor = customersCursors[page - 1];
+    if (cursor) params.from = cursor;
     const data = await api(params);
-    if (append) customersData.push(...data.items);
-    else customersData = data.items;
-    customersCursor = data.nextCursor;
+    customersData = data.items;
+    customersNextCursor = data.nextCursor;
+    customersPage = page;
+    if (customersNextCursor && !customersCursors[page]) {
+      customersCursors[page] = customersNextCursor;
+    }
     renderCustomers();
   } catch (e) { showError(e.error || e.message); }
   document.getElementById('customers-loading').style.display = 'none';
@@ -200,8 +226,13 @@ function renderCustomers() {
       <td colspan="4"><div id="detail-content-${c.id}" class="loading">Loading...</div></td>
     </tr>
   `).join('');
-  document.getElementById('customers-load-more').style.display = customersCursor ? '' : 'none';
   if (!filtered.length) tbody.innerHTML = '<tr><td colspan="4" class="empty">No customers found</td></tr>';
+
+  const pag = document.getElementById('customers-pagination');
+  pag.style.display = '';
+  document.getElementById('customers-prev').disabled = customersPage <= 1;
+  document.getElementById('customers-next').disabled = !customersNextCursor;
+  document.getElementById('customers-page-info').textContent = `Page ${customersPage}`;
 }
 
 async function toggleCustomer(id) {
@@ -277,17 +308,70 @@ async function toggleCustomer(id) {
 }
 
 document.getElementById('customer-search').addEventListener('input', renderCustomers);
-document.getElementById('customers-load-more').addEventListener('click', () => loadCustomers(true));
+document.getElementById('customers-prev').addEventListener('click', () => loadCustomers(customersPage - 1));
+document.getElementById('customers-next').addEventListener('click', () => loadCustomers(customersPage + 1));
+
+// Direct lookup by customer ID or payment ID
+async function customerLookup() {
+  const q = document.getElementById('customer-search').value.trim();
+  if (!q) return;
+
+  document.getElementById('customers-loading').style.display = '';
+  expandedCustomer = null;
+
+  try {
+    let customer;
+    if (q.startsWith('cst_')) {
+      customer = await api({ action: 'get-customer', customerId: q });
+    } else if (q.startsWith('tr_')) {
+      // Look up payment first, then get its customer
+      const payments = await api({ action: 'list-payments' });
+      const match = payments.items.find(p => p.id === q);
+      if (match && match.customerId) {
+        customer = await api({ action: 'get-customer', customerId: match.customerId });
+      } else {
+        showError(`Payment ${q} not found or has no customer`);
+        document.getElementById('customers-loading').style.display = 'none';
+        return;
+      }
+    } else {
+      // Not an ID — just filter the current page
+      renderCustomers();
+      document.getElementById('customers-loading').style.display = 'none';
+      return;
+    }
+    customersData = [customer];
+    customersNextCursor = null;
+    customersPage = 1;
+    customersCursors = [null];
+    renderCustomers();
+    document.getElementById('customers-page-info').textContent = 'Lookup result';
+    document.getElementById('customers-next').disabled = true;
+  } catch (e) {
+    showError(e.error || e.message);
+  }
+  document.getElementById('customers-loading').style.display = 'none';
+}
+
+document.getElementById('customer-lookup-btn').addEventListener('click', customerLookup);
+document.getElementById('customer-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') customerLookup();
+});
 
 // ── Payments ───────────────────────────────────────────────
-async function loadPayments(append = false) {
+async function loadPayments(page) {
+  document.getElementById('payments-loading').style.display = '';
   try {
     const params = { action: 'list-payments' };
-    if (append && paymentsCursor) params.from = paymentsCursor;
+    const cursor = paymentsCursors[page - 1];
+    if (cursor) params.from = cursor;
     const data = await api(params);
-    if (append) paymentsData.push(...data.items);
-    else paymentsData = data.items;
-    paymentsCursor = data.nextCursor;
+    paymentsData = data.items;
+    paymentsNextCursor = data.nextCursor;
+    paymentsPage = page;
+    if (paymentsNextCursor && !paymentsCursors[page]) {
+      paymentsCursors[page] = paymentsNextCursor;
+    }
     renderPayments();
   } catch (e) { showError(e.error || e.message); }
   document.getElementById('payments-loading').style.display = 'none';
@@ -314,12 +398,59 @@ function renderPayments() {
       <td>${canRefund ? `<button class="btn btn-danger" onclick="confirmRefund('${p.id}', '${p.amount.currency}', '${p.amountRemaining ? p.amountRemaining.value : p.amount.value}')">Refund</button>` : ''}</td>
     </tr>`;
   }).join('');
-  document.getElementById('payments-load-more').style.display = paymentsCursor ? '' : 'none';
   if (!filtered.length) tbody.innerHTML = '<tr><td colspan="8" class="empty">No payments found</td></tr>';
+
+  const pag = document.getElementById('payments-pagination');
+  pag.style.display = '';
+  document.getElementById('payments-prev').disabled = paymentsPage <= 1;
+  document.getElementById('payments-next').disabled = !paymentsNextCursor;
+  document.getElementById('payments-page-info').textContent = `Page ${paymentsPage}`;
 }
 
 document.getElementById('payment-search').addEventListener('input', renderPayments);
-document.getElementById('payments-load-more').addEventListener('click', () => loadPayments(true));
+document.getElementById('payments-prev').addEventListener('click', () => loadPayments(paymentsPage - 1));
+document.getElementById('payments-next').addEventListener('click', () => loadPayments(paymentsPage + 1));
+
+// Direct payment lookup
+async function paymentLookup() {
+  const q = document.getElementById('payment-search').value.trim();
+  if (!q) return;
+
+  document.getElementById('payments-loading').style.display = '';
+
+  try {
+    if (q.startsWith('tr_')) {
+      const payment = await api({ action: 'get-payment', paymentId: q });
+      paymentsData = [payment];
+      paymentsNextCursor = null;
+      paymentsPage = 1;
+      paymentsCursors = [null];
+      renderPayments();
+      document.getElementById('payments-page-info').textContent = 'Lookup result';
+      document.getElementById('payments-next').disabled = true;
+    } else if (q.startsWith('cst_')) {
+      // Show all payments for a customer
+      const data = await api({ action: 'list-payments', customerId: q });
+      paymentsData = data.items;
+      paymentsNextCursor = null;
+      paymentsPage = 1;
+      paymentsCursors = [null];
+      renderPayments();
+      document.getElementById('payments-page-info').textContent = `Customer ${q}`;
+      document.getElementById('payments-next').disabled = true;
+    } else {
+      renderPayments();
+    }
+  } catch (e) {
+    showError(e.error || e.message);
+  }
+  document.getElementById('payments-loading').style.display = 'none';
+}
+
+document.getElementById('payment-lookup-btn').addEventListener('click', paymentLookup);
+document.getElementById('payment-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') paymentLookup();
+});
 
 // ── Modals ─────────────────────────────────────────────────
 let modalResolve = null;
@@ -352,7 +483,8 @@ async function confirmCancel(customerId, subscriptionId, desc) {
   if (!ok) return;
   try {
     await api({ action: 'cancel-subscription', customerId, subscriptionId });
-    if (expandedCustomer === customerId) toggleCustomer(customerId).then(() => toggleCustomer(customerId));
+    expandedCustomer = null;
+    await toggleCustomer(customerId);
   } catch (e) { showError(e.error || e.message); }
 }
 
@@ -366,7 +498,7 @@ async function confirmRefund(paymentId, currency, maxAmount) {
     showError(`Refund created: ${result.refundId} — ${result.amount.currency} ${result.amount.value} (${result.status})`);
     document.getElementById('error-box').style.background = '#dcfce7';
     document.getElementById('error-box').style.color = '#166534';
-    loadPayments();
+    loadPayments(paymentsPage);
   } catch (e) { showError(e.error || e.message); }
 }
 
@@ -393,8 +525,8 @@ fetch('/api', { method:'POST', headers:{'Content-Type':'application/json'}, body
     }
   }).catch(() => {});
 
-loadCustomers();
-loadPayments();
+loadCustomers(1);
+loadPayments(1);
 </script>
 
 </body>
