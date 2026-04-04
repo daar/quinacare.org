@@ -1,5 +1,6 @@
 ---
 import "/src/styles/global.css";
+import { Font } from "astro:assets";
 import {
   getLangFromUrl,
   getAlternateUrls,
@@ -30,6 +31,8 @@ const alternateUrls = getAlternateUrls(Astro.url);
       integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS"
       crossorigin="anonymous"
     />
+    <Font cssVariable="--astro-font-arimo" preload />
+    <Font cssVariable="--astro-font-effra" preload />
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
