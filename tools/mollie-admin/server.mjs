@@ -84,6 +84,54 @@ async function handleApi(body) {
       return { items, nextCursor: page.nextPageCursor || null };
     }
 
+    case "search-customers": {
+      if (!body.query) throw new Error("query required");
+      const q = body.query.toLowerCase();
+      const all = [];
+      let p = await mollieClient.customers.page({ limit: 250 });
+      while (true) {
+        all.push(...p);
+        if (!p.nextPageCursor) break;
+        p = await p.nextPage();
+      }
+      const items = all
+        .filter(
+          (c) =>
+            (c.id || "").toLowerCase().includes(q) ||
+            (c.name || "").toLowerCase().includes(q) ||
+            (c.email || "").toLowerCase().includes(q),
+        )
+        .map((c) => ({
+          id: c.id,
+          name: c.name,
+          email: c.email,
+          locale: c.locale,
+          createdAt: c.createdAt,
+        }));
+      return { items, nextCursor: null };
+    }
+
+    case "search-payments": {
+      if (!body.query) throw new Error("query required");
+      const q = body.query.toLowerCase();
+      const all = [];
+      let p = await mollieClient.payments.page({ limit: 250 });
+      while (true) {
+        all.push(...p);
+        if (!p.nextPageCursor) break;
+        p = await p.nextPage();
+      }
+      const items = all
+        .filter(
+          (p) =>
+            (p.id || "").toLowerCase().includes(q) ||
+            (p.description || "").toLowerCase().includes(q) ||
+            (p.customerId || "").toLowerCase().includes(q),
+        )
+        .map(mapPayment);
+      return { items, nextCursor: null };
+    }
+
     case "list-payments": {
       const params = { limit: 50 };
       if (body.from) params.from = body.from;

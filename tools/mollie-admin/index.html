@@ -312,41 +312,38 @@ document.getElementById('customer-search').addEventListener('input', renderCusto
 document.getElementById('customers-prev').addEventListener('click', () => loadCustomers(customersPage - 1));
 document.getElementById('customers-next').addEventListener('click', () => loadCustomers(customersPage + 1));
 
-// Direct lookup by customer ID or payment ID
+// Direct lookup by customer ID, payment ID, or partial name/email search
 async function customerLookup() {
   const q = document.getElementById('customer-search').value.trim();
-  if (!q) return;
+  if (!q) { loadCustomers(1); return; }
 
   document.getElementById('customers-loading').style.display = '';
   expandedCustomer = null;
 
   try {
-    let customer;
     if (q.startsWith('cst_')) {
-      customer = await api({ action: 'get-customer', customerId: q });
+      const customer = await api({ action: 'get-customer', customerId: q });
+      customersData = [customer];
     } else if (q.startsWith('tr_')) {
-      // Look up payment first, then get its customer
-      const payments = await api({ action: 'list-payments' });
-      const match = payments.items.find(p => p.id === q);
-      if (match && match.customerId) {
-        customer = await api({ action: 'get-customer', customerId: match.customerId });
+      const payment = await api({ action: 'get-payment', paymentId: q });
+      if (payment.customerId) {
+        const customer = await api({ action: 'get-customer', customerId: payment.customerId });
+        customersData = [customer];
       } else {
-        showError(`Payment ${q} not found or has no customer`);
+        showError(`Payment ${q} has no customer`);
         document.getElementById('customers-loading').style.display = 'none';
         return;
       }
     } else {
-      // Not an ID — just filter the current page
-      renderCustomers();
-      document.getElementById('customers-loading').style.display = 'none';
-      return;
+      // Partial search across all customers
+      const data = await api({ action: 'search-customers', query: q });
+      customersData = data.items;
     }
-    customersData = [customer];
     customersNextCursor = null;
     customersPage = 1;
     customersCursors = [null];
     renderCustomers();
-    document.getElementById('customers-page-info').textContent = 'Lookup result';
+    document.getElementById('customers-page-info').textContent = `${customersData.length} result${customersData.length !== 1 ? 's' : ''}`;
     document.getElementById('customers-next').disabled = true;
   } catch (e) {
     showError(e.error || e.message);
@@ -412,10 +409,10 @@ document.getElementById('payment-search').addEventListener('input', renderPaymen
 document.getElementById('payments-prev').addEventListener('click', () => loadPayments(paymentsPage - 1));
 document.getElementById('payments-next').addEventListener('click', () => loadPayments(paymentsPage + 1));
 
-// Direct payment lookup
+// Direct payment lookup by ID, customer ID, or partial description search
 async function paymentLookup() {
   const q = document.getElementById('payment-search').value.trim();
-  if (!q) return;
+  if (!q) { loadPayments(1); return; }
 
   document.getElementById('payments-loading').style.display = '';
 
@@ -423,25 +420,20 @@ async function paymentLookup() {
     if (q.startsWith('tr_')) {
       const payment = await api({ action: 'get-payment', paymentId: q });
       paymentsData = [payment];
-      paymentsNextCursor = null;
-      paymentsPage = 1;
-      paymentsCursors = [null];
-      renderPayments();
-      document.getElementById('payments-page-info').textContent = 'Lookup result';
-      document.getElementById('payments-next').disabled = true;
     } else if (q.startsWith('cst_')) {
-      // Show all payments for a customer
       const data = await api({ action: 'list-payments', customerId: q });
       paymentsData = data.items;
-      paymentsNextCursor = null;
-      paymentsPage = 1;
-      paymentsCursors = [null];
-      renderPayments();
-      document.getElementById('payments-page-info').textContent = `Customer ${q}`;
-      document.getElementById('payments-next').disabled = true;
     } else {
-      renderPayments();
+      // Partial search across all payments
+      const data = await api({ action: 'search-payments', query: q });
+      paymentsData = data.items;
     }
+    paymentsNextCursor = null;
+    paymentsPage = 1;
+    paymentsCursors = [null];
+    renderPayments();
+    document.getElementById('payments-page-info').textContent = `${paymentsData.length} result${paymentsData.length !== 1 ? 's' : ''}`;
+    document.getElementById('payments-next').disabled = true;
   } catch (e) {
     showError(e.error || e.message);
   }
