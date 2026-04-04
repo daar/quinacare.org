@@ -1,21 +1,11 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap");
 
-@font-face {
-  font-family: "Effra";
-  font-weight: 400;
-  font-display: swap;
-  src: url("../assets/fonts/Effra_Lt.ttf") format("truetype");
-  ascent-override: 85%;
-  descent-override: 20%;
-}
-
-@theme {
+@theme inline {
   --color-qcRed: #ee172c;
   --color-qcBlack: #111111;
   --color-qcGray: #fcfcfc;
-  --font-effra: "Effra", sans-serif;
-  --font-sans: "Arimo", sans-serif;
+  --font-effra: var(--astro-font-effra), sans-serif;
+  --font-sans: var(--astro-font-arimo), sans-serif;
 }
 
 /* ──────────────────────────────────────────────
