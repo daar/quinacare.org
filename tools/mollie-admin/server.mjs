@@ -34,6 +34,38 @@ console.log(`Mollie mode: ${testMode ? "TEST" : "LIVE"}`);
 
 // ── API handlers ───────────────────────────────────────────
 
+/** Derive effective status: Mollie keeps status=paid even after chargebacks/refunds. */
+function effectiveStatus(p) {
+  if (p.amountChargedBack && parseFloat(p.amountChargedBack.value) > 0)
+    return "charged_back";
+  if (p.amountRefunded && parseFloat(p.amountRefunded.value) > 0) {
+    if (!p.amountRemaining || parseFloat(p.amountRemaining.value) === 0)
+      return "refunded";
+    return "partially_refunded";
+  }
+  return p.status;
+}
+
+function mapPayment(p) {
+  return {
+    id: p.id,
+    status: effectiveStatus(p),
+    mollieStatus: p.status,
+    amount: p.amount,
+    description: p.description,
+    method: p.method,
+    createdAt: p.createdAt,
+    paidAt: p.paidAt,
+    customerId: p.customerId,
+    subscriptionId: p.subscriptionId,
+    settlementAmount: p.settlementAmount,
+    amountRefunded: p.amountRefunded,
+    amountRemaining: p.amountRemaining,
+    amountChargedBack: p.amountChargedBack,
+    metadata: p.metadata,
+  };
+}
+
 async function handleApi(body) {
   const { action } = body;
 
@@ -68,40 +100,12 @@ async function handleApi(body) {
           if (!cPage.nextPageCursor) break;
           cPage = await cPage.nextPage();
         }
-        const items = allItems.map((p) => ({
-          id: p.id,
-          status: p.status,
-          amount: p.amount,
-          description: p.description,
-          method: p.method,
-          createdAt: p.createdAt,
-          paidAt: p.paidAt,
-          customerId: p.customerId,
-          subscriptionId: p.subscriptionId,
-          settlementAmount: p.settlementAmount,
-          amountRefunded: p.amountRefunded,
-          amountRemaining: p.amountRemaining,
-          metadata: p.metadata,
-        }));
+        const items = allItems.map(mapPayment);
         return { items, nextCursor: null };
       } else {
         page = await mollieClient.payments.page(params);
       }
-      const items = [...page].map((p) => ({
-        id: p.id,
-        status: p.status,
-        amount: p.amount,
-        description: p.description,
-        method: p.method,
-        createdAt: p.createdAt,
-        paidAt: p.paidAt,
-        customerId: p.customerId,
-        subscriptionId: p.subscriptionId,
-        settlementAmount: p.settlementAmount,
-        amountRefunded: p.amountRefunded,
-        amountRemaining: p.amountRemaining,
-        metadata: p.metadata,
-      }));
+      const items = [...page].map(mapPayment);
       return { items, nextCursor: page.nextPageCursor || null };
     }
 
@@ -167,21 +171,7 @@ async function handleApi(body) {
     case "get-payment": {
       if (!body.paymentId) throw new Error("paymentId required");
       const p = await mollieClient.payments.get(body.paymentId);
-      return {
-        id: p.id,
-        status: p.status,
-        amount: p.amount,
-        description: p.description,
-        method: p.method,
-        createdAt: p.createdAt,
-        paidAt: p.paidAt,
-        customerId: p.customerId,
-        subscriptionId: p.subscriptionId,
-        settlementAmount: p.settlementAmount,
-        amountRefunded: p.amountRefunded,
-        amountRemaining: p.amountRemaining,
-        metadata: p.metadata,
-      };
+      return mapPayment(p);
     }
 
     default:
