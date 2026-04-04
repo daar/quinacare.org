@@ -57,10 +57,33 @@ async function handleApi(body) {
       if (body.from) params.from = body.from;
       let page;
       if (body.customerId) {
-        page = await mollieClient.customerPayments.page({
+        // Fetch ALL pages for a single customer (bounded dataset)
+        const allItems = [];
+        let cPage = await mollieClient.customerPayments.page({
           customerId: body.customerId,
-          ...params,
+          limit: 250,
         });
+        while (true) {
+          allItems.push(...cPage);
+          if (!cPage.nextPageCursor) break;
+          cPage = await cPage.nextPage();
+        }
+        const items = allItems.map((p) => ({
+          id: p.id,
+          status: p.status,
+          amount: p.amount,
+          description: p.description,
+          method: p.method,
+          createdAt: p.createdAt,
+          paidAt: p.paidAt,
+          customerId: p.customerId,
+          subscriptionId: p.subscriptionId,
+          settlementAmount: p.settlementAmount,
+          amountRefunded: p.amountRefunded,
+          amountRemaining: p.amountRemaining,
+          metadata: p.metadata,
+        }));
+        return { items, nextCursor: null };
       } else {
         page = await mollieClient.payments.page(params);
       }
