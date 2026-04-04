@@ -1,34 +1,20 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import {
-  createMollieClient,
-  Locale,
-  PaymentMethod,
-  SequenceType,
-} from "@mollie/api-client";
+import { SequenceType } from "@mollie/api-client";
 import { getCurrency } from "../../../lib/currency";
+import {
+  getMollieClient,
+  getWebhookUrl,
+  methodMap,
+  localeMap,
+} from "../../../lib/mollie";
 import {
   insertDonation,
   setMollieId,
   type DonationContext,
   type DonationFrequency,
 } from "../../../lib/donations";
-
-const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
-
-const methodMap: Record<string, PaymentMethod> = {
-  card: PaymentMethod.creditcard,
-  ideal: PaymentMethod.ideal,
-  paypal: PaymentMethod.paypal,
-  bank: PaymentMethod.banktransfer,
-};
-
-const localeMap: Record<string, Locale> = {
-  nl: Locale.nl_NL,
-  en: Locale.en_US,
-  es: Locale.es_ES,
-};
 
 const validContexts = new Set<DonationContext>([
   "donate",
@@ -51,17 +37,15 @@ interface RequestBody {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  if (!mollieApiKey) {
+  let mollieClient;
+  try {
+    mollieClient = getMollieClient();
+  } catch {
     return new Response(
       JSON.stringify({ error: "Payment service not configured" }),
-      {
-        status: 503,
-        headers: { "Content-Type": "application/json" },
-      },
+      { status: 503, headers: { "Content-Type": "application/json" } },
     );
   }
-
-  const mollieClient = createMollieClient({ apiKey: mollieApiKey });
 
   let body: RequestBody;
   try {
@@ -98,16 +82,13 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const mollieLocale = localeMap[locale] || Locale.en_US;
+  const mollieLocale = localeMap[locale] || localeMap.en;
   const currencyConfig = getCurrency(locale);
   const currency = currencyConfig.code;
   const origin = new URL(request.url).origin;
   const langPrefix = locale === "nl" ? "" : `/${locale}`;
   const returnUrl = `${origin}${langPrefix}/donate/return?context=${context}`;
-
-  // Mollie rejects localhost webhook URLs; omit in dev so test payments work
-  const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1");
-  const webhookUrl = isLocal ? undefined : `${origin}/api/mollie/webhook`;
+  const webhookUrl = getWebhookUrl(request);
 
   const isRecurring = freq === "monthly" || freq === "yearly";
   const description = isRecurring
@@ -128,7 +109,6 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (err) {
     console.error("[Turso] Failed to insert donation:", err);
-    // Continue without DB — payment still works, webhook will log
   }
 
   try {
@@ -168,10 +148,7 @@ export const POST: APIRoute = async ({ request }) => {
           checkoutUrl: payment.getCheckoutUrl(),
           paymentId: payment.id,
         }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        },
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -202,10 +179,7 @@ export const POST: APIRoute = async ({ request }) => {
         checkoutUrl: payment.getCheckoutUrl(),
         paymentId: payment.id,
       }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      },
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (err: unknown) {
     const message =

@@ -14,7 +14,8 @@
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "preview": "astro preview",
     "astro": "astro",
-    "prepare": "husky"
+    "prepare": "husky",
+    "migrate:wp": "node --env-file=.env scripts/migrate-wp-mollie.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.0",
@@ -33,6 +34,7 @@
     "@eslint/js": "^10.0.1",
     "@types/nodemailer": "^7.0.11",
     "cspell": "^9.7.0",
+    "dotenv": "^17.4.0",
     "eslint": "^10.0.3",
     "eslint-plugin-astro": "^1.6.0",
     "husky": "^9.1.7",
@@ -43,7 +45,8 @@
     "prettier-plugin-astro": "^0.14.1",
     "svgo": "^4.0.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.0"
+    "typescript-eslint": "^8.57.0",
+    "xlsx": "^0.18.5"
   },
   "lint-staged": {
     "*.{js,ts,mjs,cjs,json,css,md}": "prettier --write",

@@ -1,13 +1,14 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { createMollieClient } from "@mollie/api-client";
+import { getMollieClient } from "../../../lib/mollie";
 import { updateDonationStatus } from "../../../lib/donations";
 
-const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
-
 export const POST: APIRoute = async ({ request }) => {
-  if (!mollieApiKey) {
+  let mollieClient;
+  try {
+    mollieClient = getMollieClient();
+  } catch {
     return new Response(JSON.stringify({ error: "Not configured" }), {
       status: 503,
     });
@@ -30,7 +31,6 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const mollieClient = createMollieClient({ apiKey: mollieApiKey });
     const payment = (await mollieClient.payments.get(paymentId)) as unknown as {
       status: string;
       customerId?: string;

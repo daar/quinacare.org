@@ -1,17 +1,16 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { createMollieClient } from "@mollie/api-client";
+import { getMollieClient, getWebhookUrl } from "../../../lib/mollie";
 import {
   updateDonationStatus,
   getDonationByMollieId,
   insertDonation,
   setMollieId,
+  upsertSubscription,
   type DonationContext,
   type DonationFrequency,
 } from "../../../lib/donations";
-
-const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
 
 interface PaymentMeta {
   frequency?: string;
@@ -23,11 +22,12 @@ interface PaymentMeta {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  if (!mollieApiKey) {
+  let mollieClient;
+  try {
+    mollieClient = getMollieClient();
+  } catch {
     return new Response("Not configured", { status: 503 });
   }
-
-  const mollieClient = createMollieClient({ apiKey: mollieApiKey });
 
   let formData: FormData;
   try {
@@ -129,15 +129,16 @@ export const POST: APIRoute = async ({ request }) => {
         : false;
 
       if (!hasActiveSub) {
-        const origin = new URL(request.url).origin;
-        const webhookUrl = `${origin}/api/mollie/webhook`;
+        const webhookUrl = getWebhookUrl(request);
         const interval = meta.frequency === "monthly" ? "1 month" : "12 months";
+
+        const description = `Quina Care ${meta.frequency} donation ${currency} ${meta.amount}`;
 
         await mollieClient.customerSubscriptions.create({
           customerId,
           amount: { currency, value: meta.amount },
           interval,
-          description: `Quina Care ${meta.frequency} donation ${currency} ${meta.amount}`,
+          description,
           webhookUrl,
           metadata: {
             frequency: meta.frequency,
@@ -147,6 +148,35 @@ export const POST: APIRoute = async ({ request }) => {
             context: meta.context,
           },
         });
+
+        // Track subscription in Turso
+        const subList = await mollieClient.customerSubscriptions
+          .page({ customerId })
+          .catch(() => null);
+        if (subList) {
+          for (const sub of subList) {
+            const s = sub as unknown as {
+              id: string;
+              status: string;
+              amount: { currency: string; value: string };
+              interval: string;
+              description: string;
+              method: string;
+            };
+            await upsertSubscription({
+              mollie_subscription_id: s.id,
+              mollie_customer_id: customerId,
+              currency: s.amount.currency,
+              amount_cents: Math.round(parseFloat(s.amount.value) * 100),
+              interval: s.interval,
+              description: s.description,
+              method: s.method,
+              status: s.status,
+            }).catch((err) =>
+              console.error("[Turso] Failed to upsert subscription:", err),
+            );
+          }
+        }
       }
     }
 
