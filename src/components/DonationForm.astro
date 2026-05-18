@@ -317,73 +317,6 @@ const cc = getCurrency(lang);
 */
 }
 
-<!-- SECTION 5: FAQs -->
-<section class="py-24 bg-qcGray">
-  <div class="max-w-3xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <h2 class="text-4xl font-bold tracking-tighter uppercase">
-        {t("donate.faqTitle")}
-      </h2>
-    </div>
-
-    <div class="space-y-4" id="faq-accordion">
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
-          aria-expanded="false"
-        >
-          <span>{t("donate.faq1Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
-        </button>
-        <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq1A")}
-          </p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
-          aria-expanded="false"
-        >
-          <span>{t("donate.faq2Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
-        </button>
-        <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq2A")}
-          </p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
-          aria-expanded="false"
-        >
-          <span>{t("donate.faq3Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
-        </button>
-        <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq3A")}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Success overlay -->
 <div
   id="success-overlay"
@@ -409,30 +342,3 @@ const cc = getCurrency(lang);
     </a>
   </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // FAQ accordion logic
-    document.querySelectorAll(".faq-toggle").forEach((toggle) => {
-      toggle.addEventListener("click", () => {
-        const content = toggle.nextElementSibling as HTMLElement | null;
-        const icon = toggle.querySelector("i");
-        const isOpen = toggle.getAttribute("aria-expanded") === "true";
-
-        document.querySelectorAll(".faq-toggle").forEach((other) => {
-          const otherContent = other.nextElementSibling as HTMLElement | null;
-          const otherIcon = other.querySelector("i");
-          other.setAttribute("aria-expanded", "false");
-          otherContent?.classList.add("hidden");
-          otherIcon?.classList.remove("rotate-180");
-        });
-
-        if (!isOpen && content) {
-          toggle.setAttribute("aria-expanded", "true");
-          content.classList.remove("hidden");
-          icon?.classList.add("rotate-180");
-        }
-      });
-    });
-  });
-</script>
