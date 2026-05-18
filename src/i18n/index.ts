@@ -119,7 +119,7 @@ export const ui = {
     "cta.certified": "CBF Erkend",
     // Homepage - Newsletter
     "newsletter.label": "Blijf Betrokken",
-    "newsletter.title": "Ontvang updates rechtstreeks uit de",
+    "newsletter.title": "Ontvang updates rechtstreeks uit het",
     "newsletter.titleHighlight": "ziekenhuis.",
     "newsletter.subtitle":
       "Schrijf je in voor onze nieuwsbrief en ontvang kwartaalupdates over lopende projecten, medische resultaten en hoe jouw steun impact maakt in Ecuador.",
@@ -659,7 +659,7 @@ export const ui = {
     "cta.certified": "Certificado CBF",
     // Homepage - Newsletter
     "newsletter.label": "Mantente Involucrado",
-    "newsletter.title": "Recibe actualizaciones directamente desde la",
+    "newsletter.title": "Recibe actualizaciones directamente desde el",
     "newsletter.titleHighlight": "hospital.",
     "newsletter.subtitle":
       "Suscríbete a nuestro boletín y recibe actualizaciones trimestrales sobre proyectos en curso, resultados médicos y cómo tu apoyo genera impacto en Ecuador.",
