@@ -34,24 +34,42 @@ const searchPath = getLocalizedPath("/search", lang);
         (lang === "nl" || lang === "en") && (
           <div class="hidden xl:flex items-center gap-3 border-l border-gray-200 pl-8">
             {lang === "en" && (
-              <img
-                src="/images/certifications/certified-nonprofit.png"
-                alt="Certified Nonprofit"
-                class="h-12"
-              />
+              <a
+                href="https://www.centerfornonprofits.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/images/certifications/certified-nonprofit.png"
+                  alt="Certified Nonprofit"
+                  class="h-12"
+                />
+              </a>
             )}
             {lang === "nl" && (
               <>
-                <img
-                  src="/images/certifications/anbi.png"
-                  alt="ANBI"
-                  class="h-12"
-                />
-                <img
-                  src="/images/certifications/cbf.png"
-                  alt="CBF Erkend Goed Doel"
-                  class="h-12"
-                />
+                <a
+                  href="https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/bijzondere_regelingen/goede_doelen/algemeen_nut_beogende_instellingen/wat_is_een_anbi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/images/certifications/anbi.png"
+                    alt="ANBI"
+                    class="h-12"
+                  />
+                </a>
+                <a
+                  href="https://www.cbf.nl/organisatie/quina-care"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/images/certifications/cbf.png"
+                    alt="CBF Erkend Goed Doel"
+                    class="h-12"
+                  />
+                </a>
               </>
             )}
           </div>
