@@ -38,11 +38,9 @@ export const ui = {
     "category.vlog": "Vlog",
     "category.update": "Update",
     // Homepage - Hero
-    "hero.foundation": "Stichting Quina Care",
-    "hero.title1": "ZORG ZONDER",
-    "hero.title2": "GRENZEN.",
-    "hero.subtitle":
-      "Wij brengen medische expertise naar de meest afgelegen gebieden van de Amazone. Omdat elk leven telt.",
+    "hero.foundation": "Stichting Quina Care / Hospital San Miguel",
+    "hero.subtitlePrefix": "Ook de mensen van de Amazone hebben recht op ",
+    "hero.subtitleHighlight": "goede zorg",
     "hero.cta1": "Bekijk onze impact",
     "hero.cta2": "Help Quina Care",
     // Homepage - Live Metrics
@@ -309,11 +307,9 @@ export const ui = {
     "category.vlog": "Vlog",
     "category.update": "Update",
     // Homepage - Hero
-    "hero.foundation": "Quina Care Foundation",
-    "hero.title1": "CARE WITHOUT",
-    "hero.title2": "BORDERS.",
-    "hero.subtitle":
-      "We bring medical expertise to the most remote areas of the Amazon. Because every life counts.",
+    "hero.foundation": "Stichting Quina Care / Hospital San Miguel",
+    "hero.subtitlePrefix": "The people of the Amazon also have a right to ",
+    "hero.subtitleHighlight": "good healthcare",
     "hero.cta1": "See our impact",
     "hero.cta2": "Help Quina Care",
     // Homepage - Live Metrics
@@ -581,11 +577,10 @@ export const ui = {
     "category.vlog": "Vlog",
     "category.update": "Actualización",
     // Homepage - Hero
-    "hero.foundation": "Fundación Quina Care",
-    "hero.title1": "CUIDADO SIN",
-    "hero.title2": "FRONTERAS.",
-    "hero.subtitle":
-      "Llevamos experiencia médica a las zonas más remotas del Amazonas. Porque cada vida cuenta.",
+    "hero.foundation": "Stichting Quina Care / Hospital San Miguel",
+    "hero.subtitlePrefix":
+      "Las personas de la Amazonía también tienen derecho a una ",
+    "hero.subtitleHighlight": "buena atención médica",
     "hero.cta1": "Ver nuestro impacto",
     "hero.cta2": "Ayuda a Quina Care",
     // Homepage - Live Metrics
