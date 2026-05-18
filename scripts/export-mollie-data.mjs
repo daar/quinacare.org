@@ -11,6 +11,7 @@
  * Output:
  *   backup/mollie-customers.csv
  *   backup/mollie-payments.csv
+ *   backup/mollie-subscriptions.csv
  */
 
 import { createMollieClient } from "@mollie/api-client";
@@ -107,8 +108,12 @@ async function exportPayments() {
   const rows = payments.map((p) => ({
     id: p.id,
     status: p.status,
+    effectiveStatus: effectiveStatus(p),
     amount_currency: p.amount?.currency,
     amount_value: p.amount?.value,
+    amountRefunded_value: p.amountRefunded?.value || "",
+    amountRemaining_value: p.amountRemaining?.value || "",
+    amountChargedBack_value: p.amountChargedBack?.value || "",
     description: p.description,
     method: p.method,
     mode: p.mode,
@@ -127,8 +132,12 @@ async function exportPayments() {
   const headers = [
     "id",
     "status",
+    "effectiveStatus",
     "amount_currency",
     "amount_value",
+    "amountRefunded_value",
+    "amountRemaining_value",
+    "amountChargedBack_value",
     "description",
     "method",
     "mode",
@@ -146,12 +155,96 @@ async function exportPayments() {
   writeCsv(resolve(BACKUP_DIR, "mollie-payments.csv"), headers, rows);
 }
 
+// ── Export subscriptions ───────────────────────────────────
+
+async function fetchAllSubscriptionsRaw() {
+  const results = [];
+  let url = "https://api.mollie.com/v2/subscriptions?limit=250";
+  let pageNum = 1;
+  while (url) {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${API_KEY}` },
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || data.title || "Mollie error");
+    const items = data._embedded?.subscriptions || [];
+    results.push(...items);
+    process.stdout.write(
+      `\r  Fetching subscriptions... page ${pageNum} (${results.length} total)`,
+    );
+    url = data._links?.next?.href || null;
+    pageNum++;
+  }
+  console.log(`\r  Fetched ${results.length} subscriptions${" ".repeat(20)}`);
+  return results;
+}
+
+async function exportSubscriptions() {
+  console.log("Exporting subscriptions...");
+  const subs = await fetchAllSubscriptionsRaw();
+
+  const rows = subs.map((s) => ({
+    id: s.id,
+    customerId: s.customerId,
+    status: s.status,
+    amount_currency: s.amount?.currency,
+    amount_value: s.amount?.value,
+    times: s.times,
+    timesRemaining: s.timesRemaining,
+    interval: s.interval,
+    startDate: s.startDate,
+    nextPaymentDate: s.nextPaymentDate,
+    description: s.description,
+    method: s.method,
+    mandateId: s.mandateId,
+    createdAt: s.createdAt,
+    canceledAt: s.canceledAt,
+    metadata: s.metadata ? JSON.stringify(s.metadata) : "",
+  }));
+
+  const headers = [
+    "id",
+    "customerId",
+    "status",
+    "amount_currency",
+    "amount_value",
+    "times",
+    "timesRemaining",
+    "interval",
+    "startDate",
+    "nextPaymentDate",
+    "description",
+    "method",
+    "mandateId",
+    "createdAt",
+    "canceledAt",
+    "metadata",
+  ];
+  writeCsv(resolve(BACKUP_DIR, "mollie-subscriptions.csv"), headers, rows);
+}
+
+// ── Helpers ────────────────────────────────────────────────
+
+/** Chargeback-aware status so CSV reflects true state, not Mollie's raw field. */
+function effectiveStatus(p) {
+  if (p.amountChargedBack && parseFloat(p.amountChargedBack.value) > 0)
+    return "charged_back";
+  if (p.amountRefunded && parseFloat(p.amountRefunded.value) > 0) {
+    if (!p.amountRemaining || parseFloat(p.amountRemaining.value) === 0)
+      return "refunded";
+    return "partially_refunded";
+  }
+  return p.status;
+}
+
 // ── Main ───────────────────────────────────────────────────
 
 async function main() {
   await exportCustomers();
   console.log();
   await exportPayments();
+  console.log();
+  await exportSubscriptions();
   console.log("\nDone.");
 }
 

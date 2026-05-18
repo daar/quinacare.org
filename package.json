@@ -14,21 +14,23 @@
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "preview": "astro preview",
     "astro": "astro",
-    "prepare": "husky",
-    "migrate:wp": "node --env-file=.env scripts/migrate-wp-mollie.mjs"
+    "prepare": "husky"
+  },
+  "overrides": {
+    "yaml": "^2.9.0"
   },
   "dependencies": {
-    "@astrojs/markdoc": "^1.0.0",
-    "@astrojs/netlify": "^7.0.1",
+    "@astrojs/markdoc": "^1.0.5",
+    "@astrojs/netlify": "^7.0.10",
     "@libsql/client": "^0.17.0",
     "@mollie/api-client": "^4.4.0",
     "@tailwindcss/vite": "^4.2.1",
-    "astro": "^6.0.3",
+    "astro": "^6.3.4",
     "nodemailer": "^8.0.2",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.7",
+    "@astrojs/check": "^0.9.2",
     "@cspell/dict-es-es": "^3.0.8",
     "@cspell/dict-nl-nl": "^2.4.2",
     "@eslint/js": "^10.0.1",
@@ -45,8 +47,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "svgo": "^4.0.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.0",
-    "xlsx": "^0.18.5"
+    "typescript-eslint": "^8.57.0"
   },
   "lint-staged": {
     "*.{js,ts,mjs,cjs,json,css,md}": "prettier --write",
