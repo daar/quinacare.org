@@ -143,7 +143,6 @@ export const ui = {
     "footer.certifiedCharity":
       "Quina Care is een officieel erkende goededoelinstelling.",
     "footer.privacyPolicy": "Privacy Policy",
-    "footer.cookies": "Cookies",
     // Donate page
     "donate.pageTitle": "Doneer aan Quina Care",
     "donate.pageSubtitle":
@@ -411,7 +410,6 @@ export const ui = {
     "footer.certifiedCharity":
       "Quina Care is an officially recognized charity.",
     "footer.privacyPolicy": "Privacy Policy",
-    "footer.cookies": "Cookies",
     // Donate page
     "donate.pageTitle": "Donate to Quina Care",
     "donate.pageSubtitle":
@@ -682,7 +680,6 @@ export const ui = {
     "footer.certifiedCharity":
       "Quina Care es una organización benéfica oficialmente reconocida.",
     "footer.privacyPolicy": "Política de Privacidad",
-    "footer.cookies": "Cookies",
     // Donate page
     "donate.pageTitle": "Dona a Quina Care",
     "donate.pageSubtitle":
