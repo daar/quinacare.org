@@ -33,7 +33,9 @@ export const GET: APIRoute = async () => {
     status: 200,
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "public, max-age=60, s-maxage=300",
+      "Cache-Control": "public, max-age=3600",
+      "Netlify-CDN-Cache-Control":
+        "public, durable, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 };
