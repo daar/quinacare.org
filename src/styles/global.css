@@ -215,8 +215,8 @@ button {
   outline: none;
 }
 
-/* Minimum interactive target size (WCAG 2.5.5 — 44×44px) */
-a,
+/* Minimum interactive target size (WCAG 2.5.5 — 44×44px).
+   Excludes plain <a> so inline links keep their natural height in nav and prose. */
 button,
 [role="button"] {
   min-height: 44px;
