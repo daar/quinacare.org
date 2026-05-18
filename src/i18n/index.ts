@@ -59,6 +59,15 @@ export const ui = {
     "metrics.jungleLogistics": "Logistiek in de Jungle",
     "metrics.jungleLogisticsDesc":
       "Het leveren van medicijnen vereist doorzettingsvermogen. Dankzij lokale kennis bereiken we dorpen waar geen wegen naar leiden.",
+    "metrics.patients": "Patiënten",
+    "metrics.admissions": "Opnames",
+    "metrics.amazonReach": "Bereik in de Amazone",
+    "metrics.amazonReachDesc":
+      "Duizenden patiënten in afgelegen gemeenschappen vertrouwen op onze kliniek. Elk bezoek is een bewijs van wat lokale aanwezigheid mogelijk maakt.",
+    "achieved.label": "Onze Impact",
+    "achieved.title": "Wat we samen hebben bereikt",
+    "achieved.subtitle":
+      "Realtime cijfers rechtstreeks uit het elektronisch patiëntendossier van onze kliniek in Ecuador.",
     // Homepage - News section
     "homeNews.title": "Actueel",
     "homeNews.subtitle": "Nieuws",
@@ -321,6 +330,15 @@ export const ui = {
     "metrics.jungleLogistics": "Jungle Logistics",
     "metrics.jungleLogisticsDesc":
       "Delivering medicine requires perseverance. Thanks to local knowledge, we reach villages where no roads lead.",
+    "metrics.patients": "Patients",
+    "metrics.admissions": "Admissions",
+    "metrics.amazonReach": "Amazon Reach",
+    "metrics.amazonReachDesc":
+      "Thousands of patients in remote communities rely on our clinic. Each visit is proof of what a steady local presence makes possible.",
+    "achieved.label": "Our Impact",
+    "achieved.title": "What we've achieved together",
+    "achieved.subtitle":
+      "Real-time figures pulled straight from the electronic medical record of our clinic in Ecuador.",
     // Homepage - News section
     "homeNews.title": "Latest",
     "homeNews.subtitle": "News",
@@ -584,6 +602,15 @@ export const ui = {
     "metrics.jungleLogistics": "Logística en la Selva",
     "metrics.jungleLogisticsDesc":
       "Entregar medicamentos requiere perseverancia. Gracias al conocimiento local, llegamos a aldeas donde no hay caminos.",
+    "metrics.patients": "Pacientes",
+    "metrics.admissions": "Ingresos",
+    "metrics.amazonReach": "Alcance en la Amazonía",
+    "metrics.amazonReachDesc":
+      "Miles de pacientes en comunidades remotas confían en nuestra clínica. Cada visita demuestra lo que hace posible una presencia local constante.",
+    "achieved.label": "Nuestro Impacto",
+    "achieved.title": "Lo que hemos logrado juntos",
+    "achieved.subtitle":
+      "Cifras en tiempo real directamente desde el historial clínico electrónico de nuestra clínica en Ecuador.",
     // Homepage - News section
     "homeNews.title": "Últimas",
     "homeNews.subtitle": "Noticias",

@@ -8,29 +8,40 @@ interface Props {
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
+const localeMap: Record<Lang, string> = {
+  nl: "nl-NL",
+  en: "en-US",
+  es: "es-ES",
+};
+const numberLocale = localeMap[lang];
+
 const metrics = [
   {
+    key: "consultations",
     label: t("metrics.consultations"),
-    value: "1.240",
     title: t("metrics.directMedical"),
     description: t("metrics.directMedicalDesc"),
   },
   {
+    key: "births",
     label: t("metrics.births"),
-    value: "42",
     title: t("metrics.buildingFuture"),
     description: t("metrics.buildingFutureDesc"),
   },
   {
-    label: t("metrics.medication"),
-    value: "15k",
-    title: t("metrics.jungleLogistics"),
-    description: t("metrics.jungleLogisticsDesc"),
+    key: "patients",
+    label: t("metrics.patients"),
+    title: t("metrics.amazonReach"),
+    description: t("metrics.amazonReachDesc"),
   },
 ];
 ---
 
-<section class="bg-white border-y border-gray-100 overflow-hidden">
+<section
+  class="bg-white border-y border-gray-100 overflow-hidden"
+  data-live-metrics
+  data-locale={numberLocale}
+>
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center gap-4 py-8">
       <div
@@ -68,8 +79,11 @@ const metrics = [
                   data-index={i}
                 >
                   <span class="qc-label mb-1">{m.label}</span>
-                  <h2 class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none">
-                    {m.value}
+                  <h2
+                    class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none"
+                    data-metric-value={m.key}
+                  >
+                    N/A
                   </h2>
                 </div>
               ))
@@ -120,8 +134,11 @@ const metrics = [
                 data-index={i}
               >
                 <span class="qc-label mb-1">{m.label}</span>
-                <h2 class="text-5xl font-bold tracking-tighter leading-none">
-                  {m.value}
+                <h2
+                  class="text-5xl font-bold tracking-tighter leading-none"
+                  data-metric-value={m.key}
+                >
+                  N/A
                 </h2>
               </div>
             ))
@@ -165,6 +182,28 @@ const metrics = [
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const section = document.querySelector<HTMLElement>("[data-live-metrics]");
+    if (section) {
+      const locale = section.dataset.locale ?? "en-US";
+      const formatter = new Intl.NumberFormat(locale);
+      fetch("/api/statistics")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((stats: Record<string, number> | null) => {
+          if (!stats) return;
+          section
+            .querySelectorAll<HTMLElement>("[data-metric-value]")
+            .forEach((el) => {
+              const key = el.dataset.metricValue;
+              if (key && typeof stats[key] === "number") {
+                el.textContent = formatter.format(stats[key]);
+              }
+            });
+        })
+        .catch(() => {
+          /* keep fallback values */
+        });
+    }
+
     const root = document.getElementById("live-metrics");
     if (!root) return;
 
