@@ -5,7 +5,8 @@ import Hero from "../../components/Hero.astro";
 import LiveMetrics from "../../components/LiveMetrics.astro";
 import News from "../../components/News.astro";
 import DonationCards from "../../components/DonationCards.astro";
-import FocusProject from "../../components/FocusProject.astro";
+// FocusProject temporarily disabled — re-enable when the section is ready.
+// import FocusProject from "../../components/FocusProject.astro";
 import Partners from "../../components/Partners.astro";
 import CallToAction from "../../components/CallToAction.astro";
 import Newsletter from "../../components/Newsletter.astro";
@@ -23,9 +24,7 @@ const lang: Lang = "es";
   <LiveMetrics lang={lang} />
   <News lang={lang} />
   <DonationCards lang={lang} />
-  <div data-pagefind-body>
-    <FocusProject lang={lang} />
-  </div>
+  {/* <div data-pagefind-body><FocusProject lang={lang} /></div> */}
   <Partners lang={lang} />
   <CallToAction lang={lang} />
   <Newsletter lang={lang} />
