@@ -1,5 +1,7 @@
 {
-  "items": [
+  "_TODO": "re-enable navbar items — move entries from items_disabled back into items when ready",
+  "items": [],
+  "items_disabled": [
     {
       "id": "whatCanYouDo",
       "labelKey": "nav.whatCanYouDo",
