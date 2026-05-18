@@ -18,6 +18,13 @@ interface Props {
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const cc = getCurrency(lang);
+
+const localeMap: Record<Lang, string> = {
+  nl: "nl-NL",
+  en: "en-US",
+  es: "es-ES",
+};
+const numberLocale = localeMap[lang];
 ---
 
 <!-- SECTION 1: Hero with floating donation form -->
@@ -73,10 +80,10 @@ const cc = getCurrency(lang);
             ></span>
           </span>
         </div>
-        <div>
+        <div data-donate-hero-counter data-locale={numberLocale}>
           <span
             class="text-white font-bold text-4xl md:text-5xl tracking-tighter"
-            >{t("donate.counterValue")}</span
+            data-stat-value="patients">0</span
           >
           <span class="text-white/50 text-sm block mt-1"
             >{t("donate.counterLabel")}</span
@@ -342,3 +349,55 @@ const cc = getCurrency(lang);
     </a>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const wrap = document.querySelector<HTMLElement>(
+      "[data-donate-hero-counter]",
+    );
+    if (!wrap) return;
+
+    const target = wrap.querySelector<HTMLElement>(
+      '[data-stat-value="patients"]',
+    );
+    if (!target) return;
+
+    const locale = wrap.dataset.locale ?? "en-US";
+    const formatter = new Intl.NumberFormat(locale);
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function countUp(el: HTMLElement, value: number, duration = 1800) {
+      if (reduceMotion) {
+        el.textContent = formatter.format(value);
+        return;
+      }
+      const start = performance.now();
+      function frame(now: number) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        el.textContent = formatter.format(
+          Math.round(value * easeOutCubic(progress)),
+        );
+        if (progress < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    fetch("/api/statistics")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((stats: Record<string, number> | null) => {
+        if (stats && typeof stats.patients === "number") {
+          countUp(target, stats.patients);
+        }
+      })
+      .catch(() => {
+        /* keep fallback "0" */
+      });
+  });
+</script>
