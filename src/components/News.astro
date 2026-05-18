@@ -8,9 +8,8 @@ interface Props {
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// News rendering is temporarily disabled while the site is being rebuilt.
-// Restore the imports, collection lookup, helpers, and the markup below
-// (title banner + 3-up grid) when re-enabling the news section.
+// TODO: re-enable News section — restore imports, collection lookup,
+// helpers, and the markup below (title banner + 3-up grid).
 // import { getCollection } from "astro:content";
 // import { Image } from "astro:assets";
 // import { getLocalizedPath, getDateLocale } from "../i18n";
@@ -18,9 +17,7 @@ const t = useTranslations(lang);
 
 <section class="py-24 max-w-7xl mx-auto px-6">
   {
-    /*
-    Latest-news banner and 3-up post grid are commented out while the site
-    is being rebuilt. Restore from git history when ready.
+    /* TODO: re-enable Latest-news banner and 3-up post grid below.
 
     <div class="flex justify-between items-end mb-16">
       <h2 class="text-3xl font-bold uppercase tracking-tighter">
