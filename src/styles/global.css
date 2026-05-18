@@ -74,7 +74,7 @@
   font-family: var(--body-font);
   font-size: var(--body-size);
   line-height: var(--body-line-height);
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* Button base */
@@ -85,6 +85,12 @@
   letter-spacing: var(--btn-tracking);
   text-transform: uppercase;
   transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  min-height: 48px;
+  line-height: 1;
 }
 
 /* Button variants */
@@ -92,20 +98,26 @@
   background-color: var(--color-qcRed);
   color: white;
   border-radius: 0.375rem;
+  box-shadow: 0 2px 14px rgba(238, 23, 44, 0.3);
 }
 .qc-btn--primary:hover {
   background-color: var(--color-qcBlack);
   color: white;
+  box-shadow: 0 6px 24px rgba(238, 23, 44, 0.4);
+  transform: translateY(-1px);
 }
 
 .qc-btn--secondary {
   background-color: var(--color-qcBlack);
   color: white;
   border-radius: 0.375rem;
+  box-shadow: 0 2px 12px rgba(17, 17, 17, 0.25);
 }
 .qc-btn--secondary:hover {
   background-color: var(--color-qcRed);
   color: white;
+  box-shadow: 0 6px 24px rgba(238, 23, 44, 0.4);
+  transform: translateY(-1px);
 }
 
 .qc-btn--outline {
@@ -116,6 +128,8 @@
 .qc-btn--outline:hover {
   background-color: var(--color-qcBlack);
   color: white;
+  box-shadow: 0 6px 20px rgba(17, 17, 17, 0.2);
+  transform: translateY(-1px);
 }
 
 .qc-btn--ghost {
@@ -134,6 +148,8 @@
 .qc-btn--white:hover {
   background-color: var(--color-qcBlack);
   color: white;
+  box-shadow: 0 6px 20px rgba(17, 17, 17, 0.2);
+  transform: translateY(-1px);
 }
 
 /* Meta text */
@@ -157,8 +173,54 @@
 }
 
 body {
-  font-family: var(--font-effra);
+  font-family: var(--font-sans);
+  color: var(--body-color);
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    scroll-behavior: auto;
+  }
+}
+
+/* Headings — Effra display font */
+h1,
+h2 {
+  font-family: var(--font-effra);
+  font-weight: 700;
+  letter-spacing: var(--heading-tracking);
+}
+
+h3 {
+  font-family: var(--font-effra);
+}
+
+/* Nav & buttons — Effra for visual hierarchy */
+nav,
+header nav a,
+button {
+  font-family: var(--font-effra);
+}
+
+/* Focus-visible ring (WCAG 2.4.7) */
+:focus-visible {
+  outline: 3px solid var(--color-qcRed);
+  outline-offset: 3px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 6px white;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Minimum interactive target size (WCAG 2.5.5 — 44×44px) */
+a,
+button,
+[role="button"] {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Live metrics elastic transitions */
@@ -282,12 +344,12 @@ mark {
   transform: translateX(0);
 }
 
-/* Body text: Georgia 18px for long-form content */
+/* Body text: 18px for long-form content */
 .prose-article,
 .prose-landing > p {
   font-family: var(--font-sans);
   font-size: 18px;
-  line-height: 1.8;
+  line-height: 1.85;
   color: #374151;
 }
 
