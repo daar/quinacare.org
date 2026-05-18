@@ -245,16 +245,16 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           methodsByLocale.en || ["card"];
         let method = defaultMethods[0];
 
-        // Session restore
+        // Session restore — frequency/method only. Amount always falls back
+        // to the default preset so a fresh donate-page visit isn't surprised
+        // by a previously selected value.
         const storageKey = `donate:${context}`;
         const saved = sessionStorage.getItem(storageKey);
         if (saved) {
           try {
             const s = JSON.parse(saved);
-            if (s.amount > 0) amount = s.amount;
             if (s.frequency) frequency = s.frequency;
             if (s.method) method = s.method;
-            if (s.custom) customInput.value = fmt(s.amount);
           } catch {
             /* ignore */
           }
