@@ -50,10 +50,10 @@ export const ui = {
     "metrics.medication": "Medicatie",
     "metrics.directMedical": "Directe Medische Hulp",
     "metrics.directMedicalDesc":
-      "Ons ziekenhuis fungeert als centrale hub voor medische zorg in de regio. Elke consultatie is een stap richting een gezondere gemeenschap.",
+      "Ons ziekenhuis verzorgt belangrijke medische zorg in de regio. Elk consult draagt bij aan een gezondere gemeenschap.",
     "metrics.buildingFuture": "Toekomst Bouwen",
     "metrics.buildingFutureDesc":
-      "Veilige bevallingen zijn de kern van ons werk. Wij zorgen dat medische complicaties direct en professioneel worden afgehandeld.",
+      "Goede medische zorg voor vrouwen en kinderen is een van onze belangrijke taken. Wij zorgen dat medische complicaties professioneel worden behandeld en voorkomen.",
     "metrics.jungleLogistics": "Logistiek in de Jungle",
     "metrics.jungleLogisticsDesc":
       "Het leveren van medicijnen vereist doorzettingsvermogen. Dankzij lokale kennis bereiken we dorpen waar geen wegen naar leiden.",
@@ -319,10 +319,10 @@ export const ui = {
     "metrics.medication": "Medication",
     "metrics.directMedical": "Direct Medical Care",
     "metrics.directMedicalDesc":
-      "Our hospital serves as a central hub for medical care in the region. Every consultation is a step towards a healthier community.",
+      "Our hospital provides essential medical care to the region. Every consultation contributes to a healthier community.",
     "metrics.buildingFuture": "Building the Future",
     "metrics.buildingFutureDesc":
-      "Safe deliveries are at the core of our work. We ensure medical complications are handled immediately and professionally.",
+      "Quality medical care for women and children is one of our core responsibilities. We make sure medical complications are treated professionally and prevented.",
     "metrics.jungleLogistics": "Jungle Logistics",
     "metrics.jungleLogisticsDesc":
       "Delivering medicine requires perseverance. Thanks to local knowledge, we reach villages where no roads lead.",
@@ -590,10 +590,10 @@ export const ui = {
     "metrics.medication": "Medicamentos",
     "metrics.directMedical": "Atención Médica Directa",
     "metrics.directMedicalDesc":
-      "Nuestro hospital sirve como centro de atención médica en la región. Cada consulta es un paso hacia una comunidad más saludable.",
+      "Nuestro hospital ofrece atención médica esencial en la región. Cada consulta contribuye a una comunidad más saludable.",
     "metrics.buildingFuture": "Construyendo el Futuro",
     "metrics.buildingFutureDesc":
-      "Los partos seguros son el núcleo de nuestro trabajo. Nos aseguramos de que las complicaciones médicas se manejen de inmediato y profesionalmente.",
+      "Una buena atención médica para mujeres y niños es una de nuestras responsabilidades principales. Nos aseguramos de que las complicaciones médicas se traten profesionalmente y se prevengan.",
     "metrics.jungleLogistics": "Logística en la Selva",
     "metrics.jungleLogisticsDesc":
       "Entregar medicamentos requiere perseverancia. Gracias al conocimiento local, llegamos a aldeas donde no hay caminos.",
