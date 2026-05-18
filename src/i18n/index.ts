@@ -205,7 +205,7 @@ export const ui = {
       "Ja, Stichting Quina Care heeft de ANBI-status. Je donatie is daarmee aftrekbaar van de belasting in Nederland.",
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
-      "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via info@quinacare.org.",
+      "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via care@quinacare.org.",
     // Sponsor form (yura-boom)
     "sponsor.nameLabel": "Naam",
     "sponsor.namePlaceholder": "Je volledige naam",
@@ -474,7 +474,7 @@ export const ui = {
       "Yes, Quina Care Foundation has ANBI status in the Netherlands, making your donation tax-deductible under Dutch tax law.",
     "donate.faq3Q": "Can I cancel my monthly donation?",
     "donate.faq3A":
-      "Yes, you can cancel your monthly donation at any time by contacting us at info@quinacare.org.",
+      "Yes, you can cancel your monthly donation at any time by contacting us at care@quinacare.org.",
     // Sponsor form (yura-boom)
     "sponsor.nameLabel": "Name",
     "sponsor.namePlaceholder": "Your full name",
@@ -746,7 +746,7 @@ export const ui = {
       "Sí, la Fundación Quina Care tiene estatus ANBI en los Países Bajos, lo que hace tu donación deducible de impuestos bajo la ley fiscal holandesa.",
     "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
     "donate.faq3A":
-      "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en info@quinacare.org.",
+      "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en care@quinacare.org.",
     // Sponsor form (yura-boom)
     "sponsor.nameLabel": "Nombre",
     "sponsor.namePlaceholder": "Tu nombre completo",
