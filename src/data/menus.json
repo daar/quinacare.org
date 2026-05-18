@@ -1,6 +1,12 @@
 {
   "_TODO": "re-enable navbar items — move entries from items_disabled back into items when ready",
-  "items": [],
+  "items": [
+    {
+      "id": "contact",
+      "labelKey": "submenu.contact",
+      "path": "/contact"
+    }
+  ],
   "items_disabled": [
     {
       "id": "whatCanYouDo",
