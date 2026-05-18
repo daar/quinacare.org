@@ -1,0 +1,141 @@
+---
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const localeMap: Record<Lang, string> = {
+  nl: "nl-NL",
+  en: "en-US",
+  es: "es-ES",
+};
+const numberLocale = localeMap[lang];
+
+const stats = [
+  { key: "consultations", label: t("metrics.consultations") },
+  { key: "patients", label: t("metrics.patients") },
+  { key: "admissions", label: t("metrics.admissions") },
+  { key: "births", label: t("metrics.births") },
+];
+---
+
+<section
+  class="bg-gray-50 border-y border-gray-100 py-16"
+  data-achieved-stats
+  data-locale={numberLocale}
+>
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <span class="qc-label text-qcRed">{t("achieved.label")}</span>
+      <h2 class="text-3xl md:text-5xl font-bold tracking-tight mt-2">
+        {t("achieved.title")}
+      </h2>
+      <p class="qc-body mt-4 max-w-2xl mx-auto">{t("achieved.subtitle")}</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {
+        stats.map((s) => (
+          <div class="bg-white rounded-2xl p-6 md:p-8 text-center border border-gray-100">
+            <div
+              class="text-4xl md:text-5xl font-bold tracking-tighter text-qcBlack"
+              data-stat-value={s.key}
+            >
+              N/A
+            </div>
+            <div class="qc-label mt-2 text-gray-500">{s.label}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const section = document.querySelector<HTMLElement>(
+      "[data-achieved-stats]",
+    );
+    if (!section) return;
+
+    const locale = section.dataset.locale ?? "en-US";
+    const formatter = new Intl.NumberFormat(locale);
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function countUp(el: HTMLElement, target: number, duration = 1800) {
+      if (reduceMotion) {
+        el.textContent = formatter.format(target);
+        return;
+      }
+      const start = performance.now();
+      function frame(now: number) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const value = Math.round(target * easeOutCubic(progress));
+        el.textContent = formatter.format(value);
+        if (progress < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function applyStats(stats: Record<string, number>) {
+      section!
+        .querySelectorAll<HTMLElement>("[data-stat-value]")
+        .forEach((el) => {
+          const key = el.dataset.statValue;
+          if (key && typeof stats[key] === "number") {
+            countUp(el, stats[key]);
+          }
+        });
+    }
+
+    // Wait until the section enters the viewport before animating so users
+    // don't miss the count-up if they scroll past quickly.
+    let animated = false;
+    let pendingStats: Record<string, number> | null = null;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !animated && pendingStats) {
+            animated = true;
+            applyStats(pendingStats);
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.25 },
+    );
+    observer.observe(section);
+
+    fetch("/api/statistics")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((stats: Record<string, number> | null) => {
+        if (!stats) return;
+        pendingStats = stats;
+        // If the section is already visible by the time data arrives, the
+        // IntersectionObserver callback handles it. Otherwise animate the
+        // moment it scrolls in.
+        const rect = section.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight * 0.75 && rect.bottom > 0;
+        if (inView && !animated) {
+          animated = true;
+          applyStats(stats);
+          observer.disconnect();
+        }
+      })
+      .catch(() => {
+        /* keep fallback values */
+      });
+  });
+</script>

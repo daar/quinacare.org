@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import {
   getLangFromUrl,
   useTranslations,
@@ -6,7 +7,9 @@ import {
   type Lang,
 } from "../i18n";
 import { getCurrency, formatCurrency } from "../lib/currency";
+import { donationTiers } from "../lib/donationTiers";
 import DonationFormCard from "./DonationFormCard.astro";
+import heroImage from "../assets/images/hospital_exterior.jpg";
 
 interface Props {
   lang?: Lang;
@@ -15,6 +18,13 @@ interface Props {
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const cc = getCurrency(lang);
+
+const localeMap: Record<Lang, string> = {
+  nl: "nl-NL",
+  en: "en-US",
+  es: "es-ES",
+};
+const numberLocale = localeMap[lang];
 ---
 
 <!-- SECTION 1: Hero with floating donation form -->
@@ -22,15 +32,18 @@ const cc = getCurrency(lang);
   class="relative min-h-screen bg-qcBlack flex items-center overflow-hidden"
 >
   <div class="absolute inset-0 z-0">
-    <video
-      autoplay
-      muted
-      loop
-      playsinline
+    <Image
+      src={heroImage}
+      alt=""
       class="w-full h-full object-cover opacity-50"
-    >
-      <source src="/videos/hero.webm" type="video/webm" />
-    </video>
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      format="webp"
+      quality={70}
+      widths={[480, 800, 1200, 1600]}
+      sizes="100vw"
+    />
     <div
       class="absolute inset-0 bg-gradient-to-r from-qcBlack via-qcBlack/80 to-qcBlack/40"
     >
@@ -67,10 +80,10 @@ const cc = getCurrency(lang);
             ></span>
           </span>
         </div>
-        <div>
+        <div data-donate-hero-counter data-locale={numberLocale}>
           <span
             class="text-white font-bold text-4xl md:text-5xl tracking-tighter"
-            >{t("donate.counterValue")}</span
+            data-stat-value="patients">0</span
           >
           <span class="text-white/50 text-sm block mt-1"
             >{t("donate.counterLabel")}</span
@@ -88,7 +101,7 @@ const cc = getCurrency(lang);
   </div>
 </header>
 
-<!-- SECTION 2: Impact CTA (3 cards) -->
+<!-- SECTION 2: Impact CTA (cards from donationTiers config) -->
 <section class="py-24 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
     <div class="text-center mb-16">
@@ -101,67 +114,38 @@ const cc = getCurrency(lang);
       </p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-8">
-      <div
-        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md"
-      >
-        <div
-          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
-        >
-          <i class="fa-solid fa-pills text-6xl"></i>
-        </div>
-        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-          {formatCurrency(15, cc, false)}
-        </h3>
-        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-          {t("donation.medication")}
-        </h4>
-        <p class="qc-body leading-relaxed">
-          {t("donation.medicationDesc")}
-        </p>
-      </div>
-
-      <div
-        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden bg-qcGray/30 rounded-md"
-      >
-        <div
-          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
-        >
-          <i class="fa-solid fa-baby text-6xl"></i>
-        </div>
-        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-          {formatCurrency(35, cc, false)}
-        </h3>
-        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-          {t("donation.prenatal")}
-        </h4>
-        <p class="qc-body leading-relaxed">
-          {t("donation.prenatalDesc")}
-        </p>
-      </div>
-
-      <div
-        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md"
-      >
-        <div
-          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
-        >
-          <i class="fa-solid fa-stethoscope text-6xl"></i>
-        </div>
-        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-          {formatCurrency(75, cc, false)}
-        </h3>
-        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-          {t("donation.surgery")}
-        </h4>
-        <p class="qc-body leading-relaxed">
-          {t("donation.surgeryDesc")}
-        </p>
-      </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {
+        donationTiers.map((tier, i) => {
+          const copy = tier.i18n[lang];
+          const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
+          return (
+            <div
+              class:list={[
+                "group border border-gray-100 p-8 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md",
+                bg,
+              ]}
+            >
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <i class={`${tier.icon} text-6xl`} />
+              </div>
+              <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+                {formatCurrency(tier.amount, cc, false)}
+              </h3>
+              <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+                {copy.title}
+              </h4>
+              <p class="qc-body leading-relaxed">{copy.description}</p>
+            </div>
+          );
+        })
+      }
     </div>
   </div>
 </section>
 
+{
+  /* TODO: re-enable "Vanuit het Veld" / "From the Field" / "Desde el Campo" section
 <!-- SECTION 3: Personal notes from the team -->
 <section class="py-24 bg-qcGray border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
@@ -217,7 +201,11 @@ const cc = getCurrency(lang);
     </div>
   </div>
 </section>
+*/
+}
 
+{
+  /* TODO: re-enable "Onze Resultaten" / "Our Results" / "Nuestros Resultados" section
 <!-- SECTION 4: What we've achieved -->
 <section class="py-24 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
@@ -333,73 +321,8 @@ const cc = getCurrency(lang);
     </div>
   </div>
 </section>
-
-<!-- SECTION 5: FAQs -->
-<section class="py-24 bg-qcGray">
-  <div class="max-w-3xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <h2 class="text-4xl font-bold tracking-tighter uppercase">
-        {t("donate.faqTitle")}
-      </h2>
-    </div>
-
-    <div class="space-y-4" id="faq-accordion">
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
-          aria-expanded="false"
-        >
-          <span>{t("donate.faq1Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
-        </button>
-        <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq1A")}
-          </p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
-          aria-expanded="false"
-        >
-          <span>{t("donate.faq2Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
-        </button>
-        <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq2A")}
-          </p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          class="faq-toggle w-full flex items-center justify-between p-6 text-left font-bold text-sm hover:text-qcRed transition-colors"
-          aria-expanded="false"
-        >
-          <span>{t("donate.faq3Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
-        </button>
-        <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq3A")}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+*/
+}
 
 <!-- Success overlay -->
 <div
@@ -429,27 +352,52 @@ const cc = getCurrency(lang);
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // FAQ accordion logic
-    document.querySelectorAll(".faq-toggle").forEach((toggle) => {
-      toggle.addEventListener("click", () => {
-        const content = toggle.nextElementSibling as HTMLElement | null;
-        const icon = toggle.querySelector("i");
-        const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    const wrap = document.querySelector<HTMLElement>(
+      "[data-donate-hero-counter]",
+    );
+    if (!wrap) return;
 
-        document.querySelectorAll(".faq-toggle").forEach((other) => {
-          const otherContent = other.nextElementSibling as HTMLElement | null;
-          const otherIcon = other.querySelector("i");
-          other.setAttribute("aria-expanded", "false");
-          otherContent?.classList.add("hidden");
-          otherIcon?.classList.remove("rotate-180");
-        });
+    const target = wrap.querySelector<HTMLElement>(
+      '[data-stat-value="patients"]',
+    );
+    if (!target) return;
 
-        if (!isOpen && content) {
-          toggle.setAttribute("aria-expanded", "true");
-          content.classList.remove("hidden");
-          icon?.classList.add("rotate-180");
+    const locale = wrap.dataset.locale ?? "en-US";
+    const formatter = new Intl.NumberFormat(locale);
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function countUp(el: HTMLElement, value: number, duration = 1800) {
+      if (reduceMotion) {
+        el.textContent = formatter.format(value);
+        return;
+      }
+      const start = performance.now();
+      function frame(now: number) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        el.textContent = formatter.format(
+          Math.round(value * easeOutCubic(progress)),
+        );
+        if (progress < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    fetch("/api/statistics")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((stats: Record<string, number> | null) => {
+        if (stats && typeof stats.patients === "number") {
+          countUp(target, stats.patients);
         }
+      })
+      .catch(() => {
+        /* keep fallback "0" */
       });
-    });
   });
 </script>

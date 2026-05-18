@@ -1,10 +1,5 @@
 ---
-import {
-  getLangFromUrl,
-  useTranslations,
-  getLocalizedPath,
-  type Lang,
-} from "../i18n";
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 
 interface Props {
   lang?: Lang;
@@ -16,7 +11,7 @@ const t = useTranslations(lang);
 
 <footer class="bg-qcBlack pt-20 pb-10 text-white">
   <div class="max-w-[1600px] mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-20">
       <div class="space-y-6">
         <img
           src="/logo-quina-care.svg"
@@ -27,18 +22,35 @@ const t = useTranslations(lang);
           {t("footer.description")}
         </p>
         <div class="flex gap-4 text-white/40">
-          <a href="#" class="hover:text-white transition-colors text-lg"
+          <a
+            href="https://www.instagram.com/quinacare/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            class="hover:text-white transition-colors text-lg"
             ><i class="fa-brands fa-instagram"></i></a
           >
-          <a href="#" class="hover:text-white transition-colors text-lg"
+          <a
+            href="https://www.linkedin.com/company/quina-care"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            class="hover:text-white transition-colors text-lg"
             ><i class="fa-brands fa-linkedin"></i></a
           >
-          <a href="#" class="hover:text-white transition-colors text-lg"
+          <a
+            href="https://www.facebook.com/quinacare/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            class="hover:text-white transition-colors text-lg"
             ><i class="fa-brands fa-facebook"></i></a
           >
         </div>
       </div>
 
+      {
+        /* TODO: re-enable Organization column (and switch grid back to lg:grid-cols-4)
       <div>
         <h4 class="qc-footer-heading mb-8">
           {t("footer.organization")}
@@ -68,6 +80,8 @@ const t = useTranslations(lang);
           </li>
         </ul>
       </div>
+      */
+      }
 
       <div>
         <h4 class="qc-footer-heading mb-8">
@@ -77,8 +91,15 @@ const t = useTranslations(lang);
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-envelope mt-1 text-white/50"></i>
             <a
-              href="mailto:info@quinacare.org"
-              class="hover:text-white transition-colors">info@quinacare.org</a
+              href="mailto:care@quinacare.org"
+              class="hover:text-white transition-colors">care@quinacare.org</a
+            >
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-phone mt-1 text-white/50"></i>
+            <a
+              href="tel:+31630366030"
+              class="hover:text-white transition-colors">06-30 366 030</a
             >
           </li>
           <li class="flex items-start gap-3">

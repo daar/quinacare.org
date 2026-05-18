@@ -2,6 +2,8 @@
 import Layout from "../../../layouts/Layout.astro";
 import Nav from "../../../components/Nav.astro";
 import DonationForm from "../../../components/DonationForm.astro";
+import AchievedStats from "../../../components/AchievedStats.astro";
+import FAQs from "../../../components/FAQs.astro";
 import Footer from "../../../components/Footer.astro";
 import type { Lang } from "../../../i18n";
 
@@ -13,5 +15,7 @@ const lang: Lang = "es";
   <div data-pagefind-body>
     <DonationForm lang={lang} />
   </div>
+  <AchievedStats lang={lang} />
+  <FAQs lang={lang} />
   <Footer lang={lang} />
 </Layout>

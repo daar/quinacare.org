@@ -16,7 +16,7 @@ export const currencies: Record<string, CurrencyConfig> = {
     thousand: ".",
     decimal: ",",
     pattern: "%s %v",
-    presets: [15, 25, 50, 100],
+    presets: [25, 50, 100, 250],
   },
   en: {
     code: "USD",
@@ -25,16 +25,16 @@ export const currencies: Record<string, CurrencyConfig> = {
     thousand: ",",
     decimal: ".",
     pattern: "%s%v",
-    presets: [15, 25, 50, 100],
+    presets: [25, 50, 100, 250],
   },
   es: {
     code: "USD",
     symbol: "$",
     precision: 2,
-    thousand: ".",
-    decimal: ",",
-    pattern: "%v %s",
-    presets: [15, 25, 50, 100],
+    thousand: ",",
+    decimal: ".",
+    pattern: "%s%v",
+    presets: [25, 50, 100, 250],
   },
 };
 
