@@ -261,15 +261,25 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         }
 
         // Query param override
-        const paramAmount = parseInt(
-          new URLSearchParams(window.location.search).get("amount") || "",
-          10,
-        );
+        const params = new URLSearchParams(window.location.search);
+        const paramAmount = parseInt(params.get("amount") || "", 10);
         if (paramAmount > 0) {
           amount = paramAmount;
           if (!cc.presets.includes(paramAmount)) {
             customInput.value = fmt(paramAmount);
           }
+        }
+
+        // Custom-amount entry mode: clear presets, focus the input.
+        const focusCustom =
+          params.get("custom") === "1" || params.get("amount") === "custom";
+        if (focusCustom) {
+          amount = 0;
+          customInput.value = "";
+          setTimeout(() => {
+            customInput.focus();
+            customInput.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 50);
         }
 
         function saveState() {

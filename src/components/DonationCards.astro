@@ -71,7 +71,7 @@ const cc = getCurrency(lang);
 
     <div class="mt-16 text-center">
       <a
-        href={getLocalizedPath("/donate", lang)}
+        href={`${getLocalizedPath("/donate", lang)}?custom=1`}
         class="qc-btn qc-btn--ghost text-gray-400"
       >
         {t("donation.chooseAmount")}
