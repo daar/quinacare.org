@@ -50,11 +50,15 @@ const t = useTranslations(lang);
       </h1>
 
       <div class="flex flex-wrap gap-6 items-center">
+        {
+          /* TODO: re-enable "Bekijk onze impact" CTA once the target page is ready
         <button
           class="qc-btn qc-btn--primary px-12 py-5 hover:bg-white hover:text-qcBlack"
         >
           {t("hero.cta1")}
         </button>
+        */
+        }
         <a
           href={getLocalizedPath("/donate", lang)}
           class="qc-btn group flex items-center text-white hover:text-qcRed"
