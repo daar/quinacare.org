@@ -20,7 +20,7 @@ const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
 const methodMap: Record<string, PaymentMethod> = {
   card: PaymentMethod.creditcard,
   ideal: PaymentMethod.ideal,
-  paypal: PaymentMethod.paypal,
+  bancontact: PaymentMethod.bancontact,
   bank: PaymentMethod.banktransfer,
 };
 
