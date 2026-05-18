@@ -82,9 +82,6 @@ export const ui = {
     "donation.title": "Wat jouw steun betekent",
     "donation.subtitle":
       "Elke euro gaat rechtstreeks naar het ziekenhuis in Ecuador. Hier zie je wat wij met jouw bijdrage kunnen realiseren.",
-    "donation.medication": "Essentiële Medicatie",
-    "donation.medicationDesc":
-      "Met je donatie verzorgen wij een volledige kuur van antibiotica of antimalariamiddelen voor een patiënt.",
     "donation.consultation": "Consult & Diagnostiek",
     "donation.consultationDesc":
       "Met je donatie financier je een volledig consult inclusief laboratoriumonderzoek en medicatie voor een patiënt.",
@@ -354,9 +351,6 @@ export const ui = {
     "donation.title": "What your support means",
     "donation.subtitle":
       "Every euro goes directly to the hospital in Ecuador. Here you can see what we can achieve with your contribution.",
-    "donation.medication": "Essential Medication",
-    "donation.medicationDesc":
-      "With your donation we provide a complete course of antibiotics or antimalarial drugs for a patient.",
     "donation.consultation": "Consultation & Diagnostics",
     "donation.consultationDesc":
       "With your donation you fund a full consultation including laboratory tests and medication for a patient.",
@@ -628,12 +622,9 @@ export const ui = {
     "donation.title": "Lo que significa tu apoyo",
     "donation.subtitle":
       "Cada euro va directamente al hospital en Ecuador. Aquí puedes ver lo que podemos lograr con tu contribución.",
-    "donation.medication": "Medicación Esencial",
     "donation.consultation": "Consulta y Diagnóstico",
     "donation.consultationDesc":
       "Con tu donación financias una consulta completa incluyendo análisis de laboratorio y medicación para un paciente.",
-    "donation.medicationDesc":
-      "Con tu donación proporcionamos un curso completo de antibióticos o medicamentos antipalúdicos para un paciente.",
     "donation.prenatal": "Control Prenatal",
     "donation.prenatalDesc":
       "Un control médico completo incluyendo ecografía para una futura madre, esencial para un parto seguro.",

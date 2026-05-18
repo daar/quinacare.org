@@ -5,6 +5,8 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../i18n";
+import { donationTiers } from "../lib/donationTiers";
+import { getCurrency, formatCurrency } from "../lib/currency";
 
 interface Props {
   lang?: Lang;
@@ -12,6 +14,7 @@ interface Props {
 
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const cc = getCurrency(lang);
 ---
 
 <section class="py-24 bg-white border-b border-gray-100">
@@ -26,75 +29,44 @@ const t = useTranslations(lang);
       </p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-8">
-      <div
-        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md"
-      >
-        <div
-          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
-        >
-          <i class="fa-solid fa-pills text-6xl"></i>
-        </div>
-        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">€15</h3>
-        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-          {t("donation.medication")}
-        </h4>
-        <p class="qc-body leading-relaxed mb-8">
-          {t("donation.medicationDesc")}
-        </p>
-        <a
-          href={`${getLocalizedPath("/donate", lang)}?amount=15`}
-          class="qc-btn qc-btn--outline block w-full py-3 text-center"
-        >
-          {t("donation.donate")} &euro;15
-        </a>
-      </div>
-
-      <div
-        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden bg-qcGray/30 rounded-md"
-      >
-        <div
-          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
-        >
-          <i class="fa-solid fa-baby text-6xl"></i>
-        </div>
-        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">€35</h3>
-        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-          {t("donation.prenatal")}
-        </h4>
-        <p class="qc-body leading-relaxed mb-8">
-          {t("donation.prenatalDesc")}
-        </p>
-        <a
-          href={`${getLocalizedPath("/donate", lang)}?amount=35`}
-          class="qc-btn qc-btn--secondary block w-full py-3 text-center"
-        >
-          {t("donation.donate")} &euro;35
-        </a>
-      </div>
-
-      <div
-        class="group border border-gray-100 p-10 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md"
-      >
-        <div
-          class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"
-        >
-          <i class="fa-solid fa-stethoscope text-6xl"></i>
-        </div>
-        <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">€75</h3>
-        <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-          {t("donation.surgery")}
-        </h4>
-        <p class="qc-body leading-relaxed mb-8">
-          {t("donation.surgeryDesc")}
-        </p>
-        <a
-          href={`${getLocalizedPath("/donate", lang)}?amount=75`}
-          class="qc-btn qc-btn--outline block w-full py-3 text-center"
-        >
-          {t("donation.donate")} &euro;75
-        </a>
-      </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {
+        donationTiers.map((tier, i) => {
+          const copy = tier.i18n[lang];
+          const amountLabel = formatCurrency(tier.amount, cc, false);
+          const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
+          const btnClass =
+            i % 2 === 1 ? "qc-btn--secondary" : "qc-btn--outline";
+          return (
+            <div
+              class:list={[
+                "group flex flex-col border border-gray-100 p-8 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md",
+                bg,
+              ]}
+            >
+              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <i class={`${tier.icon} text-6xl`} />
+              </div>
+              <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+                {amountLabel}
+              </h3>
+              <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+                {copy.title}
+              </h4>
+              <p class="qc-body leading-relaxed mb-8">{copy.description}</p>
+              <a
+                href={`${getLocalizedPath("/donate", lang)}?amount=${tier.amount}`}
+                class:list={[
+                  "qc-btn block w-full py-3 text-center mt-auto",
+                  btnClass,
+                ]}
+              >
+                {t("donation.donate")} {amountLabel}
+              </a>
+            </div>
+          );
+        })
+      }
     </div>
 
     <div class="mt-16 text-center">

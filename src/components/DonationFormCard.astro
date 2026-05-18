@@ -61,7 +61,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           data-amount={amount}
           class:list={[
             "py-3 text-center font-bold text-base rounded-md border transition-all",
-            amount === cc.presets[2]
+            amount === cc.presets[1]
               ? "bg-qcRed text-white border-qcRed"
               : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
           ]}
@@ -84,9 +84,6 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
     <p class="dfc-impact qc-body leading-relaxed">
       {t("donate.impactGeneric")}
     </p>
-    <span class="hidden" data-impact="medication"
-      >{t("donation.medicationDesc")}</span
-    >
     <span class="hidden" data-impact="consultation"
       >{t("donation.consultationDesc")}</span
     >
@@ -166,7 +163,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
     <i class="dfc-icon fa-solid fa-heart mr-2"></i>
     <span
       >{t("donate.submitButton")}
-      <span class="dfc-amount">{formatCurrency(cc.presets[2], cc, false)}</span
+      <span class="dfc-amount">{formatCurrency(cc.presets[1], cc, false)}</span
       ></span
     >
   </button>
@@ -243,7 +240,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         const submitIcon = card.querySelector<HTMLElement>(".dfc-icon")!;
 
         let frequency = "one-time";
-        let amount = cc.presets[2] || 50;
+        let amount = cc.presets[1] || 50;
         const defaultMethods = methodsByLocale[locale] ||
           methodsByLocale.en || ["card"];
         let method = defaultMethods[0];
@@ -329,7 +326,6 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           if (amount >= 75) impactKey = "surgery";
           else if (amount >= 35) impactKey = "prenatal";
           else if (amount >= 25) impactKey = "consultation";
-          else if (amount >= 15) impactKey = "medication";
 
           const span = card.querySelector(
             `[data-impact="${impactKey}"]`,
