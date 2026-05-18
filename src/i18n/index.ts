@@ -139,7 +139,7 @@ export const ui = {
     "footer.newsPosts": "Nieuwsberichten",
     "footer.financialReport": "Financiële Verantwoording",
     "footer.contact": "Contact",
-    "footer.certifications": "Certificeringen",
+    "footer.certifications": "Erkenningen",
     "footer.certifiedCharity":
       "Quina Care is een officieel erkende goededoelinstelling.",
     "footer.privacyPolicy": "Privacy Policy",
@@ -407,7 +407,7 @@ export const ui = {
     "footer.newsPosts": "News Posts",
     "footer.financialReport": "Financial Report",
     "footer.contact": "Contact",
-    "footer.certifications": "Certifications",
+    "footer.certifications": "Recognitions",
     "footer.certifiedCharity":
       "Quina Care is an officially recognized charity.",
     "footer.privacyPolicy": "Privacy Policy",
@@ -678,7 +678,7 @@ export const ui = {
     "footer.newsPosts": "Noticias",
     "footer.financialReport": "Informe Financiero",
     "footer.contact": "Contacto",
-    "footer.certifications": "Certificaciones",
+    "footer.certifications": "Reconocimientos",
     "footer.certifiedCharity":
       "Quina Care es una organización benéfica oficialmente reconocida.",
     "footer.privacyPolicy": "Política de Privacidad",
