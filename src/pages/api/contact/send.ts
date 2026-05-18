@@ -3,6 +3,8 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import nodemailer from "nodemailer";
 
+const CONTACT_TO_EMAIL = "care@quinacare.org";
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const { name, email, subject, message } = await request.json();
@@ -17,7 +19,6 @@ export const POST: APIRoute = async ({ request }) => {
     const port = Number(import.meta.env.SMTP_PORT) || 587;
     const user = import.meta.env.SMTP_USER;
     const pass = import.meta.env.SMTP_PASS;
-    const to = import.meta.env.CONTACT_TO_EMAIL || "care@quinacare.org";
     // Authenticated sender — must be on a domain verified at the SMTP provider
     // (e.g. Resend). Visitor's address goes in replyTo so SPF/DKIM still pass.
     const from =
@@ -42,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     await transport.sendMail({
       from,
-      to,
+      to: CONTACT_TO_EMAIL,
       subject: `[${subject}] Message from ${name}`,
       text: `From: ${name} <${email}>\n\n${message}`,
       replyTo: `${name} <${email}>`,
