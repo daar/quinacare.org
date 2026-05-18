@@ -74,6 +74,9 @@ export const ui = {
     "homeNews.impact": "Impact",
     "homeNews.vacancy": "Vacature",
     "homeNews.readMore": "Lees verder",
+    "homeNews.placeholderTitle": "Binnenkort meer",
+    "homeNews.placeholderMessage":
+      "We werken aan een vernieuwde website. Kom binnenkort terug voor nieuwe verhalen en updates.",
     // Homepage - Donation Cards
     "donation.directImpact": "Directe Impact",
     "donation.title": "Wat jouw steun betekent",
@@ -343,6 +346,9 @@ export const ui = {
     "homeNews.impact": "Impact",
     "homeNews.vacancy": "Vacancy",
     "homeNews.readMore": "Read more",
+    "homeNews.placeholderTitle": "More coming soon",
+    "homeNews.placeholderMessage":
+      "We're rebuilding this site. Check back soon for new stories and updates.",
     // Homepage - Donation Cards
     "donation.directImpact": "Direct Impact",
     "donation.title": "What your support means",
@@ -614,6 +620,9 @@ export const ui = {
     "homeNews.impact": "Impacto",
     "homeNews.vacancy": "Vacante",
     "homeNews.readMore": "Leer más",
+    "homeNews.placeholderTitle": "Próximamente",
+    "homeNews.placeholderMessage":
+      "Estamos renovando nuestra web. Vuelve pronto para descubrir nuevas historias y novedades.",
     // Homepage - Donation Cards
     "donation.directImpact": "Impacto Directo",
     "donation.title": "Lo que significa tu apoyo",

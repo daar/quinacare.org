@@ -1,13 +1,5 @@
 ---
-import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
-import {
-  getLangFromUrl,
-  useTranslations,
-  getLocalizedPath,
-  getDateLocale,
-  type Lang,
-} from "../i18n";
+import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 
 interface Props {
   lang?: Lang;
@@ -15,118 +7,49 @@ interface Props {
 
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const dateLocale = getDateLocale(lang);
 
-const collectionName = `news-${lang}` as "news-nl" | "news-en" | "news-es";
-const allPosts = await getCollection(collectionName);
-const posts = allPosts
-  .filter((post) => post.data.status === "publish")
-  .sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-  )
-  .slice(0, 3);
-
-function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat(dateLocale, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
-}
-
-function getCategoryLabel(categories: string[] | undefined): string {
-  if (!categories || categories.length === 0) return t("category.article");
-  const cat = categories[0].toLowerCase();
-  if (cat.includes("vlog") || cat.includes("video")) return t("category.vlog");
-  if (cat.includes("update") || cat.includes("nieuws") || cat.includes("news"))
-    return t("category.update");
-  return t("category.article");
-}
-
-function getTeaser(body: string, wordCount = 25): string {
-  const text = body
-    .replace(/---[\s\S]*?---/, "")
-    .replace(/\{%.*?%\}/gs, "")
-    .replace(/[*_#`>[\]()!|]/g, "")
-    .replace(/\n+/g, " ")
-    .trim();
-  const words = text.split(/\s+/).slice(0, wordCount).join(" ");
-  return words + "…";
-}
+// News rendering is temporarily disabled while the site is being rebuilt.
+// Restore the imports, collection lookup, helpers, and the markup below
+// (title banner + 3-up grid) when re-enabling the news section.
+// import { getCollection } from "astro:content";
+// import { Image } from "astro:assets";
+// import { getLocalizedPath, getDateLocale } from "../i18n";
 ---
 
 <section class="py-24 max-w-7xl mx-auto px-6">
-  <div class="flex justify-between items-end mb-16">
-    <h2 class="text-3xl font-bold uppercase tracking-tighter">
-      {t("homeNews.title")}
-      <span class="text-qcRed italic underline decoration-1 underline-offset-8"
-        >{t("homeNews.subtitle")}</span
+  {
+    /*
+    Latest-news banner and 3-up post grid are commented out while the site
+    is being rebuilt. Restore from git history when ready.
+
+    <div class="flex justify-between items-end mb-16">
+      <h2 class="text-3xl font-bold uppercase tracking-tighter">
+        {t("homeNews.title")}
+        <span class="text-qcRed italic underline decoration-1 underline-offset-8">
+          {t("homeNews.subtitle")}
+        </span>
+      </h2>
+      <a
+        href={getLocalizedPath("/news", lang)}
+        class="text-sm font-bold border-b border-qcBlack hover:text-qcRed hover:border-qcRed transition"
       >
-    </h2>
-    <a
-      href={getLocalizedPath("/news", lang)}
-      class="text-sm font-bold border-b border-qcBlack hover:text-qcRed hover:border-qcRed transition"
-      >{t("homeNews.allPosts")}</a
-    >
-  </div>
+        {t("homeNews.allPosts")}
+      </a>
+    </div>
 
-  <div class="grid md:grid-cols-3 gap-12">
-    {
-      posts.map((post) => {
-        const postUrl = getLocalizedPath(
-          `/news/${post.data.slug || post.id}`,
-          lang,
-        );
-        const teaser = getTeaser(post.body || "");
-        return (
-          <article class="group flex flex-col">
-            <a href={postUrl} class="block">
-              <div class="aspect-video mb-6 overflow-hidden bg-gray-100 rounded-md relative">
-                <div class="absolute top-3 left-3 z-10">
-                  <span class="qc-meta bg-white/90 backdrop-blur-sm !text-qcBlack px-2.5 py-1 rounded shadow-sm border border-gray-100">
-                    {getCategoryLabel(post.data.categories)}
-                  </span>
-                </div>
-                {post.data.featured_image ? (
-                  <Image
-                    src={post.data.featured_image}
-                    alt={post.data.title}
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                    widths={[300, 600]}
-                    sizes="(max-width: 768px) 100vw, 400px"
-                  />
-                ) : (
-                  <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
-                )}
-              </div>
+    <div class="grid md:grid-cols-3 gap-12">{...posts.map(...)}</div>
+  */
+  }
 
-              <div class="qc-meta flex items-center gap-3 mb-3">
-                <span class="font-bold text-qcBlack">
-                  {post.data.author || "Team QC"}
-                </span>
-                <span class="w-1 h-1 rounded-full bg-gray-300" />
-                <span>{formatDate(post.data.date)}</span>
-              </div>
-
-              <h3 class="text-xl font-bold group-hover:text-qcRed transition leading-tight">
-                {post.data.title}
-              </h3>
-            </a>
-
-            {teaser && (
-              <p class="qc-body mt-4 line-clamp-3 leading-relaxed">{teaser}</p>
-            )}
-
-            <a
-              href={postUrl}
-              class="qc-btn qc-btn--ghost mt-auto pt-4 leading-none self-start"
-            >
-              {t("homeNews.readMore")}{" "}
-              <i class="fa-solid fa-arrow-right ml-1" />
-            </a>
-          </article>
-        );
-      })
-    }
+  <div
+    class="bg-gray-50 border border-gray-100 rounded-xl p-12 md:p-16 text-center max-w-2xl mx-auto"
+  >
+    <i class="fa-solid fa-pen-ruler text-qcRed text-3xl mb-6"></i>
+    <h3 class="text-2xl font-bold uppercase tracking-tight mb-3">
+      {t("homeNews.placeholderTitle")}
+    </h3>
+    <p class="qc-body">
+      {t("homeNews.placeholderMessage")}
+    </p>
   </div>
 </section>
