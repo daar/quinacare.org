@@ -41,11 +41,12 @@ export const partners: Partner[] = [
   {
     name: "USFQ",
     logo: "/media/2025/01/Logo-USFQ.png",
-    premium: false,
+    url: "https://www.usfq.edu.ec/en",
+    premium: true,
   },
   {
     name: "Wilde Ganzen",
-    logo: "/media/2020/02/WILDE_GANZEN_LOGO_2019_Zonder-pay-off.jpg",
+    logo: "/media/2020/02/WG_logo_RGB_blauw.png",
     url: "https://www.wildeganzen.nl",
     premium: true,
   },
