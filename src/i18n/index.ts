@@ -202,7 +202,7 @@ export const ui = {
       "100% van je donatie gaat naar het ziekenhuis in Ecuador. We gebruiken het voor medicijnen, medische apparatuur, salarissen van lokaal personeel en het onderhoud van het ziekenhuis.",
     "donate.faq2Q": "Is mijn donatie fiscaal aftrekbaar?",
     "donate.faq2A":
-      "Ja, Stichting Quina Care heeft de ANBI-status. Je donatie is daarmee aftrekbaar van de belasting in Nederland.",
+      "Stichting Quina Care is een in Nederland geregistreerde stichting met ANBI-status. Uw donaties zijn hierdoor fiscaal aftrekbaar, volgens de geldende regels.",
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
       "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via care@quinacare.org.",
@@ -471,7 +471,7 @@ export const ui = {
       "100% of your donation goes to the hospital in Ecuador. We use it for medicine, medical equipment, local staff salaries, and hospital maintenance.",
     "donate.faq2Q": "Is my donation tax-deductible?",
     "donate.faq2A":
-      "Yes, Quina Care Foundation has ANBI status in the Netherlands, making your donation tax-deductible under Dutch tax law.",
+      "Quina Care is a foundation registered in the Netherlands with ANBI status. Your donations are therefore tax-deductible under the applicable rules.",
     "donate.faq3Q": "Can I cancel my monthly donation?",
     "donate.faq3A":
       "Yes, you can cancel your monthly donation at any time by contacting us at care@quinacare.org.",
@@ -743,7 +743,7 @@ export const ui = {
       "El 100% de tu donación va al hospital en Ecuador. La usamos para medicinas, equipos médicos, salarios del personal local y mantenimiento del hospital.",
     "donate.faq2Q": "¿Es mi donación deducible de impuestos?",
     "donate.faq2A":
-      "Sí, la Fundación Quina Care tiene estatus ANBI en los Países Bajos, lo que hace tu donación deducible de impuestos bajo la ley fiscal holandesa.",
+      "Quina Care es una fundación registrada en los Países Bajos con estatus ANBI. Sus donaciones son por lo tanto deducibles de impuestos según las normas vigentes.",
     "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
     "donate.faq3A":
       "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en care@quinacare.org.",
