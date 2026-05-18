@@ -202,7 +202,7 @@ export const ui = {
       "100% van je donatie gaat naar het ziekenhuis in Ecuador. We gebruiken het voor medicijnen, medische apparatuur, salarissen van lokaal personeel en het onderhoud van het ziekenhuis.",
     "donate.faq2Q": "Is mijn donatie fiscaal aftrekbaar?",
     "donate.faq2A":
-      "Stichting Quina Care is een in Nederland geregistreerde stichting met ANBI-status. Uw donaties zijn hierdoor fiscaal aftrekbaar, volgens de geldende regels.",
+      "Stichting Quina Care is een in Nederland geregistreerde stichting met ANBI-status. Je donaties zijn hierdoor fiscaal aftrekbaar, volgens de geldende regels.",
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
       "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via care@quinacare.org.",
