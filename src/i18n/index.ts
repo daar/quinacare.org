@@ -50,7 +50,7 @@ export const ui = {
     "metrics.medication": "Medicatie",
     "metrics.directMedical": "Directe Medische Hulp",
     "metrics.directMedicalDesc":
-      "Onze kliniek fungeert als centrale hub voor medische zorg in de regio. Elke consultatie is een stap richting een gezondere gemeenschap.",
+      "Ons ziekenhuis fungeert als centrale hub voor medische zorg in de regio. Elke consultatie is een stap richting een gezondere gemeenschap.",
     "metrics.buildingFuture": "Toekomst Bouwen",
     "metrics.buildingFutureDesc":
       "Veilige bevallingen zijn de kern van ons werk. Wij zorgen dat medische complicaties direct en professioneel worden afgehandeld.",
@@ -61,11 +61,11 @@ export const ui = {
     "metrics.admissions": "Opnames",
     "metrics.amazonReach": "Bereik in de Amazone",
     "metrics.amazonReachDesc":
-      "Duizenden patiënten in afgelegen gemeenschappen vertrouwen op onze kliniek. Elk bezoek is een bewijs van wat lokale aanwezigheid mogelijk maakt.",
+      "Duizenden patiënten in afgelegen gemeenschappen vertrouwen op ons ziekenhuis. Elk bezoek is een bewijs van wat lokale aanwezigheid mogelijk maakt.",
     "achieved.label": "Onze Impact",
     "achieved.title": "Wat we samen hebben bereikt",
     "achieved.subtitle":
-      "Realtime cijfers rechtstreeks uit het elektronisch patiëntendossier van onze kliniek in Ecuador.",
+      "Realtime cijfers rechtstreeks uit het elektronisch patiëntendossier van ons ziekenhuis in Ecuador.",
     // Homepage - News section
     "homeNews.title": "Actueel",
     "homeNews.subtitle": "Nieuws",
@@ -81,7 +81,7 @@ export const ui = {
     "donation.directImpact": "Directe Impact",
     "donation.title": "Wat jouw steun betekent",
     "donation.subtitle":
-      "Elke euro gaat rechtstreeks naar de kliniek in Ecuador. Hier zie je exact wat wij met jouw specifieke bijdrage kunnen realiseren.",
+      "Elke euro gaat rechtstreeks naar het ziekenhuis in Ecuador. Hier zie je wat wij met jouw bijdrage kunnen realiseren.",
     "donation.medication": "Essentiële Medicatie",
     "donation.medicationDesc":
       "Met je donatie verzorgen wij een volledige kuur van antibiotica of antimalariamiddelen voor een patiënt.",
@@ -93,7 +93,7 @@ export const ui = {
       "Een volledige medische controle inclusief echo voor een aanstaande moeder, essentieel voor een veilige bevalling.",
     "donation.surgery": "Levensreddende Ingreep",
     "donation.surgeryDesc":
-      "Draag bij aan de kosten van chirurgische ingrepen en de noodzakelijke nabehandeling in onze kliniek.",
+      "Draag bij aan de kosten van chirurgische ingrepen en de noodzakelijke nabehandeling in ons ziekenhuis.",
     "donation.donate": "Doneer",
     "donation.chooseAmount": "Of kies zelf een bedrag",
     // Homepage - Focus Project
@@ -123,7 +123,7 @@ export const ui = {
     // Homepage - Newsletter
     "newsletter.label": "Blijf Betrokken",
     "newsletter.title": "Ontvang updates rechtstreeks uit de",
-    "newsletter.titleHighlight": "kliniek.",
+    "newsletter.titleHighlight": "ziekenhuis.",
     "newsletter.subtitle":
       "Schrijf je in voor onze nieuwsbrief en ontvang kwartaalupdates over lopende projecten, medische resultaten en hoe jouw steun impact maakt in Ecuador.",
     "newsletter.placeholder": "Jouw e-mailadres",
@@ -184,14 +184,14 @@ export const ui = {
     "donate.quote1Author": "Yvonne van der Ende",
     "donate.quote1Role": "Oprichter & Directeur",
     "donate.quote2":
-      "De kliniek is een baken van hoop voor duizenden families. Jullie bijdragen zorgen ervoor dat we medicijnen en apparatuur hebben wanneer het er écht toe doet.",
+      "Het ziekenhuis is een baken van hoop voor duizenden families. Jullie bijdragen zorgen ervoor dat we medicijnen en apparatuur hebben wanneer het er écht toe doet.",
     "donate.quote2Author": "Dr. Elvis Salazar",
-    "donate.quote2Role": "Arts in de kliniek",
+    "donate.quote2Role": "Arts in het ziekenhuis",
     // Donate page - Achievements
     "donate.achievedLabel": "Onze Resultaten",
     "donate.achievedTitle": "Wat we samen al hebben bereikt",
     "donate.achieved1":
-      "Een volwaardige kliniek gebouwd en operationeel in het hart van de Ecuadoriaanse Amazone",
+      "Een volwaardig ziekenhuis gebouwd en operationeel in het hart van de Ecuadoriaanse Amazone",
     "donate.achieved2":
       "Meer dan 4.200 patiënten voorzien van medische zorg, inclusief spoedeisende hulp",
     "donate.achieved3":
@@ -202,7 +202,7 @@ export const ui = {
     "donate.faqTitle": "Veelgestelde Vragen",
     "donate.faq1Q": "Waar gaat mijn donatie naartoe?",
     "donate.faq1A":
-      "100% van je donatie gaat naar de kliniek in Ecuador. We gebruiken het voor medicijnen, medische apparatuur, salarissen van lokaal personeel en het onderhoud van de kliniek.",
+      "100% van je donatie gaat naar het ziekenhuis in Ecuador. We gebruiken het voor medicijnen, medische apparatuur, salarissen van lokaal personeel en het onderhoud van het ziekenhuis.",
     "donate.faq2Q": "Is mijn donatie fiscaal aftrekbaar?",
     "donate.faq2A":
       "Ja, Stichting Quina Care heeft de ANBI-status. Je donatie is daarmee aftrekbaar van de belasting in Nederland.",
@@ -265,7 +265,7 @@ export const ui = {
     "submenu.projects": "Projecten",
     "submenu.hospital": "Ons ziekenhuis",
     "submenu.hospitalDesc":
-      "Ontdek onze kliniek in het hart van de Ecuadoriaanse Amazone.",
+      "Ontdek ons ziekenhuis in het hart van de Ecuadoriaanse Amazone.",
     "submenu.contact": "Contact",
     // Submenu - Wie zijn wij?
     "submenu.aboutUs": "Over ons",
@@ -322,7 +322,7 @@ export const ui = {
     "metrics.medication": "Medication",
     "metrics.directMedical": "Direct Medical Care",
     "metrics.directMedicalDesc":
-      "Our clinic serves as a central hub for medical care in the region. Every consultation is a step towards a healthier community.",
+      "Our hospital serves as a central hub for medical care in the region. Every consultation is a step towards a healthier community.",
     "metrics.buildingFuture": "Building the Future",
     "metrics.buildingFutureDesc":
       "Safe deliveries are at the core of our work. We ensure medical complications are handled immediately and professionally.",
@@ -333,11 +333,11 @@ export const ui = {
     "metrics.admissions": "Admissions",
     "metrics.amazonReach": "Amazon Reach",
     "metrics.amazonReachDesc":
-      "Thousands of patients in remote communities rely on our clinic. Each visit is proof of what a steady local presence makes possible.",
+      "Thousands of patients in remote communities rely on our hospital. Each visit is proof of what a steady local presence makes possible.",
     "achieved.label": "Our Impact",
     "achieved.title": "What we've achieved together",
     "achieved.subtitle":
-      "Real-time figures pulled straight from the electronic medical record of our clinic in Ecuador.",
+      "Real-time figures pulled straight from the electronic medical record of our hospital in Ecuador.",
     // Homepage - News section
     "homeNews.title": "Latest",
     "homeNews.subtitle": "News",
@@ -353,7 +353,7 @@ export const ui = {
     "donation.directImpact": "Direct Impact",
     "donation.title": "What your support means",
     "donation.subtitle":
-      "Every euro goes directly to the clinic in Ecuador. Here you can see exactly what we can achieve with your specific contribution.",
+      "Every euro goes directly to the hospital in Ecuador. Here you can see what we can achieve with your contribution.",
     "donation.medication": "Essential Medication",
     "donation.medicationDesc":
       "With your donation we provide a complete course of antibiotics or antimalarial drugs for a patient.",
@@ -365,7 +365,7 @@ export const ui = {
       "A complete medical check-up including ultrasound for an expectant mother, essential for a safe delivery.",
     "donation.surgery": "Life-saving Procedure",
     "donation.surgeryDesc":
-      "Contribute to the costs of surgical procedures and necessary aftercare at our clinic.",
+      "Contribute to the costs of surgical procedures and necessary aftercare at our hospital.",
     "donation.donate": "Donate",
     "donation.chooseAmount": "Or choose your own amount",
     // Homepage - Focus Project
@@ -395,7 +395,7 @@ export const ui = {
     // Homepage - Newsletter
     "newsletter.label": "Stay Involved",
     "newsletter.title": "Receive updates directly from the",
-    "newsletter.titleHighlight": "clinic.",
+    "newsletter.titleHighlight": "hospital.",
     "newsletter.subtitle":
       "Subscribe to our newsletter and receive quarterly updates on ongoing projects, medical results and how your support makes an impact in Ecuador.",
     "newsletter.placeholder": "Your email address",
@@ -456,14 +456,14 @@ export const ui = {
     "donate.quote1Author": "Yvonne van der Ende",
     "donate.quote1Role": "Founder & Director",
     "donate.quote2":
-      "The clinic is a beacon of hope for thousands of families. Your contributions ensure we have medicine and equipment when it truly matters.",
+      "The hospital is a beacon of hope for thousands of families. Your contributions ensure we have medicine and equipment when it truly matters.",
     "donate.quote2Author": "Dr. Elvis Salazar",
-    "donate.quote2Role": "Clinic Physician",
+    "donate.quote2Role": "Hospital Physician",
     // Donate page - Achievements
     "donate.achievedLabel": "Our Results",
     "donate.achievedTitle": "What we've achieved together",
     "donate.achieved1":
-      "Built and operate a full medical clinic in the heart of the Ecuadorian Amazon",
+      "Built and operate a full hospital in the heart of the Ecuadorian Amazon",
     "donate.achieved2":
       "Provided medical care to over 4,200 patients, including emergency treatment",
     "donate.achieved3":
@@ -474,7 +474,7 @@ export const ui = {
     "donate.faqTitle": "Frequently Asked Questions",
     "donate.faq1Q": "Where does my donation go?",
     "donate.faq1A":
-      "100% of your donation goes to the clinic in Ecuador. We use it for medicine, medical equipment, local staff salaries, and clinic maintenance.",
+      "100% of your donation goes to the hospital in Ecuador. We use it for medicine, medical equipment, local staff salaries, and hospital maintenance.",
     "donate.faq2Q": "Is my donation tax-deductible?",
     "donate.faq2A":
       "Yes, Quina Care Foundation has ANBI status in the Netherlands, making your donation tax-deductible under Dutch tax law.",
@@ -538,7 +538,7 @@ export const ui = {
     "submenu.projects": "Projects",
     "submenu.hospital": "Our Hospital",
     "submenu.hospitalDesc":
-      "Discover our clinic in the heart of the Ecuadorian Amazon.",
+      "Discover our hospital in the heart of the Ecuadorian Amazon.",
     "submenu.contact": "Contact",
     // Submenu - Who are we?
     "submenu.aboutUs": "About Us",
@@ -596,7 +596,7 @@ export const ui = {
     "metrics.medication": "Medicamentos",
     "metrics.directMedical": "Atención Médica Directa",
     "metrics.directMedicalDesc":
-      "Nuestra clínica sirve como centro de atención médica en la región. Cada consulta es un paso hacia una comunidad más saludable.",
+      "Nuestro hospital sirve como centro de atención médica en la región. Cada consulta es un paso hacia una comunidad más saludable.",
     "metrics.buildingFuture": "Construyendo el Futuro",
     "metrics.buildingFutureDesc":
       "Los partos seguros son el núcleo de nuestro trabajo. Nos aseguramos de que las complicaciones médicas se manejen de inmediato y profesionalmente.",
@@ -607,11 +607,11 @@ export const ui = {
     "metrics.admissions": "Ingresos",
     "metrics.amazonReach": "Alcance en la Amazonía",
     "metrics.amazonReachDesc":
-      "Miles de pacientes en comunidades remotas confían en nuestra clínica. Cada visita demuestra lo que hace posible una presencia local constante.",
+      "Miles de pacientes en comunidades remotas confían en nuestro hospital. Cada visita demuestra lo que hace posible una presencia local constante.",
     "achieved.label": "Nuestro Impacto",
     "achieved.title": "Lo que hemos logrado juntos",
     "achieved.subtitle":
-      "Cifras en tiempo real directamente desde el historial clínico electrónico de nuestra clínica en Ecuador.",
+      "Cifras en tiempo real directamente desde el historial clínico electrónico de nuestro hospital en Ecuador.",
     // Homepage - News section
     "homeNews.title": "Últimas",
     "homeNews.subtitle": "Noticias",
@@ -627,7 +627,7 @@ export const ui = {
     "donation.directImpact": "Impacto Directo",
     "donation.title": "Lo que significa tu apoyo",
     "donation.subtitle":
-      "Cada euro va directamente a la clínica en Ecuador. Aquí puedes ver exactamente lo que podemos lograr con tu contribución específica.",
+      "Cada euro va directamente al hospital en Ecuador. Aquí puedes ver lo que podemos lograr con tu contribución.",
     "donation.medication": "Medicación Esencial",
     "donation.consultation": "Consulta y Diagnóstico",
     "donation.consultationDesc":
@@ -639,7 +639,7 @@ export const ui = {
       "Un control médico completo incluyendo ecografía para una futura madre, esencial para un parto seguro.",
     "donation.surgery": "Procedimiento que Salva Vidas",
     "donation.surgeryDesc":
-      "Contribuye a los costos de procedimientos quirúrgicos y el cuidado posterior necesario en nuestra clínica.",
+      "Contribuye a los costos de procedimientos quirúrgicos y el cuidado posterior necesario en nuestro hospital.",
     "donation.donate": "Donar",
     "donation.chooseAmount": "O elige tu propia cantidad",
     // Homepage - Focus Project
@@ -669,7 +669,7 @@ export const ui = {
     // Homepage - Newsletter
     "newsletter.label": "Mantente Involucrado",
     "newsletter.title": "Recibe actualizaciones directamente desde la",
-    "newsletter.titleHighlight": "clínica.",
+    "newsletter.titleHighlight": "hospital.",
     "newsletter.subtitle":
       "Suscríbete a nuestro boletín y recibe actualizaciones trimestrales sobre proyectos en curso, resultados médicos y cómo tu apoyo genera impacto en Ecuador.",
     "newsletter.placeholder": "Tu correo electrónico",
@@ -731,14 +731,14 @@ export const ui = {
     "donate.quote1Author": "Yvonne van der Ende",
     "donate.quote1Role": "Fundadora y Directora",
     "donate.quote2":
-      "La clínica es un faro de esperanza para miles de familias. Sus contribuciones aseguran que tengamos medicinas y equipos cuando realmente importa.",
+      "El hospital es un faro de esperanza para miles de familias. Sus contribuciones aseguran que tengamos medicinas y equipos cuando realmente importa.",
     "donate.quote2Author": "Dr. Elvis Salazar",
-    "donate.quote2Role": "Médico de la clínica",
+    "donate.quote2Role": "Médico del hospital",
     // Donate page - Achievements
     "donate.achievedLabel": "Nuestros Resultados",
     "donate.achievedTitle": "Lo que hemos logrado juntos",
     "donate.achieved1":
-      "Construimos y operamos una clínica médica completa en el corazón de la Amazonía ecuatoriana",
+      "Construimos y operamos un hospital completo en el corazón de la Amazonía ecuatoriana",
     "donate.achieved2":
       "Atención médica brindada a más de 4.200 pacientes, incluyendo tratamiento de emergencia",
     "donate.achieved3":
@@ -749,7 +749,7 @@ export const ui = {
     "donate.faqTitle": "Preguntas Frecuentes",
     "donate.faq1Q": "¿A dónde va mi donación?",
     "donate.faq1A":
-      "El 100% de tu donación va a la clínica en Ecuador. La usamos para medicinas, equipos médicos, salarios del personal local y mantenimiento de la clínica.",
+      "El 100% de tu donación va al hospital en Ecuador. La usamos para medicinas, equipos médicos, salarios del personal local y mantenimiento del hospital.",
     "donate.faq2Q": "¿Es mi donación deducible de impuestos?",
     "donate.faq2A":
       "Sí, la Fundación Quina Care tiene estatus ANBI en los Países Bajos, lo que hace tu donación deducible de impuestos bajo la ley fiscal holandesa.",
@@ -812,7 +812,7 @@ export const ui = {
     "submenu.projects": "Proyectos",
     "submenu.hospital": "Nuestro hospital",
     "submenu.hospitalDesc":
-      "Descubre nuestra clínica en el corazón de la Amazonía ecuatoriana.",
+      "Descubre nuestro hospital en el corazón de la Amazonía ecuatoriana.",
     "submenu.contact": "Contacto",
     // Submenu - ¿Quiénes somos?
     "submenu.aboutUs": "Sobre nosotros",
