@@ -9,6 +9,30 @@ import {
 } from "../i18n";
 import menuData from "../data/menus.json";
 
+interface MenuSubItem {
+  labelKey: string;
+  path: string;
+  icon?: string;
+  image?: string;
+  descriptionKey?: string;
+}
+
+interface MenuCta {
+  labelKey: string;
+  path: string;
+  icon: string;
+}
+
+interface MenuItem {
+  id: string;
+  labelKey: string;
+  path?: string;
+  submenu?: MenuSubItem[];
+  cta?: MenuCta;
+}
+
+const menuItems = menuData.items as MenuItem[];
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const tk = (key: string) => t(key as TranslationKey);
@@ -85,7 +109,7 @@ const searchPath = getLocalizedPath("/search", lang);
       class="hidden lg:flex items-center gap-10 text-[14px] font-bold uppercase tracking-[0.15em]"
     >
       {
-        menuData.items.map((item) =>
+        menuItems.map((item) =>
           item.submenu ? (
             <div class="group relative">
               <button
@@ -309,7 +333,7 @@ const searchPath = getLocalizedPath("/search", lang);
       {/* Main menu level */}
       <div class="mobile-menu-main flex flex-col px-6 py-4">
         {
-          menuData.items.map((item) =>
+          menuItems.map((item) =>
             item.submenu ? (
               <button
                 class="mobile-submenu-trigger w-full flex items-center justify-between py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
@@ -342,7 +366,7 @@ const searchPath = getLocalizedPath("/search", lang);
 
       {/* Submenu panels (one per menu item with submenu) */}
       {
-        menuData.items
+        menuItems
           .filter((item) => item.submenu)
           .map((item) => (
             <div
