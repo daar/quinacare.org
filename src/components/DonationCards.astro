@@ -56,6 +56,8 @@ const cc = getCurrency(lang);
               <p class="qc-body leading-relaxed mb-8">{copy.description}</p>
               <a
                 href={`${getLocalizedPath("/donate", lang)}?amount=${tier.amount}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 class:list={[
                   "qc-btn block w-full py-3 text-center mt-auto",
                   btnClass,
@@ -72,6 +74,8 @@ const cc = getCurrency(lang);
     <div class="mt-16 text-center">
       <a
         href={`${getLocalizedPath("/donate", lang)}?custom=1`}
+        target="_blank"
+        rel="noopener noreferrer"
         class="qc-btn qc-btn--ghost text-gray-400"
       >
         {t("donation.chooseAmount")}
