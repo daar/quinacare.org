@@ -4,3 +4,4 @@
   - [x] font configurable : css classes and variable
   - [ ] pre-commit missing translations
   - [x] signal when the image used is too small resolution (for now npm run command)
+  - [ ] implement lighthouse checks automatically
