@@ -132,7 +132,7 @@ export const ui = {
     "newsletter.error": "Er ging iets mis. Probeer het opnieuw.",
     // Footer
     "footer.description":
-      "Medische zorg op de meest afgelegen plekken. Stichting Quina Care zet zich in voor levensreddende hulp in de Ecuadoriaanse jungle.",
+      "Quina Care is een stichting die zich inzet voor het verbeteren van de gezondheidszorg in het Amazonewoud in Ecuador.",
     "footer.organization": "Organisatie",
     "footer.aboutUs": "Over Ons",
     "footer.ourProjects": "Onze Projecten",
@@ -400,7 +400,7 @@ export const ui = {
     "newsletter.error": "Something went wrong. Please try again.",
     // Footer
     "footer.description":
-      "Medical care in the most remote places. Quina Care Foundation is committed to life-saving care in the Ecuadorian jungle.",
+      "Quina Care is a foundation dedicated to improving healthcare in the Amazon rainforest of Ecuador.",
     "footer.organization": "Organization",
     "footer.aboutUs": "About Us",
     "footer.ourProjects": "Our Projects",
@@ -671,7 +671,7 @@ export const ui = {
     "newsletter.error": "Algo salió mal. Inténtalo de nuevo.",
     // Footer
     "footer.description":
-      "Atención médica en los lugares más remotos. La Fundación Quina Care está comprometida con la atención que salva vidas en la selva ecuatoriana.",
+      "Quina Care es una fundación dedicada a mejorar la atención sanitaria en la selva amazónica de Ecuador.",
     "footer.organization": "Organización",
     "footer.aboutUs": "Sobre Nosotros",
     "footer.ourProjects": "Nuestros Proyectos",

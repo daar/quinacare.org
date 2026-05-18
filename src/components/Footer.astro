@@ -16,7 +16,7 @@ const t = useTranslations(lang);
 
 <footer class="bg-qcBlack pt-20 pb-10 text-white">
   <div class="max-w-[1600px] mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-20">
       <div class="space-y-6">
         <img
           src="/logo-quina-care.svg"
@@ -54,6 +54,8 @@ const t = useTranslations(lang);
         </div>
       </div>
 
+      {
+        /* TODO: re-enable Organization column (and switch grid back to lg:grid-cols-4)
       <div>
         <h4 class="qc-footer-heading mb-8">
           {t("footer.organization")}
@@ -83,6 +85,8 @@ const t = useTranslations(lang);
           </li>
         </ul>
       </div>
+      */
+      }
 
       <div>
         <h4 class="qc-footer-heading mb-8">
