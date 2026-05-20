@@ -24,6 +24,40 @@ const alternateUrls = getAlternateUrls(Astro.url);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <script is:inline>
+      // Language routing: on the site root, route the visitor to their
+      // preferred locale. A remembered choice (localStorage "qc-lang") --
+      // written here on first detection and by the language switcher --
+      // always wins. Otherwise detect from the browser in preference
+      // order; anything unsupported falls back to NL. Runs before paint
+      // so there is no flash of the wrong locale.
+      (function () {
+        try {
+          if (location.pathname !== "/") return;
+
+          const supported = ["nl", "en", "es"];
+          let lang = localStorage.getItem("qc-lang") || "";
+
+          if (!supported.includes(lang)) {
+            const prefs =
+              navigator.languages && navigator.languages.length
+                ? navigator.languages
+                : [navigator.language || ""];
+            lang =
+              prefs
+                .map((l) => l.toLowerCase().split("-")[0])
+                .find((l) => supported.includes(l)) || "nl";
+            localStorage.setItem("qc-lang", lang);
+          }
+
+          if (lang === "es") location.replace("/es/");
+          else if (lang === "en") location.replace("/en/");
+          // "nl" (and the unsupported -> nl fallback): stay on /
+        } catch (e) {
+          /* storage/navigator unavailable - stay on / */
+        }
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"

@@ -35,6 +35,7 @@ const langEntries = Object.entries(languages) as [Lang, string][];
             aria-label={`Switch to ${name}`}
             hreflang={code}
             lang={code}
+            data-lang-switch={code}
           >
             {code.toUpperCase()}
           </a>
@@ -43,3 +44,20 @@ const langEntries = Object.entries(languages) as [Lang, string][];
     })
   }
 </nav>
+
+<script>
+  // Remember the visitor's explicit language choice so the root-path
+  // redirect in Layout honors it on the next visit. Delegated so it
+  // covers every LanguageSwitcher instance (desktop + mobile nav).
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const link = event.target.closest<HTMLElement>("[data-lang-switch]");
+    const lang = link?.dataset.langSwitch;
+    if (!lang) return;
+    try {
+      localStorage.setItem("qc-lang", lang);
+    } catch {
+      /* storage unavailable */
+    }
+  });
+</script>

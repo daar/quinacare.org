@@ -30,29 +30,3 @@ import Footer from "../components/Footer.astro";
   <Newsletter />
   <Footer />
 </Layout>
-
-<script is:inline>
-  // One-time browser-language redirect: on the first visit to the NL root,
-  // route to the locale that matches the browser. NL browsers stay on /,
-  // ES browsers go to /es/, and every other locale (EN as well as
-  // unsupported languages) falls back to /en/. Runs once per session
-  // so manual navigation back to / is respected.
-  (function () {
-    try {
-      if (sessionStorage.getItem("qc-lang-auto") === "done") return;
-      sessionStorage.setItem("qc-lang-auto", "done");
-
-      const prefs = navigator.languages?.length
-        ? navigator.languages
-        : [navigator.language || "en"];
-      const best = prefs
-        .map((l) => l.toLowerCase().split("-")[0])
-        .find((l) => ["nl", "en", "es"].includes(l));
-      if (best === "nl") return;
-      if (best === "es") location.replace("/es/");
-      else location.replace("/en/");
-    } catch {
-      /* fall through and stay on / */
-    }
-  })();
-</script>
