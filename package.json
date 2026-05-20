@@ -27,7 +27,7 @@
   "dependencies": {
     "@astrojs/markdoc": "^1.0.5",
     "@astrojs/netlify": "^7.0.10",
-    "@astrojs/sitemap": "^4.0.0",
+    "@astrojs/sitemap": "^3.7.2",
     "@libsql/client": "^0.17.0",
     "@mollie/api-client": "^4.4.0",
     "@tailwindcss/vite": "^4.2.1",
