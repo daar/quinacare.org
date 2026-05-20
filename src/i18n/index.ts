@@ -233,6 +233,8 @@ export const ui = {
     "fundraise.campaignBy": "Een actie van",
     "fundraise.endDate": "Einddatum",
     "fundraise.noFundraisers": "Er zijn momenteel geen sponsor acties.",
+    "fundraise.qrTitle": "Deel deze actie",
+    "fundraise.qrDownload": "Download QR-code",
     // Projects section
     "projects.title": "PROJECTEN",
     "projects.subtitle": "Onze Projecten",
@@ -501,6 +503,8 @@ export const ui = {
     "fundraise.campaignBy": "A campaign by",
     "fundraise.endDate": "End date",
     "fundraise.noFundraisers": "There are currently no fundraising campaigns.",
+    "fundraise.qrTitle": "Share this fundraiser",
+    "fundraise.qrDownload": "Download QR code",
     // Projects section
     "projects.title": "PROJECTS",
     "projects.subtitle": "Our Projects",
@@ -772,6 +776,8 @@ export const ui = {
     "fundraise.campaignBy": "Una campaña de",
     "fundraise.endDate": "Fecha de cierre",
     "fundraise.noFundraisers": "Actualmente no hay campañas de recaudación.",
+    "fundraise.qrTitle": "Comparte esta campaña",
+    "fundraise.qrDownload": "Descargar código QR",
     // Projects section
     "projects.title": "PROYECTOS",
     "projects.subtitle": "Nuestros Proyectos",

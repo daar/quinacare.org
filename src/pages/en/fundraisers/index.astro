@@ -5,6 +5,7 @@ import Layout from "../../../layouts/Layout.astro";
 import Nav from "../../../components/Nav.astro";
 import Footer from "../../../components/Footer.astro";
 import { useTranslations, getLocalizedPath, type Lang } from "../../../i18n";
+import { generateQrDataUri } from "../../../lib/qr";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
@@ -17,6 +18,18 @@ const sorted = fundraisers.sort((a, b) => {
     new Date(b.data.end_date).getTime() - new Date(a.data.end_date).getTime()
   );
 });
+
+// Pre-render a QR code (PNG data URI) per fundraiser, encoding the
+// localized campaign URL — shown on each card and downloadable.
+const qrBySlug = new Map<string, string>();
+for (const f of sorted) {
+  qrBySlug.set(
+    f.data.slug,
+    await generateQrDataUri(
+      `https://quinacare.org${getLocalizedPath(`/fundraisers/${f.data.slug}`, lang)}`,
+    ),
+  );
+}
 
 function getPercentage(raised: number, goal: number): number {
   return Math.min(100, Math.round((raised / goal) * 100));
@@ -73,6 +86,7 @@ function formatCurrency(amount: number): string {
               );
               const days = getDaysToGo(fundraiser.data.end_date);
               const isActive = fundraiser.data.end_date.getTime() > Date.now();
+              const qr = qrBySlug.get(fundraiser.data.slug)!;
               return (
                 <a
                   href={getLocalizedPath(
@@ -118,6 +132,24 @@ function formatCurrency(amount: number): string {
                           </span>
                         </div>
                       )}
+                      <button
+                        type="button"
+                        class="fundraise-qr group/qr absolute bottom-3 right-3 rounded-lg bg-white p-1.5 shadow-md transition-shadow hover:shadow-lg"
+                        data-slug={fundraiser.data.slug}
+                        aria-label={t("fundraise.qrDownload")}
+                        title={t("fundraise.qrDownload")}
+                      >
+                        <img
+                          src={qr}
+                          alt=""
+                          width="56"
+                          height="56"
+                          class="block h-14 w-14"
+                        />
+                        <span class="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 text-white opacity-0 transition-opacity group-hover/qr:opacity-100">
+                          <i class="fa-solid fa-download text-sm" />
+                        </span>
+                      </button>
                     </div>
 
                     <div class="p-5 md:p-6">
@@ -216,6 +248,25 @@ function formatCurrency(amount: number): string {
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll<HTMLElement>(".fundraise-card");
+
+    // QR code download — bypass the card link and save the PNG.
+    document
+      .querySelectorAll<HTMLButtonElement>(".fundraise-qr")
+      .forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const img = btn.querySelector("img");
+          if (!img) return;
+          const link = document.createElement("a");
+          link.href = img.src;
+          link.download = `quinacare-${btn.dataset.slug}-qr.png`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+      });
+
     const paginationNav = document.getElementById("fundraise-pagination");
     const pagesContainer = document.getElementById("pagination-pages");
     const prevBtn = document.getElementById(
