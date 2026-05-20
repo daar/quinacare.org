@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Website of Stichting Quina Care - medical care for the most remote areas of the Amazon.",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "dev": "npm run svg:minify && astro dev",
