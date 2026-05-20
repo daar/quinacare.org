@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+import { contactByLang } from "../data/contact";
 
 interface Props {
   lang?: Lang;
@@ -7,6 +8,7 @@ interface Props {
 
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const contact = contactByLang[lang];
 ---
 
 <footer class="bg-qcBlack pt-20 pb-10 text-white">
@@ -91,20 +93,33 @@ const t = useTranslations(lang);
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-envelope mt-1 text-white/50"></i>
             <a
-              href="mailto:care@quinacare.org"
-              class="hover:text-white transition-colors">care@quinacare.org</a
+              href={`mailto:${contact.email}`}
+              class="hover:text-white transition-colors">{contact.email}</a
             >
           </li>
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-phone mt-1 text-white/50"></i>
             <a
-              href="tel:+31630366030"
-              class="hover:text-white transition-colors">06-30 366 030</a
+              href={`tel:${contact.phoneHref}`}
+              class="hover:text-white transition-colors">{contact.phone}</a
             >
           </li>
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-location-dot mt-1 text-white/50"></i>
-            <span>IJsvogellaan 76<br />2261 DK Leidschendam</span>
+            <span>
+              {
+                contact.address.map((line, i) => (
+                  <>
+                    {i > 0 && <br />}
+                    {line}
+                  </>
+                ))
+              }
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-building-columns mt-1 text-white/50"></i>
+            <span>{contact.bankAccount}</span>
           </li>
         </ul>
       </div>
