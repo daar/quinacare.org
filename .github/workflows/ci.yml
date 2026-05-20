@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.22.3
           cache: npm
 
       - run: npm ci
@@ -26,6 +26,7 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: npm run check:links
+      - run: npm run lighthouse
 
       - uses: nwtgck/actions-netlify@v3
         if: github.event_name == 'pull_request'

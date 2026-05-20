@@ -35,8 +35,6 @@ const cc = getCurrency(lang);
           const copy = tier.i18n[lang];
           const amountLabel = formatCurrency(tier.amount, cc, false);
           const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
-          const btnClass =
-            i % 2 === 1 ? "qc-btn--secondary" : "qc-btn--outline";
           return (
             <div
               class:list={[
@@ -58,10 +56,7 @@ const cc = getCurrency(lang);
                 href={`${getLocalizedPath("/donate", lang)}?amount=${tier.amount}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                class:list={[
-                  "qc-btn block w-full py-3 text-center mt-auto",
-                  btnClass,
-                ]}
+                class="qc-btn block w-full py-3 text-center mt-auto rounded-md bg-white border border-qcBlack text-qcBlack hover:bg-qcRed hover:border-qcRed hover:text-white"
               >
                 {t("donation.donate")} {amountLabel}
               </a>

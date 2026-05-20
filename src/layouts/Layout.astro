@@ -17,6 +17,37 @@ interface Props {
 const currentLang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const { title = "Quina Care - Zorg Zonder Grenzen", description } = Astro.props;
 const alternateUrls = getAlternateUrls(Astro.url);
+
+const metaDescription =
+  description ||
+  "Stichting Quina Care brengt medische expertise naar de meest afgelegen gebieden van de Amazone. Omdat elk leven telt.";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/images/og-image.svg", Astro.site).href;
+const ogLocale = { nl: "nl_NL", en: "en_US", es: "es_ES" }[currentLang];
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  name: "Stichting Quina Care",
+  alternateName: "Quina Care Foundation",
+  url: "https://quinacare.org/",
+  logo: "https://quinacare.org/logo-quina-care.svg",
+  email: "care@quinacare.org",
+  telephone: "+31630366030",
+  description: metaDescription,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "IJsvogellaan 76",
+    postalCode: "2261 DK",
+    addressLocality: "Leidschendam",
+    addressCountry: "NL",
+  },
+  sameAs: [
+    "https://www.facebook.com/quinacare/",
+    "https://www.instagram.com/quinacare/",
+    "https://www.youtube.com/channel/UCyizISjNUBws4KdIIda9K7w",
+    "https://www.linkedin.com/company/quina-care/",
+  ],
+};
 ---
 
 <!doctype html>
@@ -53,7 +84,7 @@ const alternateUrls = getAlternateUrls(Astro.url);
           if (lang === "es") location.replace("/es/");
           else if (lang === "en") location.replace("/en/");
           // "nl" (and the unsupported -> nl fallback): stay on /
-        } catch (e) {
+        } catch {
           /* storage/navigator unavailable - stay on / */
         }
       })();
@@ -68,12 +99,31 @@ const alternateUrls = getAlternateUrls(Astro.url);
     <Font cssVariable="--astro-font-arimo" preload />
     <Font cssVariable="--astro-font-effra" preload />
     <meta name="generator" content={Astro.generator} />
-    <meta
-      name="description"
-      content={description ||
-        "Stichting Quina Care brengt medische expertise naar de meest afgelegen gebieden van de Amazone. Omdat elk leven telt."}
-    />
+    <meta name="description" content={metaDescription} />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ee172c" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Quina Care" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Quina Care" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
     {
       alternateUrls.map(({ lang, url }) => (
         <link rel="alternate" hreflang={lang} href={url} />
