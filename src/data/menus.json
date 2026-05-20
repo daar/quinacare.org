@@ -2,18 +2,6 @@
   "_TODO": "re-enable navbar items — move entries from items_disabled back into items when ready",
   "items": [
     {
-      "id": "news",
-      "labelKey": "nav.news",
-      "path": "/news"
-    },
-    {
-      "id": "contact",
-      "labelKey": "submenu.contact",
-      "path": "/contact"
-    }
-  ],
-  "items_disabled": [
-    {
       "id": "whatCanYouDo",
       "labelKey": "nav.whatCanYouDo",
       "submenu": [
@@ -21,7 +9,9 @@
           "labelKey": "submenu.fundraise",
           "path": "/fundraisers",
           "icon": "fa-solid fa-hand-holding-heart"
-        },
+        }
+      ],
+      "submenu_disabled": [
         {
           "labelKey": "submenu.joinTeam",
           "path": "/join-team",
@@ -53,6 +43,18 @@
         "icon": "fa-solid fa-heart"
       }
     },
+    {
+      "id": "news",
+      "labelKey": "nav.news",
+      "path": "/news"
+    },
+    {
+      "id": "contact",
+      "labelKey": "submenu.contact",
+      "path": "/contact"
+    }
+  ],
+  "items_disabled": [
     {
       "id": "whatDoWeDo",
       "labelKey": "nav.whatDoWeDo",
