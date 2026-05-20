@@ -50,13 +50,19 @@ const fundraiserSchema = ({ image }: SchemaContext) =>
     organizer: z.string(),
     excerpt: z.string(),
     goal_amount: z.number(),
-    raised_amount: z.number(),
-    backers: z.number(),
+    // Manual offsets added on top of the live Turso totals — cover
+    // donations made outside this site, or any missing from the database.
+    raised_offset: z.number().default(0),
+    backers_offset: z.number().default(0),
     start_date: z.date(),
     end_date: z.date(),
     featured_image: image().optional(),
     featured_image_alt: z.string().optional(),
     status: z.enum(["active", "completed", "upcoming"]).default("active"),
+    // Draft fundraisers are excluded from the production build — kept out
+    // of the listing and unreachable publicly — while staying previewable
+    // with `npm run dev`.
+    draft: z.boolean().default(false),
   });
 
 const news_nl = defineCollection({

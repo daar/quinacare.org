@@ -18,7 +18,10 @@ const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
 export async function getStaticPaths() {
-  const fundraisers = await getCollection("fundraisers-en");
+  // Draft fundraisers are previewable in dev but excluded from production.
+  const fundraisers = (await getCollection("fundraisers-en")).filter(
+    (entry) => import.meta.env.DEV || !entry.data.draft,
+  );
   return fundraisers.map((entry) => ({
     params: { slug: entry.data.slug },
     props: { entry },
@@ -30,7 +33,7 @@ const { Content } = await render(entry);
 
 const pct = Math.min(
   100,
-  Math.round((entry.data.raised_amount / entry.data.goal_amount) * 100),
+  Math.round((entry.data.raised_offset / entry.data.goal_amount) * 100),
 );
 const daysToGo = Math.max(
   0,
@@ -180,10 +183,10 @@ const shareTitle = entry.data.title;
                 data-goal={entry.data.goal_amount}
                 data-locale="en-US"
                 data-currency="EUR"
-                data-initial-raised={entry.data.raised_amount}
-                data-initial-backers={entry.data.backers}
+                data-initial-raised={entry.data.raised_offset}
+                data-initial-backers={entry.data.backers_offset}
               >
-                {formatCurrency(entry.data.raised_amount)}
+                {formatCurrency(entry.data.raised_offset)}
               </div>
               <p class="text-sm text-gray-400">
                 {t("fundraise.raised")}
@@ -208,7 +211,7 @@ const shareTitle = entry.data.title;
                 <div
                   class="fundraiser-backers text-2xl font-bold tracking-tight"
                 >
-                  {entry.data.backers}
+                  {entry.data.backers_offset}
                 </div>
                 <div class="qc-meta">
                   {t("fundraise.backers")}
@@ -392,16 +395,16 @@ const shareTitle = entry.data.title;
     const goal = Number(raisedEl.dataset.goal);
     const locale = raisedEl.dataset.locale!;
     const currency = raisedEl.dataset.currency!;
-    const initialRaised = Number(raisedEl.dataset.initialRaised);
-    const initialBackers = Number(raisedEl.dataset.initialBackers);
+    const raisedOffset = Number(raisedEl.dataset.initialRaised);
+    const backersOffset = Number(raisedEl.dataset.initialBackers);
 
     fetch(`/api/fundraisers/stats?slug=${encodeURIComponent(slug)}`)
       .then((r) => r.json())
       .then((data: { raised_cents: number; donor_count: number }) => {
-        const dbRaised = data.raised_cents / 100;
-        const dbBackers = data.donor_count;
-        const totalRaised = initialRaised + dbRaised;
-        const totalBackers = initialBackers + dbBackers;
+        // Live Turso totals plus the frontmatter offset, which covers
+        // off-site donations or any missing from the database.
+        const totalRaised = raisedOffset + data.raised_cents / 100;
+        const totalBackers = backersOffset + data.donor_count;
         const pct = Math.min(100, Math.round((totalRaised / goal) * 100));
 
         const fmt = new Intl.NumberFormat(locale, {

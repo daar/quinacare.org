@@ -9,11 +9,12 @@ import { useTranslations, getLocalizedPath, type Lang } from "../../i18n";
 const lang: Lang = "nl";
 const t = useTranslations(lang);
 
-const fundraisers = await getCollection("fundraisers-nl");
+const fundraisers = (await getCollection("fundraisers-nl")).filter(
+  (entry) => import.meta.env.DEV || !entry.data.draft,
+);
 const sorted = fundraisers.sort((a, b) => {
   return (
-    new Date(b.data.start_date).getTime() -
-    new Date(a.data.start_date).getTime()
+    new Date(b.data.end_date).getTime() - new Date(a.data.end_date).getTime()
   );
 });
 
@@ -93,7 +94,7 @@ function getStatusLabel(status: string): string {
           >
             {sorted.map((fundraiser, idx) => {
               const pct = getPercentage(
-                fundraiser.data.raised_amount,
+                fundraiser.data.raised_offset,
                 fundraiser.data.goal_amount,
               );
               const days = getDaysToGo(fundraiser.data.end_date);
@@ -107,8 +108,8 @@ function getStatusLabel(status: string): string {
                   data-card-index={idx}
                   data-slug={fundraiser.data.slug}
                   data-goal={fundraiser.data.goal_amount}
-                  data-initial-raised={fundraiser.data.raised_amount}
-                  data-initial-backers={fundraiser.data.backers}
+                  data-initial-raised={fundraiser.data.raised_offset}
+                  data-initial-backers={fundraiser.data.backers_offset}
                 >
                   <article class="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
@@ -133,6 +134,15 @@ function getStatusLabel(status: string): string {
                           {getStatusLabel(fundraiser.data.status)}
                         </span>
                       </div>
+                      {import.meta.env.DEV && (
+                        <div class="absolute top-4 right-4">
+                          <span
+                            class={`qc-meta !text-white px-3 py-1.5 rounded-sm ${fundraiser.data.draft ? "bg-gray-800" : "bg-emerald-600"}`}
+                          >
+                            {fundraiser.data.draft ? "Draft" : "Published"}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     <div class="p-5 md:p-6">
@@ -145,7 +155,7 @@ function getStatusLabel(status: string): string {
 
                       <div class="flex items-baseline justify-between mb-1">
                         <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
-                          {formatCurrency(fundraiser.data.raised_amount)}
+                          {formatCurrency(fundraiser.data.raised_offset)}
                         </span>
                         <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
                           <span class="fc-pct">{pct}</span>%{" "}
@@ -162,7 +172,7 @@ function getStatusLabel(status: string): string {
                       <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
                         <span>
                           <span class="fc-backers">
-                            {fundraiser.data.backers}
+                            {fundraiser.data.backers_offset}
                           </span>{" "}
                           {t("fundraise.backers")}
                         </span>
@@ -342,14 +352,15 @@ function getStatusLabel(status: string): string {
       if (!slug) return;
 
       const goal = Number(card.dataset.goal);
-      const initialRaised = Number(card.dataset.initialRaised);
-      const initialBackers = Number(card.dataset.initialBackers);
+      const raisedOffset = Number(card.dataset.initialRaised);
+      const backersOffset = Number(card.dataset.initialBackers);
 
       fetch(`/api/fundraisers/stats?slug=${encodeURIComponent(slug)}`)
         .then((r) => r.json())
         .then((data: { raised_cents: number; donor_count: number }) => {
-          const totalRaised = initialRaised + data.raised_cents / 100;
-          const totalBackers = initialBackers + data.donor_count;
+          // Live Turso totals plus the frontmatter offset.
+          const totalRaised = raisedOffset + data.raised_cents / 100;
+          const totalBackers = backersOffset + data.donor_count;
           const pct = Math.min(100, Math.round((totalRaised / goal) * 100));
 
           const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
