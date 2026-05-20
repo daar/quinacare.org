@@ -209,6 +209,34 @@ button {
   outline: none;
 }
 
+/* Search input — suppress the global focus ring; show an underline
+   that slides in from the left on focus instead. */
+#search-input:focus,
+#search-input:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+.search-field {
+  position: relative;
+  display: inline-flex;
+}
+.search-field::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-qcRed);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.search-field:focus-within::after {
+  transform: scaleX(1);
+}
+
 /* Minimum interactive target size (WCAG 2.5.5 — 44×44px).
    Excludes plain <a> so inline links keep their natural height in nav and prose. */
 button,

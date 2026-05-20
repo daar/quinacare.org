@@ -18,7 +18,9 @@ const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
 export async function getStaticPaths() {
-  const posts = await getCollection("news-nl");
+  const posts = (await getCollection("news-nl")).filter(
+    (post) => post.data.status === "publish",
+  );
   return posts.map((post) => ({
     params: { slug: post.data.slug || post.id },
     props: { post, allPosts: posts },

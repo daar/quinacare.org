@@ -59,13 +59,13 @@ const searchPath = getLocalizedPath("/search", lang);
           <div class="hidden xl:flex items-center gap-3 border-l border-gray-200 pl-8">
             {lang === "en" && (
               <a
-                href="https://www.centerfornonprofits.org/"
+                href="https://www.irs.gov/charities-non-profits/charitable-organizations/exemption-requirements-501c3-organizations"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <img
-                  src="/images/certifications/certified-nonprofit.png"
-                  alt="Certified Nonprofit"
+                  src="/images/certifications/501c3.svg"
+                  alt="501(c)(3) tax-exempt organization"
                   class="h-12"
                 />
               </a>
@@ -217,8 +217,6 @@ const searchPath = getLocalizedPath("/search", lang);
         id="nav-default"
         class="flex items-center gap-4 text-[14px] font-bold uppercase tracking-widest lg:border-r lg:border-gray-200 lg:pr-6 lg:mr-2"
       >
-        {
-          /* TODO: re-enable search icon once Pagefind index is wired and content is back
         <button
           id="search-open-btn"
           class="text-gray-400 hover:text-qcRed text-sm"
@@ -226,8 +224,6 @@ const searchPath = getLocalizedPath("/search", lang);
         >
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
-        */
-        }
         <div class="hidden lg:flex">
           <LanguageSwitcher />
         </div>
@@ -244,13 +240,15 @@ const searchPath = getLocalizedPath("/search", lang);
         data-results-label={t("search.results")}
       >
         <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
-        <input
-          id="search-input"
-          type="text"
-          placeholder={t("search.placeholder")}
-          class="bg-transparent outline-none text-sm w-48 md:w-64"
-          autocomplete="off"
-        />
+        <span class="search-field">
+          <input
+            id="search-input"
+            type="text"
+            placeholder={t("search.placeholder")}
+            class="bg-transparent outline-none text-sm w-48 md:w-64"
+            autocomplete="off"
+          />
+        </span>
         <button
           id="search-close-btn"
           class="text-gray-400 hover:text-qcBlack text-sm"

@@ -2,6 +2,11 @@
   "_TODO": "re-enable navbar items — move entries from items_disabled back into items when ready",
   "items": [
     {
+      "id": "news",
+      "labelKey": "nav.news",
+      "path": "/news"
+    },
+    {
       "id": "contact",
       "labelKey": "submenu.contact",
       "path": "/contact"
@@ -96,11 +101,6 @@
           "icon": "fa-solid fa-envelope"
         }
       ]
-    },
-    {
-      "id": "news",
-      "labelKey": "nav.news",
-      "path": "/news"
     }
   ]
 }
