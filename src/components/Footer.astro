@@ -18,6 +18,9 @@ const contact = contactByLang[lang];
         <img
           src="/logo-quina-care.svg"
           alt="Quina Care"
+          width="250"
+          height="165"
+          loading="lazy"
           class="h-12 brightness-0 invert"
         />
         <p class="text-white/50 text-lg leading-relaxed max-w-xs">
@@ -54,9 +57,9 @@ const contact = contactByLang[lang];
       {
         /* TODO: re-enable Organization column (and switch grid back to lg:grid-cols-4)
       <div>
-        <h4 class="qc-footer-heading mb-8">
+        <h2 class="qc-footer-heading mb-8">
           {t("footer.organization")}
-        </h4>
+        </h2>
         <ul class="space-y-4 text-white/50 text-base uppercase tracking-widest">
           <li>
             <a href="#" class="hover:text-white transition-colors"
@@ -86,9 +89,9 @@ const contact = contactByLang[lang];
       }
 
       <div>
-        <h4 class="qc-footer-heading mb-8">
+        <h2 class="qc-footer-heading mb-8">
           {t("footer.contact")}
-        </h4>
+        </h2>
         <ul class="space-y-4 text-white/50 text-base">
           <li class="flex items-start gap-3">
             <i class="fa-solid fa-envelope mt-1 text-white/50"></i>
@@ -125,7 +128,7 @@ const contact = contactByLang[lang];
       </div>
 
       <div>
-        <h4 class="qc-footer-heading mb-8">{t("footer.certifications")}</h4>
+        <h2 class="qc-footer-heading mb-8">{t("footer.certifications")}</h2>
         <div class="flex flex-wrap gap-4">
           <a
             href="https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/bijzondere_regelingen/goede_doelen/algemeen_nut_beogende_instellingen/wat_is_een_anbi"
@@ -135,6 +138,9 @@ const contact = contactByLang[lang];
             <img
               src="/images/certifications/anbi.png"
               alt="ANBI"
+              width="121"
+              height="96"
+              loading="lazy"
               class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
             />
           </a>
@@ -146,6 +152,9 @@ const contact = contactByLang[lang];
             <img
               src="/images/certifications/cbf.png"
               alt="CBF Erkend Goed Doel"
+              width="158"
+              height="96"
+              loading="lazy"
               class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
             />
           </a>
@@ -157,6 +166,9 @@ const contact = contactByLang[lang];
             <img
               src="/images/certifications/501c3.svg"
               alt="501(c)(3) tax-exempt organization"
+              width="412"
+              height="99"
+              loading="lazy"
               class="h-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
             />
           </a>
