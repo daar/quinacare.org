@@ -1,14 +1,16 @@
 // @ts-check
 import { defineConfig, fontProviders } from "astro/config";
 import markdoc from "@astrojs/markdoc";
+import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://quinacare.org",
   output: "static",
   adapter: netlify(),
-  integrations: [markdoc()],
+  integrations: [markdoc(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff" />
+  <rect width="1200" height="16" fill="#ee172c" />
+  <rect y="614" width="1200" height="16" fill="#ee172c" />
+  <text x="600" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="700" fill="#111111">Quina Care</text>
+  <text x="600" y="372" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" letter-spacing="6" fill="#ee172c">ZORG ZONDER GRENZEN</text>
+</svg>

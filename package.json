@@ -2,6 +2,10 @@
   "name": "quinacare.org",
   "type": "module",
   "version": "0.0.1",
+  "description": "Website of Stichting Quina Care - medical care for the most remote areas of the Amazon.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "npm run svg:minify && astro dev",
     "build": "npm run svg:minify && astro build && npx pagefind --site dist",
@@ -12,6 +16,7 @@
     "svg:minify": "svgo -r --folder src/assets --quiet && svgo -r --folder public --quiet --exclude favicon.svg",
     "check:images": "node scripts/check-image-sizes.mjs",
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
+    "lighthouse": "npx --yes @lhci/cli@0.14.0 autorun",
     "preview": "astro preview",
     "astro": "astro",
     "prepare": "husky"
@@ -22,6 +27,7 @@
   "dependencies": {
     "@astrojs/markdoc": "^1.0.5",
     "@astrojs/netlify": "^7.0.10",
+    "@astrojs/sitemap": "^4.0.0",
     "@libsql/client": "^0.17.0",
     "@mollie/api-client": "^4.4.0",
     "@tailwindcss/vite": "^4.2.1",
