@@ -124,6 +124,9 @@ const t = useTranslations(lang);
       try {
         const path = "/pagefind/pagefind.js";
         pagefind = await import(/* @vite-ignore */ path);
+        // Stricter matching: penalise loose partial-word matches so closer
+        // results outrank fuzzy ones.
+        await pagefind.options({ ranking: { termSimilarity: 2.0 } });
         await pagefind.init({
           language: document.documentElement.lang,
         });
@@ -169,7 +172,7 @@ const t = useTranslations(lang);
             </h3>
             ${
               item.excerpt
-                ? `<p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">${esc(item.excerpt)}</p>`
+                ? `<p class="text-gray-500 text-sm mt-4 line-clamp-2 leading-relaxed">${item.excerpt}</p>`
                 : ""
             }
           </a>
@@ -196,7 +199,7 @@ const t = useTranslations(lang);
     }
 
     async function doSearch(query: string) {
-      if (query.length < 2) {
+      if (query.length < 3) {
         showState("initial");
         return;
       }

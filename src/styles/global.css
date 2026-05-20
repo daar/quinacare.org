@@ -268,9 +268,11 @@ button,
 
 /* Search highlight */
 mark {
-  background: transparent;
-  color: var(--color-qcRed);
+  background: color-mix(in srgb, var(--color-qcRed) 14%, white);
+  color: inherit;
   font-weight: 700;
+  border-radius: 2px;
+  padding: 0 2px;
 }
 
 /* Search animations */

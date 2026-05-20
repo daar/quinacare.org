@@ -483,6 +483,9 @@ const searchPath = getLocalizedPath("/search", lang);
       try {
         const path = "/pagefind/pagefind.js";
         pagefind = await import(/* @vite-ignore */ path);
+        // Stricter matching: penalise loose partial-word matches so closer
+        // results outrank fuzzy ones.
+        await pagefind.options({ ranking: { termSimilarity: 2.0 } });
         await pagefind.init({
           language: document.documentElement.lang,
         });
@@ -528,7 +531,7 @@ const searchPath = getLocalizedPath("/search", lang);
       const pf = await loadPagefind();
       if (!pf) return;
 
-      if (query.length < 2) {
+      if (query.length < 3) {
         if (resultsList) resultsList.innerHTML = "";
         noResults?.classList.add("hidden");
         searchStart?.classList.remove("hidden");
@@ -575,7 +578,7 @@ const searchPath = getLocalizedPath("/search", lang);
             }
             <div class="min-w-0 flex-1">
               <h4 class="text-sm font-bold uppercase tracking-tight group-hover:text-qcRed transition truncate">${esc(item.meta?.title || "")}</h4>
-              <p class="text-xs text-gray-400 line-clamp-1 mt-1">${esc(item.excerpt || "")}</p>
+              <p class="text-xs text-gray-400 line-clamp-1 mt-1">${item.excerpt || ""}</p>
             </div>
           </a>
         `,
