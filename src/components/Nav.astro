@@ -240,13 +240,15 @@ const searchPath = getLocalizedPath("/search", lang);
         data-results-label={t("search.results")}
       >
         <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
-        <input
-          id="search-input"
-          type="text"
-          placeholder={t("search.placeholder")}
-          class="bg-transparent outline-none text-sm w-48 md:w-64"
-          autocomplete="off"
-        />
+        <span class="search-field">
+          <input
+            id="search-input"
+            type="text"
+            placeholder={t("search.placeholder")}
+            class="bg-transparent outline-none text-sm w-48 md:w-64"
+            autocomplete="off"
+          />
+        </span>
         <button
           id="search-close-btn"
           class="text-gray-400 hover:text-qcBlack text-sm"
