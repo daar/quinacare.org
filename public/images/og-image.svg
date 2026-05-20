@@ -2,6 +2,10 @@
   <rect width="1200" height="630" fill="#ffffff" />
   <rect width="1200" height="16" fill="#ee172c" />
   <rect y="614" width="1200" height="16" fill="#ee172c" />
-  <text x="600" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="700" fill="#111111">Quina Care</text>
-  <text x="600" y="372" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" letter-spacing="6" fill="#ee172c">ZORG ZONDER GRENZEN</text>
+  <text x="600" y="210" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="96" font-weight="700" fill="#111111">Quina Care</text>
+  <text text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="700" fill="#111111">
+    <tspan x="600" y="330">The people of the Amazon</tspan>
+    <tspan x="600" y="398">also have a right to</tspan>
+    <tspan x="600" y="466" fill="#ee172c">good healthcare.</tspan>
+  </text>
 </svg>
