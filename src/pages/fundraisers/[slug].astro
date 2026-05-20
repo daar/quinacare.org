@@ -59,31 +59,8 @@ function formatDate(date: Date): string {
   }).format(date);
 }
 
-function getStatusColor(status: string): string {
-  switch (status) {
-    case "active":
-      return "bg-emerald-500";
-    case "completed":
-      return "bg-qcRed";
-    case "upcoming":
-      return "bg-amber-500";
-    default:
-      return "bg-gray-500";
-  }
-}
-
-function getStatusLabel(status: string): string {
-  switch (status) {
-    case "active":
-      return t("fundraise.active");
-    case "completed":
-      return t("fundraise.completed");
-    case "upcoming":
-      return t("fundraise.upcoming");
-    default:
-      return status;
-  }
-}
+// A fundraiser counts as active until its end date passes.
+const isActive = entry.data.end_date.getTime() > Date.now();
 
 const shareUrl = `https://quinacare.org${getLocalizedPath(`/fundraisers/${entry.data.slug}`, lang)}`;
 const shareTitle = entry.data.title;
@@ -111,13 +88,15 @@ const shareTitle = entry.data.title;
 
     <!-- Title + organizer -->
     <div class="mt-6 mb-8">
-      <div class="flex items-center gap-3 mb-4">
-        <span
-          class={`qc-meta ${getStatusColor(entry.data.status)} !text-white px-3 py-1.5 rounded-full`}
-        >
-          {getStatusLabel(entry.data.status)}
-        </span>
-      </div>
+      {
+        isActive && (
+          <div class="flex items-center gap-3 mb-4">
+            <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-full">
+              {t("fundraise.active")}
+            </span>
+          </div>
+        )
+      }
       <h1
         class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter leading-[1.1] uppercase"
       >

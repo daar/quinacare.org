@@ -36,32 +36,6 @@ function formatCurrency(amount: number): string {
     maximumFractionDigits: 0,
   }).format(amount);
 }
-
-function getStatusColor(status: string): string {
-  switch (status) {
-    case "active":
-      return "bg-emerald-500";
-    case "completed":
-      return "bg-qcRed";
-    case "upcoming":
-      return "bg-amber-500";
-    default:
-      return "bg-gray-500";
-  }
-}
-
-function getStatusLabel(status: string): string {
-  switch (status) {
-    case "active":
-      return t("fundraise.active");
-    case "completed":
-      return t("fundraise.completed");
-    case "upcoming":
-      return t("fundraise.upcoming");
-    default:
-      return status;
-  }
-}
 ---
 
 <Layout title={`${t("fundraise.title")} | Quina Care`} lang={lang}>
@@ -98,6 +72,7 @@ function getStatusLabel(status: string): string {
                 fundraiser.data.goal_amount,
               );
               const days = getDaysToGo(fundraiser.data.end_date);
+              const isActive = fundraiser.data.end_date.getTime() > Date.now();
               return (
                 <a
                   href={getLocalizedPath(
@@ -127,13 +102,13 @@ function getStatusLabel(status: string): string {
                       ) : (
                         <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
                       )}
-                      <div class="absolute top-4 left-4">
-                        <span
-                          class={`qc-meta ${getStatusColor(fundraiser.data.status)} !text-white px-3 py-1.5 rounded-sm`}
-                        >
-                          {getStatusLabel(fundraiser.data.status)}
-                        </span>
-                      </div>
+                      {isActive && (
+                        <div class="absolute top-4 left-4">
+                          <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-sm">
+                            {t("fundraise.active")}
+                          </span>
+                        </div>
+                      )}
                       {import.meta.env.DEV && (
                         <div class="absolute top-4 right-4">
                           <span
