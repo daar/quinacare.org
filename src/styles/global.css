@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-qcRed: #ee172c;
+  --color-qcRed: #e6172c;
   --color-qcBlack: #111111;
   --color-qcGray: #fcfcfc;
   --font-effra: var(--astro-font-effra), sans-serif;
@@ -42,7 +42,7 @@
   --meta-size: 10px;
   --meta-weight: 700;
   --meta-tracking: 0.2em;
-  --meta-color: #9ca3af;
+  --meta-color: #6b7280;
 
   /* Footer headings */
   --footer-heading-font: var(--font-sans);
@@ -481,7 +481,7 @@ mark {
 .prose-article figcaption {
   text-align: center;
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #6b7280;
   margin-top: 0.75em;
   font-family: var(--font-effra);
   text-transform: uppercase;
