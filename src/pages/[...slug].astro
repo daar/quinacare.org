@@ -8,7 +8,11 @@ import DonationModal from "../components/DonationModal.astro";
 import SponsorFormCard from "../components/SponsorFormCard.astro";
 
 export async function getStaticPaths() {
-  const pages = await getCollection("pages-nl");
+  // Draft pages are previewable in dev but excluded from production builds
+  // (and therefore from the Pagefind search index).
+  const pages = (await getCollection("pages-nl")).filter(
+    (page) => import.meta.env.DEV || !page.data.draft,
+  );
   return pages.map((page) => ({
     params: { slug: page.data.slug },
     props: { page },
