@@ -53,7 +53,7 @@ const alternateUrls = getAlternateUrls(Astro.url);
           if (lang === "es") location.replace("/es/");
           else if (lang === "en") location.replace("/en/");
           // "nl" (and the unsupported -> nl fallback): stay on /
-        } catch (e) {
+        } catch {
           /* storage/navigator unavailable - stay on / */
         }
       })();
