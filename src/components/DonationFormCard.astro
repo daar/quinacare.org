@@ -35,8 +35,8 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
     {t("donate.submitButton")}
   </h2>
 
-  <!-- Frequency toggle -->
-  <div class="flex gap-2 mb-6 dfc-frequency">
+  <!-- Frequency toggle — hidden for fundraisers, which are one-time only -->
+  <div class="flex gap-2 mb-6 dfc-frequency" hidden={context === "fundraiser"}>
     <button
       type="button"
       data-frequency="one-time"
@@ -251,7 +251,9 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         if (saved) {
           try {
             const s = JSON.parse(saved);
-            if (s.frequency) frequency = s.frequency;
+            // Fundraisers are one-time only — never restore "monthly".
+            if (s.frequency && context !== "fundraiser")
+              frequency = s.frequency;
             if (s.method) method = s.method;
           } catch {
             /* ignore */
