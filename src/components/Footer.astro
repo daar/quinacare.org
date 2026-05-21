@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 import { contactByLang } from "../data/contact";
 
@@ -33,7 +34,7 @@ const contact = contactByLang[lang];
             rel="noopener noreferrer"
             aria-label="Instagram"
             class="hover:text-white transition-colors text-lg"
-            ><i class="fa-brands fa-instagram"></i></a
+            ><Icon name="instagram" /></a
           >
           <a
             href="https://www.linkedin.com/company/quina-care"
@@ -41,7 +42,7 @@ const contact = contactByLang[lang];
             rel="noopener noreferrer"
             aria-label="LinkedIn"
             class="hover:text-white transition-colors text-lg"
-            ><i class="fa-brands fa-linkedin"></i></a
+            ><Icon name="linkedin" /></a
           >
           <a
             href="https://www.facebook.com/quinacare/"
@@ -49,7 +50,7 @@ const contact = contactByLang[lang];
             rel="noopener noreferrer"
             aria-label="Facebook"
             class="hover:text-white transition-colors text-lg"
-            ><i class="fa-brands fa-facebook"></i></a
+            ><Icon name="facebook" /></a
           >
         </div>
       </div>
@@ -94,21 +95,21 @@ const contact = contactByLang[lang];
         </h2>
         <ul class="space-y-4 text-white/50 text-base">
           <li class="flex items-start gap-3">
-            <i class="fa-solid fa-envelope mt-1 text-white/50"></i>
+            <Icon name="envelope" class="mt-1 text-white/50" />
             <a
               href={`mailto:${contact.email}`}
               class="hover:text-white transition-colors">{contact.email}</a
             >
           </li>
           <li class="flex items-start gap-3">
-            <i class="fa-solid fa-phone mt-1 text-white/50"></i>
+            <Icon name="phone" class="mt-1 text-white/50" />
             <a
               href={`tel:${contact.phoneHref}`}
               class="hover:text-white transition-colors">{contact.phone}</a
             >
           </li>
           <li class="flex items-start gap-3">
-            <i class="fa-solid fa-location-dot mt-1 text-white/50"></i>
+            <Icon name="location-dot" class="mt-1 text-white/50" />
             <span>
               {
                 contact.address.map((line, i) => (
@@ -121,7 +122,7 @@ const contact = contactByLang[lang];
             </span>
           </li>
           <li class="flex items-start gap-3">
-            <i class="fa-solid fa-building-columns mt-1 text-white/50"></i>
+            <Icon name="building-columns" class="mt-1 text-white/50" />
             <span>{contact.bankAccount}</span>
           </li>
         </ul>

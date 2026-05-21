@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 import { getLangFromUrl } from "../../i18n";
 
 const lang = getLangFromUrl(Astro.url);
@@ -115,9 +116,10 @@ const t = {
         <div
           class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 group-hover:bg-qcRed transition-colors duration-300"
         >
-          <i
-            class="fa-solid fa-envelope text-qcRed group-hover:text-white transition-colors duration-300"
-          ></i>
+          <Icon
+            name="envelope"
+            class="text-qcRed group-hover:text-white transition-colors duration-300"
+          />
         </div>
         <div>
           <p class="text-sm text-gray-400">{t.email}</p>
@@ -133,9 +135,10 @@ const t = {
         <div
           class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 group-hover:bg-qcRed transition-colors duration-300"
         >
-          <i
-            class="fa-solid fa-phone text-qcRed group-hover:text-white transition-colors duration-300"
-          ></i>
+          <Icon
+            name="phone"
+            class="text-qcRed group-hover:text-white transition-colors duration-300"
+          />
         </div>
         <div>
           <p class="text-sm text-gray-400">{t.phone}</p>
@@ -151,7 +154,7 @@ const t = {
         <div
           class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
         >
-          <i class="fa-solid fa-location-dot text-qcRed"></i>
+          <Icon name="location-dot" class="text-qcRed" />
         </div>
         <div>
           <p class="text-sm text-gray-400">{t.postalAddress}</p>
@@ -172,7 +175,7 @@ const t = {
           class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-qcRed hover:text-white transition-all duration-300"
           aria-label="Facebook"
         >
-          <i class="fa-brands fa-facebook"></i>
+          <Icon name="facebook" />
         </a>
         <a
           href="https://instagram.com/quinacare/"
@@ -181,7 +184,7 @@ const t = {
           class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-qcRed hover:text-white transition-all duration-300"
           aria-label="Instagram"
         >
-          <i class="fa-brands fa-instagram"></i>
+          <Icon name="instagram" />
         </a>
         <a
           href="https://youtube.com/channel/UCyizISjNUBws4KdIIda9K7w"
@@ -190,7 +193,7 @@ const t = {
           class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-qcRed hover:text-white transition-all duration-300"
           aria-label="YouTube"
         >
-          <i class="fa-brands fa-youtube"></i>
+          <Icon name="youtube" />
         </a>
         <a
           href="https://www.linkedin.com/company/quina-care/"
@@ -199,7 +202,7 @@ const t = {
           class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-qcRed hover:text-white transition-all duration-300"
           aria-label="LinkedIn"
         >
-          <i class="fa-brands fa-linkedin"></i>
+          <Icon name="linkedin" />
         </a>
       </div>
     </div>
@@ -279,10 +282,10 @@ const t = {
       class="contact-btn qc-btn qc-btn--primary w-full sm:w-auto px-10 py-4 text-base"
     >
       <span class="contact-btn-text"
-        ><i class="fa-solid fa-paper-plane mr-2"></i>{t.send}</span
+        ><Icon name="paper-plane" class="mr-2" />{t.send}</span
       >
       <span class="contact-btn-sending !hidden"
-        ><i class="fa-solid fa-spinner fa-spin mr-2"></i>{t.sending}</span
+        ><Icon name="spinner" class="mr-2 animate-spin" />{t.sending}</span
       >
     </button>
 

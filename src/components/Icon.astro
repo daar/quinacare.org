@@ -1,0 +1,45 @@
+---
+import { icons } from "../data/icons";
+
+interface Props {
+  /**
+   * Icon name — either a bare key ("heart") or a legacy Font Awesome class
+   * string ("fa-solid fa-heart"), so data-driven icons keep working.
+   */
+  name: string;
+  class?: string;
+  /** Accessible name. Omit for decorative icons (rendered aria-hidden). */
+  label?: string;
+}
+
+const { name, class: className, label } = Astro.props;
+
+const key = name
+  .split(/\s+/)
+  .map((t) => t.replace(/^fa-/, ""))
+  .find((t) => t in icons);
+const icon = key ? icons[key] : undefined;
+---
+
+{
+  icon && (
+    <svg
+      viewBox={icon.viewBox}
+      class={className}
+      fill="currentColor"
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : "true"}
+      set:html={icon.body}
+    />
+  )
+}
+
+<style>
+  svg {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+  }
+</style>

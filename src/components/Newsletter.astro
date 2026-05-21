@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 
 interface Props {
@@ -45,16 +46,17 @@ const t = useTranslations(lang);
             class="newsletter-btn qc-btn qc-btn--secondary px-10 py-4 flex-shrink-0"
           >
             <span class="newsletter-btn-text">{t("newsletter.submit")}</span>
-            <i
-              class="newsletter-btn-spinner fa-solid fa-spinner fa-spin !hidden"
-            ></i>
+            <Icon
+              name="spinner"
+              class="newsletter-btn-spinner !hidden animate-spin"
+            />
           </button>
         </form>
 
         <p
           class="newsletter-privacy mt-4 text-xs text-gray-500 font-sans uppercase tracking-widest flex items-center gap-2"
         >
-          <i class="fa-solid fa-lock text-[10px]"></i>
+          <Icon name="lock" class="text-[10px]" />
           {t("newsletter.privacy")}
         </p>
 

@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import {
@@ -94,7 +95,7 @@ function formatDate(date: Date): string {
       </>
     ) : (
       <div class="bg-gray-50 border border-gray-100 rounded-xl p-12 md:p-16 text-center max-w-2xl mx-auto">
-        <i class="fa-solid fa-pen-ruler text-qcRed text-3xl mb-6" />
+        <Icon name="pen-ruler" class="text-qcRed text-3xl mb-6" />
         <h3 class="text-2xl font-bold uppercase tracking-tight mb-3">
           {t("homeNews.placeholderTitle")}
         </h3>

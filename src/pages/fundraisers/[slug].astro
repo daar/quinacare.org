@@ -1,4 +1,5 @@
 ---
+import Icon from "../../components/Icon.astro";
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
@@ -131,7 +132,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
               />
             ) : (
               <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <i class="fa-solid fa-heart text-gray-300 text-5xl" />
+                <Icon name="heart" class="text-gray-300 text-5xl" />
               </div>
             )
           }
@@ -216,7 +217,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
               <div
                 class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0"
               >
-                <i class="fa-regular fa-clock text-gray-400"></i>
+                <Icon name="clock" class="text-gray-400" />
               </div>
               <div>
                 <div class="text-xl font-bold tracking-tight">{daysToGo}</div>
@@ -277,7 +278,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
               <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-qcRed/20 to-rose-100 flex items-center justify-center flex-shrink-0"
               >
-                <i class="fa-solid fa-user text-lg text-qcRed"></i>
+                <Icon name="user" class="text-lg text-qcRed" />
               </div>
               <div>
                 <div class="qc-meta mb-0.5">
@@ -299,7 +300,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
               <div
                 class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0"
               >
-                <i class="fa-regular fa-calendar text-gray-400"></i>
+                <Icon name="calendar" class="text-gray-400" />
               </div>
               <div>
                 <div class="qc-meta">
@@ -329,7 +330,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
               download={`quinacare-${entry.data.slug}-qr.png`}
               class="mt-5 flex items-center justify-center gap-2 w-full font-bold text-xs uppercase tracking-widest py-3 rounded-lg border border-gray-200 text-gray-500 hover:border-qcRed hover:text-qcRed transition-colors"
             >
-              <i class="fa-solid fa-download"></i>
+              <Icon name="download" />
               {t("fundraise.qrDownload")}
             </a>
           </div>

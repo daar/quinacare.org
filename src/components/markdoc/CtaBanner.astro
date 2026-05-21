@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 interface Props {
   title: string;
   subtitle?: string;
@@ -39,9 +40,10 @@ const isDonateLink = /\/donate(?:[/?#]|$)/.test(href);
           rel={isDonateLink ? "noopener noreferrer" : undefined}
           class="qc-btn qc-btn--white group relative inline-flex items-center gap-6 px-10 py-6 duration-500"
         >
-          <i
-            class="fa-solid fa-heart transition-transform group-hover:scale-125"
-          ></i>
+          <Icon
+            name="heart"
+            class="transition-transform group-hover:scale-125"
+          />
           <span>{cta}</span>
         </a>
 
@@ -49,11 +51,11 @@ const isDonateLink = /\/donate(?:[/?#]|$)/.test(href);
           class="mt-4 flex items-center justify-center lg:justify-start gap-4 text-red-200 text-[9px] font-bold uppercase tracking-widest opacity-70"
         >
           <span class="flex items-center gap-1">
-            <i class="fa-solid fa-lock"></i>
+            <Icon name="lock" />
             ANBI
           </span>
           <span class="flex items-center gap-1">
-            <i class="fa-solid fa-certificate"></i>
+            <Icon name="certificate" />
             CBF
           </span>
         </div>

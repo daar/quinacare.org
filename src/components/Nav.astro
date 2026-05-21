@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import OptimizedImage from "./OptimizedImage.astro";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 import {
@@ -122,7 +123,10 @@ const searchPath = getLocalizedPath("/search", lang);
                 aria-haspopup="true"
               >
                 {tk(item.labelKey)}
-                <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180" />
+                <Icon
+                  name="chevron-down"
+                  class="text-[8px] transition-transform duration-200 group-hover:rotate-180"
+                />
               </button>
 
               <div class="submenu-dropdown absolute top-full left-1/2 -translate-x-1/2 pt-4 w-80">
@@ -136,8 +140,9 @@ const searchPath = getLocalizedPath("/search", lang);
                           href={getLocalizedPath(sub.path, lang)}
                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition group/item"
                         >
-                          <i
-                            class={`${sub.icon} text-gray-400 group-hover/item:text-qcRed transition w-5 text-center`}
+                          <Icon
+                            name={sub.icon ?? ""}
+                            class="text-gray-400 group-hover/item:text-qcRed transition"
                           />
                           <span class="text-[12px] font-bold uppercase tracking-[0.12em] group-hover/item:text-qcRed transition">
                             {tk(sub.labelKey)}
@@ -167,7 +172,10 @@ const searchPath = getLocalizedPath("/search", lang);
                               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                               <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
-                                  <i class="fa-solid fa-arrow-right text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform" />
+                                  <Icon
+                                    name="arrow-right"
+                                    class="text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform"
+                                  />
                                 </span>
                                 <span class="text-[12px] font-bold uppercase tracking-[0.12em] text-white">
                                   {tk(sub.labelKey)}
@@ -191,7 +199,7 @@ const searchPath = getLocalizedPath("/search", lang);
                         href={getLocalizedPath(item.cta.path, lang)}
                         class="flex items-center justify-center gap-2 bg-qcRed text-white px-4 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-[0.15em] hover:bg-qcBlack transition"
                       >
-                        <i class={item.cta.icon} />
+                        <Icon name={item.cta.icon} />
                         {tk(item.cta.labelKey)}
                       </a>
                     </div>
@@ -226,7 +234,7 @@ const searchPath = getLocalizedPath("/search", lang);
           class="text-gray-400 hover:text-qcRed text-sm"
           aria-label={t("search.title")}
         >
-          <i class="fa-solid fa-magnifying-glass"></i>
+          <Icon name="magnifying-glass" />
         </button>
         <div class="hidden lg:flex">
           <LanguageSwitcher />
@@ -243,7 +251,7 @@ const searchPath = getLocalizedPath("/search", lang);
         data-see-all={t("search.seeAll")}
         data-results-label={t("search.results")}
       >
-        <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+        <Icon name="magnifying-glass" class="text-gray-400 text-sm" />
         <span class="search-field">
           <input
             id="search-input"
@@ -258,7 +266,7 @@ const searchPath = getLocalizedPath("/search", lang);
           class="text-gray-400 hover:text-qcBlack text-sm"
           aria-label="Close search"
         >
-          <i class="fa-solid fa-xmark"></i>
+          <Icon name="xmark" />
         </button>
       </div>
 
@@ -270,8 +278,7 @@ const searchPath = getLocalizedPath("/search", lang);
         rel="noopener noreferrer"
         class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
       >
-        <i class="fa-solid fa-heart transition-transform group-hover:scale-125"
-        ></i>
+        <Icon name="heart" class="transition-transform group-hover:scale-125" />
         <span class="hidden lg:inline">{t("nav.donate")}</span>
         <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
       </a>
@@ -283,7 +290,7 @@ const searchPath = getLocalizedPath("/search", lang);
         aria-label="Menu"
         aria-expanded="false"
       >
-        <i class="fa-solid fa-bars"></i>
+        <Icon name="bars" />
       </button>
     </div>
   </div>
@@ -342,7 +349,7 @@ const searchPath = getLocalizedPath("/search", lang);
                 data-submenu={item.id}
               >
                 {tk(item.labelKey)}
-                <i class="fa-solid fa-chevron-right text-[10px]" />
+                <Icon name="chevron-right" class="text-[10px]" />
               </button>
             ) : item.path ? (
               <a
@@ -376,7 +383,7 @@ const searchPath = getLocalizedPath("/search", lang);
               data-submenu-panel={item.id}
             >
               <button class="mobile-back-btn flex items-center gap-2 py-3 text-[12px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcBlack transition">
-                <i class="fa-solid fa-chevron-left text-[10px]" />
+                <Icon name="chevron-left" class="text-[10px]" />
                 {tk(item.labelKey)}
               </button>
               <div class="space-y-1 mt-1">
@@ -397,7 +404,10 @@ const searchPath = getLocalizedPath("/search", lang);
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
                         <div class="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-2.5">
                           <span class="w-8 h-8 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-arrow-right text-white text-xs submenu-arrow will-change-transform" />
+                            <Icon
+                              name="arrow-right"
+                              class="text-white text-xs submenu-arrow will-change-transform"
+                            />
                           </span>
                           <span class="text-[12px] font-bold uppercase tracking-widest text-white">
                             {tk(sub.labelKey)}
@@ -415,8 +425,9 @@ const searchPath = getLocalizedPath("/search", lang);
                       href={getLocalizedPath(sub.path, lang)}
                       class="mobile-menu-link flex items-center gap-3 py-2.5 rounded-lg hover:bg-gray-50 transition px-1"
                     >
-                      <i
-                        class={`${sub.icon} text-gray-400 w-5 text-center text-sm`}
+                      <Icon
+                        name={sub.icon ?? ""}
+                        class="text-gray-400 text-sm"
                       />
                       <span class="text-[12px] font-bold uppercase tracking-widest">
                         {tk(sub.labelKey)}
@@ -429,7 +440,7 @@ const searchPath = getLocalizedPath("/search", lang);
                     href={getLocalizedPath(item.cta.path, lang)}
                     class="mobile-menu-link flex items-center justify-center gap-2 bg-qcRed text-white px-4 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-widest hover:bg-qcBlack transition mt-2"
                   >
-                    <i class={item.cta.icon} />
+                    <Icon name={item.cta.icon} />
                     {tk(item.cta.labelKey)}
                   </a>
                 )}
@@ -573,7 +584,7 @@ const searchPath = getLocalizedPath("/search", lang);
               item.meta?.image
                 ? `<img src="${esc(item.meta.image)}" alt="" class="w-16 h-16 object-cover rounded-lg bg-gray-100 flex-shrink-0" />`
                 : `<div class="w-16 h-16 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-file-lines text-gray-300"></i>
+                    <Icon name="file-lines" class="text-gray-300" />
                   </div>`
             }
             <div class="min-w-0 flex-1">

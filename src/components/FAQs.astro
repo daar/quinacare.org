@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 
 interface Props {
@@ -25,9 +26,10 @@ const t = useTranslations(lang);
           aria-expanded="false"
         >
           <span>{t("donate.faq1Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
+          <Icon
+            name="chevron-down"
+            class="text-gray-400 text-xs transition-transform duration-300"
+          />
         </button>
         <div class="faq-content hidden px-6 pb-6">
           <p class="qc-body leading-relaxed">
@@ -43,9 +45,10 @@ const t = useTranslations(lang);
           aria-expanded="false"
         >
           <span>{t("donate.faq2Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
+          <Icon
+            name="chevron-down"
+            class="text-gray-400 text-xs transition-transform duration-300"
+          />
         </button>
         <div class="faq-content hidden px-6 pb-6">
           <p class="qc-body leading-relaxed">
@@ -61,9 +64,10 @@ const t = useTranslations(lang);
           aria-expanded="false"
         >
           <span>{t("donate.faq3Q")}</span>
-          <i
-            class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300"
-          ></i>
+          <Icon
+            name="chevron-down"
+            class="text-gray-400 text-xs transition-transform duration-300"
+          />
         </button>
         <div class="faq-content hidden px-6 pb-6">
           <p class="qc-body leading-relaxed">

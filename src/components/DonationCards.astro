@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import {
   getLangFromUrl,
   useTranslations,
@@ -43,7 +44,7 @@ const cc = getCurrency(lang);
               ]}
             >
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <i class={`${tier.icon} text-6xl`} />
+                <Icon name={tier.icon} class="text-6xl" />
               </div>
               <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
                 {amountLabel}
@@ -74,7 +75,7 @@ const cc = getCurrency(lang);
         class="qc-btn qc-btn--ghost text-gray-400"
       >
         {t("donation.chooseAmount")}
-        <i class="fa-solid fa-chevron-right ml-2 text-[8px]"></i>
+        <Icon name="chevron-right" class="ml-2 text-[8px]" />
       </a>
     </div>
   </div>

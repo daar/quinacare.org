@@ -1,4 +1,5 @@
 ---
+import Icon from "../../../components/Icon.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Layout from "../../../layouts/Layout.astro";
@@ -147,7 +148,7 @@ function formatCurrency(amount: number): string {
                           class="block h-14 w-14"
                         />
                         <span class="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 text-white opacity-0 transition-opacity group-hover/qr:opacity-100">
-                          <i class="fa-solid fa-download text-sm" />
+                          <Icon name="download" class="text-sm" />
                         </span>
                       </button>
                     </div>

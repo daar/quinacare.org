@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 import {
   currencies,
@@ -109,7 +110,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         data-method="card"
         class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
       >
-        <i class="fa-solid fa-credit-card"></i>
+        <Icon name="credit-card" />
         {t("donate.creditCard")}
       </button>
       <button
@@ -141,7 +142,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         data-method="bancontact"
         class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
       >
-        <i class="fa-solid fa-credit-card"></i>
+        <Icon name="credit-card" />
         Bancontact
       </button>
       <button
@@ -149,7 +150,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         data-method="bank"
         class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
       >
-        <i class="fa-solid fa-building-columns"></i>
+        <Icon name="building-columns" />
         {t("donate.bankTransfer")}
       </button>
     </div>
@@ -157,7 +158,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
 
   <!-- Submit -->
   <button type="button" class="dfc-submit qc-btn qc-btn--primary w-full py-4">
-    <i class="dfc-icon fa-solid fa-heart mr-2"></i>
+    <Icon name="heart" class="dfc-icon mr-2" />
     <span
       >{t("donate.submitButton")}
       <span class="dfc-amount">{formatCurrency(cc.presets[1], cc, false)}</span
@@ -170,10 +171,10 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
     class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400"
   >
     <span class="flex items-center gap-1"
-      ><i class="fa-solid fa-lock"></i> {t("cta.securePayment")}</span
+      ><Icon name="lock" /> {t("cta.securePayment")}</span
     >
     <span class="flex items-center gap-1"
-      ><i class="fa-solid fa-shield-halved"></i> SSL</span
+      ><Icon name="shield-halved" /> SSL</span
     >
   </div>
 </div>

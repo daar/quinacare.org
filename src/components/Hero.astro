@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { Image } from "astro:assets";
 import {
   getLangFromUrl,
@@ -68,7 +69,7 @@ const t = useTranslations(lang);
           <span
             class="w-12 h-12 rounded-full flex items-center justify-center group-hover:border-qcRed transition-colors"
           >
-            <i class="fa-solid fa-heart text"></i>
+            <Icon name="heart" class="text" />
           </span>
           {t("hero.cta2")}
         </a>

@@ -1,4 +1,5 @@
 ---
+import Icon from "../Icon.astro";
 import { getLangFromUrl, useTranslations } from "../../i18n";
 
 const lang = getLangFromUrl(Astro.url);
@@ -24,7 +25,7 @@ const labels = {
       <div
         class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center mx-auto mb-4"
       >
-        <i class="fa-solid fa-building-columns text-qcRed text-lg"></i>
+        <Icon name="building-columns" class="text-qcRed text-lg" />
       </div>
       <p class="text-sm text-gray-400 uppercase tracking-wider mb-1">
         {labels.bankAccount}
@@ -38,7 +39,7 @@ const labels = {
       <div
         class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center mx-auto mb-4"
       >
-        <i class="fa-solid fa-briefcase text-qcRed text-lg"></i>
+        <Icon name="briefcase" class="text-qcRed text-lg" />
       </div>
       <p class="text-sm text-gray-400 uppercase tracking-wider mb-1">
         {labels.chamberOfCommerce}
@@ -50,7 +51,7 @@ const labels = {
       <div
         class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center mx-auto mb-4"
       >
-        <i class="fa-solid fa-certificate text-qcRed text-lg"></i>
+        <Icon name="certificate" class="text-qcRed text-lg" />
       </div>
       <p class="text-sm text-gray-400 uppercase tracking-wider mb-1">RSIN</p>
       <p class="text-lg font-bold text-qcBlack tracking-wide">857242933</p>

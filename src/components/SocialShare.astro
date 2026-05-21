@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { useTranslations, type Lang } from "../i18n";
 
 interface Props {
@@ -61,7 +62,7 @@ const btnClass =
     class:list={[btnClass, "hidden"]}
     aria-label={t("share.native")}
   >
-    <i class="fa-solid fa-share-nodes"></i>
+    <Icon name="share-nodes" />
   </button>
   {
     networks.map((n) => (
@@ -72,7 +73,7 @@ const btnClass =
         class={btnClass}
         aria-label={n.label}
       >
-        <i class={n.icon} />
+        <Icon name={n.icon} />
       </a>
     ))
   }
@@ -82,7 +83,8 @@ const btnClass =
     class={btnClass}
     aria-label={t("share.copyLink")}
   >
-    <i class="fa-solid fa-link"></i>
+    <Icon name="link" class="share-copy-link" />
+    <Icon name="check" class="share-copy-done hidden" />
   </button>
 </div>
 
@@ -112,16 +114,17 @@ const btnClass =
       // Copy link — universal fallback, with a brief checkmark confirmation.
       const copyBtn =
         root.querySelector<HTMLButtonElement>("[data-share-copy]");
-      const copyIcon = copyBtn?.querySelector("i");
       copyBtn?.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(url);
-          if (copyIcon) {
-            copyIcon.className = "fa-solid fa-check";
-            setTimeout(() => {
-              copyIcon.className = "fa-solid fa-link";
-            }, 1500);
-          }
+          const linkIcon = copyBtn.querySelector(".share-copy-link");
+          const doneIcon = copyBtn.querySelector(".share-copy-done");
+          linkIcon?.classList.add("hidden");
+          doneIcon?.classList.remove("hidden");
+          setTimeout(() => {
+            linkIcon?.classList.remove("hidden");
+            doneIcon?.classList.add("hidden");
+          }, 1500);
         } catch {
           /* clipboard unavailable */
         }

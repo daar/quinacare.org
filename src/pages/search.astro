@@ -1,4 +1,5 @@
 ---
+import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
@@ -28,9 +29,10 @@ const t = useTranslations(lang);
       </div>
       <div class="mt-10">
         <div class="relative">
-          <i
-            class="fa-solid fa-magnifying-glass absolute left-0 top-1/2 -translate-y-1/2 text-gray-300"
-          ></i>
+          <Icon
+            name="magnifying-glass"
+            class="absolute left-0 top-1/2 -translate-y-1/2 text-gray-300"
+          />
           <input
             id="search-page-input"
             type="text"
@@ -169,7 +171,7 @@ const t = useTranslations(lang);
                 hasImage
                   ? `<img src="${esc(item.meta.image)}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />`
                   : `<div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <i class="fa-solid fa-file-lines text-gray-300 text-3xl"></i>
+                      <Icon name="file-lines" class="text-gray-300 text-3xl" />
                     </div>`
               }
             </div>

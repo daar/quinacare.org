@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { Image } from "astro:assets";
 import {
   getLangFromUrl,
@@ -127,7 +128,7 @@ const numberLocale = localeMap[lang];
               ]}
             >
               <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <i class={`${tier.icon} text-6xl`} />
+                <Icon name={tier.icon} class="text-6xl" />
               </div>
               <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
                 {formatCurrency(tier.amount, cc, false)}
@@ -163,7 +164,7 @@ const numberLocale = localeMap[lang];
           <div
             class="w-14 h-14 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
           >
-            <i class="fa-solid fa-quote-left text-qcRed text-lg"></i>
+            <Icon name="quote-left" class="text-qcRed text-lg" />
           </div>
           <div>
             <h4 class="font-bold text-sm">{t("donate.quote1Author")}</h4>
@@ -184,7 +185,7 @@ const numberLocale = localeMap[lang];
           <div
             class="w-14 h-14 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
           >
-            <i class="fa-solid fa-quote-left text-qcRed text-lg"></i>
+            <Icon name="quote-left" class="text-qcRed text-lg" />
           </div>
           <div>
             <h4 class="font-bold text-sm">{t("donate.quote2Author")}</h4>
@@ -220,7 +221,7 @@ const numberLocale = localeMap[lang];
             <div
               class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
             >
-              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+              <Icon name="check" class="text-qcRed text-xs" />
             </div>
             <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
@@ -235,7 +236,7 @@ const numberLocale = localeMap[lang];
             <div
               class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
             >
-              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+              <Icon name="check" class="text-qcRed text-xs" />
             </div>
             <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
@@ -250,7 +251,7 @@ const numberLocale = localeMap[lang];
             <div
               class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
             >
-              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+              <Icon name="check" class="text-qcRed text-xs" />
             </div>
             <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
@@ -265,7 +266,7 @@ const numberLocale = localeMap[lang];
             <div
               class="w-8 h-8 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 mt-0.5"
             >
-              <i class="fa-solid fa-check text-qcRed text-xs"></i>
+              <Icon name="check" class="text-qcRed text-xs" />
             </div>
             <p class="qc-body leading-relaxed">
               <strong class="text-qcBlack"
@@ -333,7 +334,7 @@ const numberLocale = localeMap[lang];
     <div
       class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8"
     >
-      <i class="fa-solid fa-check text-green-600 text-3xl"></i>
+      <Icon name="check" class="text-green-600 text-3xl" />
     </div>
     <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">
       {t("donate.thankYouTitle")}

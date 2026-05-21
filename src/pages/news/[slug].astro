@@ -1,4 +1,5 @@
 ---
+import Icon from "../../components/Icon.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import Nav from "../../components/Nav.astro";
@@ -75,12 +76,6 @@ function getNewsPath(slug: string): string {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-      integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS"
-      crossorigin="anonymous"
-    />
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
@@ -265,7 +260,7 @@ function getNewsPath(slug: string): string {
                     />
                   ) : (
                     <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <i class="fa-solid fa-newspaper text-gray-300 text-2xl" />
+                      <Icon name="newspaper" class="text-gray-300 text-2xl" />
                     </div>
                   )}
                 </div>
@@ -293,7 +288,7 @@ function getNewsPath(slug: string): string {
                     />
                   ) : (
                     <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <i class="fa-solid fa-newspaper text-gray-300 text-2xl" />
+                      <Icon name="newspaper" class="text-gray-300 text-2xl" />
                     </div>
                   )}
                 </div>
