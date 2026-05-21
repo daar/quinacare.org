@@ -1,0 +1,130 @@
+---
+import { useTranslations, type Lang } from "../i18n";
+
+interface Props {
+  /** Absolute URL of the page being shared. */
+  url: string;
+  /** Title used as the share text / subject. */
+  title: string;
+  /** Layout direction of the button group. */
+  orientation?: "horizontal" | "vertical";
+  lang?: Lang;
+}
+
+const { url, title, orientation = "horizontal", lang = "nl" } = Astro.props;
+const t = useTranslations(lang);
+
+// Share-intent URLs — each opens the network's composer with the
+// post/url pre-filled, so a click goes straight to "create a post".
+const shareText = `${title} ${url}`;
+const networks = [
+  {
+    label: t("share.facebook"),
+    icon: "fa-brands fa-facebook-f",
+    href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+  },
+  {
+    label: t("share.linkedin"),
+    icon: "fa-brands fa-linkedin-in",
+    href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+  },
+  {
+    label: t("share.whatsapp"),
+    icon: "fa-brands fa-whatsapp",
+    href: `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+  },
+  {
+    label: t("share.email"),
+    icon: "fa-solid fa-envelope",
+    href: `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${title}\n\n${url}\n\n— Quina Care`)}`,
+  },
+];
+
+const btnClass =
+  "w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors";
+---
+
+<div
+  class:list={[
+    "flex gap-3",
+    orientation === "vertical"
+      ? "flex-col"
+      : "flex-row flex-wrap items-center justify-center",
+  ]}
+  data-social-share
+  data-share-url={url}
+  data-share-title={title}
+>
+  <button
+    type="button"
+    data-share-native
+    class:list={[btnClass, "hidden"]}
+    aria-label={t("share.native")}
+  >
+    <i class="fa-solid fa-share-nodes"></i>
+  </button>
+  {
+    networks.map((n) => (
+      <a
+        href={n.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={btnClass}
+        aria-label={n.label}
+      >
+        <i class={n.icon} />
+      </a>
+    ))
+  }
+  <button
+    type="button"
+    data-share-copy
+    class={btnClass}
+    aria-label={t("share.copyLink")}
+  >
+    <i class="fa-solid fa-link"></i>
+  </button>
+</div>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>("[data-social-share]")
+    .forEach((root) => {
+      const url = root.dataset.shareUrl || location.href;
+      const title = root.dataset.shareTitle || document.title;
+
+      // Web Share API — on supporting devices (mostly mobile) this opens
+      // the native share sheet, so the user can post to any installed app.
+      const nativeBtn = root.querySelector<HTMLButtonElement>(
+        "[data-share-native]",
+      );
+      if (nativeBtn && typeof navigator.share === "function") {
+        nativeBtn.classList.remove("hidden");
+        nativeBtn.addEventListener("click", async () => {
+          try {
+            await navigator.share({ title, url });
+          } catch {
+            /* the user dismissed the share sheet */
+          }
+        });
+      }
+
+      // Copy link — universal fallback, with a brief checkmark confirmation.
+      const copyBtn =
+        root.querySelector<HTMLButtonElement>("[data-share-copy]");
+      const copyIcon = copyBtn?.querySelector("i");
+      copyBtn?.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          if (copyIcon) {
+            copyIcon.className = "fa-solid fa-check";
+            setTimeout(() => {
+              copyIcon.className = "fa-solid fa-link";
+            }, 1500);
+          }
+        } catch {
+          /* clipboard unavailable */
+        }
+      });
+    });
+</script>

@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
+import SocialShare from "../../components/SocialShare.astro";
 import "/src/styles/global.css";
 import {
   useTranslations,
@@ -206,36 +207,12 @@ function getNewsPath(slug: string): string {
             {t("post.shareStory")}
           </span>
           <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
-          <a
-            href="https://www.instagram.com/quinacare/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-          >
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-          >
-            <i class="fa-brands fa-facebook-f"></i>
-          </a>
-          <a
-            href={`https://www.linkedin.com/shareArticle?mini=true&url=${Astro.url}&title=${encodeURIComponent(post.data.title)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-          >
-            <i class="fa-brands fa-linkedin-in"></i>
-          </a>
-          <a
-            href={`mailto:?subject=${encodeURIComponent(post.data.title)}&body=${encodeURIComponent(post.data.title + "\n\n" + Astro.url + "\n\n— Quina Care")}`}
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 hover:border-qcRed hover:text-qcRed transition"
-          >
-            <i class="fa-solid fa-envelope"></i>
-          </a>
+          <SocialShare
+            url={Astro.url.href}
+            title={post.data.title}
+            orientation="vertical"
+            lang={lang}
+          />
         </div>
       </aside>
 
@@ -243,6 +220,20 @@ function getNewsPath(slug: string): string {
         <article class="prose prose-article">
           <Content />
         </article>
+        <div
+          class="lg:hidden mt-12 pt-8 border-t border-gray-100"
+          data-pagefind-ignore
+        >
+          <span class="qc-meta !text-gray-300 mb-4 block"
+            >{t("post.shareStory")}</span
+          >
+          <SocialShare
+            url={Astro.url.href}
+            title={post.data.title}
+            orientation="horizontal"
+            lang={lang}
+          />
+        </div>
       </div>
     </main>
 

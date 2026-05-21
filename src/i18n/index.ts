@@ -28,6 +28,12 @@ export const ui = {
     // Post
     "post.readingTime": "min leestijd",
     "post.shareStory": "Deel dit verhaal",
+    "share.facebook": "Deel op Facebook",
+    "share.linkedin": "Deel op LinkedIn",
+    "share.whatsapp": "Deel via WhatsApp",
+    "share.email": "Deel via e-mail",
+    "share.copyLink": "Kopieer link",
+    "share.native": "Delen",
     "post.aboutAuthor": "Over de auteur",
     "post.authorBio":
       "Quina Care zet zich in voor medische zorg in de meest afgelegen gebieden van de Amazone.",
@@ -298,6 +304,12 @@ export const ui = {
     // Post
     "post.readingTime": "min read",
     "post.shareStory": "Share this story",
+    "share.facebook": "Share on Facebook",
+    "share.linkedin": "Share on LinkedIn",
+    "share.whatsapp": "Share on WhatsApp",
+    "share.email": "Share via email",
+    "share.copyLink": "Copy link",
+    "share.native": "Share",
     "post.aboutAuthor": "About the author",
     "post.authorBio":
       "Quina Care is committed to providing medical care in the most remote areas of the Amazon.",
@@ -569,6 +581,12 @@ export const ui = {
     // Post
     "post.readingTime": "min de lectura",
     "post.shareStory": "Comparte esta historia",
+    "share.facebook": "Compartir en Facebook",
+    "share.linkedin": "Compartir en LinkedIn",
+    "share.whatsapp": "Compartir por WhatsApp",
+    "share.email": "Compartir por correo",
+    "share.copyLink": "Copiar enlace",
+    "share.native": "Compartir",
     "post.aboutAuthor": "Sobre el autor",
     "post.authorBio":
       "Quina Care se dedica a brindar atención médica en las zonas más remotas del Amazonas.",
