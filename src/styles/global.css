@@ -324,6 +324,26 @@ mark {
   animation: submenuPulse 0.4s ease 0.3s;
 }
 
+/* Pulsing heart on the Donate button */
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+.qc-heartbeat {
+  /* sine-style ease-in-out for a smooth, breathing pulse */
+  animation: heartbeat 2s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .qc-heartbeat {
+    animation: none;
+  }
+}
+
 /* Submenu dropdown */
 .submenu-dropdown {
   opacity: 0;
