@@ -77,11 +77,10 @@ function formatDate(date: Date): string {
                 )}
               </div>
               <div class="qc-meta flex items-center gap-3 mb-3">
-                <span class="text-qcBlack">
-                  {post.data.author || "Team QC"}
+                <span class="flex items-center gap-1.5">
+                  <Icon name="calendar" />
+                  {formatDate(post.data.date)}
                 </span>
-                <span class="w-1 h-1 rounded-full bg-gray-200" />
-                <span>{formatDate(post.data.date)}</span>
               </div>
               <h3 class="text-xl font-bold group-hover:text-qcRed transition uppercase leading-tight">
                 {post.data.title}

@@ -117,11 +117,16 @@ function getNewsPath(slug: string): string {
         </h1>
 
         <div class="qc-meta flex items-center justify-center gap-4 flex-wrap">
-          <span class="text-qcBlack">{post.data.author || "Team QC"}</span>
+          <span class="flex items-center gap-1.5">
+            <Icon name="calendar" />
+            {formatDate(post.data.date)}
+          </span>
           <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-          <span>{formatDate(post.data.date)}</span>
-          <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-          <span>{getReadingTime(post.body || "")} {t("post.readingTime")}</span>
+          <span class="flex items-center gap-1.5">
+            <Icon name="clock" />
+            {getReadingTime(post.body || "")}
+            {t("post.readingTime")}
+          </span>
         </div>
       </div>
     </header>

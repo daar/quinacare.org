@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import Icon from "../../components/Icon.astro";
 import Layout from "../../layouts/Layout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
@@ -119,11 +120,10 @@ function getNewsPath(slug: string): string {
                 </div>
               </div>
               <div class="qc-meta flex items-center gap-3 mb-4">
-                <span class="text-qcBlack">
-                  {featuredPost.data.author || "Team QC"}
+                <span class="flex items-center gap-1.5">
+                  <Icon name="calendar" />
+                  {formatDate(featuredPost.data.date)}
                 </span>
-                <span class="w-1 h-1 rounded-full bg-gray-200" />
-                <span>{formatDate(featuredPost.data.date)}</span>
               </div>
               <h2 class="text-3xl md:text-4xl font-bold tracking-tighter leading-tight group-hover:text-qcRed transition uppercase">
                 {featuredPost.data.title}
@@ -205,11 +205,10 @@ function getNewsPath(slug: string): string {
                 </div>
               </div>
               <div class="qc-meta flex items-center gap-3 mb-3">
-                <span class="text-qcBlack">
-                  {post.data.author || "Team QC"}
+                <span class="flex items-center gap-1.5">
+                  <Icon name="calendar" />
+                  {formatDate(post.data.date)}
                 </span>
-                <span class="w-1 h-1 rounded-full bg-gray-200" />
-                <span>{formatDate(post.data.date)}</span>
               </div>
               <h3 class="text-xl font-bold group-hover:text-qcRed transition uppercase leading-tight">
                 {post.data.title}
