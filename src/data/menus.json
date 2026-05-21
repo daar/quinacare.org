@@ -1,5 +1,5 @@
 {
-  "_TODO": "re-enable navbar items — move entries from items_disabled back into items when ready",
+  "_TODO": "re-enable hidden navbar entries when ready — move items_disabled / submenu_disabled entries back into their arrays, and rename whatCanYouDo's \"cta_disabled\" back to \"cta\" to bring back the Donate button",
   "items": [
     {
       "id": "whatCanYouDo",
@@ -37,7 +37,7 @@
           "descriptionKey": "submenu.sponsorBookletDesc"
         }
       ],
-      "cta": {
+      "cta_disabled": {
         "labelKey": "nav.donate",
         "path": "/donate",
         "icon": "fa-solid fa-heart"
