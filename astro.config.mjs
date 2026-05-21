@@ -9,7 +9,7 @@ import netlify from "@astrojs/netlify";
 export default defineConfig({
   site: "https://quinacare.org",
   output: "static",
-  adapter: netlify(),
+  adapter: netlify({ imageCDN: false }),
   integrations: [markdoc(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
