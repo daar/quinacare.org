@@ -110,9 +110,18 @@ export const POST: APIRoute = async ({ request }) => {
   const webhookUrl = isLocal ? undefined : `${origin}/api/mollie/webhook`;
 
   const isRecurring = freq === "monthly" || freq === "yearly";
-  const description = isRecurring
-    ? `Quina Care ${freq} donation ${currencyConfig.symbol}${amount}`
-    : `Quina Care donation ${currencyConfig.symbol}${amount}`;
+  const amountLabel = `${currencyConfig.symbol}${amount}`;
+  const fundraiserTitle =
+    context === "fundraiser" && typeof metadata?.fundraiser_title === "string"
+      ? metadata.fundraiser_title.trim()
+      : "";
+  // For a fundraiser, lead with its name so the donor recognises the
+  // charge on their bank statement (which truncates long descriptions).
+  const description = fundraiserTitle
+    ? `${fundraiserTitle} - donation ${amountLabel}`
+    : isRecurring
+      ? `Quina Care ${freq} donation ${amountLabel}`
+      : `Quina Care donation ${amountLabel}`;
 
   // Insert pending donation in Turso
   let donationId: number | undefined;
