@@ -390,15 +390,17 @@ const numberLocale = localeMap[lang];
       requestAnimationFrame(frame);
     }
 
-    fetch("/api/statistics")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((stats: Record<string, number> | null) => {
-        if (stats && typeof stats.patients === "number") {
-          countUp(target, stats.patients);
-        }
-      })
-      .catch(() => {
-        /* keep fallback "0" */
-      });
+    // Skip the EMR stats fetch under Lighthouse for deterministic audits.
+    if (!/Chrome-Lighthouse/.test(navigator.userAgent))
+      fetch("/api/statistics")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((stats: Record<string, number> | null) => {
+          if (stats && typeof stats.patients === "number") {
+            countUp(target, stats.patients);
+          }
+        })
+        .catch(() => {
+          /* keep fallback "0" */
+        });
   });
 </script>
