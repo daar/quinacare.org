@@ -13,6 +13,8 @@ interface Props {
   context?: "donate" | "fundraiser";
   fundraiserSlug?: string;
   fundraiserTitle?: string;
+  fundraiserOrganizer?: string;
+  fundraiserExcerpt?: string;
 }
 
 const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
@@ -80,22 +82,45 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
   />
 
   <!-- Impact preview -->
-  <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
-    <span class="qc-label mb-1">{t("donate.impactLabel")}</span>
-    <p class="dfc-impact qc-body leading-relaxed">
-      {t("donate.impactGeneric")}
-    </p>
-    <span class="hidden" data-impact="consultation"
-      >{t("donation.consultationDesc")}</span
-    >
-    <span class="hidden" data-impact="prenatal"
-      >{t("donation.prenatalDesc")}</span
-    >
-    <span class="hidden" data-impact="surgery">{t("donation.surgeryDesc")}</span
-    >
-    <span class="hidden" data-impact="generic">{t("donate.impactGeneric")}</span
-    >
-  </div>
+  {
+    context === "fundraiser" ? (
+      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+        <p class="qc-body leading-relaxed">
+          {t("fundraise.impactLabel")}{" "}
+          <span class="font-bold text-qcRed">
+            {Astro.props.fundraiserOrganizer ||
+              Astro.props.fundraiserTitle ||
+              ""}
+          </span>
+          {Astro.props.fundraiserExcerpt && (
+            <>
+              {" — "}
+              <em>“{Astro.props.fundraiserExcerpt}”</em>
+            </>
+          )}
+        </p>
+      </div>
+    ) : (
+      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+        <span class="qc-label mb-1">{t("donate.impactLabel")}</span>
+        <p class="dfc-impact qc-body leading-relaxed">
+          {t("donate.impactGeneric")}
+        </p>
+        <span class="hidden" data-impact="consultation">
+          {t("donation.consultationDesc")}
+        </span>
+        <span class="hidden" data-impact="prenatal">
+          {t("donation.prenatalDesc")}
+        </span>
+        <span class="hidden" data-impact="surgery">
+          {t("donation.surgeryDesc")}
+        </span>
+        <span class="hidden" data-impact="generic">
+          {t("donate.impactGeneric")}
+        </span>
+      </div>
+    )
+  }
 
   <!-- Payment methods -->
   <div class="mb-6">
@@ -234,7 +259,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         const methodsEl = card.querySelector<HTMLElement>(".dfc-methods")!;
         const submitBtn = card.querySelector<HTMLButtonElement>(".dfc-submit")!;
         const submitAmount = card.querySelector<HTMLElement>(".dfc-amount")!;
-        const impactText = card.querySelector<HTMLElement>(".dfc-impact")!;
+        const impactText = card.querySelector<HTMLElement>(".dfc-impact");
         const submitIcon = card.querySelector<HTMLElement>(".dfc-icon")!;
 
         let frequency = "one-time";
@@ -340,7 +365,8 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           const span = card.querySelector(
             `[data-impact="${impactKey}"]`,
           ) as HTMLElement | null;
-          if (span) impactText.textContent = span.textContent || "";
+          if (impactText && span)
+            impactText.textContent = span.textContent || "";
         }
 
         amountGrid.addEventListener("click", (e) => {

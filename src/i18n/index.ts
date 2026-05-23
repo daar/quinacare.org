@@ -241,6 +241,7 @@ export const ui = {
     "fundraise.noFundraisers": "Er zijn momenteel geen sponsor acties.",
     "fundraise.qrTitle": "Deel deze actie",
     "fundraise.qrDownload": "Download QR-code",
+    "fundraise.impactLabel": "Met deze donatie steun je de sponsoractie van",
     // Projects section
     "projects.title": "PROJECTEN",
     "projects.subtitle": "Onze Projecten",
@@ -517,6 +518,8 @@ export const ui = {
     "fundraise.noFundraisers": "There are currently no fundraising campaigns.",
     "fundraise.qrTitle": "Share this fundraiser",
     "fundraise.qrDownload": "Download QR code",
+    "fundraise.impactLabel":
+      "With this donation you are supporting the fundraiser from",
     // Projects section
     "projects.title": "PROJECTS",
     "projects.subtitle": "Our Projects",
@@ -796,6 +799,7 @@ export const ui = {
     "fundraise.noFundraisers": "Actualmente no hay campañas de recaudación.",
     "fundraise.qrTitle": "Comparte esta campaña",
     "fundraise.qrDownload": "Descargar código QR",
+    "fundraise.impactLabel": "Con esta donación apoyas la campaña de",
     // Projects section
     "projects.title": "PROYECTOS",
     "projects.subtitle": "Nuestros Proyectos",

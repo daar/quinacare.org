@@ -345,6 +345,8 @@ const qrDataUri = await generateQrDataUri(shareUrl);
       context="fundraiser"
       fundraiserSlug={entry.data.slug}
       fundraiserTitle={entry.data.title}
+      fundraiserOrganizer={entry.data.organizer}
+      fundraiserExcerpt={entry.data.excerpt}
     />
   </DonationModal>
 
