@@ -264,7 +264,7 @@ export const ui = {
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
       "Op zondag 18 oktober lopen we wereldwijd tegelijk voor de lopende kosten van Hospital San Miguel in de Amazone. Samen met de mensen die daar wonen.",
-    "putumayoLoop.signUpCta": "Meld je aan",
+    "putumayoLoop.signUpCta": "Loop met ons mee",
     "putumayoLoop.donateCta": "Doneer nu",
     "putumayoLoop.shareCta": "Deel deze actie",
     "putumayoLoop.runDateLabel": "Loopdatum",
@@ -640,7 +640,7 @@ export const ui = {
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
       "On Sunday October 18 we run together around the world for the running costs of Hospital San Miguel in the Amazon. Together with the people who live there.",
-    "putumayoLoop.signUpCta": "Sign up",
+    "putumayoLoop.signUpCta": "Run with us",
     "putumayoLoop.donateCta": "Donate now",
     "putumayoLoop.shareCta": "Share this campaign",
     "putumayoLoop.runDateLabel": "Run date",
@@ -1016,7 +1016,7 @@ export const ui = {
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
       "El domingo 18 de octubre corremos juntos en todo el mundo por los gastos operativos del Hospital San Miguel en la Amazonía. Junto con la gente que vive allí.",
-    "putumayoLoop.signUpCta": "Inscríbete",
+    "putumayoLoop.signUpCta": "Corre con nosotros",
     "putumayoLoop.donateCta": "Dona ahora",
     "putumayoLoop.shareCta": "Comparte esta campaña",
     "putumayoLoop.runDateLabel": "Fecha de la carrera",
