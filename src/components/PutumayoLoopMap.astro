@@ -1,0 +1,135 @@
+---
+import type { Hub, Subscriber } from "../data/putumayoLoop";
+import type { Lang } from "../i18n";
+import { useTranslations } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  hubs: Hub[];
+  subscribers: Subscriber[];
+}
+const { lang, hubs, subscribers } = Astro.props;
+const t = useTranslations(lang);
+
+// Counts surfaced in the SSR overlay so the pill is correct without JS.
+const runnerCount = subscribers.length;
+
+// Bridge the SSR data to the client-side module script (Astro processes
+// <script> tags in isolation and does not give them access to frontmatter
+// variables directly).
+const mapData = JSON.stringify({ hubs, subscribers });
+---
+
+<div
+  class="pl-map-wrapper relative rounded-xl overflow-hidden border border-gray-100 bg-gray-50 h-full"
+  style="min-height: 420px;"
+>
+  <div id="putumayo-loop-map" class="absolute inset-0 z-[1]"></div>
+
+  <div
+    class="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur px-3 py-2 rounded-md shadow-md"
+  >
+    <span class="qc-meta block !text-qcBlack">
+      <span class="font-bold text-qcRed">{runnerCount}</span>{" "}
+      {t("putumayoLoop.runnersWorldwide")}
+    </span>
+  </div>
+
+  <script
+    id="putumayo-loop-map-data"
+    type="application/json"
+    set:html={mapData}
+  />
+</div>
+
+<script>
+  import L from "leaflet";
+  import "leaflet/dist/leaflet.css";
+
+  interface Hub {
+    id: string;
+    name: string;
+    city: string;
+    country: string;
+    coords: [number, number];
+  }
+  interface Subscriber {
+    firstName: string;
+    lastName: string;
+    hubId?: string;
+    coords: [number, number];
+  }
+
+  function initPutumayoLoopMap() {
+    const el = document.getElementById("putumayo-loop-map");
+    const dataEl = document.getElementById("putumayo-loop-map-data");
+    if (!el || !dataEl) return;
+    if ((el as HTMLElement).dataset.initialized) return;
+    (el as HTMLElement).dataset.initialized = "1";
+
+    const { hubs, subscribers } = JSON.parse(dataEl.textContent || "{}") as {
+      hubs: Hub[];
+      subscribers: Subscriber[];
+    };
+
+    const map = L.map(el, {
+      scrollWheelZoom: false,
+      worldCopyJump: true,
+      zoomControl: true,
+    }).setView([25, 0], 2);
+
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 19,
+      },
+    ).addTo(map);
+
+    const hubCounts: Record<string, number> = {};
+    for (const sub of subscribers) {
+      if (sub.hubId) hubCounts[sub.hubId] = (hubCounts[sub.hubId] || 0) + 1;
+    }
+
+    const hubIcon = (count: number) =>
+      L.divIcon({
+        className: "pl-hub-marker",
+        html: `<div style="background:#ee172c;color:#fff;border-radius:9999px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(238,23,44,.35);border:3px solid #fff;">${count}</div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+      });
+
+    const runnerIcon = L.divIcon({
+      className: "pl-runner-marker",
+      html: '<div style="width:10px;height:10px;border-radius:50%;background:#ee172c;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.2);"></div>',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    });
+
+    for (const hub of hubs) {
+      L.marker(hub.coords, { icon: hubIcon(hubCounts[hub.id] || 0) })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}<br><span style="color:#ee172c;font-weight:700;">${hubCounts[hub.id] || 0}</span> runners`,
+        );
+    }
+
+    for (const sub of subscribers) {
+      if (!sub.hubId) {
+        L.marker(sub.coords, { icon: runnerIcon })
+          .addTo(map)
+          .bindPopup(
+            `<strong>${sub.firstName} ${sub.lastName}</strong><br><em>Individual runner</em>`,
+          );
+      }
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPutumayoLoopMap);
+  } else {
+    initPutumayoLoopMap();
+  }
+</script>

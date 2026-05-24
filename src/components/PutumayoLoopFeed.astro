@@ -1,0 +1,75 @@
+---
+import Icon from "./Icon.astro";
+import type { Hub, Subscriber } from "../data/putumayoLoop";
+import { useTranslations, getDateLocale, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  hubs: Hub[];
+  subscribers: Subscriber[];
+}
+const { lang, hubs, subscribers } = Astro.props;
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+const hubsById = new Map(hubs.map((h) => [h.id, h]));
+const sorted = [...subscribers].sort(
+  (a, b) => new Date(b.signedUpAt).getTime() - new Date(a.signedUpAt).getTime(),
+);
+
+function relTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  const now = Date.now();
+  const diffMin = Math.round((now - then) / (1000 * 60));
+  const rtf = new Intl.RelativeTimeFormat(dateLocale, { numeric: "auto" });
+  if (diffMin < 60) return rtf.format(-diffMin, "minute");
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return rtf.format(-diffH, "hour");
+  return rtf.format(-Math.round(diffH / 24), "day");
+}
+---
+
+<div
+  class="rounded-xl border border-gray-100 bg-white shadow-sm h-full flex flex-col"
+  style="min-height: 420px;"
+>
+  <div class="flex items-center justify-between p-4 border-b border-gray-100">
+    <span class="qc-label">{t("putumayoLoop.latestSignups")}</span>
+    <span
+      class="qc-meta !text-qcRed font-bold flex items-center gap-1"
+      title="total runners"
+    >
+      <Icon name="heart" class="text-xs" />
+      {subscribers.length}
+    </span>
+  </div>
+  <ul
+    class="flex-1 overflow-y-auto divide-y divide-gray-50"
+    style="max-height: 360px;"
+  >
+    {
+      sorted.map((s) => {
+        const hub = s.hubId ? hubsById.get(s.hubId) : null;
+        const text = hub
+          ? t("putumayoLoop.signedUpInHub")
+              .replace("{name}", `${s.firstName}`)
+              .replace("{hub}", hub.name)
+          : t("putumayoLoop.signedUpIndividual").replace(
+              "{name}",
+              `${s.firstName}`,
+            );
+        return (
+          <li class="flex items-start gap-3 px-4 py-3">
+            <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
+              <Icon name="heart" class="text-xs" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="qc-body text-sm leading-snug">{text}</p>
+              <p class="qc-meta mt-0.5">{relTime(s.signedUpAt)}</p>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>

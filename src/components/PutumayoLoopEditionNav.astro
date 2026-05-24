@@ -1,0 +1,53 @@
+---
+import { getAllEditions } from "../data/putumayoLoop";
+import { getLocalizedPath, useTranslations, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  currentYear: number;
+}
+const { lang, currentYear } = Astro.props;
+const t = useTranslations(lang);
+
+const all = getAllEditions();
+
+function pathFor(year: number): string {
+  // Active/upcoming editions live at the root; past editions under /<year>.
+  const edition = all.find((e) => e.year === year);
+  if (!edition) return getLocalizedPath("/putumayo-loop", lang);
+  if (edition.status === "past") {
+    return getLocalizedPath(`/putumayo-loop/${edition.slug}`, lang);
+  }
+  return getLocalizedPath("/putumayo-loop", lang);
+}
+---
+
+<nav
+  aria-label={t("putumayoLoop.editionsLabel")}
+  class="flex flex-wrap items-center gap-2"
+>
+  <span class="qc-label mr-2">{t("putumayoLoop.editionsLabel")}</span>
+  {
+    all.map((e) => {
+      const isCurrent = e.year === currentYear;
+      const isPast = e.status === "past";
+      return (
+        <a
+          href={pathFor(e.year)}
+          aria-current={isCurrent ? "page" : undefined}
+          class:list={[
+            "qc-meta inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition",
+            isCurrent
+              ? "bg-qcRed text-white border-qcRed !text-white"
+              : "bg-white text-qcBlack border-gray-200 hover:border-qcRed hover:text-qcRed",
+          ]}
+        >
+          {e.year}
+          {isCurrent && !isPast && (
+            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+          )}
+        </a>
+      );
+    })
+  }
+</nav>
