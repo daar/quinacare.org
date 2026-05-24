@@ -286,7 +286,7 @@ export const ui = {
     "putumayoLoop.hubsTitle": "Onze hubs",
     "putumayoLoop.hubsSubtitle":
       "Loop mee op één van deze locaties of organiseer je eigen run.",
-    "putumayoLoop.hubCaptain": "Hub captain",
+    "putumayoLoop.hubCaptain": "Hub organisator",
     "putumayoLoop.runnersInHub": "lopers",
     "putumayoLoop.organizeHubTitle": "Wil je zelf een hub organiseren?",
     "putumayoLoop.organizeHubBody":
@@ -647,7 +647,7 @@ export const ui = {
     "putumayoLoop.hubsTitle": "Our hubs",
     "putumayoLoop.hubsSubtitle":
       "Run with us at one of these locations, or organize your own.",
-    "putumayoLoop.hubCaptain": "Hub captain",
+    "putumayoLoop.hubCaptain": "Hub organizer",
     "putumayoLoop.runnersInHub": "runners",
     "putumayoLoop.organizeHubTitle": "Want to organize a hub yourself?",
     "putumayoLoop.organizeHubBody":
@@ -1009,7 +1009,7 @@ export const ui = {
     "putumayoLoop.hubsTitle": "Nuestros hubs",
     "putumayoLoop.hubsSubtitle":
       "Corre con nosotros en una de estas ubicaciones u organiza la tuya.",
-    "putumayoLoop.hubCaptain": "Capitán del hub",
+    "putumayoLoop.hubCaptain": "Organizador del hub",
     "putumayoLoop.runnersInHub": "corredores",
     "putumayoLoop.organizeHubTitle": "¿Quieres organizar un hub?",
     "putumayoLoop.organizeHubBody":
