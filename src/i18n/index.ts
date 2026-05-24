@@ -326,6 +326,8 @@ export const ui = {
       "De volgende editie is gepland. Doe mee en zet je in voor Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "Bekijk de huidige editie",
     "putumayoLoop.videoTitle": "Bekijk de aftermovie",
+    "putumayoLoop.participantsMapLabel": "Deelnemers",
+    "putumayoLoop.participantsMapTitle": "Waar er gelopen werd",
     "putumayoLoop.story2025":
       "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
     "submenu.joinTeam": "Word vrijwilliger",
@@ -675,6 +677,8 @@ export const ui = {
       "The next edition is on its way. Join in and run for Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "View the current edition",
     "putumayoLoop.videoTitle": "Watch the aftermovie",
+    "putumayoLoop.participantsMapLabel": "Participants",
+    "putumayoLoop.participantsMapTitle": "Where the running happened",
     "putumayoLoop.story2025":
       "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
     "submenu.joinTeam": "Join Our Team",
@@ -1025,6 +1029,8 @@ export const ui = {
       "La próxima edición ya está en marcha. Súmate y corre por el Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "Ver la edición actual",
     "putumayoLoop.videoTitle": "Mira el aftermovie",
+    "putumayoLoop.participantsMapLabel": "Participantes",
+    "putumayoLoop.participantsMapTitle": "Dónde se corrió",
     "putumayoLoop.story2025":
       "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
     "submenu.joinTeam": "Únete al equipo",

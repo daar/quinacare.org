@@ -198,7 +198,88 @@ export const editions: Edition[] = [
         coords: [51.2802, 4.0521],
       },
     ],
-    subscribers: [],
+    subscribers: [
+      {
+        id: "p25-1",
+        firstName: "Liam",
+        lastName: "Carter",
+        coords: [40.7128, -74.006],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // New York
+      {
+        id: "p25-2",
+        firstName: "María",
+        lastName: "González",
+        hubId: "putumayo",
+        coords: [0.118, -75.91],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Puerto el Carmen
+      {
+        id: "p25-3",
+        firstName: "Anouk",
+        lastName: "de Vries",
+        hubId: "den-haag",
+        coords: [52.0705, 4.3007],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Den Haag
+      {
+        id: "p25-4",
+        firstName: "Bram",
+        lastName: "Veenstra",
+        coords: [53.2194, 6.5665],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Groningen
+      {
+        id: "p25-5",
+        firstName: "Lotte",
+        lastName: "van Dijk",
+        coords: [52.3676, 4.9041],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Amsterdam
+      {
+        id: "p25-6",
+        firstName: "Camille",
+        lastName: "Dubois",
+        coords: [48.8566, 2.3522],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Paris
+      {
+        id: "p25-7",
+        firstName: "Tom",
+        lastName: "Janssen",
+        coords: [51.4416, 5.4697],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Eindhoven
+      {
+        id: "p25-8",
+        firstName: "Wei Lin",
+        lastName: "Tan",
+        coords: [1.3521, 103.8198],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Singapore
+      {
+        id: "p25-9",
+        firstName: "Niran",
+        lastName: "Suwan",
+        coords: [13.7563, 100.5018],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Thailand (Bangkok)
+      {
+        id: "p25-10",
+        firstName: "Sanne",
+        lastName: "Bakker",
+        coords: [52.1561, 5.3878],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Amersfoort
+      {
+        id: "p25-11",
+        firstName: "Karin",
+        lastName: "Martens",
+        hubId: "hulst",
+        coords: [51.2802, 4.0521],
+        signedUpAt: "2025-10-26T13:00:00Z",
+      }, // Hulst
+    ],
     donations: { raised: 3000, target: 3000, donors: 62, currency: "EUR" },
     totalRunners: 150,
     storyKey: "putumayoLoop.story2025",
