@@ -159,7 +159,7 @@ const t = useTranslations(lang);
               {t("putumayoLoop.submitSignup")}
             </span>
             <span
-              class="signup-btn-sending hidden inline-flex items-center gap-2"
+              class="signup-btn-sending !hidden inline-flex items-center gap-2"
             >
               <Icon name="spinner" class="animate-spin" />
               {t("putumayoLoop.hubContactSending")}
@@ -266,8 +266,8 @@ const t = useTranslations(lang);
         form?.addEventListener("submit", async (e) => {
           e.preventDefault();
           errorEl?.classList.add("hidden");
-          btnText?.classList.add("hidden");
-          btnSending?.classList.remove("hidden");
+          btnText?.classList.add("!hidden");
+          btnSending?.classList.remove("!hidden");
           if (submitBtn) submitBtn.disabled = true;
 
           const data = new FormData(form);
@@ -293,8 +293,8 @@ const t = useTranslations(lang);
             errorEl?.classList.remove("hidden");
           } finally {
             if (submitBtn) submitBtn.disabled = false;
-            btnText?.classList.remove("hidden");
-            btnSending?.classList.add("hidden");
+            btnText?.classList.remove("!hidden");
+            btnSending?.classList.add("!hidden");
           }
         });
       });
