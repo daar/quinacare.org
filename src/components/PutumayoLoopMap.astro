@@ -7,17 +7,31 @@ interface Props {
   lang: Lang;
   hubs: Hub[];
   subscribers: Subscriber[];
+  /**
+   * Anonymous mode: hide hub badges, aggregate runner pins by location,
+   * and show counts only (no names). Used for past edition pages where
+   * we only have a participant tally per city.
+   */
+  anonymous?: boolean;
 }
-const { lang, hubs, subscribers } = Astro.props;
+const { lang, hubs, subscribers, anonymous = false } = Astro.props;
 const t = useTranslations(lang);
 
-// Counts surfaced in the SSR overlay so the pill is correct without JS.
-const runnerCount = subscribers.length;
+// Sum the `count` field per subscriber (defaults to 1) — for past
+// editions a single entry stands in for many runners at one location.
+const runnerCount = subscribers.reduce((s, x) => s + (x.count ?? 1), 0);
+const runnerSingular = t("putumayoLoop.runnerSingular");
+const runnerPlural = t("putumayoLoop.runnerPlural");
 
 // Bridge the SSR data to the client-side module script (Astro processes
 // <script> tags in isolation and does not give them access to frontmatter
 // variables directly).
-const mapData = JSON.stringify({ hubs, subscribers });
+const mapData = JSON.stringify({
+  hubs,
+  subscribers,
+  anonymous,
+  i18n: { runnerSingular, runnerPlural },
+});
 ---
 
 <div
@@ -54,10 +68,17 @@ const mapData = JSON.stringify({ hubs, subscribers });
     coords: [number, number];
   }
   interface Subscriber {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     hubId?: string;
     coords: [number, number];
+    count?: number;
+  }
+  interface MapPayload {
+    hubs: Hub[];
+    subscribers: Subscriber[];
+    anonymous?: boolean;
+    i18n: { runnerSingular: string; runnerPlural: string };
   }
 
   function initPutumayoLoopMap() {
@@ -67,10 +88,9 @@ const mapData = JSON.stringify({ hubs, subscribers });
     if ((el as HTMLElement).dataset.initialized) return;
     (el as HTMLElement).dataset.initialized = "1";
 
-    const { hubs, subscribers } = JSON.parse(dataEl.textContent || "{}") as {
-      hubs: Hub[];
-      subscribers: Subscriber[];
-    };
+    const { hubs, subscribers, anonymous, i18n } = JSON.parse(
+      dataEl.textContent || "{}",
+    ) as MapPayload;
 
     const map = L.map(el, {
       scrollWheelZoom: false,
@@ -88,12 +108,7 @@ const mapData = JSON.stringify({ hubs, subscribers });
       },
     ).addTo(map);
 
-    const hubCounts: Record<string, number> = {};
-    for (const sub of subscribers) {
-      if (sub.hubId) hubCounts[sub.hubId] = (hubCounts[sub.hubId] || 0) + 1;
-    }
-
-    const hubIcon = (count: number) =>
+    const badge = (count: number) =>
       L.divIcon({
         className: "pl-hub-marker",
         html: `<div style="background:#ee172c;color:#fff;border-radius:9999px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(238,23,44,.35);border:3px solid #fff;">${count}</div>`,
@@ -101,24 +116,57 @@ const mapData = JSON.stringify({ hubs, subscribers });
         iconAnchor: [20, 20],
       });
 
-    const runnerIcon = L.divIcon({
+    const dot = L.divIcon({
       className: "pl-runner-marker",
       html: '<div style="width:10px;height:10px;border-radius:50%;background:#ee172c;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.2);"></div>',
       iconSize: [12, 12],
       iconAnchor: [6, 6],
     });
 
+    const runnersLabel = (n: number) =>
+      n === 1 ? i18n.runnerSingular : i18n.runnerPlural;
+
+    if (anonymous) {
+      // Aggregate by rounded coords so multiple participants in the same
+      // city collapse to a single badge. `count` (default 1) lets a
+      // single subscriber entry stand in for N runners at one location.
+      const buckets = new Map<
+        string,
+        { lat: number; lng: number; n: number }
+      >();
+      for (const s of subscribers) {
+        const n = s.count ?? 1;
+        const key = `${s.coords[0].toFixed(2)},${s.coords[1].toFixed(2)}`;
+        const cur = buckets.get(key);
+        if (cur) cur.n += n;
+        else buckets.set(key, { lat: s.coords[0], lng: s.coords[1], n });
+      }
+      for (const b of buckets.values()) {
+        L.marker([b.lat, b.lng], { icon: badge(b.n) })
+          .addTo(map)
+          .bindPopup(
+            `<strong style="color:#ee172c;">${b.n}</strong> ${runnersLabel(b.n)}`,
+          );
+      }
+      return;
+    }
+
+    const hubCounts: Record<string, number> = {};
+    for (const sub of subscribers) {
+      if (sub.hubId) hubCounts[sub.hubId] = (hubCounts[sub.hubId] || 0) + 1;
+    }
+
     for (const hub of hubs) {
-      L.marker(hub.coords, { icon: hubIcon(hubCounts[hub.id] || 0) })
+      L.marker(hub.coords, { icon: badge(hubCounts[hub.id] || 0) })
         .addTo(map)
         .bindPopup(
-          `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}<br><span style="color:#ee172c;font-weight:700;">${hubCounts[hub.id] || 0}</span> runners`,
+          `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}<br><span style="color:#ee172c;font-weight:700;">${hubCounts[hub.id] || 0}</span> ${runnersLabel(hubCounts[hub.id] || 0)}`,
         );
     }
 
     for (const sub of subscribers) {
       if (!sub.hubId) {
-        L.marker(sub.coords, { icon: runnerIcon })
+        L.marker(sub.coords, { icon: dot })
           .addTo(map)
           .bindPopup(
             `<strong>${sub.firstName} ${sub.lastName}</strong><br><em>Individual runner</em>`,

@@ -67,6 +67,11 @@ const currentLink = getLocalizedPath("/putumayo-loop", lang);
 const story = edition.storyKey
   ? t(edition.storyKey as Parameters<typeof t>[0])
   : "";
+
+// Sum the per-location `count` (defaults to 1) — for past editions one
+// entry stands in for many runners at one location.
+const sumCount = subscribers.reduce((s, x) => s + (x.count ?? 1), 0);
+const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
 ---
 
 <Layout title={`${edition.title} | Quina Care`} lang={lang}>
@@ -122,7 +127,7 @@ const story = edition.storyKey
           {t("putumayoLoop.finalRunners")}
         </span>
         <div class="text-4xl font-bold tracking-tighter text-qcRed">
-          {edition.totalRunners ?? "—"}
+          {totalRunners ?? "—"}
         </div>
         <div class="qc-meta mt-1">{t("putumayoLoop.acrossHubs")}</div>
       </div>
@@ -170,31 +175,33 @@ const story = edition.storyKey
     )
   }
 
-  <!-- Hubs that participated -->
-  <section class="max-w-[1600px] mx-auto px-6 pb-16">
-    <div class="mb-8">
-      <span class="qc-label mb-2 block">
-        {t("putumayoLoop.participatingHubs")}
-      </span>
-      <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase">
-        {t("putumayoLoop.participatingHubs")}
-      </h2>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {
-        hubs.map((hub) => (
-          <article class="rounded-xl border border-gray-100 bg-gray-50 p-5">
-            <h3 class="text-lg font-bold tracking-tighter uppercase mb-1">
-              {hub.name}
-            </h3>
-            <p class="qc-meta">
-              {hub.city}, {hub.country}
-            </p>
-          </article>
-        ))
-      }
-    </div>
-  </section>
+  <!-- Hubs that participated (only when the edition has hubs) -->
+  {
+    hubs.length > 0 && (
+      <section class="max-w-[1600px] mx-auto px-6 pb-16">
+        <div class="mb-8">
+          <span class="qc-label mb-2 block">
+            {t("putumayoLoop.participatingHubs")}
+          </span>
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase">
+            {t("putumayoLoop.participatingHubs")}
+          </h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {hubs.map((hub) => (
+            <article class="rounded-xl border border-gray-100 bg-gray-50 p-5">
+              <h3 class="text-lg font-bold tracking-tighter uppercase mb-1">
+                {hub.name}
+              </h3>
+              <p class="qc-meta">
+                {hub.city}, {hub.country}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   <!-- Participants map -->
   {
@@ -208,7 +215,12 @@ const story = edition.storyKey
             {t("putumayoLoop.participantsMapTitle")}
           </h2>
         </div>
-        <PutumayoLoopMap lang={lang} hubs={hubs} subscribers={subscribers} />
+        <PutumayoLoopMap
+          lang={lang}
+          hubs={hubs}
+          subscribers={subscribers}
+          anonymous
+        />
       </section>
     )
   }

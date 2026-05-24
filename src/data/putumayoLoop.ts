@@ -14,11 +14,16 @@ export interface Hub {
 
 export interface Subscriber {
   id: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   hubId?: string; // empty / undefined = individual runner
   coords: [number, number];
   signedUpAt: string; // ISO timestamp
+  /**
+   * For past editions where we only have aggregate per-city counts,
+   * this entry stands in for N runners at one location. Defaults to 1.
+   */
+  count?: number;
 }
 
 export interface DonationStats {
@@ -175,113 +180,78 @@ export const editions: Edition[] = [
     title: "Putumayo Loop 2025",
     runDate: "2025-10-26",
     status: "past",
-    hubs: [
-      {
-        id: "putumayo",
-        name: "Putumayo",
-        city: "Puerto el Carmen",
-        country: "Ecuador",
-        coords: [0.118, -75.91],
-      },
-      {
-        id: "den-haag",
-        name: "Den Haag",
-        city: "Den Haag",
-        country: "Nederland",
-        coords: [52.0705, 4.3007],
-      },
-      {
-        id: "hulst",
-        name: "Hulst",
-        city: "Hulst",
-        country: "Nederland",
-        coords: [51.2802, 4.0521],
-      },
-    ],
+    hubs: [],
+    // Aggregate counts per location (no individual names tracked for
+    // past editions). totalRunners is derived from the sum of `count`.
     subscribers: [
       {
-        id: "p25-1",
-        firstName: "Liam",
-        lastName: "Carter",
-        coords: [40.7128, -74.006],
-        signedUpAt: "2025-10-26T13:00:00Z",
-      }, // New York
-      {
-        id: "p25-2",
-        firstName: "María",
-        lastName: "González",
-        hubId: "putumayo",
+        id: "p25-puertocarmen",
         coords: [0.118, -75.91],
         signedUpAt: "2025-10-26T13:00:00Z",
+        count: 150,
       }, // Puerto el Carmen
       {
-        id: "p25-3",
-        firstName: "Anouk",
-        lastName: "de Vries",
-        hubId: "den-haag",
+        id: "p25-den-haag",
         coords: [52.0705, 4.3007],
         signedUpAt: "2025-10-26T13:00:00Z",
+        count: 4,
       }, // Den Haag
       {
-        id: "p25-4",
-        firstName: "Bram",
-        lastName: "Veenstra",
+        id: "p25-groningen",
         coords: [53.2194, 6.5665],
         signedUpAt: "2025-10-26T13:00:00Z",
+        count: 4,
       }, // Groningen
       {
-        id: "p25-5",
-        firstName: "Lotte",
-        lastName: "van Dijk",
-        coords: [52.3676, 4.9041],
-        signedUpAt: "2025-10-26T13:00:00Z",
-      }, // Amsterdam
-      {
-        id: "p25-6",
-        firstName: "Camille",
-        lastName: "Dubois",
-        coords: [48.8566, 2.3522],
-        signedUpAt: "2025-10-26T13:00:00Z",
-      }, // Paris
-      {
-        id: "p25-7",
-        firstName: "Tom",
-        lastName: "Janssen",
-        coords: [51.4416, 5.4697],
-        signedUpAt: "2025-10-26T13:00:00Z",
-      }, // Eindhoven
-      {
-        id: "p25-8",
-        firstName: "Wei Lin",
-        lastName: "Tan",
+        id: "p25-singapore",
         coords: [1.3521, 103.8198],
         signedUpAt: "2025-10-26T13:00:00Z",
+        count: 4,
       }, // Singapore
       {
-        id: "p25-9",
-        firstName: "Niran",
-        lastName: "Suwan",
+        id: "p25-bangkok",
         coords: [13.7563, 100.5018],
         signedUpAt: "2025-10-26T13:00:00Z",
-      }, // Thailand (Bangkok)
+        count: 2,
+      }, // Thailand
       {
-        id: "p25-10",
-        firstName: "Sanne",
-        lastName: "Bakker",
+        id: "p25-amersfoort",
         coords: [52.1561, 5.3878],
         signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
       }, // Amersfoort
       {
-        id: "p25-11",
-        firstName: "Karin",
-        lastName: "Martens",
-        hubId: "hulst",
+        id: "p25-amsterdam",
+        coords: [52.3676, 4.9041],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
+      }, // Amsterdam
+      {
+        id: "p25-eindhoven",
+        coords: [51.4416, 5.4697],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
+      }, // Eindhoven
+      {
+        id: "p25-paris",
+        coords: [48.8566, 2.3522],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 1,
+      }, // Paris
+      {
+        id: "p25-hulst",
         coords: [51.2802, 4.0521],
         signedUpAt: "2025-10-26T13:00:00Z",
+        count: 1,
       }, // Hulst
+      {
+        id: "p25-new-york",
+        coords: [40.7128, -74.006],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 1,
+      }, // New York
     ],
     donations: { raised: 3000, target: 3000, donors: 62, currency: "EUR" },
-    totalRunners: 150,
     storyKey: "putumayoLoop.story2025",
     youtubeId: "Fc6XaeLGLdw",
   },
