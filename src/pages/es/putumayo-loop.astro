@@ -210,7 +210,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
       </div>
       <p class="qc-body max-w-md">{t("putumayoLoop.hubsSubtitle")}</p>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       {
         hubs.map((hub) => (
           <article class="rounded-xl border border-gray-100 bg-white p-5 hover:border-qcRed hover:shadow-md transition group">
@@ -239,34 +239,32 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           </article>
         ))
       }
-    </div>
 
-    <!-- Start-your-own-hub invitation, full-width banner below the grid. -->
-    <a
-      href="mailto:care@quinacare.org?subject=Putumayo Loop hub"
-      class="mt-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 hover:border-qcRed hover:bg-red-50/30 transition group"
-    >
-      <span
-        class="w-12 h-12 flex-shrink-0 rounded-full bg-white border border-gray-200 text-qcRed flex items-center justify-center group-hover:border-qcRed transition"
+      <!-- Start-your-own-hub invitation as the 5th tile. -->
+      <a
+        href="mailto:care@quinacare.org?subject=Putumayo Loop hub"
+        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col hover:border-qcRed hover:bg-red-50/30 transition group"
       >
-        <Icon name="heart" />
-      </span>
-      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between mb-4">
+          <span
+            class="w-10 h-10 rounded-full bg-white border border-gray-200 text-qcRed flex items-center justify-center group-hover:border-qcRed transition"
+          >
+            <Icon name="heart" />
+          </span>
+          <span class="qc-meta !text-qcRed font-bold group-hover:underline">
+            {t("putumayoLoop.organizeHubCta")} →
+          </span>
+        </div>
         <h3
-          class="text-lg md:text-xl font-bold tracking-tighter uppercase mb-1 group-hover:text-qcRed transition"
+          class="text-xl font-bold tracking-tighter uppercase mb-2 group-hover:text-qcRed transition"
         >
           {t("putumayoLoop.organizeHubTitle")}
         </h3>
         <p class="qc-body text-sm leading-snug">
           {t("putumayoLoop.organizeHubBody")}
         </p>
-      </div>
-      <span
-        class="qc-meta !text-qcRed font-bold group-hover:underline flex-shrink-0"
-      >
-        {t("putumayoLoop.organizeHubCta")} →
-      </span>
-    </a>
+      </a>
+    </div>
   </section>
 
   <!-- Tracker + donate CTA -->
