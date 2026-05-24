@@ -288,6 +288,10 @@ export const ui = {
       "Loop mee op één van deze locaties of organiseer je eigen run.",
     "putumayoLoop.hubCaptain": "Hub captain",
     "putumayoLoop.runnersInHub": "lopers",
+    "putumayoLoop.organizeHubTitle": "Wil je zelf een hub organiseren?",
+    "putumayoLoop.organizeHubBody":
+      "Laat het ons weten — we helpen je op weg met tips, materiaal en een vermelding op deze pagina.",
+    "putumayoLoop.organizeHubCta": "Neem contact op",
     "putumayoLoop.shareTitle": "Help ons verder komen",
     "putumayoLoop.shareSubtitle":
       "Deel de QR-code of via je favoriete kanaal. Hoe meer mensen meedoen, hoe meer impact we hebben.",
@@ -645,6 +649,10 @@ export const ui = {
       "Run with us at one of these locations, or organize your own.",
     "putumayoLoop.hubCaptain": "Hub captain",
     "putumayoLoop.runnersInHub": "runners",
+    "putumayoLoop.organizeHubTitle": "Want to organize a hub yourself?",
+    "putumayoLoop.organizeHubBody":
+      "Let us know — we will help you get started with tips, materials and visibility on this page.",
+    "putumayoLoop.organizeHubCta": "Get in touch",
     "putumayoLoop.shareTitle": "Help us go further",
     "putumayoLoop.shareSubtitle":
       "Share the QR code or post on your favourite channel. The more people join, the bigger the impact.",
@@ -1003,6 +1011,10 @@ export const ui = {
       "Corre con nosotros en una de estas ubicaciones u organiza la tuya.",
     "putumayoLoop.hubCaptain": "Capitán del hub",
     "putumayoLoop.runnersInHub": "corredores",
+    "putumayoLoop.organizeHubTitle": "¿Quieres organizar un hub?",
+    "putumayoLoop.organizeHubBody":
+      "Cuéntanos — te ayudamos a empezar con consejos, material y visibilidad en esta página.",
+    "putumayoLoop.organizeHubCta": "Ponte en contacto",
     "putumayoLoop.shareTitle": "Ayúdanos a llegar más lejos",
     "putumayoLoop.shareSubtitle":
       "Comparte el código QR o publícalo en tu canal favorito. Cuantas más personas se sumen, mayor será el impacto.",

@@ -2,6 +2,10 @@
 // Will be swapped for a Turso-backed source later; keep the helper
 // functions (getCurrentEdition, getEditionByYear, getPastEditions) as
 // the public surface so callers don't depend on the array shape.
+//
+// Hubs for the current edition are configured in `./putumayoLoopHubs.ts`.
+
+import { hubs2026 } from "./putumayoLoopHubs";
 
 export interface Hub {
   id: string;
@@ -262,40 +266,8 @@ export const editions: Edition[] = [
     title: "Putumayo Loop 2026",
     runDate: "2026-10-18",
     status: "active",
-    hubs: [
-      {
-        id: "putumayo",
-        name: "Putumayo",
-        city: "Puerto el Carmen",
-        country: "Ecuador",
-        coords: [0.118, -75.91],
-        captain: "Dr. Andrés López",
-      },
-      {
-        id: "den-haag",
-        name: "Den Haag",
-        city: "Den Haag",
-        country: "Nederland",
-        coords: [52.0705, 4.3007],
-        captain: "Sven Hendriks",
-      },
-      {
-        id: "hulst",
-        name: "Hulst",
-        city: "Hulst",
-        country: "Nederland",
-        coords: [51.2802, 4.0521],
-        captain: "Marleen de Kok",
-      },
-      {
-        id: "maastricht",
-        name: "Maastricht",
-        city: "Maastricht",
-        country: "Nederland",
-        coords: [50.8514, 5.6909],
-        captain: "Sanne van der Meer",
-      },
-    ],
+    // Hubs live in ./putumayoLoopHubs.ts — edit there to add a location.
+    hubs: hubs2026,
     subscribers: subscribers2026,
     donations: { raised: 1234, target: 10000, donors: 47, currency: "EUR" },
   },
