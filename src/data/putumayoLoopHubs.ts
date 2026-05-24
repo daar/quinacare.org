@@ -23,7 +23,7 @@ export const hubs2026: Hub[] = [
     city: "Puerto el Carmen",
     country: "Ecuador",
     coords: [0.118, -75.91],
-    captain: "Dr. Andrés López",
+    captain: "Jacob van der Ende",
   },
   {
     id: "den-haag",
@@ -31,7 +31,7 @@ export const hubs2026: Hub[] = [
     city: "Den Haag",
     country: "Nederland",
     coords: [52.0705, 4.3007],
-    captain: "Sven Hendriks",
+    captain: "Sarah Blaszyk",
   },
   {
     id: "hulst",
@@ -39,14 +39,6 @@ export const hubs2026: Hub[] = [
     city: "Hulst",
     country: "Nederland",
     coords: [51.2802, 4.0521],
-    captain: "Marleen de Kok",
-  },
-  {
-    id: "maastricht",
-    name: "Maastricht",
-    city: "Maastricht",
-    country: "Nederland",
-    coords: [50.8514, 5.6909],
-    captain: "Sanne van der Meer",
+    captain: "Cindy Martens",
   },
 ];
