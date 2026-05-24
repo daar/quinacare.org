@@ -131,6 +131,22 @@ const t = useTranslations(lang);
               }
             </select>
           </div>
+
+          <div class="individual-location">
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.runLocationLabel")}
+            </label>
+            <input
+              type="text"
+              name="location"
+              required
+              placeholder={t("putumayoLoop.runLocationPlaceholder")}
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+            />
+            <p class="qc-meta mt-1">
+              {t("putumayoLoop.runLocationHelp")}
+            </p>
+          </div>
           <button
             type="submit"
             class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
@@ -198,15 +214,30 @@ const t = useTranslations(lang);
         const successView =
           dialog.querySelector<HTMLDivElement>(".success-view");
         const hubSelect = dialog.querySelector<HTMLDivElement>(".hub-select");
+        const individualLocation = dialog.querySelector<HTMLDivElement>(
+          ".individual-location",
+        );
+        const hubInput =
+          hubSelect?.querySelector<HTMLSelectElement>('select[name="hub"]');
+        const locationInput =
+          individualLocation?.querySelector<HTMLInputElement>(
+            'input[name="location"]',
+          );
         const radios =
           dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
 
-        const syncHubVisibility = () => {
-          const selected = Array.from(radios).find((r) => r.checked);
-          hubSelect?.classList.toggle("hidden", selected?.value !== "hub");
+        const syncMode = () => {
+          const isHub =
+            Array.from(radios).find((r) => r.checked)?.value === "hub";
+          hubSelect?.classList.toggle("hidden", !isHub);
+          individualLocation?.classList.toggle("hidden", isHub);
+          // Toggle `required` so the browser doesn't validate a hidden
+          // field belonging to the other mode.
+          if (hubInput) hubInput.required = isHub;
+          if (locationInput) locationInput.required = !isHub;
         };
-        radios.forEach((r) => r.addEventListener("change", syncHubVisibility));
-        syncHubVisibility();
+        radios.forEach((r) => r.addEventListener("change", syncMode));
+        syncMode();
 
         form?.addEventListener("submit", (e) => {
           e.preventDefault();

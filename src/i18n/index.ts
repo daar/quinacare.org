@@ -308,6 +308,10 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "Ik sluit me aan bij een georganiseerde run in een van de hubs.",
     "putumayoLoop.chooseHub": "Kies een hub",
+    "putumayoLoop.runLocationLabel": "Waar ga je lopen?",
+    "putumayoLoop.runLocationPlaceholder": "Stad, land",
+    "putumayoLoop.runLocationHelp":
+      "Vul de plaats in waar je gaat lopen, zodat we je op de wereldkaart kunnen plaatsen.",
     "putumayoLoop.submitSignup": "Bevestig aanmelding",
     "putumayoLoop.modalDisclaimer":
       "Door je aan te melden ga je akkoord met onze privacyverklaring. Geen spam — alleen updates over de loop.",
@@ -661,6 +665,10 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "I will join one of the organized runs at a hub.",
     "putumayoLoop.chooseHub": "Pick a hub",
+    "putumayoLoop.runLocationLabel": "Where are you running?",
+    "putumayoLoop.runLocationPlaceholder": "City, country",
+    "putumayoLoop.runLocationHelp":
+      "Tell us where you will run so we can place you on the world map.",
     "putumayoLoop.submitSignup": "Confirm signup",
     "putumayoLoop.modalDisclaimer":
       "By signing up you agree to our privacy policy. No spam — only updates about the loop.",
@@ -1015,6 +1023,10 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "Me uniré a una de las carreras organizadas en un hub.",
     "putumayoLoop.chooseHub": "Elige un hub",
+    "putumayoLoop.runLocationLabel": "¿Dónde vas a correr?",
+    "putumayoLoop.runLocationPlaceholder": "Ciudad, país",
+    "putumayoLoop.runLocationHelp":
+      "Cuéntanos dónde correrás para ubicarte en el mapa mundial.",
     "putumayoLoop.submitSignup": "Confirmar inscripción",
     "putumayoLoop.modalDisclaimer":
       "Al inscribirte aceptas nuestra política de privacidad. Sin spam — solo actualizaciones sobre la carrera.",
