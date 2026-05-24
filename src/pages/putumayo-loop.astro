@@ -1,5 +1,7 @@
 ---
 import Icon from "../components/Icon.astro";
+import { Image } from "astro:assets";
+import ctaBackground from "../assets/media/2025/11/Putumayo-loop-2025-groepsfoto-1.jpg";
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
@@ -267,10 +269,23 @@ const excerpt = t("putumayoLoop.heroSubtitle");
 
   <!-- Tracker + donate CTA -->
   <section class="max-w-[1600px] mx-auto px-6 py-16 border-t border-gray-100">
-    <div
-      class="rounded-2xl bg-gradient-to-br from-qcBlack via-gray-900 to-qcBlack text-white p-8 md:p-12"
-    >
-      <div class="grid lg:grid-cols-2 gap-10 items-center">
+    <div class="relative rounded-2xl overflow-hidden text-white shadow-xl">
+      <!-- Background photo from the 2025 edition, dimmed for legibility. -->
+      <Image
+        src={ctaBackground}
+        alt=""
+        widths={[800, 1200, 1600]}
+        sizes="(max-width: 1024px) 100vw, 1200px"
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-qcBlack/85 via-qcBlack/65 to-qcBlack/85"
+      >
+      </div>
+      <div
+        class="relative z-10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center"
+      >
         <div>
           <span class="qc-label !text-red-300 mb-3 block">
             {t("putumayoLoop.statsRaised")}
