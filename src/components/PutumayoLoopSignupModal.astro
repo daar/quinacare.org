@@ -6,14 +6,17 @@ import { useTranslations, type Lang } from "../i18n";
 interface Props {
   lang: Lang;
   hubs: Hub[];
+  /** Edition year sent with the signup so we know which run they joined. */
+  year: number;
   id?: string;
 }
-const { lang, hubs, id = "putumayo-loop-signup-modal" } = Astro.props;
+const { lang, hubs, year, id = "putumayo-loop-signup-modal" } = Astro.props;
 const t = useTranslations(lang);
 ---
 
 <dialog
   id={id}
+  data-year={year}
   class="pl-signup-modal fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
 >
   <div
@@ -151,9 +154,20 @@ const t = useTranslations(lang);
             type="submit"
             class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
           >
-            <Icon name="heart" />
-            {t("putumayoLoop.submitSignup")}
+            <span class="signup-btn-text inline-flex items-center gap-2">
+              <Icon name="heart" />
+              {t("putumayoLoop.submitSignup")}
+            </span>
+            <span
+              class="signup-btn-sending hidden inline-flex items-center gap-2"
+            >
+              <Icon name="spinner" class="animate-spin" />
+              {t("putumayoLoop.hubContactSending")}
+            </span>
           </button>
+          <p class="signup-error hidden text-sm text-qcRed text-center">
+            {t("putumayoLoop.hubContactError")}
+          </p>
           <p class="qc-meta text-center">
             {t("putumayoLoop.modalDisclaimer")}
           </p>
@@ -239,12 +253,49 @@ const t = useTranslations(lang);
         radios.forEach((r) => r.addEventListener("change", syncMode));
         syncMode();
 
-        form?.addEventListener("submit", (e) => {
+        const btnText = form?.querySelector<HTMLElement>(".signup-btn-text");
+        const btnSending = form?.querySelector<HTMLElement>(
+          ".signup-btn-sending",
+        );
+        const errorEl = form?.querySelector<HTMLElement>(".signup-error");
+        const submitBtn = form?.querySelector<HTMLButtonElement>(
+          'button[type="submit"]',
+        );
+        const editionYear = Number(dialog.dataset.year || "0");
+
+        form?.addEventListener("submit", async (e) => {
           e.preventDefault();
-          // Mock submit. Later: POST to /api/putumayo-loop/signup → Turso.
-          // For now just reveal the success view.
-          formView?.classList.add("hidden");
-          successView?.classList.remove("hidden");
+          errorEl?.classList.add("hidden");
+          btnText?.classList.add("hidden");
+          btnSending?.classList.remove("hidden");
+          if (submitBtn) submitBtn.disabled = true;
+
+          const data = new FormData(form);
+          const mode = String(data.get("mode") ?? "");
+          try {
+            const res = await fetch("/api/putumayo-loop/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                editionYear,
+                firstName: data.get("firstName"),
+                lastName: data.get("lastName"),
+                email: data.get("email"),
+                mode,
+                hubId: mode === "hub" ? data.get("hub") : null,
+                location: mode === "individual" ? data.get("location") : null,
+              }),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            formView?.classList.add("hidden");
+            successView?.classList.remove("hidden");
+          } catch {
+            errorEl?.classList.remove("hidden");
+          } finally {
+            if (submitBtn) submitBtn.disabled = false;
+            btnText?.classList.remove("hidden");
+            btnSending?.classList.add("hidden");
+          }
         });
       });
   });

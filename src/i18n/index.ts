@@ -263,7 +263,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "Wereldwijd hardlopen voor",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "Op zondag 18 oktober lopen we wereldwijd tegelijk voor de lopende kosten van Hospital San Miguel in het Amazonewoud.",
+      "Op zondag 18 oktober lopen we wereldwijd tegelijk voor de lopende kosten van Hospital San Miguel in de Amazone. Samen met de mensen die daar wonen.",
     "putumayoLoop.signUpCta": "Meld je aan",
     "putumayoLoop.donateCta": "Doneer nu",
     "putumayoLoop.shareCta": "Deel deze actie",
@@ -292,6 +292,21 @@ export const ui = {
     "putumayoLoop.organizeHubBody":
       "Laat het ons weten — we helpen je op weg met tips, materiaal en een vermelding op deze pagina.",
     "putumayoLoop.organizeHubCta": "Neem contact op",
+    "putumayoLoop.hubContactTitle": "Een hub organiseren",
+    "putumayoLoop.hubContactSubtitle":
+      "Laat ons weten waar je een Putumayo Loop hub wilt opzetten. We nemen snel contact met je op.",
+    "putumayoLoop.hubContactName": "Naam",
+    "putumayoLoop.hubContactMessage": "Vertel ons over je plan",
+    "putumayoLoop.hubContactMessagePlaceholder":
+      "Waar zou je willen lopen, en wie zou je willen meenemen?",
+    "putumayoLoop.hubContactSubmit": "Verstuur bericht",
+    "putumayoLoop.hubContactSending": "Bezig met versturen…",
+    "putumayoLoop.hubContactError": "Er ging iets mis. Probeer het opnieuw.",
+    "putumayoLoop.hubContactDisclaimer":
+      "Door je bericht te versturen ga je akkoord met onze privacyverklaring.",
+    "putumayoLoop.hubContactSuccessTitle": "Bedankt!",
+    "putumayoLoop.hubContactSuccessMessage":
+      "We hebben je bericht ontvangen en nemen snel contact met je op.",
     "putumayoLoop.shareTitle": "Help ons verder komen",
     "putumayoLoop.shareSubtitle":
       "Deel de QR-code of via je favoriete kanaal. Hoe meer mensen meedoen, hoe meer impact we hebben.",
@@ -624,7 +639,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "A worldwide run for",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "On Sunday October 18 we run together around the world for the running costs of Hospital San Miguel in the Amazon rainforest.",
+      "On Sunday October 18 we run together around the world for the running costs of Hospital San Miguel in the Amazon. Together with the people who live there.",
     "putumayoLoop.signUpCta": "Sign up",
     "putumayoLoop.donateCta": "Donate now",
     "putumayoLoop.shareCta": "Share this campaign",
@@ -653,6 +668,21 @@ export const ui = {
     "putumayoLoop.organizeHubBody":
       "Let us know — we will help you get started with tips, materials and visibility on this page.",
     "putumayoLoop.organizeHubCta": "Get in touch",
+    "putumayoLoop.hubContactTitle": "Organize a hub",
+    "putumayoLoop.hubContactSubtitle":
+      "Tell us where you would like to set up a Putumayo Loop hub. We will get back to you soon.",
+    "putumayoLoop.hubContactName": "Name",
+    "putumayoLoop.hubContactMessage": "Tell us about your plan",
+    "putumayoLoop.hubContactMessagePlaceholder":
+      "Where would you like to run, and who would you bring along?",
+    "putumayoLoop.hubContactSubmit": "Send message",
+    "putumayoLoop.hubContactSending": "Sending…",
+    "putumayoLoop.hubContactError": "Something went wrong. Please try again.",
+    "putumayoLoop.hubContactDisclaimer":
+      "By submitting you agree to our privacy policy.",
+    "putumayoLoop.hubContactSuccessTitle": "Thank you!",
+    "putumayoLoop.hubContactSuccessMessage":
+      "We received your message and will get back to you soon.",
     "putumayoLoop.shareTitle": "Help us go further",
     "putumayoLoop.shareSubtitle":
       "Share the QR code or post on your favourite channel. The more people join, the bigger the impact.",
@@ -985,7 +1015,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "Una carrera mundial por",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "El domingo 18 de octubre corremos juntos en todo el mundo por los gastos operativos del Hospital San Miguel en la selva amazónica.",
+      "El domingo 18 de octubre corremos juntos en todo el mundo por los gastos operativos del Hospital San Miguel en la Amazonía. Junto con la gente que vive allí.",
     "putumayoLoop.signUpCta": "Inscríbete",
     "putumayoLoop.donateCta": "Dona ahora",
     "putumayoLoop.shareCta": "Comparte esta campaña",
@@ -1015,6 +1045,21 @@ export const ui = {
     "putumayoLoop.organizeHubBody":
       "Cuéntanos — te ayudamos a empezar con consejos, material y visibilidad en esta página.",
     "putumayoLoop.organizeHubCta": "Ponte en contacto",
+    "putumayoLoop.hubContactTitle": "Organizar un hub",
+    "putumayoLoop.hubContactSubtitle":
+      "Cuéntanos dónde te gustaría organizar un hub del Putumayo Loop. Te contactaremos pronto.",
+    "putumayoLoop.hubContactName": "Nombre",
+    "putumayoLoop.hubContactMessage": "Cuéntanos tu plan",
+    "putumayoLoop.hubContactMessagePlaceholder":
+      "¿Dónde te gustaría correr y a quién llevarías contigo?",
+    "putumayoLoop.hubContactSubmit": "Enviar mensaje",
+    "putumayoLoop.hubContactSending": "Enviando…",
+    "putumayoLoop.hubContactError": "Algo salió mal. Inténtalo de nuevo.",
+    "putumayoLoop.hubContactDisclaimer":
+      "Al enviar aceptas nuestra política de privacidad.",
+    "putumayoLoop.hubContactSuccessTitle": "¡Gracias!",
+    "putumayoLoop.hubContactSuccessMessage":
+      "Recibimos tu mensaje y te contactaremos pronto.",
     "putumayoLoop.shareTitle": "Ayúdanos a llegar más lejos",
     "putumayoLoop.shareSubtitle":
       "Comparte el código QR o publícalo en tu canal favorito. Cuantas más personas se sumen, mayor será el impacto.",

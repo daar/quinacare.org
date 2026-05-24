@@ -7,6 +7,14 @@
 
 import { hubs2026 } from "./putumayoLoopHubs";
 
+// The Putumayo Loop run manager — receives signup notifications and
+// "organize your own hub" inquiries. Edit this if the role changes
+// hands. The email must be deliverable.
+export const runManager = {
+  name: "Yvonne van der Ende",
+  email: "yvonne.vanderende@quinacare.org",
+} as const;
+
 export interface Hub {
   id: string;
   name: string;
@@ -94,7 +102,7 @@ const subscribers2026: Subscriber[] = [
     id: "s5",
     firstName: "Hans",
     lastName: "Schmidt",
-    hubId: "maastricht",
+    hubId: "hulst",
     coords: [50.852, 5.691],
     signedUpAt: "2026-05-19T16:22:00Z",
   },
@@ -140,7 +148,7 @@ const subscribers2026: Subscriber[] = [
     id: "s11",
     firstName: "Femke",
     lastName: "Visser",
-    hubId: "maastricht",
+    hubId: "hulst",
     coords: [50.85, 5.692],
     signedUpAt: "2026-05-14T07:15:00Z",
   },

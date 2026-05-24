@@ -17,6 +17,7 @@ import SocialShare from "../components/SocialShare.astro";
 import PutumayoLoopMap from "../components/PutumayoLoopMap.astro";
 import PutumayoLoopFeed from "../components/PutumayoLoopFeed.astro";
 import PutumayoLoopSignupModal from "../components/PutumayoLoopSignupModal.astro";
+import PutumayoLoopHubContactModal from "../components/PutumayoLoopHubContactModal.astro";
 import PutumayoLoopEditionNav from "../components/PutumayoLoopEditionNav.astro";
 import { generateQrDataUri } from "../lib/qr";
 import { getCurrentEdition } from "../data/putumayoLoop";
@@ -241,9 +242,10 @@ const excerpt = t("putumayoLoop.heroSubtitle");
       }
 
       <!-- Start-your-own-hub invitation as the 5th tile. -->
-      <a
-        href="mailto:care@quinacare.org?subject=Putumayo Loop hub"
-        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col hover:border-qcRed hover:bg-red-50/30 transition group"
+      <button
+        type="button"
+        data-open-modal="putumayo-loop-hub-modal"
+        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col text-left hover:border-qcRed hover:bg-red-50/30 transition group cursor-pointer"
       >
         <div class="flex items-center justify-between mb-4">
           <span
@@ -263,7 +265,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
         <p class="qc-body text-sm leading-snug">
           {t("putumayoLoop.organizeHubBody")}
         </p>
-      </a>
+      </button>
     </div>
   </section>
 
@@ -376,7 +378,9 @@ const excerpt = t("putumayoLoop.heroSubtitle");
     />
   </DonationModal>
 
-  <PutumayoLoopSignupModal lang={lang} hubs={hubs} />
+  <PutumayoLoopSignupModal lang={lang} hubs={hubs} year={edition.year} />
+
+  <PutumayoLoopHubContactModal lang={lang} />
 
   <Footer />
 </Layout>
