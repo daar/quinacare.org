@@ -258,7 +258,7 @@ export const ui = {
     "404.backHome": "Terug naar home",
     // Submenu - Wat kun jij doen?
     "submenu.fundraise": "Sponsor acties",
-    "submenu.putumayoLoop": "Putumayo Loop 2026",
+    "submenu.putumayoLoop": "Putumayo Loop",
     // Putumayo Loop landing page
     "putumayoLoop.heroLabel": "Wereldwijd hardlopen voor",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
@@ -634,7 +634,7 @@ export const ui = {
     "404.backHome": "Back to home",
     // Submenu - What can you do?
     "submenu.fundraise": "Fundraising campaigns",
-    "submenu.putumayoLoop": "Putumayo Loop 2026",
+    "submenu.putumayoLoop": "Putumayo Loop",
     // Putumayo Loop landing page
     "putumayoLoop.heroLabel": "A worldwide run for",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
@@ -1010,7 +1010,7 @@ export const ui = {
     "404.backHome": "Volver al inicio",
     // Submenu - ¿Qué puedes hacer?
     "submenu.fundraise": "Campañas de recaudación",
-    "submenu.putumayoLoop": "Putumayo Loop 2026",
+    "submenu.putumayoLoop": "Putumayo Loop",
     // Putumayo Loop landing page
     "putumayoLoop.heroLabel": "Una carrera mundial por",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
