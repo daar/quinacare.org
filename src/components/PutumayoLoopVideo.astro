@@ -1,0 +1,83 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  /** YouTube video ID (the v= parameter). */
+  videoId: string;
+  /** Accessible title for the embed. */
+  title: string;
+}
+const { videoId, title } = Astro.props;
+
+// Use the no-cookie domain so no YouTube tracking happens until the
+// user actually clicks play. The thumbnail is served from img.youtube.com.
+const thumb = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+const fallbackThumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+const embedSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+---
+
+<div
+  class="pl-video relative aspect-video w-full overflow-hidden rounded-xl bg-qcBlack group cursor-pointer shadow-lg"
+  data-embed={embedSrc}
+  data-title={title}
+  role="button"
+  tabindex="0"
+  aria-label={`Play video: ${title}`}
+>
+  <img
+    src={thumb}
+    onerror={`this.onerror=null;this.src='${fallbackThumb}';`}
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition"
+    loading="lazy"
+    decoding="async"
+  />
+  <div
+    class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
+  >
+  </div>
+  <div class="absolute inset-0 flex items-center justify-center">
+    <div
+      class="w-20 h-20 rounded-full bg-qcRed/95 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="white"
+        class="w-8 h-8 ml-1"
+        aria-hidden="true"
+      >
+        <path d="M8 5v14l11-7z"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".pl-video").forEach((el) => {
+    const embed = el.dataset.embed!;
+    const title = el.dataset.title || "Video";
+    const swap = () => {
+      const iframe = document.createElement("iframe");
+      iframe.src = embed;
+      iframe.title = title;
+      iframe.setAttribute("frameborder", "0");
+      iframe.setAttribute(
+        "allow",
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+      );
+      iframe.setAttribute("allowfullscreen", "");
+      iframe.className = "absolute inset-0 w-full h-full";
+      el.replaceChildren(iframe);
+      el.classList.remove("cursor-pointer", "group");
+      el.removeAttribute("role");
+      el.removeAttribute("tabindex");
+    };
+    el.addEventListener("click", swap);
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        swap();
+      }
+    });
+  });
+</script>

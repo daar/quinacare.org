@@ -44,6 +44,8 @@ export interface Edition {
   totalRunners?: number;
   /** i18n key for an optional story paragraph shown on past edition pages. */
   storyKey?: string;
+  /** Optional YouTube video ID embedded on the past edition page. */
+  youtubeId?: string;
 }
 
 // 2026 — current edition.
@@ -171,7 +173,7 @@ export const editions: Edition[] = [
     slug: "2025",
     fundraiserSlug: "putumayo-loop-2025",
     title: "Putumayo Loop 2025",
-    runDate: "2025-10-11",
+    runDate: "2025-10-26",
     status: "past",
     hubs: [
       {
@@ -200,6 +202,7 @@ export const editions: Edition[] = [
     donations: { raised: 3000, target: 3000, donors: 62, currency: "EUR" },
     totalRunners: 150,
     storyKey: "putumayoLoop.story2025",
+    youtubeId: "Fc6XaeLGLdw",
   },
   {
     year: 2026,
