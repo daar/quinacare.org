@@ -263,7 +263,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "Wereldwijd hardlopen voor",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "Op zaterdag 12 september lopen we wereldwijd tegelijk voor de lopende kosten van Hospital San Miguel in het Amazonewoud.",
+      "Op zondag 18 oktober lopen we wereldwijd tegelijk voor de lopende kosten van Hospital San Miguel in het Amazonewoud.",
     "putumayoLoop.signUpCta": "Meld je aan",
     "putumayoLoop.donateCta": "Doneer nu",
     "putumayoLoop.shareCta": "Deel deze actie",
@@ -325,8 +325,6 @@ export const ui = {
     "putumayoLoop.nextEditionBody":
       "De volgende editie is gepland. Doe mee en zet je in voor Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "Bekijk de huidige editie",
-    "putumayoLoop.story2024":
-      "In oktober 2024 vond de eerste editie van de internationale Putumayo Loop plaats. Lopers in Putumayo en Den Haag gingen samen op pad voor Hospital San Miguel — een mooi begin van een wereldwijde traditie.",
     "putumayoLoop.story2025":
       "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
     "submenu.joinTeam": "Word vrijwilliger",
@@ -613,7 +611,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "A worldwide run for",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "On Saturday September 12 we run together around the world for the running costs of Hospital San Miguel in the Amazon rainforest.",
+      "On Sunday October 18 we run together around the world for the running costs of Hospital San Miguel in the Amazon rainforest.",
     "putumayoLoop.signUpCta": "Sign up",
     "putumayoLoop.donateCta": "Donate now",
     "putumayoLoop.shareCta": "Share this campaign",
@@ -675,8 +673,6 @@ export const ui = {
     "putumayoLoop.nextEditionBody":
       "The next edition is on its way. Join in and run for Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "View the current edition",
-    "putumayoLoop.story2024":
-      "In October 2024 the first international edition of the Putumayo Loop took place. Runners in Putumayo and The Hague set off together for Hospital San Miguel — a beautiful start of a worldwide tradition.",
     "putumayoLoop.story2025":
       "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
     "submenu.joinTeam": "Join Our Team",
@@ -963,7 +959,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "Una carrera mundial por",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "El sábado 12 de septiembre corremos juntos en todo el mundo por los gastos operativos del Hospital San Miguel en la selva amazónica.",
+      "El domingo 18 de octubre corremos juntos en todo el mundo por los gastos operativos del Hospital San Miguel en la selva amazónica.",
     "putumayoLoop.signUpCta": "Inscríbete",
     "putumayoLoop.donateCta": "Dona ahora",
     "putumayoLoop.shareCta": "Comparte esta campaña",
@@ -1026,8 +1022,6 @@ export const ui = {
     "putumayoLoop.nextEditionBody":
       "La próxima edición ya está en marcha. Súmate y corre por el Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "Ver la edición actual",
-    "putumayoLoop.story2024":
-      "En octubre de 2024 se realizó la primera edición internacional del Putumayo Loop. Corredores en Putumayo y La Haya partieron juntos por el Hospital San Miguel — un hermoso inicio de una tradición mundial.",
     "putumayoLoop.story2025":
       "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
     "submenu.joinTeam": "Únete al equipo",

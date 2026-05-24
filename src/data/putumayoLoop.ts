@@ -167,34 +167,6 @@ const subscribers2026: Subscriber[] = [
 
 export const editions: Edition[] = [
   {
-    year: 2024,
-    slug: "2024",
-    fundraiserSlug: "putumayo-loop-2024",
-    title: "Putumayo Loop 2024",
-    runDate: "2024-10-12",
-    status: "past",
-    hubs: [
-      {
-        id: "putumayo",
-        name: "Putumayo",
-        city: "Puerto el Carmen",
-        country: "Ecuador",
-        coords: [0.118, -75.91],
-      },
-      {
-        id: "den-haag",
-        name: "Den Haag",
-        city: "Den Haag",
-        country: "Nederland",
-        coords: [52.0705, 4.3007],
-      },
-    ],
-    subscribers: [],
-    donations: { raised: 4200, target: 5000, donors: 38, currency: "EUR" },
-    totalRunners: 92,
-    storyKey: "putumayoLoop.story2024",
-  },
-  {
     year: 2025,
     slug: "2025",
     fundraiserSlug: "putumayo-loop-2025",
@@ -234,7 +206,7 @@ export const editions: Edition[] = [
     slug: "2026",
     fundraiserSlug: "putumayo-loop-2026",
     title: "Putumayo Loop 2026",
-    runDate: "2026-09-12",
+    runDate: "2026-10-18",
     status: "active",
     hubs: [
       {
