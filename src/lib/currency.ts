@@ -44,9 +44,9 @@ export function getCurrency(locale: string): CurrencyConfig {
 
 /** Payment methods available per locale (order defines display order). */
 export const paymentMethodsByLocale: Record<string, string[]> = {
-  nl: ["ideal", "card", "bancontact", "bank"],
-  en: ["card", "bancontact", "bank"],
-  es: ["card", "bancontact", "bank"],
+  nl: ["ideal", "card", "bancontact", "paypal"],
+  en: ["card", "bancontact", "paypal"],
+  es: ["card", "bancontact", "paypal"],
 };
 
 export function formatCurrency(

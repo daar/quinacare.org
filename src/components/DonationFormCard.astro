@@ -172,11 +172,11 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
       </button>
       <button
         type="button"
-        data-method="bank"
+        data-method="paypal"
         class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
       >
-        <Icon name="building-columns" />
-        {t("donate.bankTransfer")}
+        <Icon name="paypal" />
+        PayPal
       </button>
     </div>
   </div>
@@ -415,7 +415,9 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
 
         submitBtn.addEventListener("click", async () => {
           submitBtn.setAttribute("disabled", "true");
-          submitIcon.className = "dfc-icon fa-solid fa-spinner fa-spin mr-2";
+          // submitIcon is an SVG element — its `className` is a
+          // read-only SVGAnimatedString, so we must use setAttribute.
+          submitIcon.setAttribute("class", "dfc-icon animate-spin mr-2");
 
           try {
             const metadata: Record<string, unknown> = {};
@@ -451,7 +453,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           }
 
           submitBtn.removeAttribute("disabled");
-          submitIcon.className = "dfc-icon fa-solid fa-heart mr-2";
+          submitIcon.setAttribute("class", "dfc-icon mr-2");
         });
 
         updateUI();

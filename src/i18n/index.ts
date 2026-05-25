@@ -160,7 +160,7 @@ export const ui = {
     "donate.impactLabel": "Jouw Impact",
     "donate.paymentMethod": "Betaalmethode",
     "donate.creditCard": "Credit/Debit Card",
-    "donate.bankTransfer": "Bankoverschrijving",
+    "donate.paypal": "PayPal",
     "donate.submitButton": "Doneer",
     "donate.thankYouTitle": "Bedankt!",
     "donate.thankYouMessage":
@@ -437,7 +437,7 @@ export const ui = {
     "donate.impactLabel": "Your Impact",
     "donate.paymentMethod": "Payment Method",
     "donate.creditCard": "Credit/Debit Card",
-    "donate.bankTransfer": "Bank Transfer",
+    "donate.paypal": "PayPal",
     "donate.submitButton": "Donate",
     "donate.thankYouTitle": "Thank You!",
     "donate.thankYouMessage":
@@ -717,7 +717,7 @@ export const ui = {
     "donate.impactLabel": "Tu Impacto",
     "donate.paymentMethod": "Método de Pago",
     "donate.creditCard": "Tarjeta de Crédito/Débito",
-    "donate.bankTransfer": "Transferencia Bancaria",
+    "donate.paypal": "PayPal",
     "donate.submitButton": "Donar",
     "donate.thankYouTitle": "¡Gracias!",
     "donate.thankYouMessage":

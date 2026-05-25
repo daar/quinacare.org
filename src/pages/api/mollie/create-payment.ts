@@ -21,7 +21,7 @@ const methodMap: Record<string, PaymentMethod> = {
   card: PaymentMethod.creditcard,
   ideal: PaymentMethod.ideal,
   bancontact: PaymentMethod.bancontact,
-  bank: PaymentMethod.banktransfer,
+  paypal: PaymentMethod.paypal,
 };
 
 const localeMap: Record<string, Locale> = {
