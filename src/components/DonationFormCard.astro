@@ -132,14 +132,6 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
     <div class="grid grid-cols-2 gap-2 dfc-methods">
       <button
         type="button"
-        data-method="card"
-        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
-      >
-        <Icon name="credit-card" />
-        {t("donate.creditCard")}
-      </button>
-      <button
-        type="button"
         data-method="ideal"
         class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
       >
@@ -164,11 +156,11 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
       </button>
       <button
         type="button"
-        data-method="bancontact"
-        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+        data-method="card"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
       >
         <Icon name="credit-card" />
-        Bancontact
+        {t("donate.creditCard")}
       </button>
       <button
         type="button"
@@ -177,6 +169,14 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
       >
         <Icon name="paypal" />
         PayPal
+      </button>
+      <button
+        type="button"
+        data-method="googlepay"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <Icon name="google-pay" class="text-base" />
+        Google Pay
       </button>
     </div>
   </div>
