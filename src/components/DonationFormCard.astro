@@ -115,6 +115,9 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         <span class="hidden" data-impact="surgery">
           {t("donation.surgeryDesc")}
         </span>
+        <span class="hidden" data-impact="equipment">
+          {t("donation.equipmentDesc")}
+        </span>
         <span class="hidden" data-impact="generic">
           {t("donate.impactGeneric")}
         </span>
@@ -357,9 +360,12 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           filterPaymentMethods();
           submitAmount.textContent = fmt(amount);
 
+          // Thresholds mirror the preset amounts (25/50/100/250) so the
+          // impact text matches the active tier.
           let impactKey = "generic";
-          if (amount >= 75) impactKey = "surgery";
-          else if (amount >= 35) impactKey = "prenatal";
+          if (amount >= 250) impactKey = "equipment";
+          else if (amount >= 100) impactKey = "surgery";
+          else if (amount >= 50) impactKey = "prenatal";
           else if (amount >= 25) impactKey = "consultation";
 
           const span = card.querySelector(

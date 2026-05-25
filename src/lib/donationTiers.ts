@@ -83,17 +83,17 @@ export const donationTiers: DonationTier[] = [
       nl: {
         title: "Apparatuur & Voorraad",
         description:
-          "Met je donatie financier je medische apparatuur of essentiële voorraden waar het ziekenhuis maandenlang van profiteert.",
+          "Draag bij aan bijvoorbeeld medische kosten zoals medicijnen en apparatuur of salarissen van ons locale personeel in het ziekenhuis.",
       },
       en: {
         title: "Equipment & Supplies",
         description:
-          "With your donation you help fund medical equipment or essential supplies that keep the hospital running for months.",
+          "Contribute, for example, to medical costs such as medicines and equipment or to the salaries of our local hospital staff.",
       },
       es: {
         title: "Equipos y Suministros",
         description:
-          "Con tu donación ayudas a financiar equipos médicos o suministros esenciales que mantienen el hospital funcionando durante meses.",
+          "Contribuye, por ejemplo, a gastos médicos como medicamentos y equipos o a los salarios de nuestro personal local del hospital.",
       },
     },
   },
