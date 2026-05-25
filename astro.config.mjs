@@ -21,6 +21,9 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+  redirects: {
+    "/doneer": "/donate",
+  },
   fonts: [
     {
       provider: fontProviders.google(),
