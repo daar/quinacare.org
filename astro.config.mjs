@@ -23,6 +23,7 @@ export default defineConfig({
   },
   redirects: {
     "/doneer": "/donate",
+    "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
   },
   fonts: [
     {
