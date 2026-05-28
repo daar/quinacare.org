@@ -36,4 +36,5 @@ __pycache__
 # Local Netlify folder
 .netlify
 public/pagefind/
+
 backup
