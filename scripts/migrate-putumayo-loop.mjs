@@ -2,10 +2,14 @@
 /**
  * Putumayo Loop — Turso schema bootstrap.
  *
- * Creates `putumayo_loop_editions`, `putumayo_loop_hubs`, and
- * `putumayo_loop_subscribers` if they don't exist, and applies idempotent
- * ALTERs that bring older databases up to the current schema. No data is
- * seeded — editions, hubs, and subscribers are managed directly in Turso.
+ * The only table managed in Turso for the Putumayo Loop is
+ * `putumayo_loop_subscribers` — live signups from the modal. Editions,
+ * hubs, story copy, raise goals etc. live in `src/data/putumayoLoop.ts`.
+ * Donations are read live from the `donations` table (managed by the
+ * Mollie integration; schema lives in `src/lib/db.ts`).
+ *
+ * Idempotent: creates the table if it doesn't exist and applies any
+ * pending column additions.
  *
  * Usage:
  *   node --env-file=.env scripts/migrate-putumayo-loop.mjs
@@ -34,41 +38,6 @@ async function tryAlter(sql) {
 
 async function ensureSchema() {
   await db.execute(`
-    CREATE TABLE IF NOT EXISTS putumayo_loop_editions (
-      year            INTEGER PRIMARY KEY,
-      slug            TEXT NOT NULL UNIQUE,
-      fundraiser_slug TEXT NOT NULL,
-      title           TEXT NOT NULL,
-      run_date        TEXT NOT NULL,
-      status          TEXT NOT NULL CHECK (status IN ('upcoming','active','past')),
-      raised_amount   INTEGER NOT NULL,
-      target_amount   INTEGER NOT NULL,
-      donors          INTEGER NOT NULL DEFAULT 0,
-      currency        TEXT NOT NULL DEFAULT 'EUR',
-      total_runners   INTEGER,
-      story_key       TEXT,
-      story_nl        TEXT,
-      story_en        TEXT,
-      story_es        TEXT,
-      youtube_id      TEXT
-    )
-  `);
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS putumayo_loop_hubs (
-      edition_year  INTEGER NOT NULL,
-      id            TEXT NOT NULL,
-      name          TEXT NOT NULL,
-      city          TEXT NOT NULL,
-      country       TEXT NOT NULL,
-      lat           REAL NOT NULL,
-      lng           REAL NOT NULL,
-      captain       TEXT,
-      display_order INTEGER NOT NULL DEFAULT 0,
-      PRIMARY KEY (edition_year, id),
-      FOREIGN KEY (edition_year) REFERENCES putumayo_loop_editions(year)
-    )
-  `);
-  await db.execute(`
     CREATE TABLE IF NOT EXISTS putumayo_loop_subscribers (
       id            INTEGER PRIMARY KEY AUTOINCREMENT,
       external_id   TEXT UNIQUE,
@@ -83,20 +52,13 @@ async function ensureSchema() {
       count         INTEGER NOT NULL DEFAULT 1,
       distance      TEXT,
       signed_up_at  TEXT NOT NULL,
-      created_at    TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (edition_year) REFERENCES putumayo_loop_editions(year)
+      created_at    TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `);
   await db.execute(
     `CREATE INDEX IF NOT EXISTS idx_subscribers_edition ON putumayo_loop_subscribers (edition_year)`,
   );
-  await db.execute(
-    `CREATE INDEX IF NOT EXISTS idx_hubs_edition ON putumayo_loop_hubs (edition_year)`,
-  );
   // Idempotent column additions for pre-existing tables.
-  await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_nl TEXT`);
-  await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_en TEXT`);
-  await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_es TEXT`);
   await tryAlter(
     `ALTER TABLE putumayo_loop_subscribers ADD COLUMN distance TEXT`,
   );
@@ -105,14 +67,10 @@ async function ensureSchema() {
 async function main() {
   console.log("ensuring schema…");
   await ensureSchema();
-  for (const t of [
-    "putumayo_loop_editions",
-    "putumayo_loop_hubs",
-    "putumayo_loop_subscribers",
-  ]) {
-    const r = await db.execute(`SELECT count(*) AS n FROM ${t}`);
-    console.log(`  ${t.padEnd(30)} -> ${r.rows[0].n} rows`);
-  }
+  const r = await db.execute(
+    `SELECT count(*) AS n FROM putumayo_loop_subscribers`,
+  );
+  console.log(`  putumayo_loop_subscribers -> ${r.rows[0].n} rows`);
 }
 
 main().catch((e) => {

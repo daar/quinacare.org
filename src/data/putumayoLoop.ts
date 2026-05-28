@@ -1,10 +1,10 @@
-// Putumayo Loop — shared types + the run-manager constant.
+// Putumayo Loop — local editions + hubs config + types.
 //
-// All edition / hub / subscriber data now lives in Turso. Read it via
-// `src/lib/putumayoLoopRepo.ts` (getAllEditions, getCurrentEdition,
-// getEditionByYear, getPastEditions). Writes (live signups) go through
-// `src/pages/api/putumayo-loop/signup.ts`. The seed snapshot used to
-// populate Turso lives in `scripts/migrate-putumayo-loop.mjs`.
+// Editions, hubs, raise goals, story copy, YouTube IDs and any other
+// edition-level configuration live here. Subscribers (live signups)
+// come from Turso; raised amount and donor count are computed live
+// from the `donations` table via getFundraiserStats. The repo at
+// `src/lib/putumayoLoopRepo.ts` joins the three sources.
 
 export interface Hub {
   id: string;
@@ -19,15 +19,12 @@ export interface Subscriber {
   id: string;
   firstName?: string;
   lastName?: string;
-  hubId?: string; // empty / undefined = individual runner
+  hubId?: string;
   coords: [number, number];
-  signedUpAt: string; // ISO timestamp
-  /**
-   * For past editions where we only have aggregate per-city counts,
-   * this entry stands in for N runners at one location. Defaults to 1.
-   */
+  signedUpAt: string;
+  /** Aggregate count — one entry can stand in for N runners (past editions). */
   count?: number;
-  /** Distance the runner picked at signup. */
+  /** Distance picked at signup. */
   distance?: "10k" | "half" | "full";
 }
 
@@ -42,29 +39,94 @@ export type EditionStatus = "upcoming" | "active" | "past";
 
 export interface Edition {
   year: number;
-  slug: string; // used in URL, e.g. "2025"
-  fundraiserSlug: string; // used in the Mollie payment description
+  slug: string;
+  fundraiserSlug: string;
   title: string;
-  runDate: string; // ISO
+  runDate: string;
   status: EditionStatus;
   hubs: Hub[];
   subscribers: Subscriber[];
   donations: DonationStats;
-  /** Final participant count, for past editions where not every runner is in `subscribers`. */
   totalRunners?: number;
-  /**
-   * Per-language story text for the past edition page. Filled in for
-   * editions where we wrote a recap; the page falls back to nothing
-   * (skipping the section) when none of the languages is populated.
-   */
+  story?: Partial<Record<"nl" | "en" | "es", string>>;
+  youtubeId?: string;
+}
+
+// ─── Edition configuration ────────────────────────────────────────────
+//
+// Edit this list to add a new edition or tweak a past one. The repo
+// reads from here and merges in subscribers + live donation totals.
+
+export interface EditionConfig {
+  year: number;
+  slug: string;
+  /** Used in the Mollie payment description and metadata.fundraiser_slug. */
+  fundraiserSlug: string;
+  title: string;
+  /** ISO date (YYYY-MM-DD). */
+  runDate: string;
+  status: EditionStatus;
+  /** Hubs participating in this edition. */
+  hubs: Hub[];
+  /** Raise goal in whole euros. */
+  target: number;
+  /** Final participant count for past editions where subscribers may be incomplete. */
+  totalRunners?: number;
+  /** Optional per-language story shown on the past edition page. */
   story?: Partial<Record<"nl" | "en" | "es", string>>;
   /** Optional YouTube video ID embedded on the past edition page. */
   youtubeId?: string;
 }
 
+export const editions: EditionConfig[] = [
+  {
+    year: 2025,
+    slug: "2025",
+    fundraiserSlug: "putumayo-loop-2025",
+    title: "Putumayo Loop 2025",
+    runDate: "2025-10-26",
+    status: "past",
+    hubs: [],
+    target: 3000,
+    totalRunners: 173,
+    story: {
+      nl: "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
+      en: "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
+      es: "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
+    },
+    youtubeId: "Fc6XaeLGLdw",
+  },
+  {
+    year: 2026,
+    slug: "2026",
+    fundraiserSlug: "putumayo-loop-2026",
+    title: "Putumayo Loop 2026",
+    runDate: "2026-10-18",
+    status: "active",
+    hubs: [
+      {
+        id: "putumayo",
+        name: "Putumayo",
+        city: "Puerto el Carmen",
+        country: "Ecuador",
+        coords: [0.118, -75.91],
+        captain: "Jacob van der Ende",
+      },
+      {
+        id: "den-haag",
+        name: "Den Haag",
+        city: "Den Haag",
+        country: "Nederland",
+        coords: [52.0705, 4.3007],
+        captain: "Sarah Blaszyk",
+      },
+    ],
+    target: 10000,
+  },
+];
+
 // The Putumayo Loop run manager — receives signup notifications and
-// "organize your own hub" inquiries. Edit this if the role changes
-// hands. The email must be deliverable.
+// "organize your own hub" inquiries. Edit if the role changes hands.
 export const runManager = {
   name: "Yvonne van der Ende",
   email: "yvonne.vanderende@quinacare.org",

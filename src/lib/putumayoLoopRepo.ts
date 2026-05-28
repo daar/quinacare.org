@@ -1,50 +1,16 @@
-// Putumayo Loop — Turso-backed read access.
+// Putumayo Loop — read access.
 //
-// Used by the landing page, the per-year archive page, and the edition
-// navigator. Writes (live signups) go through the API endpoint at
-// src/pages/api/putumayo-loop/signup.ts which inserts into the same
-// putumayo_loop_subscribers table.
-//
-// Schema lives in scripts/migrate-putumayo-loop.mjs.
+// Editions, hubs, target goals, story copy etc. live in
+// src/data/putumayoLoop.ts. Subscribers (live signups) come from
+// Turso (putumayo_loop_subscribers). Raised amount + donor count are
+// computed live from the `donations` table via getFundraiserStats.
+// This module stitches the three sources into the Edition shape the
+// pages consume.
 
-import type {
-  Edition,
-  EditionStatus,
-  Hub,
-  Subscriber,
-} from "../data/putumayoLoop";
+import type { Edition, EditionConfig, Subscriber } from "../data/putumayoLoop";
+import { editions } from "../data/putumayoLoop";
 import { getTurso } from "./turso";
-
-type EditionRow = {
-  year: number;
-  slug: string;
-  fundraiser_slug: string;
-  title: string;
-  run_date: string;
-  status: EditionStatus;
-  raised_amount: number;
-  target_amount: number;
-  donors: number;
-  currency: string;
-  total_runners: number | null;
-  story_key: string | null;
-  story_nl: string | null;
-  story_en: string | null;
-  story_es: string | null;
-  youtube_id: string | null;
-};
-
-type HubRow = {
-  edition_year: number;
-  id: string;
-  name: string;
-  city: string;
-  country: string;
-  lat: number;
-  lng: number;
-  captain: string | null;
-  display_order: number;
-};
+import { getFundraiserStats } from "./donations";
 
 type SubscriberRow = {
   external_id: string | null;
@@ -60,50 +26,7 @@ type SubscriberRow = {
   signed_up_at: string;
 };
 
-function rowToEdition(
-  r: EditionRow,
-  hubs: Hub[],
-  subscribers: Subscriber[],
-): Edition {
-  return {
-    year: r.year,
-    slug: r.slug,
-    fundraiserSlug: r.fundraiser_slug,
-    title: r.title,
-    runDate: r.run_date,
-    status: r.status,
-    hubs,
-    subscribers,
-    donations: {
-      raised: r.raised_amount,
-      target: r.target_amount,
-      donors: r.donors,
-      currency: "EUR",
-    },
-    totalRunners: r.total_runners ?? undefined,
-    story: {
-      nl: r.story_nl ?? undefined,
-      en: r.story_en ?? undefined,
-      es: r.story_es ?? undefined,
-    },
-    youtubeId: r.youtube_id ?? undefined,
-  };
-}
-
-function rowToHub(r: HubRow): Hub {
-  return {
-    id: r.id,
-    name: r.name,
-    city: r.city,
-    country: r.country,
-    coords: [r.lat, r.lng],
-    captain: r.captain ?? undefined,
-  };
-}
-
 function rowToSubscriber(r: SubscriberRow): Subscriber {
-  // Map only finishes successfully if lat/lng are present (live signups
-  // without geocoding won't show as pins until they have coords).
   const distance = (["10k", "half", "full"] as const).find(
     (d) => d === r.distance,
   );
@@ -117,20 +40,6 @@ function rowToSubscriber(r: SubscriberRow): Subscriber {
     count: r.count,
     distance,
   };
-}
-
-async function fetchHubs(year: number): Promise<Hub[]> {
-  const db = getTurso();
-  const res = await db.execute({
-    sql: `
-      SELECT edition_year, id, name, city, country, lat, lng, captain, display_order
-      FROM putumayo_loop_hubs
-      WHERE edition_year = ?
-      ORDER BY display_order ASC, id ASC
-    `,
-    args: [year],
-  });
-  return (res.rows as unknown as HubRow[]).map(rowToHub);
 }
 
 async function fetchSubscribers(year: number): Promise<Subscriber[]> {
@@ -149,65 +58,56 @@ async function fetchSubscribers(year: number): Promise<Subscriber[]> {
   return (res.rows as unknown as SubscriberRow[]).map(rowToSubscriber);
 }
 
-async function hydrate(rows: EditionRow[]): Promise<Edition[]> {
-  return Promise.all(
-    rows.map(async (r) => {
-      const [hubs, subs] = await Promise.all([
-        fetchHubs(r.year),
-        fetchSubscribers(r.year),
-      ]);
-      return rowToEdition(r, hubs, subs);
-    }),
-  );
+async function hydrate(config: EditionConfig): Promise<Edition> {
+  const [subscribers, stats] = await Promise.all([
+    fetchSubscribers(config.year),
+    getFundraiserStats(config.fundraiserSlug),
+  ]);
+  return {
+    year: config.year,
+    slug: config.slug,
+    fundraiserSlug: config.fundraiserSlug,
+    title: config.title,
+    runDate: config.runDate,
+    status: config.status,
+    hubs: config.hubs,
+    subscribers,
+    donations: {
+      raised: Math.round(stats.raised_cents / 100),
+      target: config.target,
+      donors: stats.donor_count,
+      currency: "EUR",
+    },
+    totalRunners: config.totalRunners,
+    story: config.story,
+    youtubeId: config.youtubeId,
+  };
+}
+
+async function hydrateAll(configs: EditionConfig[]): Promise<Edition[]> {
+  return Promise.all(configs.map(hydrate));
 }
 
 export async function getAllEditions(): Promise<Edition[]> {
-  const db = getTurso();
-  const res = await db.execute(
-    `SELECT * FROM putumayo_loop_editions ORDER BY year DESC`,
-  );
-  return hydrate(res.rows as unknown as EditionRow[]);
+  return hydrateAll([...editions].sort((a, b) => b.year - a.year));
 }
 
 export async function getCurrentEdition(): Promise<Edition> {
-  const db = getTurso();
-  const res = await db.execute(`
-    SELECT * FROM putumayo_loop_editions
-    WHERE status IN ('active', 'upcoming')
-    ORDER BY year DESC
-    LIMIT 1
-  `);
-  const row = res.rows[0] as unknown as EditionRow | undefined;
-  if (!row) {
-    // Fall back to the most recent past edition so the page can still
-    // render in the off-season between editions.
-    const fallback = await db.execute(
-      `SELECT * FROM putumayo_loop_editions ORDER BY year DESC LIMIT 1`,
-    );
-    return (await hydrate(fallback.rows as unknown as EditionRow[]))[0];
-  }
-  return (await hydrate([row]))[0];
+  const found =
+    editions.find((e) => e.status === "active" || e.status === "upcoming") ??
+    editions[editions.length - 1];
+  return hydrate(found);
 }
 
 export async function getEditionByYear(
   year: number,
 ): Promise<Edition | undefined> {
-  const db = getTurso();
-  const res = await db.execute({
-    sql: `SELECT * FROM putumayo_loop_editions WHERE year = ?`,
-    args: [year],
-  });
-  const row = res.rows[0] as unknown as EditionRow | undefined;
-  if (!row) return undefined;
-  return (await hydrate([row]))[0];
+  const found = editions.find((e) => e.year === year);
+  return found ? hydrate(found) : undefined;
 }
 
 export async function getPastEditions(): Promise<Edition[]> {
-  const db = getTurso();
-  const res = await db.execute(`
-    SELECT * FROM putumayo_loop_editions
-    WHERE status = 'past'
-    ORDER BY year DESC
-  `);
-  return hydrate(res.rows as unknown as EditionRow[]);
+  return hydrateAll(
+    editions.filter((e) => e.status === "past").sort((a, b) => b.year - a.year),
+  );
 }

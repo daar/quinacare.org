@@ -275,10 +275,11 @@ export const ui = {
     "putumayoLoop.signedUpInHub": "{name} loopt mee in {hub}",
     "putumayoLoop.signedUpIndividual": "{name} loopt mee als individuele loper",
     "putumayoLoop.whyTitle": "Waarom we lopen",
+    "putumayoLoop.whyHeading": "Lopen voor lopende kosten",
     "putumayoLoop.whyBody":
-      "Hospital San Miguel staat midden in het Ecuadoriaanse Amazonewoud en is voor duizenden mensen de enige toegang tot goede zorg. De lopende kosten — medicijnen, salarissen, brandstof voor de generatoren, transport over de rivier — zijn elke maand opnieuw een uitdaging. Met de Putumayo Loop halen we wereldwijd, op één dag, geld op om die zorg draaiende te houden.",
+      "Hospital San Miguel staat midden in het Ecuadoriaanse Amazonewoud en is voor duizenden mensen de enige toegang tot goede zorg. De lopende kosten — medicijnen, salarissen voor het lokale personeel, onderhoud en shoonmaak van het ziekenhuis — zijn elke maand opnieuw een uitdaging. Met de Putumayo Loop halen we wereldwijd, op één dag, geld op om het ziekenhuis draaiende te houden.",
     "putumayoLoop.whyExtra":
-      "Iedere loper telt. Of je nu individueel hardloopt of meedoet in één van onze hubs — samen maken we het verschil.",
+      "Iedere loper telt. Of je nu individueel loopt of meedoet in één van onze hubs — samen maken we het verschil.",
     "putumayoLoop.statsRaised": "opgehaald",
     "putumayoLoop.statsOf": "van",
     "putumayoLoop.statsDonors": "donateurs",
@@ -655,6 +656,7 @@ export const ui = {
     "putumayoLoop.signedUpInHub": "{name} is running in {hub}",
     "putumayoLoop.signedUpIndividual": "{name} is running as an individual",
     "putumayoLoop.whyTitle": "Why we run",
+    "putumayoLoop.whyHeading": "Running for running costs",
     "putumayoLoop.whyBody":
       "Hospital San Miguel sits in the heart of the Ecuadorian Amazon and is for thousands of people the only access to proper care. The running costs — medicines, salaries, fuel for the generators, river transport — are a monthly challenge. With the Putumayo Loop we raise funds worldwide, on a single day, to keep that care running.",
     "putumayoLoop.whyExtra":
@@ -1036,6 +1038,7 @@ export const ui = {
     "putumayoLoop.signedUpIndividual":
       "{name} corre como participante individual",
     "putumayoLoop.whyTitle": "Por qué corremos",
+    "putumayoLoop.whyHeading": "Correr por los gastos operativos",
     "putumayoLoop.whyBody":
       "El Hospital San Miguel está en el corazón de la Amazonía ecuatoriana y es para miles de personas el único acceso a atención médica adecuada. Los gastos operativos — medicamentos, salarios, combustible para los generadores, transporte fluvial — son un desafío cada mes. Con el Putumayo Loop recaudamos fondos en todo el mundo, en un solo día, para mantener esa atención en marcha.",
     "putumayoLoop.whyExtra":
