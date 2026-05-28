@@ -312,7 +312,7 @@ export const ui = {
       "We hebben je bericht ontvangen en nemen snel contact met je op.",
     "putumayoLoop.shareTitle": "Help ons verder komen",
     "putumayoLoop.shareSubtitle":
-      "Deel de QR-code of via je favoriete kanaal. Hoe meer mensen meedoen, hoe meer impact we hebben.",
+      "Deel de QR-code via je favoriete kanaal. Hoe meer mensen meedoen, hoe meer impact we hebben.",
     "putumayoLoop.qrTitle": "Deel de QR-code",
     "putumayoLoop.qrDownload": "Download QR-code",
     // Signup modal
@@ -648,7 +648,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "A worldwide run for",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "On Sunday October 18 we run together around the world for the running costs of Hospital San Miguel in the Amazon. Together with the people who live there.",
+      "On Sunday October 18 we run together around the world to support Hospital San Miguel. The hospital sits in the province of Putumayo, in the middle of Ecuador's Amazon region. Together with the local residents we run to fund the hospital's running costs.",
     "putumayoLoop.signUpCta": "Run with us",
     "putumayoLoop.donateCta": "Donate now",
     "putumayoLoop.shareCta": "Share this campaign",
@@ -695,7 +695,7 @@ export const ui = {
       "We received your message and will get back to you soon.",
     "putumayoLoop.shareTitle": "Help us go further",
     "putumayoLoop.shareSubtitle":
-      "Share the QR code or post on your favourite channel. The more people join, the bigger the impact.",
+      "Share the QR code via your favorite channel. The more people join, the bigger the impact.",
     "putumayoLoop.qrTitle": "Share the QR code",
     "putumayoLoop.qrDownload": "Download QR code",
     // Signup modal
@@ -1031,7 +1031,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "Una carrera mundial por",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "El domingo 18 de octubre corremos juntos en todo el mundo por los gastos operativos del Hospital San Miguel en la Amazonía. Junto con la gente que vive allí.",
+      "El domingo 18 de octubre corremos juntos en todo el mundo para apoyar al Hospital San Miguel. El hospital se encuentra en la provincia de Putumayo, en plena Amazonía ecuatoriana. Junto con los habitantes locales corremos para financiar los gastos operativos del hospital.",
     "putumayoLoop.signUpCta": "Corre con nosotros",
     "putumayoLoop.donateCta": "Dona ahora",
     "putumayoLoop.shareCta": "Comparte esta campaña",
@@ -1079,7 +1079,7 @@ export const ui = {
       "Recibimos tu mensaje y te contactaremos pronto.",
     "putumayoLoop.shareTitle": "Ayúdanos a llegar más lejos",
     "putumayoLoop.shareSubtitle":
-      "Comparte el código QR o publícalo en tu canal favorito. Cuantas más personas se sumen, mayor será el impacto.",
+      "Comparte el código QR a través de tu canal favorito. Cuantas más personas se sumen, mayor será el impacto.",
     "putumayoLoop.qrTitle": "Comparte el código QR",
     "putumayoLoop.qrDownload": "Descargar código QR",
     // Signup modal
