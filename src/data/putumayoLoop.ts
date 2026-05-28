@@ -39,6 +39,12 @@ export interface Subscriber {
   count?: number;
   /** Distance picked at signup. */
   distance?: "10k" | "half" | "full";
+  /**
+   * Free-text "City, country" supplied by individual runners at signup.
+   * Used by the live signup feed; un-set for hub signups (the hub
+   * provides the location context instead).
+   */
+  location?: string;
 }
 
 export interface DonationStats {

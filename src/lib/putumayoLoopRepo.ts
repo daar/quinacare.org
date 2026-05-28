@@ -56,6 +56,7 @@ function rowToSubscriber(r: SubscriberRow, hubs: Hub[]): Subscriber {
     signedUpAt: r.signed_up_at,
     count: r.count,
     distance,
+    location: r.location ?? undefined,
   };
 }
 

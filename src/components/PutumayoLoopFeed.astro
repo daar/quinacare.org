@@ -50,14 +50,15 @@ function relTime(iso: string): string {
     {
       sorted.map((s) => {
         const hub = s.hubId ? hubsById.get(s.hubId) : null;
+        const name = s.firstName ?? "";
         const text = hub
           ? t("putumayoLoop.signedUpInHub")
-              .replace("{name}", `${s.firstName}`)
-              .replace("{hub}", hub.name)
-          : t("putumayoLoop.signedUpIndividual").replace(
-              "{name}",
-              `${s.firstName}`,
-            );
+              .replace("{name}", name)
+              .replace("{city}", hub.city)
+              .replace("{country}", hub.country)
+          : t("putumayoLoop.signedUpIndividual")
+              .replace("{name}", name)
+              .replace("{location}", s.location ?? "—");
         return (
           <li class="flex items-start gap-3 px-4 py-3">
             <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
