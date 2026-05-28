@@ -153,7 +153,7 @@ export const editions: EditionConfig[] = [
         captainEmail: "cindymartens@live.nl",
       },
     ],
-    target: 10000,
+    target: 25000,
   },
 ];
 
