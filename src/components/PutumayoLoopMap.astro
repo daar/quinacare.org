@@ -2,6 +2,7 @@
 import type { Hub, Subscriber } from "../data/putumayoLoop";
 import type { Lang } from "../i18n";
 import { useTranslations } from "../i18n";
+import { countryName } from "../lib/countryName";
 
 interface Props {
   lang: Lang;
@@ -23,11 +24,18 @@ const runnerCount = subscribers.reduce((s, x) => s + (x.count ?? 1), 0);
 const runnerSingular = t("putumayoLoop.runnerSingular");
 const runnerPlural = t("putumayoLoop.runnerPlural");
 
+// Pre-translate the hub country names server-side so the popup
+// HTML doesn't have to deal with Intl in the browser.
+const hubsForClient = hubs.map((h) => ({
+  ...h,
+  country: countryName(h.country, lang),
+}));
+
 // Bridge the SSR data to the client-side module script (Astro processes
 // <script> tags in isolation and does not give them access to frontmatter
 // variables directly).
 const mapData = JSON.stringify({
-  hubs,
+  hubs: hubsForClient,
   subscribers,
   anonymous,
   i18n: { runnerSingular, runnerPlural },

@@ -275,8 +275,7 @@ export const ui = {
     "putumayoLoop.runnerSingular": "loper",
     "putumayoLoop.runnerPlural": "lopers",
     "putumayoLoop.latestSignups": "Laatste aanmeldingen",
-    "putumayoLoop.signedUpInHub": "{name} loopt mee in {city}, {country}",
-    "putumayoLoop.signedUpIndividual": "{name} loopt mee vanuit {location}",
+    "putumayoLoop.signedUp": "{name} loopt mee in {place}",
     "putumayoLoop.whyTitle": "Waarom we lopen",
     "putumayoLoop.whyHeading": "Lopen voor lopende kosten",
     "putumayoLoop.whyBody":
@@ -659,8 +658,7 @@ export const ui = {
     "putumayoLoop.runnerSingular": "runner",
     "putumayoLoop.runnerPlural": "runners",
     "putumayoLoop.latestSignups": "Latest signups",
-    "putumayoLoop.signedUpInHub": "{name} is running in {city}, {country}",
-    "putumayoLoop.signedUpIndividual": "{name} is running from {location}",
+    "putumayoLoop.signedUp": "{name} is running in {place}",
     "putumayoLoop.whyTitle": "Why we run",
     "putumayoLoop.whyHeading": "Running for running costs",
     "putumayoLoop.whyBody":
@@ -1043,8 +1041,7 @@ export const ui = {
     "putumayoLoop.runnerSingular": "corredor",
     "putumayoLoop.runnerPlural": "corredores",
     "putumayoLoop.latestSignups": "Últimas inscripciones",
-    "putumayoLoop.signedUpInHub": "{name} corre en {city}, {country}",
-    "putumayoLoop.signedUpIndividual": "{name} corre desde {location}",
+    "putumayoLoop.signedUp": "{name} corre en {place}",
     "putumayoLoop.whyTitle": "Por qué corremos",
     "putumayoLoop.whyHeading": "Correr por los gastos operativos",
     "putumayoLoop.whyBody":

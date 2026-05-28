@@ -10,6 +10,8 @@ export interface Hub {
   id: string;
   name: string;
   city: string;
+  /** ISO 3166-1 alpha-2 country code (e.g. "NL", "EC"). Display strings
+   *  are derived per-locale via Intl.DisplayNames. */
   country: string;
   coords: [number, number]; // [lat, lng]
   captain?: string;
@@ -127,7 +129,7 @@ export const editions: EditionConfig[] = [
         id: "putumayo",
         name: "Putumayo",
         city: "Puerto el Carmen",
-        country: "Ecuador",
+        country: "EC",
         coords: [0.118, -75.91],
         captain: "Jacob van der Ende",
         captainEmail: "hospitalsanmiguel@quinacare.org",
@@ -136,7 +138,7 @@ export const editions: EditionConfig[] = [
         id: "den-haag",
         name: "Den Haag",
         city: "Den Haag",
-        country: "Nederland",
+        country: "NL",
         coords: [52.0705, 4.3007],
         captain: "Sarah Blaszyk",
         captainEmail: "dhkblaszyk@gmail.com",

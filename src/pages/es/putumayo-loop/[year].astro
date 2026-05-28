@@ -19,6 +19,7 @@ import {
   getPastEditions,
   getEditionByYear,
 } from "../../../lib/putumayoLoopRepo";
+import { countryName } from "../../../lib/countryName";
 import type { Edition } from "../../../data/putumayoLoop";
 
 const lang: Lang = "es";
@@ -192,7 +193,7 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
                 {hub.name}
               </h3>
               <p class="qc-meta">
-                {hub.city}, {hub.country}
+                {hub.city}, {countryName(hub.country, lang)}
               </p>
             </article>
           ))}

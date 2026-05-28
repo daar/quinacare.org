@@ -2,6 +2,7 @@
 import Icon from "./Icon.astro";
 import type { Hub, Subscriber } from "../data/putumayoLoop";
 import { useTranslations, getDateLocale, type Lang } from "../i18n";
+import { countryName } from "../lib/countryName";
 
 interface Props {
   lang: Lang;
@@ -44,14 +45,16 @@ function relTime(iso: string): string {
       sorted.map((s) => {
         const hub = s.hubId ? hubsById.get(s.hubId) : null;
         const name = s.firstName ?? "";
-        const text = hub
-          ? t("putumayoLoop.signedUpInHub")
-              .replace("{name}", name)
-              .replace("{city}", hub.city)
-              .replace("{country}", hub.country)
-          : t("putumayoLoop.signedUpIndividual")
-              .replace("{name}", name)
-              .replace("{location}", s.location ?? "—");
+        // Both hub and individual signups go through the same template
+        // (`signedUp`) so the phrasing stays identical. For hubs the
+        // place is derived from the hub config; for individuals it's
+        // the free-text City, country they typed on the modal.
+        const place = hub
+          ? `${hub.city}, ${countryName(hub.country, lang)}`
+          : (s.location ?? "—");
+        const text = t("putumayoLoop.signedUp")
+          .replace("{name}", name)
+          .replace("{place}", place);
         return (
           <li class="flex items-start gap-3 px-4 py-3">
             <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">

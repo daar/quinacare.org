@@ -21,6 +21,7 @@ import PutumayoLoopHubContactModal from "../../components/PutumayoLoopHubContact
 import PutumayoLoopEditionNav from "../../components/PutumayoLoopEditionNav.astro";
 import { generateQrDataUri } from "../../lib/qr";
 import { getCurrentEdition } from "../../lib/putumayoLoopRepo";
+import { countryName } from "../../lib/countryName";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
@@ -270,7 +271,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
               {hub.name}
             </h3>
             <p class="qc-meta mb-3">
-              {hub.city}, {hub.country}
+              {hub.city}, {countryName(hub.country, lang)}
             </p>
             {hub.captain && (
               <p class="qc-body text-sm">
