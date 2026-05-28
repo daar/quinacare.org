@@ -83,8 +83,14 @@ const btnClass =
     class={btnClass}
     aria-label={t("share.copyLink")}
   >
-    <Icon name="link" class="share-copy-link" />
-    <Icon name="check" class="share-copy-done !hidden" />
+    <!--
+      Wrap each icon in a span so the `hidden` toggle isn't fighting
+      the Icon component's scoped `svg { display: inline-block }`
+      rule. Spans have no competing display style — plain `hidden`
+      wins cleanly.
+    -->
+    <span class="share-copy-link"><Icon name="link" /></span>
+    <span class="share-copy-done hidden"><Icon name="check" /></span>
   </button>
 </div>
 
@@ -117,15 +123,13 @@ const btnClass =
       copyBtn?.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(url);
-          // `!hidden` (important) — the Icon component's scoped
-          // `svg { display: inline-block }` outranks plain `hidden`.
           const linkIcon = copyBtn.querySelector(".share-copy-link");
           const doneIcon = copyBtn.querySelector(".share-copy-done");
-          linkIcon?.classList.add("!hidden");
-          doneIcon?.classList.remove("!hidden");
+          linkIcon?.classList.add("hidden");
+          doneIcon?.classList.remove("hidden");
           setTimeout(() => {
-            linkIcon?.classList.remove("!hidden");
-            doneIcon?.classList.add("!hidden");
+            linkIcon?.classList.remove("hidden");
+            doneIcon?.classList.add("hidden");
           }, 1500);
         } catch {
           /* clipboard unavailable */
