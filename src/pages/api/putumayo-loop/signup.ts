@@ -16,10 +16,13 @@ import type { APIRoute } from "astro";
 import { getTurso } from "../../../lib/turso";
 import { sendMail } from "../../../lib/mailer";
 import { geocode } from "../../../lib/geocode";
+import { countryName } from "../../../lib/countryName";
+import type { Lang } from "../../../i18n";
 import { runManager, editions } from "../../../data/putumayoLoop";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
 const ALLOWED_DISTANCES = new Set(["10k", "half", "full"]);
+const ALLOWED_LANGS = new Set<Lang>(["nl", "en", "es"]);
 
 export const POST: APIRoute = async ({ request }) => {
   let body: Record<string, unknown>;
@@ -36,9 +39,11 @@ export const POST: APIRoute = async ({ request }) => {
   const email = String(body.email ?? "").trim();
   const mode = String(body.mode ?? "");
   const hubId = body.hubId ? String(body.hubId).trim() : null;
-  const location = body.location ? String(body.location).trim() : null;
+  let location = body.location ? String(body.location).trim() : null;
   const distance = String(body.distance ?? "");
   const editionYear = Number(body.editionYear);
+  const rawLang = String(body.lang ?? "nl").toLowerCase() as Lang;
+  const lang: Lang = ALLOWED_LANGS.has(rawLang) ? rawLang : "nl";
 
   if (
     !firstName ||
@@ -69,6 +74,9 @@ export const POST: APIRoute = async ({ request }) => {
   // Best-effort geocoding for individual signups so they appear as a pin
   // on the map. Hub signups already use the hub's coords as a fallback
   // (see putumayoLoopRepo.rowToSubscriber), so we don't geocode for them.
+  // Also backfill the country: when the runner types just "Amsterdam"
+  // we append ", Nederland" / ", Netherlands" / ", Países Bajos" so the
+  // feed shows a proper "City, country" matching the page locale.
   let lat: number | null = null;
   let lng: number | null = null;
   if (mode === "individual" && location) {
@@ -76,6 +84,9 @@ export const POST: APIRoute = async ({ request }) => {
     if (geo) {
       lat = geo.lat;
       lng = geo.lng;
+      if (geo.countryCode && !location.includes(",")) {
+        location = `${location}, ${countryName(geo.countryCode, lang)}`;
+      }
     }
   }
 

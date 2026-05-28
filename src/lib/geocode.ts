@@ -8,9 +8,17 @@
 export interface Geo {
   lat: number;
   lng: number;
+  /** ISO 3166-1 alpha-2, uppercase. Undefined if Nominatim didn't return one. */
+  countryCode?: string;
 }
 
 const NOMINATIM = "https://nominatim.openstreetmap.org/search";
+
+interface NominatimHit {
+  lat: string;
+  lon: string;
+  address?: { country_code?: string };
+}
 
 export async function geocode(
   query: string,
@@ -19,7 +27,12 @@ export async function geocode(
   const q = query.trim();
   if (!q) return null;
 
-  const url = `${NOMINATIM}?format=json&limit=1&q=${encodeURIComponent(q)}`;
+  // `addressdetails=1` adds the structured address block we need for
+  // country_code so callers can fill in a missing country on the typed
+  // location string.
+  const url =
+    `${NOMINATIM}?format=json&limit=1&addressdetails=1` +
+    `&q=${encodeURIComponent(q)}`;
   try {
     const res = await fetch(url, {
       headers: {
@@ -30,12 +43,14 @@ export async function geocode(
       signal,
     });
     if (!res.ok) return null;
-    const body = (await res.json()) as Array<{ lat: string; lon: string }>;
+    const body = (await res.json()) as NominatimHit[];
     if (!Array.isArray(body) || body.length === 0) return null;
     const first = body[0];
     const lat = parseFloat(first.lat);
     const lng = parseFloat(first.lon);
-    if (Number.isFinite(lat) && Number.isFinite(lng)) return { lat, lng };
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    const cc = first.address?.country_code?.toUpperCase();
+    return { lat, lng, countryCode: cc || undefined };
   } catch {
     /* network / abort / parse — caller treats as "no result" */
   }

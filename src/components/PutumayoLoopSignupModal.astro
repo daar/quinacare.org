@@ -17,6 +17,7 @@ const t = useTranslations(lang);
 <dialog
   id={id}
   data-year={year}
+  data-lang={lang}
   class="pl-signup-modal fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
 >
   <div
@@ -277,6 +278,7 @@ const t = useTranslations(lang);
           'button[type="submit"]',
         );
         const editionYear = Number(dialog.dataset.year || "0");
+        const lang = dialog.dataset.lang || "nl";
 
         form?.addEventListener("submit", async (e) => {
           e.preventDefault();
@@ -293,6 +295,7 @@ const t = useTranslations(lang);
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 editionYear,
+                lang,
                 firstName: data.get("firstName"),
                 lastName: data.get("lastName"),
                 email: data.get("email"),
