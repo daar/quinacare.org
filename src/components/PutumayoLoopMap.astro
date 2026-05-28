@@ -71,7 +71,8 @@ const mapData = JSON.stringify({
     firstName?: string;
     lastName?: string;
     hubId?: string;
-    coords: [number, number];
+    /** Undefined for un-geocoded individual signups; skipped on the map. */
+    coords?: [number, number];
     count?: number;
   }
   interface MapPayload {
@@ -130,11 +131,13 @@ const mapData = JSON.stringify({
       // Aggregate by rounded coords so multiple participants in the same
       // city collapse to a single badge. `count` (default 1) lets a
       // single subscriber entry stand in for N runners at one location.
+      // Subscribers without coords (un-geocoded individuals) are skipped.
       const buckets = new Map<
         string,
         { lat: number; lng: number; n: number }
       >();
       for (const s of subscribers) {
+        if (!s.coords) continue;
         const n = s.count ?? 1;
         const key = `${s.coords[0].toFixed(2)},${s.coords[1].toFixed(2)}`;
         const cur = buckets.get(key);
@@ -165,7 +168,7 @@ const mapData = JSON.stringify({
     }
 
     for (const sub of subscribers) {
-      if (!sub.hubId) {
+      if (!sub.hubId && sub.coords) {
         L.marker(sub.coords, { icon: dot })
           .addTo(map)
           .bindPopup(

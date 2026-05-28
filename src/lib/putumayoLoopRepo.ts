@@ -7,7 +7,12 @@
 // This module stitches the three sources into the Edition shape the
 // pages consume.
 
-import type { Edition, EditionConfig, Subscriber } from "../data/putumayoLoop";
+import type {
+  Edition,
+  EditionConfig,
+  Hub,
+  Subscriber,
+} from "../data/putumayoLoop";
 import { editions } from "../data/putumayoLoop";
 import { getTurso } from "./turso";
 import { getFundraiserStats } from "./donations";
@@ -26,41 +31,61 @@ type SubscriberRow = {
   signed_up_at: string;
 };
 
-function rowToSubscriber(r: SubscriberRow): Subscriber {
+function rowToSubscriber(r: SubscriberRow, hubs: Hub[]): Subscriber {
   const distance = (["10k", "half", "full"] as const).find(
     (d) => d === r.distance,
   );
+  // Coord resolution order:
+  //   1. row's own lat/lng (geocoded)
+  //   2. parent hub's coords (so hub signups still get a pin until
+  //      their `location` text is geocoded — and stack on the badge)
+  //   3. undefined — the map skips these; counters still include them
+  let coords: [number, number] | undefined;
+  if (r.lat !== null && r.lng !== null) {
+    coords = [r.lat, r.lng];
+  } else if (r.hub_id) {
+    const hub = hubs.find((h) => h.id === r.hub_id);
+    if (hub) coords = hub.coords;
+  }
   return {
     id: r.external_id ?? String(r.signed_up_at),
     firstName: r.first_name ?? undefined,
     lastName: r.last_name ?? undefined,
     hubId: r.hub_id ?? undefined,
-    coords: [r.lat ?? 0, r.lng ?? 0],
+    coords,
     signedUpAt: r.signed_up_at,
     count: r.count,
     distance,
   };
 }
 
-async function fetchSubscribers(year: number): Promise<Subscriber[]> {
+async function fetchSubscribers(
+  year: number,
+  hubs: Hub[],
+): Promise<Subscriber[]> {
   const db = getTurso();
-  // Only return rows with coords — the map can't plot without them.
+  // Return every signup; whether or not it can be mapped is a downstream
+  // concern (the page-side counters need all rows; the map filters those
+  // without coords). Older code used to filter on lat/lng here and that
+  // hid every freshly-inserted, un-geocoded signup from the whole page.
   const res = await db.execute({
     sql: `
       SELECT external_id, edition_year, first_name, last_name, hub_id,
              lat, lng, location, count, distance, signed_up_at
       FROM putumayo_loop_subscribers
-      WHERE edition_year = ? AND lat IS NOT NULL AND lng IS NOT NULL
+      WHERE edition_year = ?
       ORDER BY signed_up_at DESC
     `,
     args: [year],
   });
-  return (res.rows as unknown as SubscriberRow[]).map(rowToSubscriber);
+  return (res.rows as unknown as SubscriberRow[]).map((r) =>
+    rowToSubscriber(r, hubs),
+  );
 }
 
 async function hydrate(config: EditionConfig): Promise<Edition> {
   const [subscribers, stats] = await Promise.all([
-    fetchSubscribers(config.year),
+    fetchSubscribers(config.year, config.hubs),
     getFundraiserStats(config.fundraiserSlug),
   ]);
   return {

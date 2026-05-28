@@ -26,7 +26,14 @@ export interface Subscriber {
   firstName?: string;
   lastName?: string;
   hubId?: string;
-  coords: [number, number];
+  /**
+   * Map pin coordinates. Optional because new signups land in the DB
+   * with NULL lat/lng until a geocoding step turns the free-text
+   * `location` field into coords. Hub signups still get a pin (the
+   * repo falls back to the hub's own coords), individuals without
+   * geocoded coords skip the map but still count in the totals.
+   */
+  coords?: [number, number];
   signedUpAt: string;
   /** Aggregate count — one entry can stand in for N runners (past editions). */
   count?: number;
