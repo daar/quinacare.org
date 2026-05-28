@@ -327,6 +327,10 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "Ik sluit me aan bij een georganiseerde run in een van de hubs.",
     "putumayoLoop.chooseHub": "Kies een hub",
+    "putumayoLoop.distanceLabel": "Afstand",
+    "putumayoLoop.distance10k": "10 km",
+    "putumayoLoop.distanceHalf": "Halve marathon",
+    "putumayoLoop.distanceFull": "Hele marathon",
     "putumayoLoop.runLocationLabel": "Waar ga je lopen?",
     "putumayoLoop.runLocationPlaceholder": "Stad, land",
     "putumayoLoop.runLocationHelp":
@@ -703,6 +707,10 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "I will join one of the organized runs at a hub.",
     "putumayoLoop.chooseHub": "Pick a hub",
+    "putumayoLoop.distanceLabel": "Distance",
+    "putumayoLoop.distance10k": "10 km",
+    "putumayoLoop.distanceHalf": "Half marathon",
+    "putumayoLoop.distanceFull": "Full marathon",
     "putumayoLoop.runLocationLabel": "Where are you running?",
     "putumayoLoop.runLocationPlaceholder": "City, country",
     "putumayoLoop.runLocationHelp":
@@ -1080,6 +1088,10 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "Me uniré a una de las carreras organizadas en un hub.",
     "putumayoLoop.chooseHub": "Elige un hub",
+    "putumayoLoop.distanceLabel": "Distancia",
+    "putumayoLoop.distance10k": "10 km",
+    "putumayoLoop.distanceHalf": "Media maratón",
+    "putumayoLoop.distanceFull": "Maratón completa",
     "putumayoLoop.runLocationLabel": "¿Dónde vas a correr?",
     "putumayoLoop.runLocationPlaceholder": "Ciudad, país",
     "putumayoLoop.runLocationHelp":

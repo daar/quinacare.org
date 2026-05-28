@@ -81,6 +81,7 @@ async function ensureSchema() {
       lng           REAL,
       location      TEXT,
       count         INTEGER NOT NULL DEFAULT 1,
+      distance      TEXT,
       signed_up_at  TEXT NOT NULL,
       created_at    TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (edition_year) REFERENCES putumayo_loop_editions(year)
@@ -96,6 +97,9 @@ async function ensureSchema() {
   await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_nl TEXT`);
   await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_en TEXT`);
   await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_es TEXT`);
+  await tryAlter(
+    `ALTER TABLE putumayo_loop_subscribers ADD COLUMN distance TEXT`,
+  );
 }
 
 async function main() {

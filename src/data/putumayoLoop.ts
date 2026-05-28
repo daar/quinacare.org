@@ -27,6 +27,8 @@ export interface Subscriber {
    * this entry stands in for N runners at one location. Defaults to 1.
    */
   count?: number;
+  /** Distance the runner picked at signup. */
+  distance?: "10k" | "half" | "full";
 }
 
 export interface DonationStats {

@@ -56,6 +56,7 @@ type SubscriberRow = {
   lng: number | null;
   location: string | null;
   count: number;
+  distance: string | null;
   signed_up_at: string;
 };
 
@@ -103,6 +104,9 @@ function rowToHub(r: HubRow): Hub {
 function rowToSubscriber(r: SubscriberRow): Subscriber {
   // Map only finishes successfully if lat/lng are present (live signups
   // without geocoding won't show as pins until they have coords).
+  const distance = (["10k", "half", "full"] as const).find(
+    (d) => d === r.distance,
+  );
   return {
     id: r.external_id ?? String(r.signed_up_at),
     firstName: r.first_name ?? undefined,
@@ -111,6 +115,7 @@ function rowToSubscriber(r: SubscriberRow): Subscriber {
     coords: [r.lat ?? 0, r.lng ?? 0],
     signedUpAt: r.signed_up_at,
     count: r.count,
+    distance,
   };
 }
 
@@ -134,7 +139,7 @@ async function fetchSubscribers(year: number): Promise<Subscriber[]> {
   const res = await db.execute({
     sql: `
       SELECT external_id, edition_year, first_name, last_name, hub_id,
-             lat, lng, location, count, signed_up_at
+             lat, lng, location, count, distance, signed_up_at
       FROM putumayo_loop_subscribers
       WHERE edition_year = ? AND lat IS NOT NULL AND lng IS NOT NULL
       ORDER BY signed_up_at DESC

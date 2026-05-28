@@ -18,6 +18,7 @@ import { sendMail } from "../../../lib/mailer";
 import { runManager } from "../../../data/putumayoLoop";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
+const ALLOWED_DISTANCES = new Set(["10k", "half", "full"]);
 
 export const POST: APIRoute = async ({ request }) => {
   let body: Record<string, unknown>;
@@ -35,6 +36,7 @@ export const POST: APIRoute = async ({ request }) => {
   const mode = String(body.mode ?? "");
   const hubId = body.hubId ? String(body.hubId).trim() : null;
   const location = body.location ? String(body.location).trim() : null;
+  const distance = String(body.distance ?? "");
   const editionYear = Number(body.editionYear);
 
   if (
@@ -42,6 +44,7 @@ export const POST: APIRoute = async ({ request }) => {
     !lastName ||
     !email ||
     !ALLOWED_MODES.has(mode) ||
+    !ALLOWED_DISTANCES.has(distance) ||
     !Number.isFinite(editionYear)
   ) {
     return new Response(
@@ -71,10 +74,18 @@ export const POST: APIRoute = async ({ request }) => {
       sql: `
         INSERT INTO putumayo_loop_subscribers
           (external_id, edition_year, first_name, last_name, email,
-           hub_id, lat, lng, location, count, signed_up_at)
-        VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, ?, 1, datetime('now'))
+           hub_id, lat, lng, location, count, distance, signed_up_at)
+        VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, ?, 1, ?, datetime('now'))
       `,
-      args: [editionYear, firstName, lastName, email, hubId, location],
+      args: [
+        editionYear,
+        firstName,
+        lastName,
+        email,
+        hubId,
+        location,
+        distance,
+      ],
     });
   } catch (err) {
     console.error("[putumayo-loop/signup] Turso insert failed:", err);
