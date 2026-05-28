@@ -1,5 +1,5 @@
 ---
-import { getAllEditions } from "../data/putumayoLoop";
+import { getAllEditions } from "../lib/putumayoLoopRepo";
 import { getLocalizedPath, useTranslations, type Lang } from "../i18n";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 const { lang, currentYear } = Astro.props;
 const t = useTranslations(lang);
 
-const all = getAllEditions();
+const all = await getAllEditions();
 
 function pathFor(year: number): string {
   // Active/upcoming editions live at the root; past editions under /<year>.

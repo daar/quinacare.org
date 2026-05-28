@@ -20,12 +20,12 @@ import PutumayoLoopSignupModal from "../../components/PutumayoLoopSignupModal.as
 import PutumayoLoopHubContactModal from "../../components/PutumayoLoopHubContactModal.astro";
 import PutumayoLoopEditionNav from "../../components/PutumayoLoopEditionNav.astro";
 import { generateQrDataUri } from "../../lib/qr";
-import { getCurrentEdition } from "../../data/putumayoLoop";
+import { getCurrentEdition } from "../../lib/putumayoLoopRepo";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
-const edition = getCurrentEdition();
+const edition = await getCurrentEdition();
 const { hubs, subscribers, donations } = edition;
 
 function formatCurrency(amount: number): string {

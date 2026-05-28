@@ -18,13 +18,13 @@ import {
 import {
   getPastEditions,
   getEditionByYear,
-  type Edition,
-} from "../../../data/putumayoLoop";
+} from "../../../lib/putumayoLoopRepo";
+import type { Edition } from "../../../data/putumayoLoop";
 
 const lang: Lang = "es";
 
-export const getStaticPaths = (() => {
-  return getPastEditions().map((e) => ({
+export const getStaticPaths = (async () => {
+  return (await getPastEditions()).map((e) => ({
     params: { year: e.slug },
     props: { edition: e },
   }));
@@ -60,7 +60,7 @@ const pct = Math.min(
 );
 
 // Resolve current edition link, if any, for the CTA.
-const currentEdition = getEditionByYear(new Date().getFullYear());
+const currentEdition = await getEditionByYear(new Date().getFullYear());
 const currentLink = getLocalizedPath("/putumayo-loop", lang);
 
 // edition.storyKey is a runtime string; cast through the t() key union.

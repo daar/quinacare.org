@@ -1,8 +1,14 @@
 // POST /api/putumayo-loop/signup
 //
 // Receives a Putumayo Loop runner registration from the public signup
-// modal. Writes the row to Turso and notifies the run manager
-// (see `runManager` in src/data/putumayoLoop.ts) by email.
+// modal. Writes the row to Turso (putumayo_loop_subscribers, the same
+// table the seed data lives in) and notifies the run manager (see
+// `runManager` in src/data/putumayoLoop.ts) by email.
+//
+// Schema is created by scripts/migrate-putumayo-loop.mjs; live signups
+// leave external_id NULL so they don't collide with seed rows. Lat/lng
+// stay NULL until a geocoding step turns the `location` string into
+// coords — until then those signups simply don't appear as map pins.
 
 export const prerender = false;
 
@@ -12,23 +18,6 @@ import { sendMail } from "../../../lib/mailer";
 import { runManager } from "../../../data/putumayoLoop";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
-
-async function ensureTable() {
-  const db = getTurso();
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS putumayo_loop_signups (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      edition_year INTEGER NOT NULL,
-      first_name TEXT NOT NULL,
-      last_name TEXT NOT NULL,
-      email TEXT NOT NULL,
-      mode TEXT NOT NULL CHECK (mode IN ('individual', 'hub')),
-      hub_id TEXT,
-      location TEXT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    )
-  `);
-}
 
 export const POST: APIRoute = async ({ request }) => {
   let body: Record<string, unknown>;
@@ -75,14 +64,17 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const db = getTurso();
-    await ensureTable();
+    // Insert directly — the table is created by the migration script. If
+    // it's missing we want a loud 500 rather than a silent CREATE in the
+    // hot path.
     await db.execute({
       sql: `
-        INSERT INTO putumayo_loop_signups
-          (edition_year, first_name, last_name, email, mode, hub_id, location)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO putumayo_loop_subscribers
+          (external_id, edition_year, first_name, last_name, email,
+           hub_id, lat, lng, location, count, signed_up_at)
+        VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, ?, 1, datetime('now'))
       `,
-      args: [editionYear, firstName, lastName, email, mode, hubId, location],
+      args: [editionYear, firstName, lastName, email, hubId, location],
     });
   } catch (err) {
     console.error("[putumayo-loop/signup] Turso insert failed:", err);
