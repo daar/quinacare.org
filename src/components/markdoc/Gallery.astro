@@ -1,94 +1,91 @@
 ---
-import OptimizedImage from "../OptimizedImage.astro";
-
 interface Props {
-  /**
-   * Array of image paths (string) or objects with src + optional alt.
-   * Mixed forms in the same call are fine.
-   */
-  images: Array<string | { src: string; alt?: string }>;
   /** Visually-hidden label for assistive tech describing the whole gallery. */
   ariaLabel?: string;
 }
 
-const { images, ariaLabel = "Photo gallery" } = Astro.props;
-
-const items = (images ?? [])
-  .filter(Boolean)
-  .map((entry) =>
-    typeof entry === "string" ? { src: entry, alt: "" } : entry,
-  );
+const { ariaLabel = "Photo gallery" } = Astro.props;
 ---
 
-{
-  items.length > 0 && (
-    <div class="qc-gallery not-prose my-10" role="list" aria-label={ariaLabel}>
-      {items.map((item) => (
-        <figure class="qc-gallery__item" role="listitem">
-          <OptimizedImage
-            src={item.src}
-            alt={item.alt ?? ""}
-            class="qc-gallery__img"
-            widths={[400, 800, 1200]}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        </figure>
-      ))}
-    </div>
-  )
-}
+<div class="qc-gallery not-prose my-10" aria-label={ariaLabel}>
+  <!-- init="false" so we can attach injectStyles before Swiper boots — that's
+       the supported way to style the shadow-DOM nav/pagination internals. -->
+  <swiper-container
+    class="qc-gallery__swiper"
+    init="false"
+    a11y-prev-slide-message="Previous photo"
+    a11y-next-slide-message="Next photo"
+  >
+    <slot />
+  </swiper-container>
+</div>
 
-<style is:global>
-  /* Global so the rules survive Markdoc's rendering tree, which sometimes
-     strips Astro's scoped data attribute from the inner nodes. The class
-     prefix (qc-gallery) keeps the global footprint contained.
+<script>
+  import { register } from "swiper/element/bundle";
+  register();
 
-     CSS columns give a masonry layout that preserves each image's natural
-     aspect ratio, so portrait and landscape shots both look right without
-     us having to crop or pre-size them. */
-  .qc-gallery {
-    column-gap: 1rem;
-    column-count: 1;
-  }
-  @media (min-width: 640px) {
-    .qc-gallery {
-      column-count: 2;
+  // Custom CSS injected into each carousel's shadow root: brand-red circular
+  // nav buttons with white chevrons, and qcRed pagination dots that fade to
+  // a neutral gray when inactive. Lives here (not global.css) because
+  // Swiper Element renders its arrows + dots inside a Shadow DOM that the
+  // page stylesheet can't reach.
+  const injectStyles = [
+    `
+    :host {
+      --qc-red: #e6172c;
+      /* Swiper's stock arrows pick this up — white chevrons, no pill. */
+      --swiper-navigation-color: #ffffff;
     }
-  }
-  @media (min-width: 1024px) {
-    .qc-gallery {
-      column-count: 3;
+    /* Pagination dots: qcRed active pill on a translucent white track. */
+    .swiper-pagination {
+      bottom: 14px !important;
     }
+    .swiper-pagination-bullet {
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      opacity: 0.55;
+      transition: background 0.2s ease, opacity 0.2s ease, width 0.2s ease;
+      margin: 0 4px !important;
+    }
+    .swiper-pagination-bullet-active {
+      background: var(--qc-red);
+      opacity: 1;
+      width: 22px;
+      border-radius: 4px;
+    }
+    `,
+  ];
+
+  function init() {
+    document
+      .querySelectorAll<HTMLElement>(".qc-gallery__swiper")
+      .forEach((el) => {
+        if ((el as HTMLElement & { initialized?: boolean }).initialized) return;
+        Object.assign(el, {
+          navigation: true,
+          pagination: { clickable: true },
+          keyboard: true,
+          grabCursor: true,
+          spaceBetween: 16,
+          loop: true,
+          autoplay: {
+            delay: 3000,
+            // Keep cycling even after the user clicks an arrow or a dot.
+            disableOnInteraction: false,
+            // Pause while the cursor sits on the carousel so the user can
+            // study a frame without it sliding away.
+            pauseOnMouseEnter: true,
+          },
+          injectStyles,
+        });
+        (el as HTMLElement & { initialize?: () => void }).initialize?.();
+      });
   }
 
-  .qc-gallery__item {
-    break-inside: avoid;
-    margin: 0 0 1rem 0;
-    overflow: hidden;
-    border-radius: 0.75rem;
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.06),
-      0 4px 16px rgba(0, 0, 0, 0.08);
-    transition:
-      transform 0.4s ease,
-      box-shadow 0.4s ease;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
   }
-
-  .qc-gallery__item:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 12px 28px rgba(0, 0, 0, 0.14);
-  }
-
-  .qc-gallery__img {
-    display: block;
-    width: 100%;
-    height: auto;
-    transition: transform 0.6s ease;
-  }
-
-  .qc-gallery__item:hover .qc-gallery__img {
-    transform: scale(1.03);
-  }
-</style>
+</script>

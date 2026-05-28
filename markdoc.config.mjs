@@ -16,8 +16,14 @@ export default defineMarkdocConfig({
     gallery: {
       render: component("./src/components/markdoc/Gallery.astro"),
       attributes: {
-        images: { type: Array, required: true },
         ariaLabel: { type: String },
+      },
+    },
+    "gallery-image": {
+      render: component("./src/components/markdoc/GalleryImage.astro"),
+      attributes: {
+        src: { type: String, required: true },
+        alt: { type: String },
       },
     },
     download: {
