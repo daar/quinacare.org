@@ -37,14 +37,14 @@
           "icon": "fa-solid fa-tree",
           "image": "/images/yura-boom/featured.webp",
           "descriptionKey": "submenu.yuraBoomDesc"
-        }
-      ],
-      "submenu_disabled": [
+        },
         {
           "labelKey": "submenu.joinTeam",
           "path": "/join-team",
           "icon": "fa-solid fa-people-group"
-        },
+        }
+      ],
+      "submenu_disabled": [
         {
           "labelKey": "submenu.becomePartner",
           "path": "/become-partner",
