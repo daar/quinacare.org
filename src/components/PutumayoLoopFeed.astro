@@ -33,15 +33,8 @@ function relTime(iso: string): string {
   class="rounded-xl border border-gray-100 bg-white shadow-sm h-full flex flex-col"
   style="min-height: 420px;"
 >
-  <div class="flex items-center justify-between p-4 border-b border-gray-100">
+  <div class="p-4 border-b border-gray-100">
     <span class="qc-label">{t("putumayoLoop.latestSignups")}</span>
-    <span
-      class="qc-meta !text-qcRed font-bold flex items-center gap-1"
-      title="total runners"
-    >
-      <Icon name="heart" class="text-xs" />
-      {subscribers.length}
-    </span>
   </div>
   <ul
     class="flex-1 overflow-y-auto divide-y divide-gray-50"
