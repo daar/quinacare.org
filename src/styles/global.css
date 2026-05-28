@@ -449,6 +449,30 @@ mark {
   margin-bottom: 0.5em;
 }
 
+.prose-article ul,
+.prose-article ol {
+  margin-bottom: 1.5em;
+  padding-left: 1.5em;
+}
+
+.prose-article ul {
+  list-style: disc;
+}
+
+.prose-article ol {
+  list-style: decimal;
+}
+
+.prose-article li {
+  margin-bottom: 0.5em;
+}
+
+.prose-article li > ul,
+.prose-article li > ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .prose-article a {
   color: var(--color-qcRed);
   text-decoration: underline;
