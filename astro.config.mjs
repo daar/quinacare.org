@@ -12,11 +12,7 @@ export default defineConfig({
   adapter: netlify({ imageCDN: false }),
   integrations: [markdoc(), sitemap()],
   vite: {
-    // Astro 6.4 bundles its own (rolldown-based) Vite under
-    // astro/node_modules while @tailwindcss/vite resolves the top-level one,
-    // so the two `Plugin` types diverge by module identity. Cast around the
-    // type-only mismatch — runtime is unaffected.
-    plugins: /** @type {any} */ (tailwindcss()),
+    plugins: [tailwindcss()],
   },
   i18n: {
     defaultLocale: "nl",
