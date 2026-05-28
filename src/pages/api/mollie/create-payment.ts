@@ -50,6 +50,14 @@ interface RequestBody {
   locale: string;
   context?: string;
   metadata?: Record<string, unknown>;
+  /**
+   * Optional override for the Mollie description sent to the payment
+   * provider (and onto the donor's bank statement). When non-empty it
+   * is used verbatim instead of the auto-built default. Useful for
+   * single-campaign pages that need a short, recognisable name to
+   * survive the bank-statement truncation cap.
+   */
+  description?: string;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -117,13 +125,20 @@ export const POST: APIRoute = async ({ request }) => {
     context === "fundraiser" && typeof metadata?.fundraiser_title === "string"
       ? metadata.fundraiser_title.trim()
       : "";
-  // For a fundraiser, lead with its name so the donor recognises the
-  // charge on their bank statement (which truncates long descriptions).
-  const description = fundraiserTitle
-    ? `${fundraiserTitle} - donation ${amountLabel}`
-    : isRecurring
-      ? `Quina Care ${freq} donation ${amountLabel}`
-      : `Quina Care donation ${amountLabel}`;
+  // If the caller supplied an explicit description, use it verbatim —
+  // this lets single-campaign pages send a short, recognisable name
+  // (e.g. "Putumayo Loop 2026") that survives the ~22-char card-
+  // statement truncation. Otherwise fall back to the auto-built
+  // fundraiser / recurring / default forms.
+  const explicitDescription =
+    typeof body.description === "string" ? body.description.trim() : "";
+  const description = explicitDescription
+    ? explicitDescription
+    : fundraiserTitle
+      ? `${fundraiserTitle} - donation ${amountLabel}`
+      : isRecurring
+        ? `Quina Care ${freq} donation ${amountLabel}`
+        : `Quina Care donation ${amountLabel}`;
 
   // Insert pending donation in Turso
   let donationId: number | undefined;
