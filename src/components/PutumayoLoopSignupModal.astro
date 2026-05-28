@@ -222,9 +222,14 @@ const t = useTranslations(lang);
           dialog.showModal();
           document.body.style.overflow = "hidden";
         };
+        // When the signup goes through we flip this so closing the modal
+        // (any way — backdrop, button, ESC) triggers a reload so the feed,
+        // map and counters pick up the row that was just inserted.
+        let didSubmit = false;
         const close = () => {
           dialog.close();
           document.body.style.overflow = "";
+          if (didSubmit) window.location.reload();
         };
         document
           .querySelectorAll(`[data-open-modal="${dialog.id}"]`)
@@ -306,6 +311,7 @@ const t = useTranslations(lang);
               }),
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            didSubmit = true;
             formView?.classList.add("hidden");
             successView?.classList.remove("hidden");
           } catch {
