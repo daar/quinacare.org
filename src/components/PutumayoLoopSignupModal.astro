@@ -2,6 +2,7 @@
 import Icon from "./Icon.astro";
 import type { Hub } from "../data/putumayoLoop";
 import { useTranslations, type Lang } from "../i18n";
+import { ISO_COUNTRY_CODES } from "../lib/countryCodes";
 
 interface Props {
   lang: Lang;
@@ -12,6 +13,22 @@ interface Props {
 }
 const { lang, hubs, year, id = "putumayo-loop-signup-modal" } = Astro.props;
 const t = useTranslations(lang);
+
+// Locale-translated country list for the autocomplete <datalist>.
+// Intl.supportedValuesOf("region") isn't in the spec, so the codes
+// themselves come from a hand-maintained ISO 3166-1 alpha-2 array.
+const regionNames = new Intl.DisplayNames([lang], { type: "region" });
+const countryOptions = ISO_COUNTRY_CODES.map((code) => {
+  try {
+    const name = regionNames.of(code);
+    return name ? { code, name } : null;
+  } catch {
+    return null;
+  }
+})
+  .filter((c): c is { code: string; name: string } => c !== null)
+  .sort((a, b) => a.name.localeCompare(b.name, lang));
+const countryListId = `${id}-country-options`;
 ---
 
 <dialog
@@ -42,7 +59,7 @@ const t = useTranslations(lang);
           {t("putumayoLoop.modalTitle")}
         </h2>
         <p class="qc-body mb-6">{t("putumayoLoop.modalSubtitle")}</p>
-        <form class="space-y-4" id="putumayo-signup-form">
+        <form class="space-y-4" id="putumayo-signup-form" autocomplete="off">
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="qc-label block mb-1">
@@ -52,7 +69,7 @@ const t = useTranslations(lang);
                 type="text"
                 name="firstName"
                 required
-                class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+                class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
               />
             </div>
             <div>
@@ -63,7 +80,7 @@ const t = useTranslations(lang);
                 type="text"
                 name="lastName"
                 required
-                class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+                class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -75,7 +92,7 @@ const t = useTranslations(lang);
               type="email"
               name="email"
               required
-              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+              class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
             />
           </div>
           <fieldset class="space-y-2">
@@ -89,7 +106,7 @@ const t = useTranslations(lang);
                 type="radio"
                 name="mode"
                 value="individual"
-                checked
+                required
                 class="mt-1 accent-qcRed"
               />
               <span class="flex-1">
@@ -108,6 +125,7 @@ const t = useTranslations(lang);
                 type="radio"
                 name="mode"
                 value="hub"
+                required
                 class="mt-1 accent-qcRed"
               />
               <span class="flex-1">
@@ -124,7 +142,7 @@ const t = useTranslations(lang);
             </label>
             <select
               name="hub"
-              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
+              class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
             >
               {
                 hubs.map((h) => (
@@ -136,17 +154,39 @@ const t = useTranslations(lang);
             </select>
           </div>
 
-          <div class="individual-location">
-            <label class="qc-label block mb-1">
+          <div class="individual-location hidden">
+            <span class="qc-label block mb-2">
               {t("putumayoLoop.runLocationLabel")}
-            </label>
-            <input
-              type="text"
-              name="location"
-              required
-              placeholder={t("putumayoLoop.runLocationPlaceholder")}
-              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
-            />
+            </span>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="qc-meta block mb-1">
+                  {t("putumayoLoop.runCityLabel")}
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  placeholder={t("putumayoLoop.runCityPlaceholder")}
+                  class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label class="qc-meta block mb-1">
+                  {t("putumayoLoop.runCountryLabel")}
+                </label>
+                <input
+                  type="text"
+                  name="country"
+                  list={countryListId}
+                  autocomplete="country-name"
+                  placeholder={t("putumayoLoop.runCountryPlaceholder")}
+                  class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+                />
+                <datalist id={countryListId}>
+                  {countryOptions.map((c) => <option value={c.name} />)}
+                </datalist>
+              </div>
+            </div>
             <p class="qc-meta mt-1">
               {t("putumayoLoop.runLocationHelp")}
             </p>
@@ -159,7 +199,7 @@ const t = useTranslations(lang);
             <select
               name="distance"
               required
-              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
+              class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
             >
               <option value="10k">{t("putumayoLoop.distance10k")}</option>
               <option value="half">{t("putumayoLoop.distanceHalf")}</option>
@@ -219,6 +259,25 @@ const t = useTranslations(lang);
       .forEach((dialog) => {
         const open = (e: Event) => {
           e.preventDefault();
+          // Browsers restore form state (radios, inputs) across reloads
+          // unless we explicitly clear it. The "How will you run?" radio
+          // has no default — both options must start unchecked every time
+          // the modal opens so the user picks one deliberately.
+          const form = dialog.querySelector<HTMLFormElement>(
+            "#putumayo-signup-form",
+          );
+          form?.reset();
+          dialog
+            .querySelectorAll<HTMLInputElement>('input[name="mode"]')
+            .forEach((r) => {
+              r.checked = false;
+            });
+          dialog
+            .querySelector<HTMLDivElement>(".hub-select")
+            ?.classList.add("hidden");
+          dialog
+            .querySelector<HTMLDivElement>(".individual-location")
+            ?.classList.add("hidden");
           dialog.showModal();
           document.body.style.overflow = "hidden";
         };
@@ -256,22 +315,32 @@ const t = useTranslations(lang);
         );
         const hubInput =
           hubSelect?.querySelector<HTMLSelectElement>('select[name="hub"]');
-        const locationInput =
+        const cityInput =
           individualLocation?.querySelector<HTMLInputElement>(
-            'input[name="location"]',
+            'input[name="city"]',
+          );
+        const countryInput =
+          individualLocation?.querySelector<HTMLInputElement>(
+            'input[name="country"]',
           );
         const radios =
           dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
 
         const syncMode = () => {
-          const isHub =
-            Array.from(radios).find((r) => r.checked)?.value === "hub";
-          hubSelect?.classList.toggle("hidden", !isHub);
-          individualLocation?.classList.toggle("hidden", isHub);
+          // The radio is no longer pre-selected — the user has to make a
+          // deliberate pick. Both detail blocks stay hidden until one of
+          // the two radios is chosen.
+          const selected = Array.from(radios).find((r) => r.checked)?.value;
+          hubSelect?.classList.toggle("hidden", selected !== "hub");
+          individualLocation?.classList.toggle(
+            "hidden",
+            selected !== "individual",
+          );
           // Toggle `required` so the browser doesn't validate a hidden
-          // field belonging to the other mode.
-          if (hubInput) hubInput.required = isHub;
-          if (locationInput) locationInput.required = !isHub;
+          // field belonging to the other mode (or no mode at all).
+          if (hubInput) hubInput.required = selected === "hub";
+          if (cityInput) cityInput.required = selected === "individual";
+          if (countryInput) countryInput.required = selected === "individual";
         };
         radios.forEach((r) => r.addEventListener("change", syncMode));
         syncMode();
@@ -296,6 +365,13 @@ const t = useTranslations(lang);
 
           const data = new FormData(form);
           const mode = String(data.get("mode") ?? "");
+          // For individual runners the modal collects city + country in
+          // two separate fields so each can be validated on its own.
+          // The API still receives a single `location` string — that's
+          // what the feed renders and the geocoder probes — so join here.
+          const city = String(data.get("city") ?? "").trim();
+          const country = String(data.get("country") ?? "").trim();
+          const location = mode === "individual" ? `${city}, ${country}` : null;
           try {
             const res = await fetch("/api/putumayo-loop/signup", {
               method: "POST",
@@ -308,7 +384,7 @@ const t = useTranslations(lang);
                 email: data.get("email"),
                 mode,
                 hubId: mode === "hub" ? data.get("hub") : null,
-                location: mode === "individual" ? data.get("location") : null,
+                location,
                 distance: data.get("distance"),
               }),
             });

@@ -17,7 +17,12 @@ import { getTurso } from "../../../lib/turso";
 import { sendMail } from "../../../lib/mailer";
 import { geocode } from "../../../lib/geocode";
 import { countryName } from "../../../lib/countryName";
-import type { Lang } from "../../../i18n";
+import {
+  useTranslations,
+  getDateLocale,
+  type Lang,
+  type TranslationKey,
+} from "../../../i18n";
 import { runManager, editions } from "../../../data/putumayoLoop";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
@@ -122,15 +127,55 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
+  // Resolve everything the three notification mails need once: the
+  // edition (so we can format the run date), the hub (if any) and the
+  // human-readable distance + date + where labels. The operational
+  // mails (run manager, hub captain) get the English labels; the
+  // runner confirmation gets the locale they signed up from.
+  const edition = editions.find((e) => e.year === editionYear);
+  const hub =
+    mode === "hub" && hubId
+      ? edition?.hubs.find((h) => h.id === hubId)
+      : undefined;
+
+  const tEn = useTranslations("en");
+  const distanceKey: TranslationKey =
+    distance === "10k"
+      ? "putumayoLoop.distance10k"
+      : distance === "half"
+        ? "putumayoLoop.distanceHalf"
+        : "putumayoLoop.distanceFull";
+  const distanceLabelEn = tEn(distanceKey);
+  const dateLabelEn = edition
+    ? new Date(edition.runDate).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : String(editionYear);
+  const whereLabelEn = hub
+    ? `Hub ${hub.name} in ${hub.city}`
+    : (location ?? "—");
+
+  // Operational detail block reused in both the run manager and hub
+  // captain mails. Plain text bullets keep it scannable in any client.
+  const detailsEn = [
+    `Runner: ${firstName} ${lastName} <${email}>`,
+    `Edition: Putumayo Loop ${editionYear}`,
+    `Date: ${dateLabelEn}`,
+    `Distance: ${distanceLabelEn}`,
+    `Where: ${whereLabelEn}`,
+    `Mode: ${mode === "hub" ? "Hub" : "Individual"}`,
+    `Signup language: ${lang}`,
+  ].join("\n");
+
   // Best-effort: notify the run manager. We don't block the success
   // response on the mail; if it fails, the signup is still recorded.
   try {
-    const where =
-      mode === "hub" ? `joining hub: ${hubId}` : `running from: ${location}`;
     await sendMail({
       to: runManager.email,
       subject: `[Putumayo Loop ${editionYear}] New signup — ${firstName} ${lastName}`,
-      text: `${firstName} ${lastName} <${email}> just signed up for the Putumayo Loop ${editionYear}.\n\n${where}`,
+      text: `${firstName} ${lastName} just signed up for the Putumayo Loop ${editionYear}.\n\n${detailsEn}`,
       replyTo: `${firstName} ${lastName} <${email}>`,
     });
   } catch (err) {
@@ -140,21 +185,61 @@ export const POST: APIRoute = async ({ request }) => {
   // Hub signups only: also notify the hub captain if their email is on
   // record. This is independent of the runManager mail above — either
   // can fail without affecting the other.
-  if (mode === "hub" && hubId) {
-    const edition = editions.find((e) => e.year === editionYear);
-    const hub = edition?.hubs.find((h) => h.id === hubId);
-    if (hub?.captainEmail) {
-      try {
-        await sendMail({
-          to: hub.captainEmail,
-          subject: `[Putumayo Loop ${editionYear} — ${hub.name}] New runner joined your hub`,
-          text: `${firstName} ${lastName} <${email}> just signed up for the Putumayo Loop ${editionYear} via your hub (${hub.name}, ${hub.city}).`,
-          replyTo: `${firstName} ${lastName} <${email}>`,
-        });
-      } catch (err) {
-        console.error("[putumayo-loop/signup] hub captain mail failed:", err);
-      }
+  if (hub?.captainEmail) {
+    try {
+      await sendMail({
+        to: hub.captainEmail,
+        subject: `[Putumayo Loop ${editionYear} — ${hub.name}] New runner joined your hub`,
+        text: `${firstName} ${lastName} just signed up for the Putumayo Loop ${editionYear} via your hub (${hub.name}, ${hub.city}).\n\n${detailsEn}`,
+        replyTo: `${firstName} ${lastName} <${email}>`,
+      });
+    } catch (err) {
+      console.error("[putumayo-loop/signup] hub captain mail failed:", err);
     }
+  }
+
+  // Confirmation mail to the runner, localised to the page they signed up
+  // from. Pulls the human distance label + run date + "where" (hub or
+  // free-text location) so they get a tidy receipt of what we recorded.
+  try {
+    const t = useTranslations(lang);
+    const tk = (key: string) => t(key as TranslationKey);
+    const distanceLabel = tk(distanceKey);
+    const dateLabel = edition
+      ? new Date(edition.runDate).toLocaleDateString(getDateLocale(lang), {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : String(editionYear);
+    const whereLabel = hub
+      ? tk("putumayoLoop.emailHubWhere")
+          .replace("{hub}", hub.name)
+          .replace("{city}", hub.city)
+      : (location ?? "—");
+    const subject = tk("putumayoLoop.emailSubject").replace(
+      "{year}",
+      String(editionYear),
+    );
+    const text = tk("putumayoLoop.emailBody")
+      .replace("{name}", firstName)
+      .replace("{year}", String(editionYear))
+      .replace("{date}", dateLabel)
+      .replace("{distance}", distanceLabel)
+      .replace("{where}", whereLabel)
+      .replace("{contactEmail}", runManager.email);
+
+    await sendMail({
+      to: email,
+      subject,
+      text,
+      replyTo: runManager.email,
+    });
+  } catch (err) {
+    console.error(
+      "[putumayo-loop/signup] runner confirmation mail failed:",
+      err,
+    );
   }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });

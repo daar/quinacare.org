@@ -335,16 +335,23 @@ export const ui = {
     "putumayoLoop.distanceHalf": "Halve marathon",
     "putumayoLoop.distanceFull": "Hele marathon",
     "putumayoLoop.runLocationLabel": "Waar ga je lopen?",
-    "putumayoLoop.runLocationPlaceholder": "Stad, land",
+    "putumayoLoop.runCityLabel": "Stad",
+    "putumayoLoop.runCityPlaceholder": "Amsterdam",
+    "putumayoLoop.runCountryLabel": "Land",
+    "putumayoLoop.runCountryPlaceholder": "Nederland",
     "putumayoLoop.runLocationHelp":
       "Vul de plaats in waar je gaat lopen, zodat we je op de wereldkaart kunnen plaatsen.",
     "putumayoLoop.submitSignup": "Bevestig aanmelding",
     "putumayoLoop.modalDisclaimer":
-      "Door je aan te melden ga je akkoord met onze privacyverklaring. Geen spam — alleen updates over de loop.",
+      "Door je aan te melden ga je akkoord met onze privacyverklaring.",
     "putumayoLoop.successTitle": "Je bent ingeschreven!",
     "putumayoLoop.successMessage":
       "We sturen je per e-mail meer informatie over de loop. Bedankt voor je inzet!",
     "putumayoLoop.successClose": "Sluiten",
+    "putumayoLoop.emailSubject": "[Putumayo Loop {year}] Je bent ingeschreven!",
+    "putumayoLoop.emailHubWhere": "Bij hub {hub} in {city}",
+    "putumayoLoop.emailBody":
+      "Hoi {name},\n\nBedankt voor je aanmelding voor de Putumayo Loop {year}! Je doet officieel mee.\n\nWat we van je hebben:\n• Afstand: {distance}\n• Datum: {date}\n• Waar: {where}\n\nIn de aanloop naar de loop sturen we je meer praktische informatie en updates. Heb je tussendoor vragen? Mail dan naar {contactEmail}.\n\nTot snel aan de start!\nHet Quina Care-team",
     "putumayoLoop.editionsLabel": "Edities",
     "putumayoLoop.pastEditionLabel": "Afgelopen editie",
     "putumayoLoop.finalRaised": "Totaal opgehaald",
@@ -718,16 +725,23 @@ export const ui = {
     "putumayoLoop.distanceHalf": "Half marathon",
     "putumayoLoop.distanceFull": "Full marathon",
     "putumayoLoop.runLocationLabel": "Where are you running?",
-    "putumayoLoop.runLocationPlaceholder": "City, country",
+    "putumayoLoop.runCityLabel": "City",
+    "putumayoLoop.runCityPlaceholder": "Amsterdam",
+    "putumayoLoop.runCountryLabel": "Country",
+    "putumayoLoop.runCountryPlaceholder": "Netherlands",
     "putumayoLoop.runLocationHelp":
       "Tell us where you will run so we can place you on the world map.",
     "putumayoLoop.submitSignup": "Confirm signup",
     "putumayoLoop.modalDisclaimer":
-      "By signing up you agree to our privacy policy. No spam — only updates about the loop.",
+      "By signing up you agree to our privacy policy.",
     "putumayoLoop.successTitle": "You're in!",
     "putumayoLoop.successMessage":
       "We will email you with more information about the loop. Thanks for being part of it!",
     "putumayoLoop.successClose": "Close",
+    "putumayoLoop.emailSubject": "[Putumayo Loop {year}] You're signed up!",
+    "putumayoLoop.emailHubWhere": "From hub {hub} in {city}",
+    "putumayoLoop.emailBody":
+      "Hi {name},\n\nThanks for signing up for the Putumayo Loop {year} — you're officially in.\n\nHere's what we have on file:\n• Distance: {distance}\n• Date: {date}\n• Where: {where}\n\nWe'll send you more practical information and updates as the run gets closer. Got a question in the meantime? Write to {contactEmail}.\n\nSee you at the start line,\nThe Quina Care team",
     "putumayoLoop.editionsLabel": "Editions",
     "putumayoLoop.pastEditionLabel": "Past edition",
     "putumayoLoop.finalRaised": "Total raised",
@@ -1101,16 +1115,23 @@ export const ui = {
     "putumayoLoop.distanceHalf": "Media maratón",
     "putumayoLoop.distanceFull": "Maratón completa",
     "putumayoLoop.runLocationLabel": "¿Dónde vas a correr?",
-    "putumayoLoop.runLocationPlaceholder": "Ciudad, país",
+    "putumayoLoop.runCityLabel": "Ciudad",
+    "putumayoLoop.runCityPlaceholder": "Ámsterdam",
+    "putumayoLoop.runCountryLabel": "País",
+    "putumayoLoop.runCountryPlaceholder": "Países Bajos",
     "putumayoLoop.runLocationHelp":
       "Cuéntanos dónde correrás para ubicarte en el mapa mundial.",
     "putumayoLoop.submitSignup": "Confirmar inscripción",
     "putumayoLoop.modalDisclaimer":
-      "Al inscribirte aceptas nuestra política de privacidad. Sin spam — solo actualizaciones sobre la carrera.",
+      "Al inscribirte aceptas nuestra política de privacidad.",
     "putumayoLoop.successTitle": "¡Estás dentro!",
     "putumayoLoop.successMessage":
       "Te enviaremos más información por correo electrónico. ¡Gracias por participar!",
     "putumayoLoop.successClose": "Cerrar",
+    "putumayoLoop.emailSubject": "[Putumayo Loop {year}] ¡Estás inscrito!",
+    "putumayoLoop.emailHubWhere": "Desde el hub {hub} en {city}",
+    "putumayoLoop.emailBody":
+      "Hola {name},\n\n¡Gracias por inscribirte en el Putumayo Loop {year}! Ya estás dentro oficialmente.\n\nEsto es lo que tenemos registrado:\n• Distancia: {distance}\n• Fecha: {date}\n• Dónde: {where}\n\nTe enviaremos más información práctica y novedades cuando se acerque la carrera. ¿Tienes alguna pregunta? Escribe a {contactEmail}.\n\n¡Nos vemos en la salida!\nEl equipo de Quina Care",
     "putumayoLoop.editionsLabel": "Ediciones",
     "putumayoLoop.pastEditionLabel": "Edición pasada",
     "putumayoLoop.finalRaised": "Total recaudado",
