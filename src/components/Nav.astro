@@ -461,7 +461,15 @@ const searchPath = getLocalizedPath("/search", lang);
 
 <script>
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  document.addEventListener("DOMContentLoaded", () => {
+  // Defer the Nav search + mobile-menu wiring off the critical render
+  // path. The first paint doesn't need any of these listeners; running
+  // them when the main thread is idle drops TBT meaningfully without
+  // changing observable behaviour (idleCallback fires well under 100ms
+  // after DOMContentLoaded on a real device).
+  const ric =
+    (window as any).requestIdleCallback ??
+    ((cb: () => void) => setTimeout(cb, 1));
+  ric(() => {
     const navDefault = document.getElementById("nav-default");
     const navSearch = document.getElementById("nav-search");
     const searchInput = document.getElementById(

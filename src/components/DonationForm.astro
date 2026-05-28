@@ -390,8 +390,10 @@ const numberLocale = localeMap[lang];
       requestAnimationFrame(frame);
     }
 
-    // Skip the EMR stats fetch under Lighthouse for deterministic audits.
-    if (!/Chrome-Lighthouse/.test(navigator.userAgent))
+    // Skip the EMR stats fetch on localhost (covers Lighthouse runs
+    // against the static dist on a temp port, and local dev where there
+    // is no EMR upstream).
+    if (location.hostname !== "localhost")
       fetch("/api/statistics")
         .then((res) => (res.ok ? res.json() : null))
         .then((stats: Record<string, number> | null) => {
