@@ -250,10 +250,18 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
     <DonationFormCard
       lang={lang}
       context="fundraiser"
-      fundraiserSlug={edition.fundraiserSlug}
-      fundraiserTitle={edition.title}
-      fundraiserOrganizer="Quina Care"
-      fundraiserExcerpt={story || edition.title}
+      scopeId={`putumayo:${edition.year}`}
+      frequencies={["one-time"]}
+      impact={{
+        kind: "fundraiser",
+        organizer: "Quina Care",
+        fallback: edition.title,
+        excerpt: story || edition.title,
+      }}
+      metadata={{
+        fundraiser_slug: edition.fundraiserSlug,
+        fundraiser_title: edition.title,
+      }}
     />
   </DonationModal>
 

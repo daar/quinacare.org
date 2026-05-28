@@ -97,6 +97,8 @@ export const ui = {
     "donation.surgery": "Levensreddende Ingreep",
     "donation.surgeryDesc":
       "Draag bij aan de kosten van chirurgische ingrepen en de noodzakelijke nabehandeling in ons ziekenhuis.",
+    "donation.equipmentDesc":
+      "Draag bij aan bijvoorbeeld medische kosten zoals medicijnen en apparatuur of salarissen van ons locale personeel in het ziekenhuis.",
     "donation.donate": "Doneer",
     "donation.chooseAmount": "Of kies zelf een bedrag",
     // Homepage - Focus Project
@@ -161,6 +163,7 @@ export const ui = {
     "donate.paymentMethod": "Betaalmethode",
     "donate.creditCard": "Credit/Debit Card",
     "donate.bankTransfer": "Bankoverschrijving",
+    "donate.paypal": "PayPal",
     "donate.submitButton": "Doneer",
     "donate.thankYouTitle": "Bedankt!",
     "donate.thankYouMessage":
@@ -263,7 +266,7 @@ export const ui = {
     "putumayoLoop.heroLabel": "Wereldwijd hardlopen voor",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
     "putumayoLoop.heroSubtitle":
-      "Op zondag 18 oktober lopen we wereldwijd tegelijk voor de lopende kosten van Hospital San Miguel in de Amazone. Samen met de mensen die daar wonen.",
+      "Op zondag 18 oktober lopen we wereldwijd tegelijk om Hospital San Miguel te steunen. Het ziekenhuis staat in de provincie Putumayo, midden in het Amazonegebied van Ecuador. Samen met de lokale inwoners lopen we mee om de lopende kosten van het ziekenhuis te financieren.",
     "putumayoLoop.signUpCta": "Loop met ons mee",
     "putumayoLoop.donateCta": "Doneer nu",
     "putumayoLoop.shareCta": "Deel deze actie",
@@ -277,7 +280,7 @@ export const ui = {
     "putumayoLoop.whyTitle": "Waarom we lopen",
     "putumayoLoop.whyHeading": "Lopen voor lopende kosten",
     "putumayoLoop.whyBody":
-      "Hospital San Miguel staat midden in het Ecuadoriaanse Amazonewoud en is voor duizenden mensen de enige toegang tot goede zorg. De lopende kosten — medicijnen, salarissen voor het lokale personeel, onderhoud en shoonmaak van het ziekenhuis — zijn elke maand opnieuw een uitdaging. Met de Putumayo Loop halen we wereldwijd, op één dag, geld op om het ziekenhuis draaiende te houden.",
+      "Hospital San Miguel staat midden in het Ecuadoriaanse Amazonewoud en is voor duizenden mensen de enige toegang tot goede zorg. De lopende kosten — medicijnen, salarissen voor het lokale personeel, onderhoud en schoonmaak van het ziekenhuis — zijn elke maand opnieuw een uitdaging. Met de Putumayo Loop halen we wereldwijd, op één dag, geld op om het ziekenhuis draaiende te houden.",
     "putumayoLoop.whyExtra":
       "Iedere loper telt. Of je nu individueel loopt of meedoet in één van onze hubs — samen maken we het verschil.",
     "putumayoLoop.statsRaised": "opgehaald",
@@ -476,6 +479,8 @@ export const ui = {
     "donation.surgery": "Life-saving Procedure",
     "donation.surgeryDesc":
       "Contribute to the costs of surgical procedures and necessary aftercare at our hospital.",
+    "donation.equipmentDesc":
+      "Contribute, for example, to medical costs such as medicines and equipment or to the salaries of our local hospital staff.",
     "donation.donate": "Donate",
     "donation.chooseAmount": "Or choose your own amount",
     // Homepage - Focus Project
@@ -540,6 +545,7 @@ export const ui = {
     "donate.paymentMethod": "Payment Method",
     "donate.creditCard": "Credit/Debit Card",
     "donate.bankTransfer": "Bank Transfer",
+    "donate.paypal": "PayPal",
     "donate.submitButton": "Donate",
     "donate.thankYouTitle": "Thank You!",
     "donate.thankYouMessage":
@@ -858,6 +864,8 @@ export const ui = {
     "donation.surgery": "Procedimiento que Salva Vidas",
     "donation.surgeryDesc":
       "Contribuye a los costos de procedimientos quirúrgicos y el cuidado posterior necesario en nuestro hospital.",
+    "donation.equipmentDesc":
+      "Contribuye, por ejemplo, a gastos médicos como medicamentos y equipos o a los salarios de nuestro personal local del hospital.",
     "donation.donate": "Donar",
     "donation.chooseAmount": "O elige tu propia cantidad",
     // Homepage - Focus Project
@@ -922,6 +930,7 @@ export const ui = {
     "donate.paymentMethod": "Método de Pago",
     "donate.creditCard": "Tarjeta de Crédito/Débito",
     "donate.bankTransfer": "Transferencia Bancaria",
+    "donate.paypal": "PayPal",
     "donate.submitButton": "Donar",
     "donate.thankYouTitle": "¡Gracias!",
     "donate.thankYouMessage":

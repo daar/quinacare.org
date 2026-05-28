@@ -414,10 +414,18 @@ const excerpt = t("putumayoLoop.heroSubtitle");
     <DonationFormCard
       lang={lang}
       context="fundraiser"
-      fundraiserSlug={edition.fundraiserSlug}
-      fundraiserTitle={edition.title}
-      fundraiserOrganizer="Quina Care"
-      fundraiserExcerpt={excerpt}
+      scopeId={`putumayo:${edition.year}`}
+      frequencies={["one-time"]}
+      impact={{
+        kind: "fundraiser",
+        organizer: "Quina Care",
+        fallback: edition.title,
+        excerpt,
+      }}
+      metadata={{
+        fundraiser_slug: edition.fundraiserSlug,
+        fundraiser_title: edition.title,
+      }}
     />
   </DonationModal>
 
