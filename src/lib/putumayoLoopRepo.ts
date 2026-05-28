@@ -31,6 +31,18 @@ type SubscriberRow = {
   signed_up_at: string;
 };
 
+/**
+ * SQLite's `datetime('now')` returns "YYYY-MM-DD HH:MM:SS" in UTC but
+ * without a timezone marker. JS Date() treats such strings as LOCAL,
+ * so a CET browser displaying "2026-05-25 21:13:00" computes a
+ * timestamp an hour off from reality. Seed rows are already proper
+ * ISO with a `Z` and pass through untouched.
+ */
+function normalizeIsoUtc(s: string): string {
+  if (s.endsWith("Z") || /[+-]\d\d:\d\d$/.test(s)) return s;
+  return s.replace(" ", "T") + "Z";
+}
+
 function rowToSubscriber(r: SubscriberRow, hubs: Hub[]): Subscriber {
   const distance = (["10k", "half", "full"] as const).find(
     (d) => d === r.distance,
@@ -53,7 +65,7 @@ function rowToSubscriber(r: SubscriberRow, hubs: Hub[]): Subscriber {
     lastName: r.last_name ?? undefined,
     hubId: r.hub_id ?? undefined,
     coords,
-    signedUpAt: r.signed_up_at,
+    signedUpAt: normalizeIsoUtc(r.signed_up_at),
     count: r.count,
     distance,
     location: r.location ?? undefined,
