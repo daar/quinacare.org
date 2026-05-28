@@ -1,0 +1,38 @@
+version: 2
+
+# Dependabot keeps both runtime npm deps and our GitHub Actions versions
+# fresh by opening weekly PRs. Patch/minor bumps are grouped so we get a
+# single PR per ecosystem instead of one-per-dep churn; majors stay
+# separate so they get a deliberate review (Astro/TypeScript/etc).
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      prefix: deps
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: ci
