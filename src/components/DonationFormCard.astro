@@ -77,6 +77,15 @@ interface Props {
 
   /** Arbitrary metadata forwarded to Mollie + the donations row. */
   metadata?: Record<string, unknown>;
+
+  /**
+   * Optional override for the Mollie payment description (shown to the
+   * donor in their bank/payment app). When set, the API uses this
+   * verbatim instead of the auto-built "<fundraiser> - donation €X"
+   * form, so short campaign names like "Putumayo Loop 2026" survive
+   * the ~22-char card-statement truncation.
+   */
+  description?: string;
 }
 
 const {
@@ -91,6 +100,7 @@ const {
   scopeId,
   context = "donate",
   metadata = {},
+  description,
 } = Astro.props;
 
 const lang = langProp ?? getLangFromUrl(Astro.url);
@@ -117,6 +127,7 @@ const showFrequencyToggle = frequencies.length > 1;
   data-default-amount={effectiveDefaultAmount}
   data-allow-custom={allowCustom ? "1" : "0"}
   data-metadata={JSON.stringify(metadata)}
+  data-description={description ?? ""}
 >
   <h2 class="text-2xl font-bold tracking-tighter uppercase mb-6 text-center">
     {t("donate.submitButton")}
@@ -331,6 +342,7 @@ const showFrequencyToggle = frequencies.length > 1;
         const metadata: Record<string, unknown> = JSON.parse(
           card.dataset.metadata || "{}",
         );
+        const descriptionOverride = card.dataset.description || "";
         const context = card.dataset.context || "donate";
         const scopeId = card.dataset.scopeId || `donate:${context}`;
         const defaultFrequency =
@@ -544,6 +556,11 @@ const showFrequencyToggle = frequencies.length > 1;
                 locale,
                 context,
                 metadata,
+                // Pass the override through only when the caller set
+                // one; an empty string would be treated as "no override"
+                // server-side anyway, but staying explicit avoids
+                // surprises during debugging.
+                description: descriptionOverride || undefined,
               }),
             });
 
