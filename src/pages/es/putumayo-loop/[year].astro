@@ -1,0 +1,274 @@
+---
+import type { GetStaticPaths } from "astro";
+import Icon from "../../../components/Icon.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Nav from "../../../components/Nav.astro";
+import Footer from "../../../components/Footer.astro";
+import DonationModal from "../../../components/DonationModal.astro";
+import DonationFormCard from "../../../components/DonationFormCard.astro";
+import PutumayoLoopEditionNav from "../../../components/PutumayoLoopEditionNav.astro";
+import PutumayoLoopVideo from "../../../components/PutumayoLoopVideo.astro";
+import PutumayoLoopMap from "../../../components/PutumayoLoopMap.astro";
+import {
+  useTranslations,
+  getDateLocale,
+  getLocalizedPath,
+  type Lang,
+} from "../../../i18n";
+import {
+  getPastEditions,
+  getEditionByYear,
+} from "../../../lib/putumayoLoopRepo";
+import { countryName } from "../../../lib/countryName";
+import type { Edition } from "../../../data/putumayoLoop";
+
+const lang: Lang = "es";
+
+export const getStaticPaths = (async () => {
+  return (await getPastEditions()).map((e) => ({
+    params: { year: e.slug },
+    props: { edition: e },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  edition: Edition;
+}
+const { edition } = Astro.props;
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+const { hubs, donations, subscribers } = edition;
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat(dateLocale, {
+    style: "currency",
+    currency: donations.currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+function formatRunDate(iso: string): string {
+  return new Intl.DateTimeFormat(dateLocale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+const pct = Math.min(
+  100,
+  Math.round((donations.raised / donations.target) * 100),
+);
+
+// Resolve current edition link, if any, for the CTA.
+const currentEdition = await getEditionByYear(new Date().getFullYear());
+const currentLink = getLocalizedPath("/putumayo-loop", lang);
+
+// Story text now lives on the edition itself (DB-backed, per-lang).
+const story = edition.story?.[lang] ?? "";
+
+// Sum the per-location `count` (defaults to 1) — for past editions one
+// entry stands in for many runners at one location.
+const sumCount = subscribers.reduce((s, x) => s + (x.count ?? 1), 0);
+const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
+---
+
+<Layout title={`${edition.title} | Quina Care`} lang={lang}>
+  <Nav />
+
+  <header class="pt-40 pb-12 border-b border-gray-100">
+    <div class="max-w-[1600px] mx-auto px-6">
+      <div class="mb-8">
+        <PutumayoLoopEditionNav lang={lang} currentYear={edition.year} />
+      </div>
+
+      <div class="flex items-center gap-3 mb-4">
+        <span
+          class="qc-meta bg-gray-100 !text-gray-500 px-3 py-1.5 rounded-full inline-flex items-center gap-2"
+        >
+          <Icon name="check" class="text-xs" />
+          {t("putumayoLoop.pastEditionLabel")}
+        </span>
+        <span class="qc-meta">{formatRunDate(edition.runDate)}</span>
+      </div>
+      <h1
+        class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] uppercase"
+      >
+        {edition.title}
+      </h1>
+    </div>
+  </header>
+
+  <!-- Final results -->
+  <section class="max-w-[1600px] mx-auto px-6 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+        <span class="qc-label block mb-2">
+          {t("putumayoLoop.finalRaised")}
+        </span>
+        <div class="text-4xl font-bold tracking-tighter">
+          {formatCurrency(donations.raised)}
+        </div>
+        <div class="qc-meta mt-1">
+          {t("putumayoLoop.statsOf")}
+          {formatCurrency(donations.target)} · {pct}%
+        </div>
+        <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden mt-3">
+          <div
+            class="h-2 rounded-full bg-gradient-to-r from-qcRed to-rose-400"
+            style={`width: ${pct}%`}
+          >
+          </div>
+        </div>
+      </div>
+      <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+        <span class="qc-label block mb-2">
+          {t("putumayoLoop.finalRunners")}
+        </span>
+        <div class="text-4xl font-bold tracking-tighter text-qcRed">
+          {totalRunners ?? "—"}
+        </div>
+        <div class="qc-meta mt-1">{t("putumayoLoop.acrossHubs")}</div>
+      </div>
+      <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+        <span class="qc-label block mb-2">
+          {t("putumayoLoop.statsDonors")}
+        </span>
+        <div class="text-4xl font-bold tracking-tighter">
+          {donations.donors}
+        </div>
+        <div class="qc-meta mt-1">{t("putumayoLoop.thankYouAll")}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  {
+    story && (
+      <section class="max-w-3xl mx-auto px-6 pb-16">
+        <span class="qc-label text-qcRed mb-3 block">
+          {t("putumayoLoop.howItWent")}
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tighter uppercase mb-6">
+          {t("putumayoLoop.howItWent")}
+        </h2>
+        <p class="qc-body text-lg leading-relaxed">{story}</p>
+      </section>
+    )
+  }
+
+  <!-- Video -->
+  {
+    edition.youtubeId && (
+      <section class="max-w-4xl mx-auto px-6 pb-16">
+        <div class="text-center mb-6">
+          <span class="qc-label text-qcRed mb-2 block">
+            {t("putumayoLoop.videoTitle")}
+          </span>
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase">
+            {t("putumayoLoop.videoTitle")}
+          </h2>
+        </div>
+        <PutumayoLoopVideo videoId={edition.youtubeId} title={edition.title} />
+      </section>
+    )
+  }
+
+  <!-- Hubs that participated (only when the edition has hubs) -->
+  {
+    hubs.length > 0 && (
+      <section class="max-w-[1600px] mx-auto px-6 pb-16">
+        <div class="mb-8">
+          <span class="qc-label mb-2 block">
+            {t("putumayoLoop.participatingHubs")}
+          </span>
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase">
+            {t("putumayoLoop.participatingHubs")}
+          </h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {hubs.map((hub) => (
+            <article class="rounded-xl border border-gray-100 bg-gray-50 p-5">
+              <h3 class="text-lg font-bold tracking-tighter uppercase mb-1">
+                {hub.name}
+              </h3>
+              <p class="qc-meta">
+                {hub.city}, {countryName(hub.country, lang)}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Participants map -->
+  {
+    subscribers.length > 0 && (
+      <section class="max-w-[1600px] mx-auto px-6 pb-16">
+        <div class="mb-6">
+          <span class="qc-label mb-2 block">
+            {t("putumayoLoop.participantsMapLabel")}
+          </span>
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase">
+            {t("putumayoLoop.participantsMapTitle")}
+          </h2>
+        </div>
+        <PutumayoLoopMap
+          lang={lang}
+          hubs={hubs}
+          subscribers={subscribers}
+          anonymous
+        />
+      </section>
+    )
+  }
+
+  <!-- Sign up for current edition CTA -->
+  {
+    currentEdition && currentEdition.status !== "past" && (
+      <section class="max-w-[1600px] mx-auto px-6 pb-24">
+        <div class="rounded-2xl bg-gradient-to-br from-qcRed to-rose-500 text-white p-8 md:p-12 text-center">
+          <span class="qc-label !text-red-100 mb-3 block">
+            {t("putumayoLoop.nextEditionLabel")}
+          </span>
+          <h2 class="text-3xl md:text-5xl font-bold tracking-tighter uppercase leading-tight mb-3">
+            {currentEdition.title}
+          </h2>
+          <p class="text-lg text-white/90 mb-6 max-w-2xl mx-auto">
+            {t("putumayoLoop.nextEditionBody")}
+          </p>
+          <a
+            href={currentLink}
+            class="qc-btn inline-flex items-center gap-2 px-8 py-4 bg-white text-qcRed rounded-md font-bold hover:bg-red-50 transition"
+          >
+            <Icon name="heart" />
+            {t("putumayoLoop.viewCurrentEdition")}
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <DonationModal id="putumayo-loop-donate-modal">
+    <DonationFormCard
+      lang={lang}
+      context="fundraiser"
+      scopeId={`putumayo:${edition.year}`}
+      frequencies={["one-time"]}
+      impact={{
+        kind: "fundraiser",
+        organizer: "Quina Care",
+        fallback: edition.title,
+        excerpt: story || edition.title,
+      }}
+      metadata={{
+        fundraiser_slug: edition.fundraiserSlug,
+        fundraiser_title: edition.title,
+      }}
+      description={edition.title}
+    />
+  </DonationModal>
+
+  <Footer />
+</Layout>

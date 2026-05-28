@@ -1,4 +1,17 @@
 ---
+// DonationFormCard — the one donation widget used by every page that
+// asks for money (the /donate page, fundraiser detail pages, the
+// Putumayo Loop landing page, …).
+//
+// All variation between pages is expressed through flat props.
+// Defaults match the historic /donate-page behaviour so callers that
+// pass no overrides get the original widget.
+//
+// Backend: posts to /api/mollie/create-payment with whatever
+// `metadata` the caller supplied. Use the `context` prop to tag the
+// donation in the DB ("donate" | "fundraiser"); getFundraiserStats
+// reads that column.
+
 import Icon from "./Icon.astro";
 import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
 import {
@@ -8,63 +21,144 @@ import {
   formatCurrency,
 } from "../lib/currency";
 
+type Frequency = "one-time" | "monthly";
+
+type ImpactConfig =
+  | { kind: "tiered" }
+  | {
+      kind: "fundraiser";
+      organizer?: string;
+      excerpt?: string;
+      fallback?: string;
+    }
+  | { kind: "custom"; label?: string; body: string }
+  | { kind: "none" };
+
 interface Props {
   lang?: Lang;
+
+  /** Preset amount buttons. Defaults to the locale's currency presets. */
+  presets?: number[];
+  /** Pre-selected amount. Defaults to presets[1] (the second preset). */
+  defaultAmount?: number;
+  /** Whether to show the free-text "other amount" input. Default true. */
+  allowCustom?: boolean;
+
+  /**
+   * Which frequencies the page wants to offer. A single-frequency list
+   * hides the toggle entirely. Default: both ["one-time", "monthly"].
+   */
+  frequencies?: Frequency[];
+  /** Default selected frequency. Default "one-time". */
+  defaultFrequency?: Frequency;
+
+  /**
+   * Payment methods to expose. Defaults to paymentMethodsByLocale for
+   * the locale. Pages can pin a smaller list (e.g. only iDEAL + Card).
+   */
+  methods?: string[];
+
+  /** How the impact preview renders. Default { kind: "tiered" }. */
+  impact?: ImpactConfig;
+
+  /**
+   * sessionStorage namespace. Default `donate:${context}`. Pass a
+   * page-specific id ("fundraiser:slug-here", "putumayo:2026") so each
+   * page restores its OWN last-picked amount / method.
+   */
+  scopeId?: string;
+
+  /**
+   * Tag for the donation row in the DB. "fundraiser" rows are picked
+   * up by getFundraiserStats when their metadata.fundraiser_slug
+   * matches. Default "donate".
+   */
   context?: "donate" | "fundraiser";
-  fundraiserSlug?: string;
-  fundraiserTitle?: string;
-  fundraiserOrganizer?: string;
-  fundraiserExcerpt?: string;
+
+  /** Arbitrary metadata forwarded to Mollie + the donations row. */
+  metadata?: Record<string, unknown>;
+
+  /**
+   * Optional override for the Mollie payment description (shown to the
+   * donor in their bank/payment app). When set, the API uses this
+   * verbatim instead of the auto-built "<fundraiser> - donation €X"
+   * form, so short campaign names like "Putumayo Loop 2026" survive
+   * the ~22-char card-statement truncation.
+   */
+  description?: string;
 }
 
-const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
+const {
+  lang: langProp,
+  presets,
+  defaultAmount,
+  allowCustom = true,
+  frequencies = ["one-time", "monthly"] as Frequency[],
+  defaultFrequency = "one-time" as Frequency,
+  methods,
+  impact = { kind: "tiered" } as ImpactConfig,
+  scopeId,
+  context = "donate",
+  metadata = {},
+  description,
+} = Astro.props;
+
+const lang = langProp ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const cc = getCurrency(lang);
-const context = Astro.props.context ?? "donate";
-const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
+
+// Resolve effective config (props win over locale defaults)
+const effectivePresets = presets ?? cc.presets;
+const effectiveDefaultAmount =
+  defaultAmount ?? effectivePresets[1] ?? effectivePresets[0] ?? 50;
+const effectiveMethods = methods ?? paymentMethodsByLocale[lang] ?? ["card"];
+const effectiveScopeId = scopeId ?? `donate:${context}`;
+const showFrequencyToggle = frequencies.length > 1;
 ---
 
 <div
   class="donation-form-card"
-  data-uid={uid}
   data-context={context}
-  data-fundraiser-slug={Astro.props.fundraiserSlug ?? ""}
-  data-fundraiser-title={Astro.props.fundraiserTitle ?? ""}
+  data-scope-id={effectiveScopeId}
   data-currencies={JSON.stringify(currencies)}
-  data-methods-by-locale={JSON.stringify(paymentMethodsByLocale)}
+  data-methods={JSON.stringify(effectiveMethods)}
+  data-frequencies={JSON.stringify(frequencies)}
+  data-default-frequency={defaultFrequency}
+  data-default-amount={effectiveDefaultAmount}
+  data-allow-custom={allowCustom ? "1" : "0"}
+  data-metadata={JSON.stringify(metadata)}
+  data-description={description ?? ""}
 >
   <h2 class="text-2xl font-bold tracking-tighter uppercase mb-6 text-center">
     {t("donate.submitButton")}
   </h2>
 
-  <!-- Frequency toggle — hidden for fundraisers, which are one-time only -->
-  <div class="flex gap-2 mb-6 dfc-frequency" hidden={context === "fundraiser"}>
-    <button
-      type="button"
-      data-frequency="one-time"
-      class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
-    >
-      {t("donate.oneTime")}
-    </button>
-    <button
-      type="button"
-      data-frequency="monthly"
-      class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
-    >
-      {t("donate.monthly")}
-    </button>
-  </div>
+  {
+    showFrequencyToggle && (
+      <div class="flex gap-2 mb-6 dfc-frequency">
+        {frequencies.map((f) => (
+          <button
+            type="button"
+            data-frequency={f}
+            class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
+          >
+            {t(f === "monthly" ? "donate.monthly" : "donate.oneTime")}
+          </button>
+        ))}
+      </div>
+    )
+  }
 
   <!-- Preset amounts -->
   <div class="grid grid-cols-4 gap-2 mb-2 dfc-amounts">
     {
-      cc.presets.map((amount) => (
+      effectivePresets.map((amount) => (
         <button
           type="button"
           data-amount={amount}
           class:list={[
             "py-3 text-center font-bold text-base rounded-md border transition-all",
-            amount === cc.presets[1]
+            amount === effectiveDefaultAmount
               ? "bg-qcRed text-white border-qcRed"
               : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
           ]}
@@ -74,33 +168,21 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
       ))
     }
   </div>
-  <input
-    type="text"
-    inputmode="decimal"
-    class="dfc-custom w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
-    placeholder={t("donate.customPlaceholder")}
-  />
 
-  <!-- Impact preview -->
   {
-    context === "fundraiser" ? (
-      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
-        <p class="qc-body leading-relaxed">
-          {t("fundraise.impactLabel")}{" "}
-          <span class="font-bold text-qcRed">
-            {Astro.props.fundraiserOrganizer ||
-              Astro.props.fundraiserTitle ||
-              ""}
-          </span>
-          {Astro.props.fundraiserExcerpt && (
-            <>
-              {" — "}
-              <em>“{Astro.props.fundraiserExcerpt}”</em>
-            </>
-          )}
-        </p>
-      </div>
-    ) : (
+    allowCustom && (
+      <input
+        type="text"
+        inputmode="decimal"
+        class="dfc-custom w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
+        placeholder={t("donate.customPlaceholder")}
+      />
+    )
+  }
+
+  <!-- Impact preview — kind drives the panel shape -->
+  {
+    impact.kind === "tiered" && (
       <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
         <span class="qc-label mb-1">{t("donate.impactLabel")}</span>
         <p class="dfc-impact qc-body leading-relaxed">
@@ -124,8 +206,34 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
       </div>
     )
   }
+  {
+    impact.kind === "fundraiser" && (
+      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+        <p class="qc-body leading-relaxed">
+          {t("fundraise.impactLabel")}{" "}
+          <span class="font-bold text-qcRed">
+            {impact.organizer || impact.fallback || ""}
+          </span>
+          {impact.excerpt && (
+            <>
+              {" — "}
+              <em>“{impact.excerpt}”</em>
+            </>
+          )}
+        </p>
+      </div>
+    )
+  }
+  {
+    impact.kind === "custom" && (
+      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+        {impact.label && <span class="qc-label mb-1">{impact.label}</span>}
+        <p class="qc-body leading-relaxed">{impact.body}</p>
+      </div>
+    )
+  }
 
-  <!-- Payment methods -->
+  <!-- Payment methods (all rendered; JS hides the ones not in `methods`) -->
   <div class="mb-6">
     <span
       class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3"
@@ -160,7 +268,7 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
       <button
         type="button"
         data-method="card"
-        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-qcRed bg-red-50 text-xs font-bold transition-all"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
       >
         <Icon name="credit-card" />
         {t("donate.creditCard")}
@@ -189,7 +297,8 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
     <Icon name="heart" class="dfc-icon mr-2" />
     <span
       >{t("donate.submitButton")}
-      <span class="dfc-amount">{formatCurrency(cc.presets[1], cc, false)}</span
+      <span class="dfc-amount"
+        >{formatCurrency(effectiveDefaultAmount, cc, false)}</span
       ></span
     >
   </button>
@@ -224,12 +333,22 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         const allCurrencies: Record<string, CurrencyConfig> = JSON.parse(
           card.dataset.currencies || "{}",
         );
-        const methodsByLocale: Record<string, string[]> = JSON.parse(
-          card.dataset.methodsByLocale || "{}",
+        const methodsAllowed: string[] = JSON.parse(
+          card.dataset.methods || "[]",
         );
+        const frequenciesAllowed: string[] = JSON.parse(
+          card.dataset.frequencies || '["one-time","monthly"]',
+        );
+        const metadata: Record<string, unknown> = JSON.parse(
+          card.dataset.metadata || "{}",
+        );
+        const descriptionOverride = card.dataset.description || "";
         const context = card.dataset.context || "donate";
-        const fundraiserSlug = card.dataset.fundraiserSlug || "";
-        const fundraiserTitle = card.dataset.fundraiserTitle || "";
+        const scopeId = card.dataset.scopeId || `donate:${context}`;
+        const defaultFrequency =
+          card.dataset.defaultFrequency || frequenciesAllowed[0] || "one-time";
+        const defaultAmount = Number(card.dataset.defaultAmount) || 50;
+        const allowCustom = card.dataset.allowCustom !== "0";
 
         const locale = document.documentElement.lang || "nl";
         const cc = allCurrencies[locale] || allCurrencies.en;
@@ -256,52 +375,52 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
         }
 
         const amountGrid = card.querySelector<HTMLElement>(".dfc-amounts")!;
-        const customInput =
-          card.querySelector<HTMLInputElement>(".dfc-custom")!;
-        const freqToggle = card.querySelector<HTMLElement>(".dfc-frequency")!;
+        const customInput = card.querySelector<HTMLInputElement>(".dfc-custom");
+        const freqToggle = card.querySelector<HTMLElement>(".dfc-frequency");
         const methodsEl = card.querySelector<HTMLElement>(".dfc-methods")!;
         const submitBtn = card.querySelector<HTMLButtonElement>(".dfc-submit")!;
         const submitAmount = card.querySelector<HTMLElement>(".dfc-amount")!;
         const impactText = card.querySelector<HTMLElement>(".dfc-impact");
         const submitIcon = card.querySelector<HTMLElement>(".dfc-icon")!;
 
-        let frequency = "one-time";
-        let amount = cc.presets[1] || 50;
-        const defaultMethods = methodsByLocale[locale] ||
-          methodsByLocale.en || ["card"];
-        let method = defaultMethods[0];
+        let frequency: string = defaultFrequency;
+        let amount: number = defaultAmount;
+        let method: string = methodsAllowed[0] || "card";
 
-        // Session restore — frequency/method only. Amount always falls back
-        // to the default preset so a fresh donate-page visit isn't surprised
-        // by a previously selected value.
-        const storageKey = `donate:${context}`;
+        // Session restore — frequency/method only. Amount always falls
+        // back to the page's default so a fresh visit isn't surprised.
+        const storageKey = `donate:${scopeId}`;
         const saved = sessionStorage.getItem(storageKey);
         if (saved) {
           try {
             const s = JSON.parse(saved);
-            // Fundraisers are one-time only — never restore "monthly".
-            if (s.frequency && context !== "fundraiser")
+            if (s.frequency && frequenciesAllowed.includes(s.frequency))
               frequency = s.frequency;
-            if (s.method) method = s.method;
+            if (s.method && methodsAllowed.includes(s.method))
+              method = s.method;
           } catch {
             /* ignore */
           }
         }
 
-        // Query param override
+        // Query-param overrides — useful for direct CTA links like
+        //   /donate?amount=100 or /donate?custom=1
         const params = new URLSearchParams(window.location.search);
         const paramAmount = parseInt(params.get("amount") || "", 10);
         if (paramAmount > 0) {
           amount = paramAmount;
-          if (!cc.presets.includes(paramAmount)) {
+          if (
+            customInput &&
+            !amountGrid.querySelector(`[data-amount="${paramAmount}"]`)
+          ) {
             customInput.value = fmt(paramAmount);
           }
         }
 
-        // Custom-amount entry mode: clear presets, focus the input.
         const focusCustom =
-          params.get("custom") === "1" || params.get("amount") === "custom";
-        if (focusCustom) {
+          allowCustom &&
+          (params.get("custom") === "1" || params.get("amount") === "custom");
+        if (focusCustom && customInput) {
           amount = 0;
           customInput.value = "";
           setTimeout(() => {
@@ -318,19 +437,19 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
               frequency,
               method,
               locale,
-              custom: customInput.value !== "",
+              custom: customInput?.value !== "",
             }),
           );
         }
 
         function filterPaymentMethods() {
-          const allowed = methodsByLocale[locale] || methodsByLocale.en || [];
           methodsEl.querySelectorAll("button").forEach((btn) => {
             const m = btn.dataset.method;
-            if (m && !allowed.includes(m)) btn.classList.add("hidden");
+            if (m && !methodsAllowed.includes(m)) btn.classList.add("hidden");
             else btn.classList.remove("hidden");
           });
-          if (!allowed.includes(method)) method = allowed[0] || "card";
+          if (!methodsAllowed.includes(method))
+            method = methodsAllowed[0] || "card";
         }
 
         function updateUI() {
@@ -338,12 +457,12 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
             const a = parseInt(btn.dataset.amount || "", 10);
             btn.textContent = fmt(a);
             btn.className =
-              a === amount && customInput.value === ""
+              a === amount && (!customInput || customInput.value === "")
                 ? "py-3 text-center font-bold text-base rounded-md border transition-all bg-qcRed text-white border-qcRed"
                 : "py-3 text-center font-bold text-base rounded-md border transition-all bg-white text-qcBlack border-gray-200 hover:border-qcRed";
           });
 
-          freqToggle.querySelectorAll("button").forEach((btn) => {
+          freqToggle?.querySelectorAll("button").forEach((btn) => {
             btn.className =
               btn.dataset.frequency === frequency
                 ? "qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-qcRed text-white"
@@ -360,36 +479,37 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           filterPaymentMethods();
           submitAmount.textContent = fmt(amount);
 
-          // Thresholds mirror the preset amounts (25/50/100/250) so the
-          // impact text matches the active tier.
-          let impactKey = "generic";
-          if (amount >= 250) impactKey = "equipment";
-          else if (amount >= 100) impactKey = "surgery";
-          else if (amount >= 50) impactKey = "prenatal";
-          else if (amount >= 25) impactKey = "consultation";
+          // Tiered impact swap — only relevant when the page picked the
+          // "tiered" impact kind (other kinds don't render `.dfc-impact`).
+          if (impactText) {
+            let impactKey = "generic";
+            if (amount >= 250) impactKey = "equipment";
+            else if (amount >= 100) impactKey = "surgery";
+            else if (amount >= 50) impactKey = "prenatal";
+            else if (amount >= 25) impactKey = "consultation";
 
-          const span = card.querySelector(
-            `[data-impact="${impactKey}"]`,
-          ) as HTMLElement | null;
-          if (impactText && span)
-            impactText.textContent = span.textContent || "";
+            const span = card.querySelector(
+              `[data-impact="${impactKey}"]`,
+            ) as HTMLElement | null;
+            if (span) impactText.textContent = span.textContent || "";
+          }
         }
 
         amountGrid.addEventListener("click", (e) => {
           const btn = (e.target as HTMLElement).closest("button");
           if (!btn?.dataset.amount) return;
           amount = parseInt(btn.dataset.amount, 10);
-          customInput.value = "";
+          if (customInput) customInput.value = "";
           updateUI();
           saveState();
         });
 
-        customInput.addEventListener("focus", () => {
+        customInput?.addEventListener("focus", () => {
           const val = parse(customInput.value);
           customInput.value = val > 0 ? String(val) : "";
         });
 
-        customInput.addEventListener("input", () => {
+        customInput?.addEventListener("input", () => {
           const val = parseInt(customInput.value.replace(/[^\d]/g, ""), 10);
           if (val > 0) {
             amount = val;
@@ -398,12 +518,12 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
           }
         });
 
-        customInput.addEventListener("blur", () => {
+        customInput?.addEventListener("blur", () => {
           const val = parse(customInput.value);
           customInput.value = val > 0 ? fmt(val) : "";
         });
 
-        freqToggle.addEventListener("click", (e) => {
+        freqToggle?.addEventListener("click", (e) => {
           const btn = (e.target as HTMLElement).closest("button");
           if (!btn?.dataset.frequency) return;
           frequency = btn.dataset.frequency;
@@ -421,17 +541,11 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
 
         submitBtn.addEventListener("click", async () => {
           submitBtn.setAttribute("disabled", "true");
-          // submitIcon is an SVG element — its `className` is a
-          // read-only SVGAnimatedString, so we must use setAttribute.
+          // submitIcon is an SVG — its `className` is a read-only
+          // SVGAnimatedString, so use setAttribute.
           submitIcon.setAttribute("class", "dfc-icon animate-spin mr-2");
 
           try {
-            const metadata: Record<string, unknown> = {};
-            if (context === "fundraiser") {
-              metadata.fundraiser_slug = fundraiserSlug;
-              metadata.fundraiser_title = fundraiserTitle;
-            }
-
             const res = await fetch("/api/mollie/create-payment", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -442,13 +556,18 @@ const uid = `dfc-${context}-${Math.random().toString(36).slice(2, 8)}`;
                 locale,
                 context,
                 metadata,
+                // Pass the override through only when the caller set
+                // one; an empty string would be treated as "no override"
+                // server-side anyway, but staying explicit avoids
+                // surprises during debugging.
+                description: descriptionOverride || undefined,
               }),
             });
 
             const data = await res.json();
             if (data.checkoutUrl) {
               if (data.paymentId) {
-                sessionStorage.setItem(`mollie:${context}`, data.paymentId);
+                sessionStorage.setItem(`mollie:${scopeId}`, data.paymentId);
               }
               window.location.href = data.checkoutUrl;
               return;

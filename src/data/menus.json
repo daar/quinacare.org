@@ -9,6 +9,11 @@
           "labelKey": "submenu.fundraise",
           "path": "/fundraisers",
           "icon": "fa-solid fa-hand-holding-heart"
+        },
+        {
+          "labelKey": "submenu.putumayoLoop",
+          "path": "/putumayo-loop",
+          "icon": "fa-solid fa-person-running"
         }
       ],
       "submenu_disabled": [

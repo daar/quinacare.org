@@ -1,0 +1,191 @@
+---
+import Icon from "./Icon.astro";
+import { useTranslations, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  id?: string;
+}
+const { lang, id = "putumayo-loop-hub-modal" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<dialog
+  id={id}
+  class="pl-hub-contact-modal fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
+>
+  <div
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+    data-modal-backdrop
+  >
+  </div>
+  <div
+    class="relative z-10 w-full max-w-[520px] mx-4 max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl"
+  >
+    <button
+      type="button"
+      data-modal-close
+      class="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      aria-label="Close"
+    >
+      <Icon name="xmark" class="text-sm text-gray-500" />
+    </button>
+    <div class="p-8">
+      <div class="form-view">
+        <h2 class="text-2xl font-bold tracking-tighter uppercase mb-2">
+          {t("putumayoLoop.hubContactTitle")}
+        </h2>
+        <p class="qc-body mb-6">{t("putumayoLoop.hubContactSubtitle")}</p>
+        <form class="space-y-4" id="putumayo-hub-contact-form">
+          <div>
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.hubContactName")}
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+            />
+          </div>
+          <div>
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.email")}
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+            />
+          </div>
+          <div>
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.hubContactMessage")}
+            </label>
+            <textarea
+              name="message"
+              rows="5"
+              required
+              placeholder={t("putumayoLoop.hubContactMessagePlaceholder")}
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors resize-none"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
+          >
+            <span class="contact-btn-text inline-flex items-center gap-2">
+              <Icon name="heart" />
+              {t("putumayoLoop.hubContactSubmit")}
+            </span>
+            <span
+              class="contact-btn-sending !hidden inline-flex items-center gap-2"
+            >
+              <Icon name="spinner" class="animate-spin" />
+              {t("putumayoLoop.hubContactSending")}
+            </span>
+          </button>
+          <p class="contact-error hidden text-sm text-qcRed text-center">
+            {t("putumayoLoop.hubContactError")}
+          </p>
+          <p class="qc-meta text-center">
+            {t("putumayoLoop.hubContactDisclaimer")}
+          </p>
+        </form>
+      </div>
+
+      <div class="success-view hidden text-center py-6">
+        <div
+          class="mx-auto w-16 h-16 rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-4"
+        >
+          <Icon name="check" class="text-2xl" />
+        </div>
+        <h3 class="text-xl font-bold tracking-tighter uppercase mb-2">
+          {t("putumayoLoop.hubContactSuccessTitle")}
+        </h3>
+        <p class="qc-body">{t("putumayoLoop.hubContactSuccessMessage")}</p>
+        <button
+          type="button"
+          data-modal-close
+          class="qc-btn mt-6 px-6 py-3 border border-gray-200 rounded-md"
+        >
+          {t("putumayoLoop.successClose")}
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .querySelectorAll<HTMLDialogElement>(".pl-hub-contact-modal")
+      .forEach((dialog) => {
+        const open = (e: Event) => {
+          e.preventDefault();
+          dialog.showModal();
+          document.body.style.overflow = "hidden";
+        };
+        const close = () => {
+          dialog.close();
+          document.body.style.overflow = "";
+        };
+        document
+          .querySelectorAll(`[data-open-modal="${dialog.id}"]`)
+          .forEach((b) => b.addEventListener("click", open));
+        dialog
+          .querySelectorAll("[data-modal-close], [data-modal-backdrop]")
+          .forEach((el) => el.addEventListener("click", close));
+        dialog.addEventListener("cancel", (e) => {
+          e.preventDefault();
+          close();
+        });
+
+        const form = dialog.querySelector<HTMLFormElement>(
+          "#putumayo-hub-contact-form",
+        );
+        const formView = dialog.querySelector<HTMLDivElement>(".form-view");
+        const successView =
+          dialog.querySelector<HTMLDivElement>(".success-view");
+        const btnText = form?.querySelector<HTMLElement>(".contact-btn-text");
+        const btnSending = form?.querySelector<HTMLElement>(
+          ".contact-btn-sending",
+        );
+        const errorEl = form?.querySelector<HTMLElement>(".contact-error");
+        const submit = form?.querySelector<HTMLButtonElement>(
+          'button[type="submit"]',
+        );
+
+        form?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          errorEl?.classList.add("hidden");
+          btnText?.classList.add("!hidden");
+          btnSending?.classList.remove("!hidden");
+          if (submit) submit.disabled = true;
+
+          const data = new FormData(form);
+          try {
+            const res = await fetch("/api/putumayo-loop/contact-hub", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: data.get("name"),
+                email: data.get("email"),
+                message: data.get("message"),
+              }),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            formView?.classList.add("hidden");
+            successView?.classList.remove("hidden");
+          } catch {
+            errorEl?.classList.remove("hidden");
+          } finally {
+            if (submit) submit.disabled = false;
+            btnText?.classList.remove("!hidden");
+            btnSending?.classList.add("!hidden");
+          }
+        });
+      });
+  });
+</script>

@@ -1,0 +1,329 @@
+---
+import Icon from "./Icon.astro";
+import type { Hub } from "../data/putumayoLoop";
+import { useTranslations, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  hubs: Hub[];
+  /** Edition year sent with the signup so we know which run they joined. */
+  year: number;
+  id?: string;
+}
+const { lang, hubs, year, id = "putumayo-loop-signup-modal" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<dialog
+  id={id}
+  data-year={year}
+  data-lang={lang}
+  class="pl-signup-modal fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
+>
+  <div
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+    data-modal-backdrop
+  >
+  </div>
+  <div
+    class="relative z-10 w-full max-w-[480px] mx-4 max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl"
+  >
+    <button
+      type="button"
+      data-modal-close
+      class="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      aria-label="Close"
+    >
+      <Icon name="xmark" class="text-sm text-gray-500" />
+    </button>
+    <div class="p-8">
+      <div class="form-view">
+        <h2 class="text-2xl font-bold tracking-tighter uppercase mb-2">
+          {t("putumayoLoop.modalTitle")}
+        </h2>
+        <p class="qc-body mb-6">{t("putumayoLoop.modalSubtitle")}</p>
+        <form class="space-y-4" id="putumayo-signup-form">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="qc-label block mb-1">
+                {t("putumayoLoop.firstName")}
+              </label>
+              <input
+                type="text"
+                name="firstName"
+                required
+                class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label class="qc-label block mb-1">
+                {t("putumayoLoop.lastName")}
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                required
+                class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.email")}
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+            />
+          </div>
+          <fieldset class="space-y-2">
+            <legend class="qc-label mb-2">
+              {t("putumayoLoop.howToRun")}
+            </legend>
+            <label
+              class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
+            >
+              <input
+                type="radio"
+                name="mode"
+                value="individual"
+                checked
+                class="mt-1 accent-qcRed"
+              />
+              <span class="flex-1">
+                <span class="font-bold block">
+                  {t("putumayoLoop.runIndividual")}
+                </span>
+                <span class="qc-meta block mt-0.5">
+                  {t("putumayoLoop.runIndividualDesc")}
+                </span>
+              </span>
+            </label>
+            <label
+              class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
+            >
+              <input
+                type="radio"
+                name="mode"
+                value="hub"
+                class="mt-1 accent-qcRed"
+              />
+              <span class="flex-1">
+                <span class="font-bold block">{t("putumayoLoop.runHub")}</span>
+                <span class="qc-meta block mt-0.5">
+                  {t("putumayoLoop.runHubDesc")}
+                </span>
+              </span>
+            </label>
+          </fieldset>
+          <div class="hub-select hidden">
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.chooseHub")}
+            </label>
+            <select
+              name="hub"
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
+            >
+              {
+                hubs.map((h) => (
+                  <option value={h.id}>
+                    {h.name} — {h.city}, {h.country}
+                  </option>
+                ))
+              }
+            </select>
+          </div>
+
+          <div class="individual-location">
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.runLocationLabel")}
+            </label>
+            <input
+              type="text"
+              name="location"
+              required
+              placeholder={t("putumayoLoop.runLocationPlaceholder")}
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+            />
+            <p class="qc-meta mt-1">
+              {t("putumayoLoop.runLocationHelp")}
+            </p>
+          </div>
+
+          <div>
+            <label class="qc-label block mb-1">
+              {t("putumayoLoop.distanceLabel")}
+            </label>
+            <select
+              name="distance"
+              required
+              class="w-full py-3 px-4 rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
+            >
+              <option value="10k">{t("putumayoLoop.distance10k")}</option>
+              <option value="half">{t("putumayoLoop.distanceHalf")}</option>
+              <option value="full">{t("putumayoLoop.distanceFull")}</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
+          >
+            <span class="signup-btn-text inline-flex items-center gap-2">
+              <Icon name="heart" />
+              {t("putumayoLoop.submitSignup")}
+            </span>
+            <span
+              class="signup-btn-sending !hidden inline-flex items-center gap-2"
+            >
+              <Icon name="spinner" class="animate-spin" />
+              {t("putumayoLoop.hubContactSending")}
+            </span>
+          </button>
+          <p class="signup-error hidden text-sm text-qcRed text-center">
+            {t("putumayoLoop.hubContactError")}
+          </p>
+          <p class="qc-meta text-center">
+            {t("putumayoLoop.modalDisclaimer")}
+          </p>
+        </form>
+      </div>
+
+      <div class="success-view hidden text-center py-6">
+        <div
+          class="mx-auto w-16 h-16 rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-4"
+        >
+          <Icon name="check" class="text-2xl" />
+        </div>
+        <h3 class="text-xl font-bold tracking-tighter uppercase mb-2">
+          {t("putumayoLoop.successTitle")}
+        </h3>
+        <p class="qc-body">{t("putumayoLoop.successMessage")}</p>
+        <button
+          type="button"
+          data-modal-close
+          class="qc-btn mt-6 px-6 py-3 border border-gray-200 rounded-md"
+        >
+          {t("putumayoLoop.successClose")}
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .querySelectorAll<HTMLDialogElement>(".pl-signup-modal")
+      .forEach((dialog) => {
+        const open = (e: Event) => {
+          e.preventDefault();
+          dialog.showModal();
+          document.body.style.overflow = "hidden";
+        };
+        // When the signup goes through we flip this so the dialog's
+        // native `close` event triggers a reload — the feed, map and
+        // counters then pick up the row that was just inserted.
+        let didSubmit = false;
+        const close = () => {
+          dialog.close();
+          document.body.style.overflow = "";
+        };
+        document
+          .querySelectorAll(`[data-open-modal="${dialog.id}"]`)
+          .forEach((b) => b.addEventListener("click", open));
+        dialog
+          .querySelectorAll("[data-modal-close], [data-modal-backdrop]")
+          .forEach((el) => el.addEventListener("click", close));
+        dialog.addEventListener("cancel", (e) => {
+          e.preventDefault();
+          close();
+        });
+        dialog.addEventListener("close", () => {
+          if (didSubmit) window.location.reload();
+        });
+
+        const form = dialog.querySelector<HTMLFormElement>(
+          "#putumayo-signup-form",
+        );
+        const formView = dialog.querySelector<HTMLDivElement>(".form-view");
+        const successView =
+          dialog.querySelector<HTMLDivElement>(".success-view");
+        const hubSelect = dialog.querySelector<HTMLDivElement>(".hub-select");
+        const individualLocation = dialog.querySelector<HTMLDivElement>(
+          ".individual-location",
+        );
+        const hubInput =
+          hubSelect?.querySelector<HTMLSelectElement>('select[name="hub"]');
+        const locationInput =
+          individualLocation?.querySelector<HTMLInputElement>(
+            'input[name="location"]',
+          );
+        const radios =
+          dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
+
+        const syncMode = () => {
+          const isHub =
+            Array.from(radios).find((r) => r.checked)?.value === "hub";
+          hubSelect?.classList.toggle("hidden", !isHub);
+          individualLocation?.classList.toggle("hidden", isHub);
+          // Toggle `required` so the browser doesn't validate a hidden
+          // field belonging to the other mode.
+          if (hubInput) hubInput.required = isHub;
+          if (locationInput) locationInput.required = !isHub;
+        };
+        radios.forEach((r) => r.addEventListener("change", syncMode));
+        syncMode();
+
+        const btnText = form?.querySelector<HTMLElement>(".signup-btn-text");
+        const btnSending = form?.querySelector<HTMLElement>(
+          ".signup-btn-sending",
+        );
+        const errorEl = form?.querySelector<HTMLElement>(".signup-error");
+        const submitBtn = form?.querySelector<HTMLButtonElement>(
+          'button[type="submit"]',
+        );
+        const editionYear = Number(dialog.dataset.year || "0");
+        const lang = dialog.dataset.lang || "nl";
+
+        form?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          errorEl?.classList.add("hidden");
+          btnText?.classList.add("!hidden");
+          btnSending?.classList.remove("!hidden");
+          if (submitBtn) submitBtn.disabled = true;
+
+          const data = new FormData(form);
+          const mode = String(data.get("mode") ?? "");
+          try {
+            const res = await fetch("/api/putumayo-loop/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                editionYear,
+                lang,
+                firstName: data.get("firstName"),
+                lastName: data.get("lastName"),
+                email: data.get("email"),
+                mode,
+                hubId: mode === "hub" ? data.get("hub") : null,
+                location: mode === "individual" ? data.get("location") : null,
+                distance: data.get("distance"),
+              }),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            didSubmit = true;
+            formView?.classList.add("hidden");
+            successView?.classList.remove("hidden");
+          } catch {
+            errorEl?.classList.remove("hidden");
+          } finally {
+            if (submitBtn) submitBtn.disabled = false;
+            btnText?.classList.remove("!hidden");
+            btnSending?.classList.add("!hidden");
+          }
+        });
+      });
+  });
+</script>

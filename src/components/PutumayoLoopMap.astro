@@ -1,0 +1,194 @@
+---
+import type { Hub, Subscriber } from "../data/putumayoLoop";
+import type { Lang } from "../i18n";
+import { useTranslations } from "../i18n";
+import { countryName } from "../lib/countryName";
+
+interface Props {
+  lang: Lang;
+  hubs: Hub[];
+  subscribers: Subscriber[];
+  /**
+   * Anonymous mode: hide hub badges, aggregate runner pins by location,
+   * and show counts only (no names). Used for past edition pages where
+   * we only have a participant tally per city.
+   */
+  anonymous?: boolean;
+}
+const { lang, hubs, subscribers, anonymous = false } = Astro.props;
+const t = useTranslations(lang);
+
+// Sum the `count` field per subscriber (defaults to 1) — for past
+// editions a single entry stands in for many runners at one location.
+const runnerCount = subscribers.reduce((s, x) => s + (x.count ?? 1), 0);
+const runnerSingular = t("putumayoLoop.runnerSingular");
+const runnerPlural = t("putumayoLoop.runnerPlural");
+
+// Pre-translate the hub country names server-side so the popup
+// HTML doesn't have to deal with Intl in the browser.
+const hubsForClient = hubs.map((h) => ({
+  ...h,
+  country: countryName(h.country, lang),
+}));
+
+// Bridge the SSR data to the client-side module script (Astro processes
+// <script> tags in isolation and does not give them access to frontmatter
+// variables directly).
+const mapData = JSON.stringify({
+  hubs: hubsForClient,
+  subscribers,
+  anonymous,
+  i18n: { runnerSingular, runnerPlural },
+});
+---
+
+<div
+  class="pl-map-wrapper relative rounded-xl overflow-hidden border border-gray-100 bg-gray-50 h-full"
+  style="min-height: 420px;"
+>
+  <div id="putumayo-loop-map" class="absolute inset-0 z-[1]"></div>
+
+  <div
+    class="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur px-3 py-2 rounded-md shadow-md"
+  >
+    <span class="qc-meta block !text-qcBlack">
+      <span class="font-bold text-qcRed">{runnerCount}</span>{" "}
+      {t("putumayoLoop.runnersWorldwide")}
+    </span>
+  </div>
+
+  <script
+    id="putumayo-loop-map-data"
+    type="application/json"
+    set:html={mapData}
+  />
+</div>
+
+<script>
+  import L from "leaflet";
+  import "leaflet/dist/leaflet.css";
+
+  interface Hub {
+    id: string;
+    name: string;
+    city: string;
+    country: string;
+    coords: [number, number];
+  }
+  interface Subscriber {
+    firstName?: string;
+    lastName?: string;
+    hubId?: string;
+    /** Undefined for un-geocoded individual signups; skipped on the map. */
+    coords?: [number, number];
+    count?: number;
+  }
+  interface MapPayload {
+    hubs: Hub[];
+    subscribers: Subscriber[];
+    anonymous?: boolean;
+    i18n: { runnerSingular: string; runnerPlural: string };
+  }
+
+  function initPutumayoLoopMap() {
+    const el = document.getElementById("putumayo-loop-map");
+    const dataEl = document.getElementById("putumayo-loop-map-data");
+    if (!el || !dataEl) return;
+    if ((el as HTMLElement).dataset.initialized) return;
+    (el as HTMLElement).dataset.initialized = "1";
+
+    const { hubs, subscribers, anonymous, i18n } = JSON.parse(
+      dataEl.textContent || "{}",
+    ) as MapPayload;
+
+    const map = L.map(el, {
+      scrollWheelZoom: false,
+      worldCopyJump: true,
+      zoomControl: true,
+    }).setView([25, 0], 2);
+
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 19,
+      },
+    ).addTo(map);
+
+    const badge = (count: number) =>
+      L.divIcon({
+        className: "pl-hub-marker",
+        html: `<div style="background:#ee172c;color:#fff;border-radius:9999px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(238,23,44,.35);border:3px solid #fff;">${count}</div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+      });
+
+    const dot = L.divIcon({
+      className: "pl-runner-marker",
+      html: '<div style="width:10px;height:10px;border-radius:50%;background:#ee172c;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.2);"></div>',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    });
+
+    const runnersLabel = (n: number) =>
+      n === 1 ? i18n.runnerSingular : i18n.runnerPlural;
+
+    if (anonymous) {
+      // Aggregate by rounded coords so multiple participants in the same
+      // city collapse to a single badge. `count` (default 1) lets a
+      // single subscriber entry stand in for N runners at one location.
+      // Subscribers without coords (un-geocoded individuals) are skipped.
+      const buckets = new Map<
+        string,
+        { lat: number; lng: number; n: number }
+      >();
+      for (const s of subscribers) {
+        if (!s.coords) continue;
+        const n = s.count ?? 1;
+        const key = `${s.coords[0].toFixed(2)},${s.coords[1].toFixed(2)}`;
+        const cur = buckets.get(key);
+        if (cur) cur.n += n;
+        else buckets.set(key, { lat: s.coords[0], lng: s.coords[1], n });
+      }
+      for (const b of buckets.values()) {
+        L.marker([b.lat, b.lng], { icon: badge(b.n) })
+          .addTo(map)
+          .bindPopup(
+            `<strong style="color:#ee172c;">${b.n}</strong> ${runnersLabel(b.n)}`,
+          );
+      }
+      return;
+    }
+
+    const hubCounts: Record<string, number> = {};
+    for (const sub of subscribers) {
+      if (sub.hubId) hubCounts[sub.hubId] = (hubCounts[sub.hubId] || 0) + 1;
+    }
+
+    for (const hub of hubs) {
+      L.marker(hub.coords, { icon: badge(hubCounts[hub.id] || 0) })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}<br><span style="color:#ee172c;font-weight:700;">${hubCounts[hub.id] || 0}</span> ${runnersLabel(hubCounts[hub.id] || 0)}`,
+        );
+    }
+
+    for (const sub of subscribers) {
+      if (!sub.hubId && sub.coords) {
+        L.marker(sub.coords, { icon: dot })
+          .addTo(map)
+          .bindPopup(
+            `<strong>${sub.firstName} ${sub.lastName}</strong><br><em>Individual runner</em>`,
+          );
+      }
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPutumayoLoopMap);
+  } else {
+    initPutumayoLoopMap();
+  }
+</script>

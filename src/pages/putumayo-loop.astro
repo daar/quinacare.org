@@ -1,0 +1,439 @@
+---
+import Icon from "../components/Icon.astro";
+import { Image } from "astro:assets";
+import ctaBackground from "../assets/media/2025/11/Putumayo-loop-2025-groepsfoto-1.jpg";
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import {
+  useTranslations,
+  getDateLocale,
+  getLocalizedPath,
+  type Lang,
+} from "../i18n";
+import DonationModal from "../components/DonationModal.astro";
+import DonationFormCard from "../components/DonationFormCard.astro";
+import SocialShare from "../components/SocialShare.astro";
+import PutumayoLoopMap from "../components/PutumayoLoopMap.astro";
+import PutumayoLoopFeed from "../components/PutumayoLoopFeed.astro";
+import PutumayoLoopSignupModal from "../components/PutumayoLoopSignupModal.astro";
+import PutumayoLoopHubContactModal from "../components/PutumayoLoopHubContactModal.astro";
+import PutumayoLoopEditionNav from "../components/PutumayoLoopEditionNav.astro";
+import { generateQrDataUri } from "../lib/qr";
+import { getCurrentEdition } from "../lib/putumayoLoopRepo";
+import { countryName } from "../lib/countryName";
+
+const lang: Lang = "nl";
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+const edition = await getCurrentEdition();
+const { hubs, subscribers, donations } = edition;
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat(dateLocale, {
+    style: "currency",
+    currency: donations.currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function formatRunDate(iso: string): string {
+  return new Intl.DateTimeFormat(dateLocale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+const pct = Math.min(
+  100,
+  Math.round((donations.raised / donations.target) * 100),
+);
+
+const hubCounts: Record<string, number> = {};
+for (const s of subscribers) {
+  if (s.hubId) hubCounts[s.hubId] = (hubCounts[s.hubId] || 0) + 1;
+}
+
+// Distance counters surface on the hero stats grid — they grow as
+// people sign up via the modal. Seed rows without a distance are
+// simply not counted (no bias toward any bucket).
+const distanceCounts: Record<"10k" | "half" | "full", number> = {
+  "10k": 0,
+  half: 0,
+  full: 0,
+};
+for (const s of subscribers) {
+  if (s.distance) distanceCounts[s.distance] += s.count ?? 1;
+}
+
+const pageUrl = `https://quinacare.org${getLocalizedPath("/putumayo-loop", lang)}`;
+const qrDataUri = await generateQrDataUri(pageUrl);
+
+const excerpt = t("putumayoLoop.heroSubtitle");
+---
+
+<Layout title={`${edition.title} | Quina Care`} lang={lang}>
+  <Nav />
+
+  <!-- Hero -->
+  <header class="relative pt-40 pb-16 overflow-hidden">
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-b from-red-50/60 via-white to-white"
+    >
+    </div>
+    <div class="max-w-[1600px] mx-auto px-6">
+      <div class="mb-8">
+        <PutumayoLoopEditionNav lang={lang} currentYear={edition.year} />
+      </div>
+      <div class="grid lg:grid-cols-12 gap-10 items-end">
+        <div class="lg:col-span-7">
+          <span class="qc-label mb-4 inline-flex items-center gap-2 text-qcRed">
+            <Icon name="heart" class="text-xs" />
+            {t("putumayoLoop.heroLabel")} Hospital San Miguel
+          </span>
+          <h1
+            class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.95] uppercase"
+          >
+            {edition.title}
+          </h1>
+          <p class="qc-body mt-6 max-w-2xl text-lg">
+            {t("putumayoLoop.heroSubtitle")}
+          </p>
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              data-open-modal="putumayo-loop-signup-modal"
+              class="qc-btn qc-btn--primary px-8 py-4 flex items-center gap-2"
+            >
+              <Icon name="heart" />
+              {t("putumayoLoop.signUpCta")}
+            </button>
+            <button
+              type="button"
+              data-open-modal="putumayo-loop-donate-modal"
+              class="qc-btn px-8 py-4 border border-gray-200 rounded-md hover:border-qcRed transition flex items-center gap-2"
+            >
+              <Icon name="heart" class="text-qcRed" />
+              {t("putumayoLoop.donateCta")}
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="space-y-4">
+            <!-- Run date + total runners -->
+            <div class="grid grid-cols-2 gap-4">
+              <div
+                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+              >
+                <span class="qc-label block mb-1">
+                  {t("putumayoLoop.runDateLabel")}
+                </span>
+                <div class="text-lg md:text-xl font-bold tracking-tight">
+                  {formatRunDate(edition.runDate)}
+                </div>
+              </div>
+              <div
+                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+              >
+                <span class="qc-label block mb-1">
+                  {t("putumayoLoop.statsRunners")}
+                </span>
+                <div class="text-3xl font-bold tracking-tight text-qcRed">
+                  {subscribers.length}
+                </div>
+              </div>
+            </div>
+
+            <!-- Per-distance counters -->
+            <div class="grid grid-cols-3 gap-4">
+              <div
+                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+              >
+                <span class="qc-label block mb-1">
+                  {t("putumayoLoop.distance10k")}
+                </span>
+                <div class="text-2xl font-bold tracking-tight text-qcRed">
+                  {distanceCounts["10k"]}
+                </div>
+              </div>
+              <div
+                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+              >
+                <span class="qc-label block mb-1">
+                  {t("putumayoLoop.distanceHalf")}
+                </span>
+                <div class="text-2xl font-bold tracking-tight text-qcRed">
+                  {distanceCounts.half}
+                </div>
+              </div>
+              <div
+                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+              >
+                <span class="qc-label block mb-1">
+                  {t("putumayoLoop.distanceFull")}
+                </span>
+                <div class="text-2xl font-bold tracking-tight text-qcRed">
+                  {distanceCounts.full}
+                </div>
+              </div>
+            </div>
+
+            <!-- Donation tracker -->
+            <div
+              class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+            >
+              <div class="flex items-end justify-between mb-2">
+                <span class="qc-label">{t("putumayoLoop.statsRaised")}</span>
+                <span class="qc-meta">
+                  {t("putumayoLoop.statsOf")}
+                  {formatCurrency(donations.target)}
+                </span>
+              </div>
+              <div
+                class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden mb-3"
+              >
+                <div
+                  class="h-2.5 rounded-full bg-gradient-to-r from-qcRed to-rose-400"
+                  style={`width: ${pct}%`}
+                >
+                </div>
+              </div>
+              <div class="flex items-baseline justify-between">
+                <div class="text-2xl font-bold tracking-tight">
+                  {formatCurrency(donations.raised)}
+                </div>
+                <div class="qc-meta">
+                  {donations.donors}
+                  {t("putumayoLoop.statsDonors")}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Map + live signup feed -->
+  <section class="max-w-[1600px] mx-auto px-6 pb-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <PutumayoLoopMap lang={lang} hubs={hubs} subscribers={subscribers} />
+      </div>
+      <div class="lg:col-span-1">
+        <PutumayoLoopFeed lang={lang} hubs={hubs} subscribers={subscribers} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Why we run -->
+  <section class="max-w-3xl mx-auto px-6 py-16 text-center">
+    <span class="qc-label text-qcRed mb-4 block">
+      {t("putumayoLoop.whyTitle")}
+    </span>
+    <h2
+      class="text-3xl md:text-5xl font-bold tracking-tighter leading-tight uppercase mb-6"
+    >
+      {t("putumayoLoop.whyHeading")}
+    </h2>
+    <p class="qc-body text-lg leading-relaxed mb-4">
+      {t("putumayoLoop.whyBody")}
+    </p>
+    <p class="qc-body text-lg leading-relaxed text-gray-500">
+      {t("putumayoLoop.whyExtra")}
+    </p>
+  </section>
+
+  <!-- Hubs grid -->
+  <section class="max-w-[1600px] mx-auto px-6 py-16 border-t border-gray-100">
+    <div class="mb-10">
+      <span class="qc-label mb-2 block">
+        {t("putumayoLoop.hubsTitle")}
+      </span>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {
+        hubs.map((hub) => (
+          <article class="rounded-xl border border-gray-100 bg-white p-5 hover:border-qcRed hover:shadow-md transition group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-full bg-red-50 text-qcRed flex items-center justify-center">
+                <Icon name="heart" />
+              </span>
+              <span class="text-2xl font-bold tracking-tight text-qcRed">
+                {hubCounts[hub.id] || 0}
+              </span>
+            </div>
+            <h3 class="text-xl font-bold tracking-tighter uppercase mb-1 group-hover:text-qcRed transition">
+              {hub.name}
+            </h3>
+            <p class="qc-meta mb-3">
+              {hub.city}, {countryName(hub.country, lang)}
+            </p>
+            {hub.captain && (
+              <p class="qc-body text-sm">
+                <span class="qc-meta block">
+                  {t("putumayoLoop.hubCaptain")}
+                </span>
+                {hub.captain}
+              </p>
+            )}
+          </article>
+        ))
+      }
+
+      <!-- Start-your-own-hub invitation as the 5th tile. -->
+      <button
+        type="button"
+        data-open-modal="putumayo-loop-hub-modal"
+        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col text-left hover:border-qcRed hover:bg-red-50/30 transition group cursor-pointer"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <span
+            class="w-10 h-10 rounded-full bg-white border border-gray-200 text-qcRed flex items-center justify-center group-hover:border-qcRed transition"
+          >
+            <Icon name="heart" />
+          </span>
+          <span class="qc-meta !text-qcRed font-bold group-hover:underline">
+            {t("putumayoLoop.organizeHubCta")} →
+          </span>
+        </div>
+        <h3
+          class="text-xl font-bold tracking-tighter uppercase mb-2 group-hover:text-qcRed transition"
+        >
+          {t("putumayoLoop.organizeHubTitle")}
+        </h3>
+        <p class="qc-body text-sm leading-snug">
+          {t("putumayoLoop.organizeHubBody")}
+        </p>
+      </button>
+    </div>
+  </section>
+
+  <!-- Tracker + donate CTA -->
+  <section class="max-w-[1600px] mx-auto px-6 py-16 border-t border-gray-100">
+    <div class="relative rounded-2xl overflow-hidden text-white shadow-xl">
+      <!-- Background photo from the 2025 edition, dimmed for legibility. -->
+      <Image
+        src={ctaBackground}
+        alt=""
+        widths={[800, 1200, 1600]}
+        sizes="(max-width: 1024px) 100vw, 1200px"
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-qcBlack/85 via-qcBlack/65 to-qcBlack/85"
+      >
+      </div>
+      <div
+        class="relative z-10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center"
+      >
+        <div>
+          <span class="qc-label !text-red-300 mb-3 block">
+            {t("putumayoLoop.statsRaised")}
+          </span>
+          <div
+            class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-3"
+          >
+            {formatCurrency(donations.raised)}
+          </div>
+          <p class="text-white/60 mb-6">
+            {t("putumayoLoop.statsOf")}
+            {formatCurrency(donations.target)} · {donations.donors}
+            {t("putumayoLoop.statsDonors")}
+          </p>
+          <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden mb-6">
+            <div
+              class="h-3 rounded-full bg-gradient-to-r from-qcRed to-rose-400"
+              style={`width: ${pct}%`}
+            >
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button
+              type="button"
+              data-open-modal="putumayo-loop-donate-modal"
+              class="qc-btn qc-btn--primary px-8 py-4 flex items-center gap-2"
+            >
+              <Icon name="heart" />
+              {t("putumayoLoop.donateCta")}
+            </button>
+            <button
+              type="button"
+              data-open-modal="putumayo-loop-signup-modal"
+              class="qc-btn px-8 py-4 border border-white/20 rounded-md hover:border-white transition flex items-center gap-2"
+            >
+              <Icon name="heart" />
+              {t("putumayoLoop.signUpCta")}
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-center lg:justify-end">
+          <div
+            class="bg-white rounded-xl p-5 text-center shadow-2xl max-w-[260px]"
+          >
+            <span class="qc-label !text-qcBlack block mb-3">
+              {t("putumayoLoop.qrTitle")}
+            </span>
+            <img
+              src={qrDataUri}
+              alt="QR code"
+              width="220"
+              height="220"
+              class="w-full h-auto rounded-md"
+            />
+            <a
+              href={qrDataUri}
+              download={`${edition.fundraiserSlug}.png`}
+              class="qc-meta !text-qcRed mt-3 inline-flex items-center gap-1 hover:underline"
+            >
+              <Icon name="download" class="text-xs" />
+              {t("putumayoLoop.qrDownload")}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Share -->
+  <section class="max-w-3xl mx-auto px-6 pb-24 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase mb-3">
+      {t("putumayoLoop.shareTitle")}
+    </h2>
+    <p class="qc-body mb-6">{t("putumayoLoop.shareSubtitle")}</p>
+    <div class="flex justify-center">
+      <SocialShare url={pageUrl} title={edition.title} lang={lang} />
+    </div>
+  </section>
+
+  <DonationModal id="putumayo-loop-donate-modal">
+    <DonationFormCard
+      lang={lang}
+      context="fundraiser"
+      scopeId={`putumayo:${edition.year}`}
+      frequencies={["one-time"]}
+      impact={{
+        kind: "fundraiser",
+        organizer: "Quina Care",
+        fallback: edition.title,
+        excerpt,
+      }}
+      metadata={{
+        fundraiser_slug: edition.fundraiserSlug,
+        fundraiser_title: edition.title,
+      }}
+      description={edition.title}
+    />
+  </DonationModal>
+
+  <PutumayoLoopSignupModal lang={lang} hubs={hubs} year={edition.year} />
+
+  <PutumayoLoopHubContactModal lang={lang} />
+
+  <Footer />
+</Layout>

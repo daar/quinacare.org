@@ -32,6 +32,7 @@ export const ui = {
     "share.linkedin": "Deel op LinkedIn",
     "share.whatsapp": "Deel via WhatsApp",
     "share.email": "Deel via e-mail",
+    "share.instagram": "Volg ons op Instagram",
     "share.copyLink": "Kopieer link",
     "share.native": "Delen",
     "post.aboutAuthor": "Over de auteur",
@@ -260,6 +261,107 @@ export const ui = {
     "404.backHome": "Terug naar home",
     // Submenu - Wat kun jij doen?
     "submenu.fundraise": "Sponsor acties",
+    "submenu.putumayoLoop": "Putumayo Loop",
+    // Putumayo Loop landing page
+    "putumayoLoop.heroLabel": "Wereldwijd hardlopen voor",
+    "putumayoLoop.heroTitle": "Putumayo Loop 2026",
+    "putumayoLoop.heroSubtitle":
+      "Op zondag 18 oktober lopen we wereldwijd tegelijk om Hospital San Miguel te steunen. Het ziekenhuis staat in de provincie Putumayo, midden in het Amazonegebied van Ecuador. Samen met de lokale inwoners lopen we mee om de lopende kosten van het ziekenhuis te financieren.",
+    "putumayoLoop.signUpCta": "Loop met ons mee",
+    "putumayoLoop.donateCta": "Doneer nu",
+    "putumayoLoop.shareCta": "Deel deze actie",
+    "putumayoLoop.runDateLabel": "Loopdatum",
+    "putumayoLoop.runnersWorldwide": "lopers wereldwijd",
+    "putumayoLoop.runnerSingular": "loper",
+    "putumayoLoop.runnerPlural": "lopers",
+    "putumayoLoop.latestSignups": "Laatste aanmeldingen",
+    "putumayoLoop.signedUp": "{name} loopt mee in {place}",
+    "putumayoLoop.whyTitle": "Waarom we lopen",
+    "putumayoLoop.whyHeading": "Lopen voor lopende kosten",
+    "putumayoLoop.whyBody":
+      "Hospital San Miguel staat midden in het Ecuadoriaanse Amazonewoud en is voor duizenden mensen de enige toegang tot goede zorg. De lopende kosten — medicijnen, salarissen voor het lokale personeel, onderhoud en schoonmaak van het ziekenhuis — zijn elke maand opnieuw een uitdaging. Met de Putumayo Loop halen we wereldwijd, op één dag, geld op om het ziekenhuis draaiende te houden.",
+    "putumayoLoop.whyExtra":
+      "Iedere loper telt. Of je nu individueel loopt of meedoet in één van onze hubs — samen maken we het verschil.",
+    "putumayoLoop.statsRaised": "opgehaald",
+    "putumayoLoop.statsOf": "van",
+    "putumayoLoop.statsDonors": "donateurs",
+    "putumayoLoop.statsRunners": "lopers",
+    "putumayoLoop.hubsTitle": "Onze hubs",
+    "putumayoLoop.hubsSubtitle":
+      "Loop mee op één van deze locaties of organiseer je eigen run.",
+    "putumayoLoop.hubCaptain": "Hub organisator",
+    "putumayoLoop.runnersInHub": "lopers",
+    "putumayoLoop.organizeHubTitle": "Wil je zelf een hub organiseren?",
+    "putumayoLoop.organizeHubBody":
+      "Laat het ons weten — we helpen je op weg met tips, materiaal en een vermelding op deze pagina.",
+    "putumayoLoop.organizeHubCta": "Neem contact op",
+    "putumayoLoop.hubContactTitle": "Een hub organiseren",
+    "putumayoLoop.hubContactSubtitle":
+      "Laat ons weten waar je een Putumayo Loop hub wilt opzetten. We nemen snel contact met je op.",
+    "putumayoLoop.hubContactName": "Naam",
+    "putumayoLoop.hubContactMessage": "Vertel ons over je plan",
+    "putumayoLoop.hubContactMessagePlaceholder":
+      "Waar zou je willen lopen, en wie zou je willen meenemen?",
+    "putumayoLoop.hubContactSubmit": "Verstuur bericht",
+    "putumayoLoop.hubContactSending": "Bezig met versturen…",
+    "putumayoLoop.hubContactError": "Er ging iets mis. Probeer het opnieuw.",
+    "putumayoLoop.hubContactDisclaimer":
+      "Door je bericht te versturen ga je akkoord met onze privacyverklaring.",
+    "putumayoLoop.hubContactSuccessTitle": "Bedankt!",
+    "putumayoLoop.hubContactSuccessMessage":
+      "We hebben je bericht ontvangen en nemen snel contact met je op.",
+    "putumayoLoop.shareTitle": "Help ons verder komen",
+    "putumayoLoop.shareSubtitle":
+      "Deel de QR-code via je favoriete kanaal. Hoe meer mensen meedoen, hoe meer impact we hebben.",
+    "putumayoLoop.qrTitle": "Deel de QR-code",
+    "putumayoLoop.qrDownload": "Download QR-code",
+    // Signup modal
+    "putumayoLoop.modalTitle": "Meld je aan voor de Putumayo Loop",
+    "putumayoLoop.modalSubtitle":
+      "Vul je gegevens in en kies hoe je mee wilt lopen.",
+    "putumayoLoop.firstName": "Voornaam",
+    "putumayoLoop.lastName": "Achternaam",
+    "putumayoLoop.email": "E-mailadres",
+    "putumayoLoop.howToRun": "Hoe wil je meelopen?",
+    "putumayoLoop.runIndividual": "Individueel",
+    "putumayoLoop.runIndividualDesc":
+      "Ik loop op mijn eigen locatie en deel mijn afstand achteraf.",
+    "putumayoLoop.runHub": "In een hub",
+    "putumayoLoop.runHubDesc":
+      "Ik sluit me aan bij een georganiseerde run in een van de hubs.",
+    "putumayoLoop.chooseHub": "Kies een hub",
+    "putumayoLoop.distanceLabel": "Afstand",
+    "putumayoLoop.distance10k": "10 km",
+    "putumayoLoop.distanceHalf": "Halve marathon",
+    "putumayoLoop.distanceFull": "Hele marathon",
+    "putumayoLoop.runLocationLabel": "Waar ga je lopen?",
+    "putumayoLoop.runLocationPlaceholder": "Stad, land",
+    "putumayoLoop.runLocationHelp":
+      "Vul de plaats in waar je gaat lopen, zodat we je op de wereldkaart kunnen plaatsen.",
+    "putumayoLoop.submitSignup": "Bevestig aanmelding",
+    "putumayoLoop.modalDisclaimer":
+      "Door je aan te melden ga je akkoord met onze privacyverklaring. Geen spam — alleen updates over de loop.",
+    "putumayoLoop.successTitle": "Je bent ingeschreven!",
+    "putumayoLoop.successMessage":
+      "We sturen je per e-mail meer informatie over de loop. Bedankt voor je inzet!",
+    "putumayoLoop.successClose": "Sluiten",
+    "putumayoLoop.editionsLabel": "Edities",
+    "putumayoLoop.pastEditionLabel": "Afgelopen editie",
+    "putumayoLoop.finalRaised": "Totaal opgehaald",
+    "putumayoLoop.finalRunners": "Aantal lopers",
+    "putumayoLoop.acrossHubs": "wereldwijd",
+    "putumayoLoop.thankYouAll": "Dank aan iedereen!",
+    "putumayoLoop.howItWent": "Hoe het ging",
+    "putumayoLoop.participatingHubs": "Deelnemende hubs",
+    "putumayoLoop.nextEditionLabel": "Volgende editie",
+    "putumayoLoop.nextEditionBody":
+      "De volgende editie is gepland. Doe mee en zet je in voor Hospital San Miguel.",
+    "putumayoLoop.viewCurrentEdition": "Bekijk de 2026 editie",
+    "putumayoLoop.videoTitle": "Bekijk de aftermovie",
+    "putumayoLoop.participantsMapLabel": "Deelnemers",
+    "putumayoLoop.participantsMapTitle": "Waar er gelopen werd",
+    "putumayoLoop.story2025":
+      "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
     "submenu.joinTeam": "Word vrijwilliger",
     "submenu.becomePartner": "Word partner",
     "submenu.yuraBoom": "De Yura Boom",
@@ -311,6 +413,7 @@ export const ui = {
     "share.linkedin": "Share on LinkedIn",
     "share.whatsapp": "Share on WhatsApp",
     "share.email": "Share via email",
+    "share.instagram": "Follow us on Instagram",
     "share.copyLink": "Copy link",
     "share.native": "Share",
     "post.aboutAuthor": "About the author",
@@ -541,6 +644,107 @@ export const ui = {
     "404.backHome": "Back to home",
     // Submenu - What can you do?
     "submenu.fundraise": "Fundraising campaigns",
+    "submenu.putumayoLoop": "Putumayo Loop",
+    // Putumayo Loop landing page
+    "putumayoLoop.heroLabel": "A worldwide run for",
+    "putumayoLoop.heroTitle": "Putumayo Loop 2026",
+    "putumayoLoop.heroSubtitle":
+      "On Sunday October 18 we run together around the world to support Hospital San Miguel. The hospital sits in the province of Putumayo, in the middle of Ecuador's Amazon region. Together with the local residents we run to fund the hospital's running costs.",
+    "putumayoLoop.signUpCta": "Run with us",
+    "putumayoLoop.donateCta": "Donate now",
+    "putumayoLoop.shareCta": "Share this campaign",
+    "putumayoLoop.runDateLabel": "Run date",
+    "putumayoLoop.runnersWorldwide": "runners worldwide",
+    "putumayoLoop.runnerSingular": "runner",
+    "putumayoLoop.runnerPlural": "runners",
+    "putumayoLoop.latestSignups": "Latest signups",
+    "putumayoLoop.signedUp": "{name} is running in {place}",
+    "putumayoLoop.whyTitle": "Why we run",
+    "putumayoLoop.whyHeading": "Running for running costs",
+    "putumayoLoop.whyBody":
+      "Hospital San Miguel sits in the heart of the Ecuadorian Amazon and is for thousands of people the only access to proper care. The running costs — medicines, salaries, fuel for the generators, river transport — are a monthly challenge. With the Putumayo Loop we raise funds worldwide, on a single day, to keep that care running.",
+    "putumayoLoop.whyExtra":
+      "Every runner counts. Whether you run individually or join one of our hubs — together we make the difference.",
+    "putumayoLoop.statsRaised": "raised",
+    "putumayoLoop.statsOf": "of",
+    "putumayoLoop.statsDonors": "donors",
+    "putumayoLoop.statsRunners": "runners",
+    "putumayoLoop.hubsTitle": "Our hubs",
+    "putumayoLoop.hubsSubtitle":
+      "Run with us at one of these locations, or organize your own.",
+    "putumayoLoop.hubCaptain": "Hub organizer",
+    "putumayoLoop.runnersInHub": "runners",
+    "putumayoLoop.organizeHubTitle": "Want to organize a hub yourself?",
+    "putumayoLoop.organizeHubBody":
+      "Let us know — we will help you get started with tips, materials and visibility on this page.",
+    "putumayoLoop.organizeHubCta": "Get in touch",
+    "putumayoLoop.hubContactTitle": "Organize a hub",
+    "putumayoLoop.hubContactSubtitle":
+      "Tell us where you would like to set up a Putumayo Loop hub. We will get back to you soon.",
+    "putumayoLoop.hubContactName": "Name",
+    "putumayoLoop.hubContactMessage": "Tell us about your plan",
+    "putumayoLoop.hubContactMessagePlaceholder":
+      "Where would you like to run, and who would you bring along?",
+    "putumayoLoop.hubContactSubmit": "Send message",
+    "putumayoLoop.hubContactSending": "Sending…",
+    "putumayoLoop.hubContactError": "Something went wrong. Please try again.",
+    "putumayoLoop.hubContactDisclaimer":
+      "By submitting you agree to our privacy policy.",
+    "putumayoLoop.hubContactSuccessTitle": "Thank you!",
+    "putumayoLoop.hubContactSuccessMessage":
+      "We received your message and will get back to you soon.",
+    "putumayoLoop.shareTitle": "Help us go further",
+    "putumayoLoop.shareSubtitle":
+      "Share the QR code via your favorite channel. The more people join, the bigger the impact.",
+    "putumayoLoop.qrTitle": "Share the QR code",
+    "putumayoLoop.qrDownload": "Download QR code",
+    // Signup modal
+    "putumayoLoop.modalTitle": "Sign up for the Putumayo Loop",
+    "putumayoLoop.modalSubtitle":
+      "Fill in your details and pick how you want to run.",
+    "putumayoLoop.firstName": "First name",
+    "putumayoLoop.lastName": "Last name",
+    "putumayoLoop.email": "Email address",
+    "putumayoLoop.howToRun": "How do you want to run?",
+    "putumayoLoop.runIndividual": "Individually",
+    "putumayoLoop.runIndividualDesc":
+      "I will run from my own location and share my distance afterwards.",
+    "putumayoLoop.runHub": "Join a hub",
+    "putumayoLoop.runHubDesc":
+      "I will join one of the organized runs at a hub.",
+    "putumayoLoop.chooseHub": "Pick a hub",
+    "putumayoLoop.distanceLabel": "Distance",
+    "putumayoLoop.distance10k": "10 km",
+    "putumayoLoop.distanceHalf": "Half marathon",
+    "putumayoLoop.distanceFull": "Full marathon",
+    "putumayoLoop.runLocationLabel": "Where are you running?",
+    "putumayoLoop.runLocationPlaceholder": "City, country",
+    "putumayoLoop.runLocationHelp":
+      "Tell us where you will run so we can place you on the world map.",
+    "putumayoLoop.submitSignup": "Confirm signup",
+    "putumayoLoop.modalDisclaimer":
+      "By signing up you agree to our privacy policy. No spam — only updates about the loop.",
+    "putumayoLoop.successTitle": "You're in!",
+    "putumayoLoop.successMessage":
+      "We will email you with more information about the loop. Thanks for being part of it!",
+    "putumayoLoop.successClose": "Close",
+    "putumayoLoop.editionsLabel": "Editions",
+    "putumayoLoop.pastEditionLabel": "Past edition",
+    "putumayoLoop.finalRaised": "Total raised",
+    "putumayoLoop.finalRunners": "Number of runners",
+    "putumayoLoop.acrossHubs": "worldwide",
+    "putumayoLoop.thankYouAll": "Thanks to everyone!",
+    "putumayoLoop.howItWent": "How it went",
+    "putumayoLoop.participatingHubs": "Participating hubs",
+    "putumayoLoop.nextEditionLabel": "Next edition",
+    "putumayoLoop.nextEditionBody":
+      "The next edition is on its way. Join in and run for Hospital San Miguel.",
+    "putumayoLoop.viewCurrentEdition": "View the 2026 edition",
+    "putumayoLoop.videoTitle": "Watch the aftermovie",
+    "putumayoLoop.participantsMapLabel": "Participants",
+    "putumayoLoop.participantsMapTitle": "Where the running happened",
+    "putumayoLoop.story2025":
+      "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
     "submenu.joinTeam": "Join Our Team",
     "submenu.becomePartner": "Become a Partner",
     "submenu.yuraBoom": "The Yura Tree",
@@ -592,6 +796,7 @@ export const ui = {
     "share.linkedin": "Compartir en LinkedIn",
     "share.whatsapp": "Compartir por WhatsApp",
     "share.email": "Compartir por correo",
+    "share.instagram": "Síguenos en Instagram",
     "share.copyLink": "Copiar enlace",
     "share.native": "Compartir",
     "post.aboutAuthor": "Sobre el autor",
@@ -822,6 +1027,107 @@ export const ui = {
     "404.backHome": "Volver al inicio",
     // Submenu - ¿Qué puedes hacer?
     "submenu.fundraise": "Campañas de recaudación",
+    "submenu.putumayoLoop": "Putumayo Loop",
+    // Putumayo Loop landing page
+    "putumayoLoop.heroLabel": "Una carrera mundial por",
+    "putumayoLoop.heroTitle": "Putumayo Loop 2026",
+    "putumayoLoop.heroSubtitle":
+      "El domingo 18 de octubre corremos juntos en todo el mundo para apoyar al Hospital San Miguel. El hospital se encuentra en la provincia de Putumayo, en plena Amazonía ecuatoriana. Junto con los habitantes locales corremos para financiar los gastos operativos del hospital.",
+    "putumayoLoop.signUpCta": "Corre con nosotros",
+    "putumayoLoop.donateCta": "Dona ahora",
+    "putumayoLoop.shareCta": "Comparte esta campaña",
+    "putumayoLoop.runDateLabel": "Fecha de la carrera",
+    "putumayoLoop.runnersWorldwide": "corredores en el mundo",
+    "putumayoLoop.runnerSingular": "corredor",
+    "putumayoLoop.runnerPlural": "corredores",
+    "putumayoLoop.latestSignups": "Últimas inscripciones",
+    "putumayoLoop.signedUp": "{name} corre en {place}",
+    "putumayoLoop.whyTitle": "Por qué corremos",
+    "putumayoLoop.whyHeading": "Correr por los gastos operativos",
+    "putumayoLoop.whyBody":
+      "El Hospital San Miguel está en el corazón de la Amazonía ecuatoriana y es para miles de personas el único acceso a atención médica adecuada. Los gastos operativos — medicamentos, salarios, combustible para los generadores, transporte fluvial — son un desafío cada mes. Con el Putumayo Loop recaudamos fondos en todo el mundo, en un solo día, para mantener esa atención en marcha.",
+    "putumayoLoop.whyExtra":
+      "Cada corredor cuenta. Ya sea que corras individualmente o te unas a uno de nuestros hubs — juntos marcamos la diferencia.",
+    "putumayoLoop.statsRaised": "recaudado",
+    "putumayoLoop.statsOf": "de",
+    "putumayoLoop.statsDonors": "donantes",
+    "putumayoLoop.statsRunners": "corredores",
+    "putumayoLoop.hubsTitle": "Nuestros hubs",
+    "putumayoLoop.hubsSubtitle":
+      "Corre con nosotros en una de estas ubicaciones u organiza la tuya.",
+    "putumayoLoop.hubCaptain": "Organizador del hub",
+    "putumayoLoop.runnersInHub": "corredores",
+    "putumayoLoop.organizeHubTitle": "¿Quieres organizar un hub?",
+    "putumayoLoop.organizeHubBody":
+      "Cuéntanos — te ayudamos a empezar con consejos, material y visibilidad en esta página.",
+    "putumayoLoop.organizeHubCta": "Ponte en contacto",
+    "putumayoLoop.hubContactTitle": "Organizar un hub",
+    "putumayoLoop.hubContactSubtitle":
+      "Cuéntanos dónde te gustaría organizar un hub del Putumayo Loop. Te contactaremos pronto.",
+    "putumayoLoop.hubContactName": "Nombre",
+    "putumayoLoop.hubContactMessage": "Cuéntanos tu plan",
+    "putumayoLoop.hubContactMessagePlaceholder":
+      "¿Dónde te gustaría correr y a quién llevarías contigo?",
+    "putumayoLoop.hubContactSubmit": "Enviar mensaje",
+    "putumayoLoop.hubContactSending": "Enviando…",
+    "putumayoLoop.hubContactError": "Algo salió mal. Inténtalo de nuevo.",
+    "putumayoLoop.hubContactDisclaimer":
+      "Al enviar aceptas nuestra política de privacidad.",
+    "putumayoLoop.hubContactSuccessTitle": "¡Gracias!",
+    "putumayoLoop.hubContactSuccessMessage":
+      "Recibimos tu mensaje y te contactaremos pronto.",
+    "putumayoLoop.shareTitle": "Ayúdanos a llegar más lejos",
+    "putumayoLoop.shareSubtitle":
+      "Comparte el código QR a través de tu canal favorito. Cuantas más personas se sumen, mayor será el impacto.",
+    "putumayoLoop.qrTitle": "Comparte el código QR",
+    "putumayoLoop.qrDownload": "Descargar código QR",
+    // Signup modal
+    "putumayoLoop.modalTitle": "Inscríbete al Putumayo Loop",
+    "putumayoLoop.modalSubtitle":
+      "Completa tus datos y elige cómo quieres correr.",
+    "putumayoLoop.firstName": "Nombre",
+    "putumayoLoop.lastName": "Apellido",
+    "putumayoLoop.email": "Correo electrónico",
+    "putumayoLoop.howToRun": "¿Cómo quieres correr?",
+    "putumayoLoop.runIndividual": "Individualmente",
+    "putumayoLoop.runIndividualDesc":
+      "Correré desde mi propia ubicación y compartiré mi distancia después.",
+    "putumayoLoop.runHub": "Únete a un hub",
+    "putumayoLoop.runHubDesc":
+      "Me uniré a una de las carreras organizadas en un hub.",
+    "putumayoLoop.chooseHub": "Elige un hub",
+    "putumayoLoop.distanceLabel": "Distancia",
+    "putumayoLoop.distance10k": "10 km",
+    "putumayoLoop.distanceHalf": "Media maratón",
+    "putumayoLoop.distanceFull": "Maratón completa",
+    "putumayoLoop.runLocationLabel": "¿Dónde vas a correr?",
+    "putumayoLoop.runLocationPlaceholder": "Ciudad, país",
+    "putumayoLoop.runLocationHelp":
+      "Cuéntanos dónde correrás para ubicarte en el mapa mundial.",
+    "putumayoLoop.submitSignup": "Confirmar inscripción",
+    "putumayoLoop.modalDisclaimer":
+      "Al inscribirte aceptas nuestra política de privacidad. Sin spam — solo actualizaciones sobre la carrera.",
+    "putumayoLoop.successTitle": "¡Estás dentro!",
+    "putumayoLoop.successMessage":
+      "Te enviaremos más información por correo electrónico. ¡Gracias por participar!",
+    "putumayoLoop.successClose": "Cerrar",
+    "putumayoLoop.editionsLabel": "Ediciones",
+    "putumayoLoop.pastEditionLabel": "Edición pasada",
+    "putumayoLoop.finalRaised": "Total recaudado",
+    "putumayoLoop.finalRunners": "Número de corredores",
+    "putumayoLoop.acrossHubs": "en todo el mundo",
+    "putumayoLoop.thankYouAll": "¡Gracias a todos!",
+    "putumayoLoop.howItWent": "Cómo fue",
+    "putumayoLoop.participatingHubs": "Hubs participantes",
+    "putumayoLoop.nextEditionLabel": "Próxima edición",
+    "putumayoLoop.nextEditionBody":
+      "La próxima edición ya está en marcha. Súmate y corre por el Hospital San Miguel.",
+    "putumayoLoop.viewCurrentEdition": "Ver la edición 2026",
+    "putumayoLoop.videoTitle": "Mira el aftermovie",
+    "putumayoLoop.participantsMapLabel": "Participantes",
+    "putumayoLoop.participantsMapTitle": "Dónde se corrió",
+    "putumayoLoop.story2025":
+      "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
     "submenu.joinTeam": "Únete al equipo",
     "submenu.becomePartner": "Sé socio",
     "submenu.yuraBoom": "El Árbol Yura",

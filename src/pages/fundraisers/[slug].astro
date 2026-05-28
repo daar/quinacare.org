@@ -343,10 +343,18 @@ const qrDataUri = await generateQrDataUri(shareUrl);
     <DonationFormCard
       lang={lang}
       context="fundraiser"
-      fundraiserSlug={entry.data.slug}
-      fundraiserTitle={entry.data.title}
-      fundraiserOrganizer={entry.data.organizer}
-      fundraiserExcerpt={entry.data.excerpt}
+      scopeId={`fundraiser:${entry.data.slug}`}
+      frequencies={["one-time"]}
+      impact={{
+        kind: "fundraiser",
+        organizer: entry.data.organizer,
+        fallback: entry.data.title,
+        excerpt: entry.data.excerpt,
+      }}
+      metadata={{
+        fundraiser_slug: entry.data.slug,
+        fundraiser_title: entry.data.title,
+      }}
     />
   </DonationModal>
 

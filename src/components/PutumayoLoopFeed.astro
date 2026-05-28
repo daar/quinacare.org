@@ -1,0 +1,72 @@
+---
+import Icon from "./Icon.astro";
+import type { Hub, Subscriber } from "../data/putumayoLoop";
+import { useTranslations, getDateLocale, type Lang } from "../i18n";
+import { countryName } from "../lib/countryName";
+
+interface Props {
+  lang: Lang;
+  hubs: Hub[];
+  subscribers: Subscriber[];
+}
+const { lang, hubs, subscribers } = Astro.props;
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+const hubsById = new Map(hubs.map((h) => [h.id, h]));
+const sorted = [...subscribers].sort(
+  (a, b) => new Date(b.signedUpAt).getTime() - new Date(a.signedUpAt).getTime(),
+);
+
+function relTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  const now = Date.now();
+  const diffMin = Math.round((now - then) / (1000 * 60));
+  const rtf = new Intl.RelativeTimeFormat(dateLocale, { numeric: "auto" });
+  if (diffMin < 60) return rtf.format(-diffMin, "minute");
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return rtf.format(-diffH, "hour");
+  return rtf.format(-Math.round(diffH / 24), "day");
+}
+---
+
+<div
+  class="rounded-xl border border-gray-100 bg-white shadow-sm h-full flex flex-col"
+  style="min-height: 420px;"
+>
+  <div class="p-4 border-b border-gray-100">
+    <span class="qc-label">{t("putumayoLoop.latestSignups")}</span>
+  </div>
+  <ul
+    class="flex-1 overflow-y-auto divide-y divide-gray-50"
+    style="max-height: 360px;"
+  >
+    {
+      sorted.map((s) => {
+        const hub = s.hubId ? hubsById.get(s.hubId) : null;
+        const name = s.firstName ?? "";
+        // Both hub and individual signups go through the same template
+        // (`signedUp`) so the phrasing stays identical. For hubs the
+        // place is derived from the hub config; for individuals it's
+        // the free-text City, country they typed on the modal.
+        const place = hub
+          ? `${hub.city}, ${countryName(hub.country, lang)}`
+          : (s.location ?? "—");
+        const text = t("putumayoLoop.signedUp")
+          .replace("{name}", name)
+          .replace("{place}", place);
+        return (
+          <li class="flex items-start gap-3 px-4 py-3">
+            <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
+              <Icon name="heart" class="text-xs" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="qc-body text-sm leading-snug">{text}</p>
+              <p class="qc-meta mt-0.5">{relTime(s.signedUpAt)}</p>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
