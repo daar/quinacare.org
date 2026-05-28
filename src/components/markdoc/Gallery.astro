@@ -38,8 +38,12 @@ const items = (images ?? [])
   )
 }
 
-<style>
-  /* CSS columns give a masonry layout that preserves each image's natural
+<style is:global>
+  /* Global so the rules survive Markdoc's rendering tree, which sometimes
+     strips Astro's scoped data attribute from the inner nodes. The class
+     prefix (qc-gallery) keeps the global footprint contained.
+
+     CSS columns give a masonry layout that preserves each image's natural
      aspect ratio, so portrait and landscape shots both look right without
      us having to crop or pre-size them. */
   .qc-gallery {
