@@ -13,6 +13,13 @@ export default defineMarkdocConfig({
         caption: { type: String },
       },
     },
+    gallery: {
+      render: component("./src/components/markdoc/Gallery.astro"),
+      attributes: {
+        images: { type: Array, required: true },
+        ariaLabel: { type: String },
+      },
+    },
     download: {
       render: component("./src/components/markdoc/Download.astro"),
       attributes: {
