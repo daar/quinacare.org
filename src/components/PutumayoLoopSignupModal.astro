@@ -145,6 +145,16 @@ const countryListId = `${id}-country-options`;
               class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
             >
               {
+                /*
+                The placeholder option has an empty value so `required` on the
+                <select> (toggled by syncMode when hub mode is active) blocks
+                submit until the user picks a real hub.
+              */
+              }
+              <option value="" disabled selected>
+                {t("putumayoLoop.chooseHubPlaceholder")}
+              </option>
+              {
                 hubs.map((h) => (
                   <option value={h.id}>
                     {h.name} — {h.city}, {h.country}
@@ -192,20 +202,31 @@ const countryListId = `${id}-country-options`;
             </p>
           </div>
 
-          <div>
-            <label class="qc-label block mb-1">
+          <fieldset>
+            <legend class="qc-label mb-2">
               {t("putumayoLoop.distanceLabel")}
-            </label>
-            <select
-              name="distance"
-              required
-              class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
-            >
-              <option value="10k">{t("putumayoLoop.distance10k")}</option>
-              <option value="half">{t("putumayoLoop.distanceHalf")}</option>
-              <option value="full">{t("putumayoLoop.distanceFull")}</option>
-            </select>
-          </div>
+            </legend>
+            <div class="grid grid-cols-3 gap-2">
+              {
+                [
+                  { value: "10k", label: "10 km" },
+                  { value: "half", label: "21 km" },
+                  { value: "full", label: "42 km" },
+                ].map((d) => (
+                  <label class="flex items-center justify-center cursor-pointer py-2.5 px-3 text-sm font-bold border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50 has-checked:text-qcRed">
+                    <input
+                      type="radio"
+                      name="distance"
+                      value={d.value}
+                      required
+                      class="sr-only"
+                    />
+                    {d.label}
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
           <button
             type="submit"
             class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
