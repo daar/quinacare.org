@@ -28,6 +28,9 @@ type EditionRow = {
   currency: string;
   total_runners: number | null;
   story_key: string | null;
+  story_nl: string | null;
+  story_en: string | null;
+  story_es: string | null;
   youtube_id: string | null;
 };
 
@@ -77,7 +80,11 @@ function rowToEdition(
       currency: "EUR",
     },
     totalRunners: r.total_runners ?? undefined,
-    storyKey: r.story_key ?? undefined,
+    story: {
+      nl: r.story_nl ?? undefined,
+      en: r.story_en ?? undefined,
+      es: r.story_es ?? undefined,
+    },
     youtubeId: r.youtube_id ?? undefined,
   };
 }

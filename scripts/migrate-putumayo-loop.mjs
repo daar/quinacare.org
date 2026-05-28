@@ -38,7 +38,13 @@ const editions = [
     donors: 62,
     currency: "EUR",
     total_runners: null, // derived from sum(count) on the page
-    story_key: "putumayoLoop.story2025",
+    story_key: null,
+    story_nl:
+      "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
+    story_en:
+      "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
+    story_es:
+      "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
     youtube_id: "Fc6XaeLGLdw",
   },
   {
@@ -54,6 +60,9 @@ const editions = [
     currency: "EUR",
     total_runners: null,
     story_key: null,
+    story_nl: null,
+    story_en: null,
+    story_es: null,
     youtube_id: null,
   },
 ];
@@ -81,17 +90,6 @@ const hubs = [
     lng: 4.3007,
     captain: "Sarah Blaszyk",
     display_order: 1,
-  },
-  {
-    edition_year: 2026,
-    id: "hulst",
-    name: "Hulst",
-    city: "Hulst",
-    country: "Nederland",
-    lat: 51.2802,
-    lng: 4.0521,
-    captain: "Cindy Martens",
-    display_order: 2,
   },
 ];
 
@@ -336,6 +334,15 @@ const subscribers = [
 
 // ── schema ────────────────────────────────────────────────────────────
 
+async function tryAlter(sql) {
+  try {
+    await db.execute(sql);
+  } catch (e) {
+    if (!/duplicate column|already exists/i.test(String(e?.message ?? e)))
+      throw e;
+  }
+}
+
 async function ensureSchema() {
   await db.execute(`
     CREATE TABLE IF NOT EXISTS putumayo_loop_editions (
@@ -351,6 +358,9 @@ async function ensureSchema() {
       currency        TEXT NOT NULL DEFAULT 'EUR',
       total_runners   INTEGER,
       story_key       TEXT,
+      story_nl        TEXT,
+      story_en        TEXT,
+      story_es        TEXT,
       youtube_id      TEXT
     )
   `);
@@ -393,6 +403,10 @@ async function ensureSchema() {
   await db.execute(
     `CREATE INDEX IF NOT EXISTS idx_hubs_edition ON putumayo_loop_hubs (edition_year)`,
   );
+  // Idempotent column additions for pre-existing tables.
+  await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_nl TEXT`);
+  await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_en TEXT`);
+  await tryAlter(`ALTER TABLE putumayo_loop_editions ADD COLUMN story_es TEXT`);
 }
 
 // ── seed ──────────────────────────────────────────────────────────────
@@ -440,6 +454,15 @@ async function upsertEditions() {
 }
 
 async function upsertHubs() {
+  // Wipe each edition's hub set then re-insert the declared list, so
+  // hubs removed from the snapshot are also removed from the DB.
+  const years = Array.from(new Set(hubs.map((h) => h.edition_year)));
+  for (const year of years) {
+    await db.execute({
+      sql: `DELETE FROM putumayo_loop_hubs WHERE edition_year = ?`,
+      args: [year],
+    });
+  }
   for (const h of hubs) {
     await db.execute({
       sql: `

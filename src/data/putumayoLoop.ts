@@ -50,8 +50,12 @@ export interface Edition {
   donations: DonationStats;
   /** Final participant count, for past editions where not every runner is in `subscribers`. */
   totalRunners?: number;
-  /** i18n key for an optional story paragraph shown on past edition pages. */
-  storyKey?: string;
+  /**
+   * Per-language story text for the past edition page. Filled in for
+   * editions where we wrote a recap; the page falls back to nothing
+   * (skipping the section) when none of the languages is populated.
+   */
+  story?: Partial<Record<"nl" | "en" | "es", string>>;
   /** Optional YouTube video ID embedded on the past edition page. */
   youtubeId?: string;
 }
