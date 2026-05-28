@@ -44,9 +44,14 @@ export function getCurrency(locale: string): CurrencyConfig {
 
 /** Payment methods available per locale (order defines display order). */
 export const paymentMethodsByLocale: Record<string, string[]> = {
-  nl: ["ideal", "card", "bancontact", "bank"],
-  en: ["card", "bancontact", "bank"],
-  es: ["card", "bancontact", "bank"],
+  // NL: iDEAL leads (~70% of NL ecommerce), then Card and PayPal.
+  // Google Pay is wired in the UI but disabled until we integrate Mollie's
+  // client-side Google Pay button — server-side method:"googlepay" 503s.
+  nl: ["ideal", "card", "paypal"],
+  // US: Card and PayPal cover the realistic Mollie methods for this market.
+  en: ["card", "paypal"],
+  // Ecuador: same — Mollie has no native Ecuadorian methods.
+  es: ["card", "paypal"],
 };
 
 export function formatCurrency(

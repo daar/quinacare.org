@@ -48,7 +48,7 @@ export const ui = {
     "hero.subtitlePrefix": "Ook de mensen van de Amazone hebben recht op ",
     "hero.subtitleHighlight": "goede zorg",
     "hero.cta1": "Bekijk onze impact",
-    "hero.cta2": "Help Quina Care",
+    "hero.cta2": "Help deze zorg mogelijk te maken",
     // Homepage - Live Metrics
     "metrics.liveData": "Live Data",
     "metrics.consultations": "Consulten",
@@ -430,7 +430,7 @@ export const ui = {
     "hero.subtitlePrefix": "The people of the Amazon also have a right to ",
     "hero.subtitleHighlight": "good healthcare",
     "hero.cta1": "See our impact",
-    "hero.cta2": "Help Quina Care",
+    "hero.cta2": "Help make this care possible",
     // Homepage - Live Metrics
     "metrics.liveData": "Live Data",
     "metrics.consultations": "Consultations",
@@ -815,7 +815,7 @@ export const ui = {
       "Las personas de la Amazonía también tienen derecho a una ",
     "hero.subtitleHighlight": "buena atención médica",
     "hero.cta1": "Ver nuestro impacto",
-    "hero.cta2": "Ayuda a Quina Care",
+    "hero.cta2": "Ayuda a hacer posible esta atención",
     // Homepage - Live Metrics
     "metrics.liveData": "Datos en Vivo",
     "metrics.consultations": "Consultas",

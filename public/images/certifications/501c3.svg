@@ -1,10 +1,1 @@
-<svg width="151.77" height="61.945" aria-label="501(c)(3) approved tax-exempt organization" version="1.1" viewBox="0 0 216.8 88.494" xmlns="http://www.w3.org/2000/svg">
- <rect x="-.0041625" width="216.81" height="88.494" ry="16.371" fill="#fff" stroke="#ee172c" stroke-width="1.4286"/>
- <g transform="matrix(1.2724 0 0 1.2724 -153.44 -18.461)">
-  <g font-family="Arial, Helvetica, sans-serif">
-   <text transform="matrix(.52218 0 0 .52218 69.052 21.262)" x="116" y="54" fill="#111111" font-size="48px" font-weight="800" lengthAdjust="spacingAndGlyphs" textLength="214">501(c)(3)</text>
-   <text transform="matrix(.52218 0 0 .52218 69.052 21.262)" x="118" y="88" fill="#ee172c" font-size="22px" font-weight="700" lengthAdjust="spacingAndGlyphs" textLength="208">APPROVED</text>
-  </g>
-  <path transform="matrix(.52218 0 0 .52218 130.46 31.298)" d="m251.38 36.574 6.608 6.609 11.014-15.42m-8.811-20.663a35.12 35.12 0 0 1-24.676 9.651 35.2 35.2 0 0 0-1.757 11.01c0 16.424 11.231 30.222 26.433 34.137 15.201-3.912 26.432-17.71 26.432-34.133 0-3.848-0.617-7.551-1.756-11.017h-0.446a35.1 35.1 0 0 1-24.23-9.648" fill-opacity="0" stroke="#ee172c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.937"/>
- </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="151.77" height="61.945" aria-label="501(c)(3) approved tax-exempt organization" viewBox="0 0 216.8 88.494"><rect width="216.81" height="88.494" x="-.004" fill="#fff" stroke="#ee172c" stroke-width="1.429" ry="16.371"/><g font-family="Arial, Helvetica, sans-serif"><text x="116" y="54" fill="#111" font-size="48" font-weight="800" lengthAdjust="spacingAndGlyphs" textLength="214" transform="translate(-65.578 8.593)scale(.66442)">501(c)(3)</text><text x="118" y="88" fill="#ee172c" font-size="22" font-weight="700" lengthAdjust="spacingAndGlyphs" textLength="208" transform="translate(-65.578 8.593)scale(.66442)">APPROVED</text></g><path fill="none" stroke="#ee172c" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.951" d="m179.58 45.663 4.39 4.391 7.318-10.245m-5.854-13.729a23.33 23.33 0 0 1-16.395 6.412 23.4 23.4 0 0 0-1.168 7.316c0 10.912 7.462 20.08 17.563 22.681 10.1-2.6 17.562-11.767 17.562-22.679 0-2.556-.41-5.017-1.167-7.32h-.296a23.32 23.32 0 0 1-16.1-6.41"/></svg>

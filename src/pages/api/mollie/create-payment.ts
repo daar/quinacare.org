@@ -20,8 +20,10 @@ const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
 const methodMap: Record<string, PaymentMethod> = {
   card: PaymentMethod.creditcard,
   ideal: PaymentMethod.ideal,
-  bancontact: PaymentMethod.bancontact,
-  bank: PaymentMethod.banktransfer,
+  paypal: PaymentMethod.paypal,
+  // The Mollie API accepts "googlepay" but the SDK enum hasn't caught up
+  // (as of @mollie/api-client@4.5.0). Cast the literal until they update.
+  googlepay: "googlepay" as PaymentMethod,
 };
 
 const localeMap: Record<string, Locale> = {

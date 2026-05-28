@@ -21,6 +21,10 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+  redirects: {
+    "/doneer": "/donate",
+    "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
+  },
   fonts: [
     {
       provider: fontProviders.google(),
