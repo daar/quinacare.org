@@ -1,5 +1,5 @@
 ---
-import type { GetStaticPaths } from "astro";
+export const prerender = false;
 import Icon from "../../../components/Icon.astro";
 import Layout from "../../../layouts/Layout.astro";
 import Nav from "../../../components/Nav.astro";
@@ -15,26 +15,18 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../../../i18n";
-import {
-  getPastEditions,
-  getEditionByYear,
-} from "../../../lib/putumayoLoopRepo";
+import { getEditionByYear } from "../../../lib/putumayoLoopRepo";
 import { countryName } from "../../../lib/countryName";
-import type { Edition } from "../../../data/putumayoLoop";
 
 const lang: Lang = "es";
 
-export const getStaticPaths = (async () => {
-  return (await getPastEditions()).map((e) => ({
-    params: { year: e.slug },
-    props: { edition: e },
-  }));
-}) satisfies GetStaticPaths;
-
-interface Props {
-  edition: Edition;
+const yearParam = Number(Astro.params.year);
+const edition = Number.isFinite(yearParam)
+  ? await getEditionByYear(yearParam)
+  : undefined;
+if (!edition || edition.status !== "past") {
+  return Astro.redirect(getLocalizedPath("/putumayo-loop", lang));
 }
-const { edition } = Astro.props;
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 const { hubs, donations, subscribers } = edition;
