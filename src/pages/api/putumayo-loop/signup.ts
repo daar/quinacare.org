@@ -15,6 +15,7 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { getTurso } from "../../../lib/turso";
 import { sendMail } from "../../../lib/mailer";
+import { geocode } from "../../../lib/geocode";
 import { runManager, editions } from "../../../data/putumayoLoop";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
@@ -65,6 +66,19 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
+  // Best-effort geocoding for individual signups so they appear as a pin
+  // on the map. Hub signups already use the hub's coords as a fallback
+  // (see putumayoLoopRepo.rowToSubscriber), so we don't geocode for them.
+  let lat: number | null = null;
+  let lng: number | null = null;
+  if (mode === "individual" && location) {
+    const geo = await geocode(location);
+    if (geo) {
+      lat = geo.lat;
+      lng = geo.lng;
+    }
+  }
+
   try {
     const db = getTurso();
     // Insert directly — the table is created by the migration script. If
@@ -75,7 +89,7 @@ export const POST: APIRoute = async ({ request }) => {
         INSERT INTO putumayo_loop_subscribers
           (external_id, edition_year, first_name, last_name, email,
            hub_id, lat, lng, location, count, distance, signed_up_at)
-        VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, ?, 1, ?, datetime('now'))
+        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, datetime('now'))
       `,
       args: [
         editionYear,
@@ -83,6 +97,8 @@ export const POST: APIRoute = async ({ request }) => {
         lastName,
         email,
         hubId,
+        lat,
+        lng,
         location,
         distance,
       ],
