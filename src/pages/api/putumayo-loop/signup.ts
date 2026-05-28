@@ -15,7 +15,7 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { getTurso } from "../../../lib/turso";
 import { sendMail } from "../../../lib/mailer";
-import { runManager } from "../../../data/putumayoLoop";
+import { runManager, editions } from "../../../data/putumayoLoop";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
 const ALLOWED_DISTANCES = new Set(["10k", "half", "full"]);
@@ -108,6 +108,26 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (err) {
     console.error("[putumayo-loop/signup] notification mail failed:", err);
+  }
+
+  // Hub signups only: also notify the hub captain if their email is on
+  // record. This is independent of the runManager mail above — either
+  // can fail without affecting the other.
+  if (mode === "hub" && hubId) {
+    const edition = editions.find((e) => e.year === editionYear);
+    const hub = edition?.hubs.find((h) => h.id === hubId);
+    if (hub?.captainEmail) {
+      try {
+        await sendMail({
+          to: hub.captainEmail,
+          subject: `[Putumayo Loop ${editionYear} — ${hub.name}] New runner joined your hub`,
+          text: `${firstName} ${lastName} <${email}> just signed up for the Putumayo Loop ${editionYear} via your hub (${hub.name}, ${hub.city}).`,
+          replyTo: `${firstName} ${lastName} <${email}>`,
+        });
+      } catch (err) {
+        console.error("[putumayo-loop/signup] hub captain mail failed:", err);
+      }
+    }
   }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });

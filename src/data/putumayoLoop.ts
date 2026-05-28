@@ -13,6 +13,12 @@ export interface Hub {
   country: string;
   coords: [number, number]; // [lat, lng]
   captain?: string;
+  /**
+   * When set, the hub captain also receives a notification email every
+   * time a runner signs up for THIS hub. Leave unset to keep the
+   * runManager as the sole recipient.
+   */
+  captainEmail?: string;
 }
 
 export interface Subscriber {
@@ -111,6 +117,7 @@ export const editions: EditionConfig[] = [
         country: "Ecuador",
         coords: [0.118, -75.91],
         captain: "Jacob van der Ende",
+        captainEmail: "hospitalsanmiguel@quinacare.org",
       },
       {
         id: "den-haag",
@@ -119,6 +126,7 @@ export const editions: EditionConfig[] = [
         country: "Nederland",
         coords: [52.0705, 4.3007],
         captain: "Sarah Blaszyk",
+        captainEmail: "dhkblaszyk@gmail.com",
       },
     ],
     target: 10000,
