@@ -349,7 +349,7 @@ export const ui = {
     "putumayoLoop.nextEditionLabel": "Volgende editie",
     "putumayoLoop.nextEditionBody":
       "De volgende editie is gepland. Doe mee en zet je in voor Hospital San Miguel.",
-    "putumayoLoop.viewCurrentEdition": "Bekijk de huidige editie",
+    "putumayoLoop.viewCurrentEdition": "Bekijk de 2026 editie",
     "putumayoLoop.videoTitle": "Bekijk de aftermovie",
     "putumayoLoop.participantsMapLabel": "Deelnemers",
     "putumayoLoop.participantsMapTitle": "Waar er gelopen werd",
@@ -725,7 +725,7 @@ export const ui = {
     "putumayoLoop.nextEditionLabel": "Next edition",
     "putumayoLoop.nextEditionBody":
       "The next edition is on its way. Join in and run for Hospital San Miguel.",
-    "putumayoLoop.viewCurrentEdition": "View the current edition",
+    "putumayoLoop.viewCurrentEdition": "View the 2026 edition",
     "putumayoLoop.videoTitle": "Watch the aftermovie",
     "putumayoLoop.participantsMapLabel": "Participants",
     "putumayoLoop.participantsMapTitle": "Where the running happened",
@@ -1102,7 +1102,7 @@ export const ui = {
     "putumayoLoop.nextEditionLabel": "Próxima edición",
     "putumayoLoop.nextEditionBody":
       "La próxima edición ya está en marcha. Súmate y corre por el Hospital San Miguel.",
-    "putumayoLoop.viewCurrentEdition": "Ver la edición actual",
+    "putumayoLoop.viewCurrentEdition": "Ver la edición 2026",
     "putumayoLoop.videoTitle": "Mira el aftermovie",
     "putumayoLoop.participantsMapLabel": "Participantes",
     "putumayoLoop.participantsMapTitle": "Dónde se corrió",
