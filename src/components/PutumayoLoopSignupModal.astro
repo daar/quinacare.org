@@ -222,14 +222,13 @@ const t = useTranslations(lang);
           dialog.showModal();
           document.body.style.overflow = "hidden";
         };
-        // When the signup goes through we flip this so closing the modal
-        // (any way — backdrop, button, ESC) triggers a reload so the feed,
-        // map and counters pick up the row that was just inserted.
+        // When the signup goes through we flip this so the dialog's
+        // native `close` event triggers a reload — the feed, map and
+        // counters then pick up the row that was just inserted.
         let didSubmit = false;
         const close = () => {
           dialog.close();
           document.body.style.overflow = "";
-          if (didSubmit) window.location.reload();
         };
         document
           .querySelectorAll(`[data-open-modal="${dialog.id}"]`)
@@ -240,6 +239,9 @@ const t = useTranslations(lang);
         dialog.addEventListener("cancel", (e) => {
           e.preventDefault();
           close();
+        });
+        dialog.addEventListener("close", () => {
+          if (didSubmit) window.location.reload();
         });
 
         const form = dialog.querySelector<HTMLFormElement>(
