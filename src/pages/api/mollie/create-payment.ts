@@ -44,6 +44,7 @@ const validContexts = new Set<DonationContext>([
 const validFrequencies = new Set<DonationFrequency>([
   "one-time",
   "monthly",
+  "quarterly",
   "yearly",
 ]);
 
@@ -122,7 +123,8 @@ export const POST: APIRoute = async ({ request }) => {
   const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1");
   const webhookUrl = isLocal ? undefined : `${origin}/api/mollie/webhook`;
 
-  const isRecurring = freq === "monthly" || freq === "yearly";
+  const isRecurring =
+    freq === "monthly" || freq === "quarterly" || freq === "yearly";
   const amountLabel = `${currencyConfig.symbol}${amount}`;
   const fundraiserTitle =
     context === "fundraiser" && typeof metadata?.fundraiser_title === "string"

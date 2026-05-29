@@ -1,7 +1,7 @@
 import { getDb, ensureSchema } from "./db";
 
 export type DonationContext = "donate" | "yura-boom" | "fundraiser";
-export type DonationFrequency = "one-time" | "monthly" | "yearly";
+export type DonationFrequency = "one-time" | "monthly" | "quarterly" | "yearly";
 
 export interface DonationRecord {
   id?: number;

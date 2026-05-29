@@ -158,6 +158,8 @@ export const ui = {
       "Jouw bijdrage gaat 100% naar medische zorg in de Ecuadoriaanse Amazone.",
     "donate.oneTime": "Eenmalig",
     "donate.monthly": "Maandelijks",
+    "donate.quarterly": "Per kwartaal",
+    "donate.yearly": "Jaarlijks",
     "donate.customPlaceholder": "Ander bedrag",
     "donate.impactGeneric": "Jouw donatie maakt direct verschil in de Amazone.",
     "donate.impactLabel": "Jouw Impact",
@@ -547,6 +549,8 @@ export const ui = {
       "Your contribution goes 100% to medical care in the Ecuadorian Amazon.",
     "donate.oneTime": "One-time",
     "donate.monthly": "Monthly",
+    "donate.quarterly": "Quarterly",
+    "donate.yearly": "Yearly",
     "donate.customPlaceholder": "Custom amount",
     "donate.impactGeneric":
       "Your donation makes a direct difference in the Amazon.",
@@ -940,6 +944,8 @@ export const ui = {
       "Tu contribución va 100% a la atención médica en la Amazonía ecuatoriana.",
     "donate.oneTime": "Una vez",
     "donate.monthly": "Mensual",
+    "donate.quarterly": "Trimestral",
+    "donate.yearly": "Anual",
     "donate.customPlaceholder": "Otra cantidad",
     "donate.impactGeneric":
       "Tu donación marca una diferencia directa en la Amazonía.",

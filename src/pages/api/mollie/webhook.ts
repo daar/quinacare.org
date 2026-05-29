@@ -84,9 +84,11 @@ export const POST: APIRoute = async ({ request }) => {
       }
     } else if (payment.subscriptionId) {
       // Subscription payment without a donation record — create one
-      const freq = (
-        meta.frequency === "yearly" ? "yearly" : "monthly"
-      ) as DonationFrequency;
+      const freq = ((): DonationFrequency => {
+        if (meta.frequency === "yearly") return "yearly";
+        if (meta.frequency === "quarterly") return "quarterly";
+        return "monthly";
+      })();
       const context = (meta.context || "donate") as DonationContext;
       const amountCents = meta.amount
         ? Math.round(parseFloat(meta.amount) * 100)
@@ -141,7 +143,9 @@ export const POST: APIRoute = async ({ request }) => {
       !payment.subscriptionId &&
       meta.amount &&
       payment.customerId &&
-      (meta.frequency === "monthly" || meta.frequency === "yearly")
+      (meta.frequency === "monthly" ||
+        meta.frequency === "quarterly" ||
+        meta.frequency === "yearly")
     ) {
       const customerId = payment.customerId;
 
@@ -159,7 +163,12 @@ export const POST: APIRoute = async ({ request }) => {
       if (!hasActiveSub) {
         const origin = new URL(request.url).origin;
         const webhookUrl = `${origin}/api/mollie/webhook`;
-        const interval = meta.frequency === "monthly" ? "1 month" : "12 months";
+        const interval =
+          meta.frequency === "monthly"
+            ? "1 month"
+            : meta.frequency === "quarterly"
+              ? "3 months"
+              : "12 months";
 
         await mollieClient.customerSubscriptions.create({
           customerId,
