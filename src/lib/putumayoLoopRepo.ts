@@ -97,10 +97,21 @@ async function fetchSubscribers(
 }
 
 async function hydrate(config: EditionConfig): Promise<Edition> {
+  // Past editions can ship frozen totals + an inline subscribers list.
+  // When set, those overrides bypass the live Turso query so the page
+  // never depends on data that may not have been imported.
+  const skipSubscribers = config.subscribers !== undefined;
+  const skipStats = config.raised !== undefined && config.donors !== undefined;
+
   const [subscribers, stats] = await Promise.all([
-    fetchSubscribers(config.year, config.hubs),
-    getFundraiserStats(config.fundraiserSlug),
+    skipSubscribers
+      ? Promise.resolve(config.subscribers as Subscriber[])
+      : fetchSubscribers(config.year, config.hubs),
+    skipStats
+      ? Promise.resolve({ raised_cents: 0, donor_count: 0 })
+      : getFundraiserStats(config.fundraiserSlug),
   ]);
+
   return {
     year: config.year,
     slug: config.slug,
@@ -111,9 +122,11 @@ async function hydrate(config: EditionConfig): Promise<Edition> {
     hubs: config.hubs,
     subscribers,
     donations: {
-      raised: Math.round(stats.raised_cents / 100),
+      raised: skipStats
+        ? (config.raised as number)
+        : Math.round(stats.raised_cents / 100),
       target: config.target,
-      donors: stats.donor_count,
+      donors: skipStats ? (config.donors as number) : stats.donor_count,
       currency: "EUR",
     },
     totalRunners: config.totalRunners,

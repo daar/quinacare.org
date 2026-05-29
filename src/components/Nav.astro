@@ -274,8 +274,6 @@ const searchPath = getLocalizedPath("/search", lang);
       <a
         id="nav-donate-btn"
         href={getLocalizedPath("/donate", lang)}
-        target="_blank"
-        rel="noopener noreferrer"
         class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
       >
         <Icon name="heart" class="qc-heartbeat" />
@@ -461,7 +459,15 @@ const searchPath = getLocalizedPath("/search", lang);
 
 <script>
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  document.addEventListener("DOMContentLoaded", () => {
+  // Defer the Nav search + mobile-menu wiring off the critical render
+  // path. The first paint doesn't need any of these listeners; running
+  // them when the main thread is idle drops TBT meaningfully without
+  // changing observable behaviour (idleCallback fires well under 100ms
+  // after DOMContentLoaded on a real device).
+  const ric =
+    (window as any).requestIdleCallback ??
+    ((cb: () => void) => setTimeout(cb, 1));
+  ric(() => {
     const navDefault = document.getElementById("nav-default");
     const navSearch = document.getElementById("nav-search");
     const searchInput = document.getElementById(

@@ -99,7 +99,7 @@ export const ui = {
     "donation.surgeryDesc":
       "Draag bij aan de kosten van chirurgische ingrepen en de noodzakelijke nabehandeling in ons ziekenhuis.",
     "donation.equipmentDesc":
-      "Draag bij aan bijvoorbeeld medische kosten zoals medicijnen en apparatuur of salarissen van ons locale personeel in het ziekenhuis.",
+      "Draag bij aan medische kosten zoals medicijnen en apparatuur of salarissen van ons lokale personeel in het ziekenhuis.",
     "donation.donate": "Doneer",
     "donation.chooseAmount": "Of kies zelf een bedrag",
     // Homepage - Focus Project
@@ -287,8 +287,7 @@ export const ui = {
     "putumayoLoop.statsDonors": "donateurs",
     "putumayoLoop.statsRunners": "lopers",
     "putumayoLoop.hubsTitle": "Onze hubs",
-    "putumayoLoop.hubsSubtitle":
-      "Loop mee op één van deze locaties of organiseer je eigen run.",
+    "putumayoLoop.hubsSubtitle": "Locaties waar je samen kunt lopen",
     "putumayoLoop.hubCaptain": "Hub organisator",
     "putumayoLoop.runnersInHub": "lopers",
     "putumayoLoop.organizeHubTitle": "Wil je zelf een hub organiseren?",
@@ -330,21 +329,29 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "Ik sluit me aan bij een georganiseerde run in een van de hubs.",
     "putumayoLoop.chooseHub": "Kies een hub",
+    "putumayoLoop.chooseHubPlaceholder": "Selecteer een hub…",
     "putumayoLoop.distanceLabel": "Afstand",
     "putumayoLoop.distance10k": "10 km",
-    "putumayoLoop.distanceHalf": "Halve marathon",
-    "putumayoLoop.distanceFull": "Hele marathon",
+    "putumayoLoop.distanceHalf": "21 km",
+    "putumayoLoop.distanceFull": "42 km",
     "putumayoLoop.runLocationLabel": "Waar ga je lopen?",
-    "putumayoLoop.runLocationPlaceholder": "Stad, land",
+    "putumayoLoop.runCityLabel": "Stad",
+    "putumayoLoop.runCityPlaceholder": "Amsterdam",
+    "putumayoLoop.runCountryLabel": "Land",
+    "putumayoLoop.runCountryPlaceholder": "Nederland",
     "putumayoLoop.runLocationHelp":
       "Vul de plaats in waar je gaat lopen, zodat we je op de wereldkaart kunnen plaatsen.",
     "putumayoLoop.submitSignup": "Bevestig aanmelding",
     "putumayoLoop.modalDisclaimer":
-      "Door je aan te melden ga je akkoord met onze privacyverklaring. Geen spam — alleen updates over de loop.",
+      "Door je aan te melden ga je akkoord met onze privacyverklaring.",
     "putumayoLoop.successTitle": "Je bent ingeschreven!",
     "putumayoLoop.successMessage":
       "We sturen je per e-mail meer informatie over de loop. Bedankt voor je inzet!",
     "putumayoLoop.successClose": "Sluiten",
+    "putumayoLoop.emailSubject": "[Putumayo Loop {year}] Je bent ingeschreven!",
+    "putumayoLoop.emailHubWhere": "Bij hub {hub} in {city}",
+    "putumayoLoop.emailBody":
+      "Hoi {name},\n\nBedankt voor je aanmelding voor de Putumayo Loop {year}! Je doet officieel mee.\n\nWat we van je hebben:\n• Afstand: {distance}\n• Datum: {date}\n• Waar: {where}\n\nIn de aanloop naar de loop sturen we je meer praktische informatie en updates. Heb je tussendoor vragen? Mail dan naar {contactEmail}.\n\nTot snel aan de start!\nHet Quina Care-team",
     "putumayoLoop.editionsLabel": "Edities",
     "putumayoLoop.pastEditionLabel": "Afgelopen editie",
     "putumayoLoop.finalRaised": "Totaal opgehaald",
@@ -352,16 +359,18 @@ export const ui = {
     "putumayoLoop.acrossHubs": "wereldwijd",
     "putumayoLoop.thankYouAll": "Dank aan iedereen!",
     "putumayoLoop.howItWent": "Hoe het ging",
+    "putumayoLoop.howItWentTitle": "Een groot succes wereldwijd",
     "putumayoLoop.participatingHubs": "Deelnemende hubs",
     "putumayoLoop.nextEditionLabel": "Volgende editie",
     "putumayoLoop.nextEditionBody":
       "De volgende editie is gepland. Doe mee en zet je in voor Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "Bekijk de 2026 editie",
     "putumayoLoop.videoTitle": "Bekijk de aftermovie",
+    "putumayoLoop.videoHeading": "Onze lopers in beeld",
     "putumayoLoop.participantsMapLabel": "Deelnemers",
     "putumayoLoop.participantsMapTitle": "Waar er gelopen werd",
     "putumayoLoop.story2025":
-      "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
+      "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 170 deelnemers. Een dag om nooit te vergeten.",
     "submenu.joinTeam": "Word vrijwilliger",
     "submenu.becomePartner": "Word partner",
     "submenu.yuraBoom": "De Yura Boom",
@@ -480,7 +489,7 @@ export const ui = {
     "donation.surgeryDesc":
       "Contribute to the costs of surgical procedures and necessary aftercare at our hospital.",
     "donation.equipmentDesc":
-      "Contribute, for example, to medical costs such as medicines and equipment or to the salaries of our local hospital staff.",
+      "Contribute to medical costs such as medicines and equipment or to the salaries of our local hospital staff.",
     "donation.donate": "Donate",
     "donation.chooseAmount": "Or choose your own amount",
     // Homepage - Focus Project
@@ -670,8 +679,7 @@ export const ui = {
     "putumayoLoop.statsDonors": "donors",
     "putumayoLoop.statsRunners": "runners",
     "putumayoLoop.hubsTitle": "Our hubs",
-    "putumayoLoop.hubsSubtitle":
-      "Run with us at one of these locations, or organize your own.",
+    "putumayoLoop.hubsSubtitle": "Places where you can run together",
     "putumayoLoop.hubCaptain": "Hub organizer",
     "putumayoLoop.runnersInHub": "runners",
     "putumayoLoop.organizeHubTitle": "Want to organize a hub yourself?",
@@ -713,21 +721,29 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "I will join one of the organized runs at a hub.",
     "putumayoLoop.chooseHub": "Pick a hub",
+    "putumayoLoop.chooseHubPlaceholder": "Select a hub…",
     "putumayoLoop.distanceLabel": "Distance",
     "putumayoLoop.distance10k": "10 km",
-    "putumayoLoop.distanceHalf": "Half marathon",
-    "putumayoLoop.distanceFull": "Full marathon",
+    "putumayoLoop.distanceHalf": "21 km",
+    "putumayoLoop.distanceFull": "42 km",
     "putumayoLoop.runLocationLabel": "Where are you running?",
-    "putumayoLoop.runLocationPlaceholder": "City, country",
+    "putumayoLoop.runCityLabel": "City",
+    "putumayoLoop.runCityPlaceholder": "Amsterdam",
+    "putumayoLoop.runCountryLabel": "Country",
+    "putumayoLoop.runCountryPlaceholder": "Netherlands",
     "putumayoLoop.runLocationHelp":
       "Tell us where you will run so we can place you on the world map.",
     "putumayoLoop.submitSignup": "Confirm signup",
     "putumayoLoop.modalDisclaimer":
-      "By signing up you agree to our privacy policy. No spam — only updates about the loop.",
+      "By signing up you agree to our privacy policy.",
     "putumayoLoop.successTitle": "You're in!",
     "putumayoLoop.successMessage":
       "We will email you with more information about the loop. Thanks for being part of it!",
     "putumayoLoop.successClose": "Close",
+    "putumayoLoop.emailSubject": "[Putumayo Loop {year}] You're signed up!",
+    "putumayoLoop.emailHubWhere": "From hub {hub} in {city}",
+    "putumayoLoop.emailBody":
+      "Hi {name},\n\nThanks for signing up for the Putumayo Loop {year} — you're officially in.\n\nHere's what we have on file:\n• Distance: {distance}\n• Date: {date}\n• Where: {where}\n\nWe'll send you more practical information and updates as the run gets closer. Got a question in the meantime? Write to {contactEmail}.\n\nSee you at the start line,\nThe Quina Care team",
     "putumayoLoop.editionsLabel": "Editions",
     "putumayoLoop.pastEditionLabel": "Past edition",
     "putumayoLoop.finalRaised": "Total raised",
@@ -735,16 +751,18 @@ export const ui = {
     "putumayoLoop.acrossHubs": "worldwide",
     "putumayoLoop.thankYouAll": "Thanks to everyone!",
     "putumayoLoop.howItWent": "How it went",
+    "putumayoLoop.howItWentTitle": "A worldwide success",
     "putumayoLoop.participatingHubs": "Participating hubs",
     "putumayoLoop.nextEditionLabel": "Next edition",
     "putumayoLoop.nextEditionBody":
       "The next edition is on its way. Join in and run for Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "View the 2026 edition",
     "putumayoLoop.videoTitle": "Watch the aftermovie",
+    "putumayoLoop.videoHeading": "Our runners on film",
     "putumayoLoop.participantsMapLabel": "Participants",
     "putumayoLoop.participantsMapTitle": "Where the running happened",
     "putumayoLoop.story2025":
-      "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
+      "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 170 participants in total. A day to remember.",
     "submenu.joinTeam": "Join Our Team",
     "submenu.becomePartner": "Become a Partner",
     "submenu.yuraBoom": "The Yura Tree",
@@ -864,7 +882,7 @@ export const ui = {
     "donation.surgeryDesc":
       "Contribuye a los costos de procedimientos quirúrgicos y el cuidado posterior necesario en nuestro hospital.",
     "donation.equipmentDesc":
-      "Contribuye, por ejemplo, a gastos médicos como medicamentos y equipos o a los salarios de nuestro personal local del hospital.",
+      "Contribuye a gastos médicos como medicamentos y equipos o a los salarios de nuestro personal local del hospital.",
     "donation.donate": "Donar",
     "donation.chooseAmount": "O elige tu propia cantidad",
     // Homepage - Focus Project
@@ -1053,8 +1071,7 @@ export const ui = {
     "putumayoLoop.statsDonors": "donantes",
     "putumayoLoop.statsRunners": "corredores",
     "putumayoLoop.hubsTitle": "Nuestros hubs",
-    "putumayoLoop.hubsSubtitle":
-      "Corre con nosotros en una de estas ubicaciones u organiza la tuya.",
+    "putumayoLoop.hubsSubtitle": "Lugares donde puedes correr en grupo",
     "putumayoLoop.hubCaptain": "Organizador del hub",
     "putumayoLoop.runnersInHub": "corredores",
     "putumayoLoop.organizeHubTitle": "¿Quieres organizar un hub?",
@@ -1096,21 +1113,29 @@ export const ui = {
     "putumayoLoop.runHubDesc":
       "Me uniré a una de las carreras organizadas en un hub.",
     "putumayoLoop.chooseHub": "Elige un hub",
+    "putumayoLoop.chooseHubPlaceholder": "Selecciona un hub…",
     "putumayoLoop.distanceLabel": "Distancia",
     "putumayoLoop.distance10k": "10 km",
-    "putumayoLoop.distanceHalf": "Media maratón",
-    "putumayoLoop.distanceFull": "Maratón completa",
+    "putumayoLoop.distanceHalf": "21 km",
+    "putumayoLoop.distanceFull": "42 km",
     "putumayoLoop.runLocationLabel": "¿Dónde vas a correr?",
-    "putumayoLoop.runLocationPlaceholder": "Ciudad, país",
+    "putumayoLoop.runCityLabel": "Ciudad",
+    "putumayoLoop.runCityPlaceholder": "Ámsterdam",
+    "putumayoLoop.runCountryLabel": "País",
+    "putumayoLoop.runCountryPlaceholder": "Países Bajos",
     "putumayoLoop.runLocationHelp":
       "Cuéntanos dónde correrás para ubicarte en el mapa mundial.",
     "putumayoLoop.submitSignup": "Confirmar inscripción",
     "putumayoLoop.modalDisclaimer":
-      "Al inscribirte aceptas nuestra política de privacidad. Sin spam — solo actualizaciones sobre la carrera.",
+      "Al inscribirte aceptas nuestra política de privacidad.",
     "putumayoLoop.successTitle": "¡Estás dentro!",
     "putumayoLoop.successMessage":
       "Te enviaremos más información por correo electrónico. ¡Gracias por participar!",
     "putumayoLoop.successClose": "Cerrar",
+    "putumayoLoop.emailSubject": "[Putumayo Loop {year}] ¡Estás inscrito!",
+    "putumayoLoop.emailHubWhere": "Desde el hub {hub} en {city}",
+    "putumayoLoop.emailBody":
+      "Hola {name},\n\n¡Gracias por inscribirte en el Putumayo Loop {year}! Ya estás dentro oficialmente.\n\nEsto es lo que tenemos registrado:\n• Distancia: {distance}\n• Fecha: {date}\n• Dónde: {where}\n\nTe enviaremos más información práctica y novedades cuando se acerque la carrera. ¿Tienes alguna pregunta? Escribe a {contactEmail}.\n\n¡Nos vemos en la salida!\nEl equipo de Quina Care",
     "putumayoLoop.editionsLabel": "Ediciones",
     "putumayoLoop.pastEditionLabel": "Edición pasada",
     "putumayoLoop.finalRaised": "Total recaudado",
@@ -1118,16 +1143,18 @@ export const ui = {
     "putumayoLoop.acrossHubs": "en todo el mundo",
     "putumayoLoop.thankYouAll": "¡Gracias a todos!",
     "putumayoLoop.howItWent": "Cómo fue",
+    "putumayoLoop.howItWentTitle": "Un éxito mundial",
     "putumayoLoop.participatingHubs": "Hubs participantes",
     "putumayoLoop.nextEditionLabel": "Próxima edición",
     "putumayoLoop.nextEditionBody":
       "La próxima edición ya está en marcha. Súmate y corre por el Hospital San Miguel.",
     "putumayoLoop.viewCurrentEdition": "Ver la edición 2026",
     "putumayoLoop.videoTitle": "Mira el aftermovie",
+    "putumayoLoop.videoHeading": "Nuestros corredores en imágenes",
     "putumayoLoop.participantsMapLabel": "Participantes",
     "putumayoLoop.participantsMapTitle": "Dónde se corrió",
     "putumayoLoop.story2025":
-      "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
+      "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 170 participantes en total. Un día para recordar.",
     "submenu.joinTeam": "Únete al equipo",
     "submenu.becomePartner": "Sé socio",
     "submenu.yuraBoom": "El Árbol Yura",

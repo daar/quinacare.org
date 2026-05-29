@@ -68,7 +68,11 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
 <Layout title={`${edition.title} | Quina Care`} lang={lang}>
   <Nav />
 
-  <header class="pt-40 pb-12 border-b border-gray-100">
+  <header class="relative pt-40 pb-12 overflow-hidden">
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-b from-red-50/60 via-white to-white"
+    >
+    </div>
     <div class="max-w-[1600px] mx-auto px-6">
       <div class="mb-8">
         <PutumayoLoopEditionNav lang={lang} currentYear={edition.year} />
@@ -142,7 +146,7 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
           {t("putumayoLoop.howItWent")}
         </span>
         <h2 class="text-3xl md:text-4xl font-bold tracking-tighter uppercase mb-6">
-          {t("putumayoLoop.howItWent")}
+          {t("putumayoLoop.howItWentTitle")}
         </h2>
         <p class="qc-body text-lg leading-relaxed">{story}</p>
       </section>
@@ -158,7 +162,7 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
             {t("putumayoLoop.videoTitle")}
           </span>
           <h2 class="text-2xl md:text-3xl font-bold tracking-tighter uppercase">
-            {t("putumayoLoop.videoTitle")}
+            {t("putumayoLoop.videoHeading")}
           </h2>
         </div>
         <PutumayoLoopVideo videoId={edition.youtubeId} title={edition.title} />

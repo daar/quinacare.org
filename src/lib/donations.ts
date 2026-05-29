@@ -130,3 +130,94 @@ export async function getDonationByMollieId(
     updated_at: row.updated_at as string,
   };
 }
+
+// ---- donation_events ----
+
+export type DonationEventType =
+  | "created"
+  | "mollie_payment_created"
+  | "mollie_payment_failed"
+  | "checkout_redirected"
+  | "return_page_loaded"
+  | "verify_payment"
+  | "webhook"
+  | "reconciliation"
+  | "abandoned";
+
+export type DonationEventSource = "server" | "client" | "webhook" | "cron";
+
+export interface LogEventInput {
+  donationId: number;
+  type: DonationEventType;
+  source: DonationEventSource;
+  mollieStatus?: string;
+  previousStatus?: string;
+  payload?: Record<string, unknown>;
+}
+
+/**
+ * Append-only audit log: every observable event in a donation's life
+ * (form submitted, Mollie created, redirected, returned, webhook fired,
+ * cron reconciled) goes here. Lets us reconstruct the funnel for any
+ * row without overwriting the live `status` column. Failures are
+ * swallowed so logging never breaks a real operation.
+ */
+export async function logEvent(input: LogEventInput): Promise<void> {
+  try {
+    await ensureSchema();
+    const db = getDb();
+    await db.execute({
+      sql: `INSERT INTO donation_events
+              (donation_id, event_type, source, mollie_status, previous_status, payload)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+      args: [
+        input.donationId,
+        input.type,
+        input.source,
+        input.mollieStatus ?? null,
+        input.previousStatus ?? null,
+        JSON.stringify(input.payload ?? {}),
+      ],
+    });
+  } catch (err) {
+    console.error("[donations] logEvent failed:", input.type, err);
+  }
+}
+
+/** Lean lookup by Mollie payment id — returns id + current status only. */
+export async function getDonationIdAndStatusByMollieId(
+  mollieId: string,
+): Promise<{ id: number; status: string; mollie_id: string } | null> {
+  await ensureSchema();
+  const db = getDb();
+  const result = await db.execute({
+    sql: `SELECT id, status, mollie_id FROM donations WHERE mollie_id = ? LIMIT 1`,
+    args: [mollieId],
+  });
+  const row = result.rows[0];
+  if (!row) return null;
+  return {
+    id: row.id as number,
+    status: row.status as string,
+    mollie_id: row.mollie_id as string,
+  };
+}
+
+/** Lean lookup by internal donation id — returns id + status + mollie_id. */
+export async function getDonationById(
+  donationId: number,
+): Promise<{ id: number; status: string; mollie_id: string | null } | null> {
+  await ensureSchema();
+  const db = getDb();
+  const result = await db.execute({
+    sql: `SELECT id, status, mollie_id FROM donations WHERE id = ? LIMIT 1`,
+    args: [donationId],
+  });
+  const row = result.rows[0];
+  if (!row) return null;
+  return {
+    id: row.id as number,
+    status: row.status as string,
+    mollie_id: row.mollie_id as string | null,
+  };
+}

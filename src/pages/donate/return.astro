@@ -118,18 +118,49 @@ const t = useTranslations(lang);
 </Layout>
 
 <script>
-  // Verify payment status with Mollie (ensures Turso is updated even without webhook)
-  const ctx =
-    new URLSearchParams(window.location.search).get("context") || "donate";
+  // Verify the payment status with Mollie (so Turso is updated even
+  // if the webhook missed) and beacon the return-page hit so we can
+  // later tell "abandoned at checkout" from "returned but webhook
+  // missed it". donationId comes from the redirectUrl query string so
+  // verification works even when sessionStorage is empty (some iDEAL
+  // flows return in a fresh tab).
+  const params = new URLSearchParams(window.location.search);
+  const ctx = params.get("context") || "donate";
+  const donationIdParam = params.get("donationId");
+  const donationId = donationIdParam ? Number(donationIdParam) : null;
   const paymentId = sessionStorage.getItem(`mollie:${ctx}`);
-  if (paymentId) {
+
+  if (donationId || paymentId) {
+    try {
+      navigator.sendBeacon(
+        "/api/donations/event",
+        new Blob(
+          [
+            JSON.stringify({
+              donationId,
+              paymentId,
+              type: "return_page_loaded",
+              payload: { ctx },
+            }),
+          ],
+          { type: "application/json" },
+        ),
+      );
+    } catch {
+      /* sendBeacon unsupported / blocked — not critical */
+    }
+
     fetch("/api/mollie/verify-payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ paymentId }),
+      body: JSON.stringify({ donationId, paymentId }),
     })
-      .then(() => sessionStorage.removeItem(`mollie:${ctx}`))
-      .catch(() => {});
+      .then(() => {
+        if (paymentId) sessionStorage.removeItem(`mollie:${ctx}`);
+      })
+      .catch(() => {
+        /* network blip — the cron will reconcile later */
+      });
   }
 
   document

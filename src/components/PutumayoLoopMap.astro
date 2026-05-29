@@ -43,7 +43,7 @@ const mapData = JSON.stringify({
 ---
 
 <div
-  class="pl-map-wrapper relative rounded-xl overflow-hidden border border-gray-100 bg-gray-50 h-full"
+  class="pl-map-wrapper relative isolate rounded-xl overflow-hidden border border-gray-100 bg-gray-50 h-full"
   style="min-height: 420px;"
 >
   <div id="putumayo-loop-map" class="absolute inset-0 z-[1]"></div>
@@ -181,7 +181,7 @@ const mapData = JSON.stringify({
         L.marker(sub.coords, { icon: dot })
           .addTo(map)
           .bindPopup(
-            `<strong>${sub.firstName} ${sub.lastName}</strong><br><em>Individual runner</em>`,
+            `<strong>${sub.firstName ?? ""}</strong><br><em>Individual runner</em>`,
           );
       }
     }

@@ -54,6 +54,56 @@ export async function ensureSchema(): Promise<void> {
       locale     TEXT NOT NULL DEFAULT 'nl',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
+    // Append-only audit log for every observable event in a donation's
+    // lifecycle (form submit → Mollie create → checkout redirect →
+    // return page → webhook → cron reconcile). The live status on the
+    // donations row keeps the latest known state for fast queries;
+    // this table is the source of truth for the funnel.
+    `CREATE TABLE IF NOT EXISTS donation_events (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      donation_id     INTEGER NOT NULL,
+      event_type      TEXT NOT NULL,
+      source          TEXT NOT NULL,
+      mollie_status   TEXT,
+      previous_status TEXT,
+      payload         TEXT NOT NULL DEFAULT '{}',
+      created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_donation_events_donation ON donation_events(donation_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_donation_events_type ON donation_events(event_type)`,
+    `CREATE INDEX IF NOT EXISTS idx_donation_events_created ON donation_events(created_at)`,
+    // Persistent error log — console.error is invisible to end users
+    // and Netlify Function logs are not queryable after the fact, so
+    // we mirror every server- and client-side error here for analysis.
+    `CREATE TABLE IF NOT EXISTS app_errors (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      source     TEXT NOT NULL,
+      level      TEXT NOT NULL DEFAULT 'error',
+      message    TEXT NOT NULL,
+      context    TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_app_errors_source ON app_errors(source)`,
+    `CREATE INDEX IF NOT EXISTS idx_app_errors_created ON app_errors(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_app_errors_level ON app_errors(level)`,
+    // 404 / missing-page log. WordPress -> Astro migration left stale
+    // URLs in the wild; this table captures every 404 hit so we can
+    // pick the most-requested ones and turn them into redirects.
+    // is_bot is a tagged guess from the User-Agent, never a filter —
+    // both bot and human rows are kept so the heuristic can be
+    // re-evaluated later without losing data.
+    `CREATE TABLE IF NOT EXISTS page_misses (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      path       TEXT NOT NULL,
+      referrer   TEXT,
+      user_agent TEXT,
+      language   TEXT,
+      is_bot     INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_page_misses_created ON page_misses(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_page_misses_path ON page_misses(path)`,
+    `CREATE INDEX IF NOT EXISTS idx_page_misses_bot ON page_misses(is_bot)`,
   ]);
   migrated = true;
 }

@@ -24,6 +24,9 @@ const metaDescription =
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/images/og-image.svg", Astro.site).href;
 const ogLocale = { nl: "nl_NL", en: "en_US", es: "es_ES" }[currentLang];
+// Cloudflare Web Analytics — only renders the beacon when the token
+// is set, so local dev stays silent and production lights up.
+const cfAnalyticsToken = import.meta.env.CF_ANALYTICS_TOKEN;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "NGO",
@@ -89,6 +92,68 @@ const structuredData = {
         }
       })();
     </script>
+    <script is:inline>
+      // Client-side error logger — persists errors to Turso so we can
+      // analyse production issues iteratively. console.error is
+      // invisible to end users; this beacon is our only after-the-
+      // fact view. Capped at 5 reports per page load so a runaway
+      // loop in third-party code can't flood the DB.
+      (function () {
+        let count = 0;
+        const MAX = 5;
+        function send(source, message, context) {
+          if (count >= MAX) return;
+          count++;
+          try {
+            navigator.sendBeacon(
+              "/api/errors/log",
+              new Blob(
+                [
+                  JSON.stringify({
+                    source: source,
+                    message: message,
+                    context: context,
+                  }),
+                ],
+                { type: "application/json" },
+              ),
+            );
+          } catch {
+            /* sendBeacon unavailable */
+          }
+        }
+        window.addEventListener("error", function (e) {
+          send("window.error", e.message || "unknown", {
+            filename: e.filename,
+            lineno: e.lineno,
+            colno: e.colno,
+            stack: e.error && e.error.stack,
+            url: location.pathname,
+          });
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+          const reason = e.reason;
+          const message =
+            typeof reason === "string"
+              ? reason
+              : (reason && reason.message) || "unhandled rejection";
+          send("unhandledrejection", message, {
+            stack: reason && reason.stack,
+            url: location.pathname,
+          });
+        });
+      })();
+    </script>
+    {
+      cfAnalyticsToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={`{"token":"${cfAnalyticsToken}"}`}
+        />
+      )
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--astro-font-arimo" preload />
     <Font cssVariable="--astro-font-effra" preload />

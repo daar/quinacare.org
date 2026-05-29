@@ -97,6 +97,17 @@ export interface EditionConfig {
   story?: Partial<Record<"nl" | "en" | "es", string>>;
   /** Optional YouTube video ID embedded on the past edition page. */
   youtubeId?: string;
+  /**
+   * Past-edition overrides: when set, hydrate uses these canonical
+   * totals (and the subscribers list below) instead of querying Turso.
+   * Lets historical editions ship their final numbers inline so the
+   * page does not depend on live data that may never have been
+   * imported. Active editions leave these unset and use live queries.
+   */
+  raised?: number;
+  donors?: number;
+  /** Static per-location subscribers for the map (past editions). */
+  subscribers?: Subscriber[];
 }
 
 export const editions: EditionConfig[] = [
@@ -110,10 +121,83 @@ export const editions: EditionConfig[] = [
     hubs: [],
     target: 3000,
     totalRunners: 173,
+    raised: 3000,
+    donors: 62,
+    // Aggregated per-city counts (no individual names tracked for past
+    // editions). 173 runners across 11 cities = the actual total; the
+    // story below rounds to "over 170".
+    subscribers: [
+      {
+        id: "p25-puertocarmen",
+        coords: [0.118, -75.91],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 150,
+      },
+      {
+        id: "p25-den-haag",
+        coords: [52.0705, 4.3007],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 4,
+      },
+      {
+        id: "p25-groningen",
+        coords: [53.2194, 6.5665],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 4,
+      },
+      {
+        id: "p25-singapore",
+        coords: [1.3521, 103.8198],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 4,
+      },
+      {
+        id: "p25-bangkok",
+        coords: [13.7563, 100.5018],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
+      },
+      {
+        id: "p25-amersfoort",
+        coords: [52.1561, 5.3878],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
+      },
+      {
+        id: "p25-amsterdam",
+        coords: [52.3676, 4.9041],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
+      },
+      {
+        id: "p25-eindhoven",
+        coords: [51.4416, 5.4697],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 2,
+      },
+      {
+        id: "p25-paris",
+        coords: [48.8566, 2.3522],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 1,
+      },
+      {
+        id: "p25-hulst",
+        coords: [51.2802, 4.0521],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 1,
+      },
+      {
+        id: "p25-new-york",
+        coords: [40.7128, -74.006],
+        signedUpAt: "2025-10-26T13:00:00Z",
+        count: 1,
+      },
+    ],
     story: {
-      nl: "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 150 deelnemers. Een dag om nooit te vergeten.",
-      en: "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 150 participants in total. A day to remember.",
-      es: "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 150 participantes en total. Un día para recordar.",
+      nl: "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen met in totaal meer dan 170 deelnemers. Een dag om nooit te vergeten.",
+      en: "In 2025 we celebrated the fifth anniversary of the Putumayo Loop. For the first time runners gathered in multiple cities at once with more than 170 participants in total. A day to remember.",
+      es: "En 2025 celebramos el quinto aniversario del Putumayo Loop. Por primera vez se corrió simultáneamente en varias ciudades con más de 170 participantes en total. Un día para recordar.",
     },
     youtubeId: "Fc6XaeLGLdw",
   },
@@ -141,10 +225,19 @@ export const editions: EditionConfig[] = [
         country: "NL",
         coords: [52.0705, 4.3007],
         captain: "Sarah Blaszyk",
-        captainEmail: "dhkblaszyk@gmail.com",
+        captainEmail: "smmblaszyk@gmail.com",
+      },
+      {
+        id: "hulst",
+        name: "Hulst",
+        city: "Hulst",
+        country: "NL",
+        coords: [51.28039231477035, 4.0526885572096605],
+        captain: "Cindy Martens",
+        captainEmail: "cindymartens@live.nl",
       },
     ],
-    target: 10000,
+    target: 25000,
   },
 ];
 

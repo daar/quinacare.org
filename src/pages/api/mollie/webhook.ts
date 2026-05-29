@@ -7,9 +7,13 @@ import {
   getDonationByMollieId,
   insertDonation,
   setMollieId,
+  logEvent,
   type DonationContext,
   type DonationFrequency,
 } from "../../../lib/donations";
+import { reportError } from "../../../lib/errors";
+
+const SOURCE = "api/mollie/webhook";
 
 const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
 
@@ -57,13 +61,27 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (existing) {
       // Known payment — update its status
+      const previousStatus = existing.status;
       await updateDonationStatus(
         paymentId,
         payment.status,
         payment.customerId,
       ).catch((err) =>
-        console.error("[Turso] Failed to update donation status:", err),
+        reportError(SOURCE, "updateDonationStatus failed", err, { paymentId }),
       );
+      if (existing.id != null) {
+        await logEvent({
+          donationId: existing.id,
+          type: "webhook",
+          source: "webhook",
+          mollieStatus: payment.status,
+          previousStatus,
+          payload: {
+            paymentId,
+            hasSubscription: Boolean(payment.subscriptionId),
+          },
+        });
+      }
     } else if (payment.subscriptionId) {
       // Subscription payment without a donation record — create one
       const freq = (
@@ -91,8 +109,18 @@ export const POST: APIRoute = async ({ request }) => {
             payment.status,
             payment.customerId,
           );
+          await logEvent({
+            donationId,
+            type: "webhook",
+            source: "webhook",
+            mollieStatus: payment.status,
+            previousStatus: "pending",
+            payload: { paymentId, subscriptionPayment: true },
+          });
         } catch (err) {
-          console.error("[Turso] Failed to create subscription donation:", err);
+          reportError(SOURCE, "create subscription donation failed", err, {
+            paymentId,
+          });
         }
       }
     } else {
@@ -103,7 +131,7 @@ export const POST: APIRoute = async ({ request }) => {
         payment.status,
         payment.customerId,
       ).catch((err) =>
-        console.error("[Turso] Failed to update donation status:", err),
+        reportError(SOURCE, "updateDonationStatus failed", err, { paymentId }),
       );
     }
 
@@ -154,9 +182,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response("OK", { status: 200 });
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : "Webhook processing failed";
-    console.error(`[Mollie] Webhook error for ${paymentId}:`, message);
+    reportError(SOURCE, "webhook handler error", err, { paymentId });
     return new Response("Error", { status: 500 });
   }
 };

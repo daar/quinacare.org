@@ -11,9 +11,13 @@ import { getCurrency } from "../../../lib/currency";
 import {
   insertDonation,
   setMollieId,
+  logEvent,
   type DonationContext,
   type DonationFrequency,
 } from "../../../lib/donations";
+import { reportError } from "../../../lib/errors";
+
+const SOURCE = "api/mollie/create-payment";
 
 const mollieApiKey = import.meta.env.MOLLIE_API_KEY;
 
@@ -113,7 +117,6 @@ export const POST: APIRoute = async ({ request }) => {
   const currency = currencyConfig.code;
   const origin = new URL(request.url).origin;
   const langPrefix = locale === "nl" ? "" : `/${locale}`;
-  const returnUrl = `${origin}${langPrefix}/donate/return?context=${context}`;
 
   // Mollie rejects localhost webhook URLs; omit in dev so test payments work
   const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1");
@@ -153,9 +156,25 @@ export const POST: APIRoute = async ({ request }) => {
       metadata: metadata ?? {},
     });
   } catch (err) {
-    console.error("[Turso] Failed to insert donation:", err);
+    reportError(SOURCE, "insertDonation failed", err);
     // Continue without DB — payment still works, webhook will log
   }
+
+  if (donationId) {
+    await logEvent({
+      donationId,
+      type: "created",
+      source: "server",
+      payload: { context, method, amount, frequency: freq, locale },
+    });
+  }
+
+  // Build the return URL with the donationId so the return page can
+  // verify even when sessionStorage is empty (some iDEAL flows return
+  // in a new tab/browser, losing sessionStorage).
+  const returnUrl = donationId
+    ? `${origin}${langPrefix}/donate/return?context=${context}&donationId=${donationId}`
+    : `${origin}${langPrefix}/donate/return?context=${context}`;
 
   try {
     if (isRecurring) {
@@ -185,8 +204,17 @@ export const POST: APIRoute = async ({ request }) => {
 
       if (donationId) {
         await setMollieId(donationId, payment.id).catch((err) =>
-          console.error("[Turso] Failed to set mollie_id:", err),
+          reportError(SOURCE, "setMollieId failed", err, {
+            paymentId: payment.id,
+          }),
         );
+        await logEvent({
+          donationId,
+          type: "mollie_payment_created",
+          source: "server",
+          mollieStatus: "pending",
+          payload: { paymentId: payment.id, recurring: true },
+        });
       }
 
       return new Response(
@@ -219,8 +247,17 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (donationId) {
       await setMollieId(donationId, payment.id).catch((err) =>
-        console.error("[Turso] Failed to set mollie_id:", err),
+        reportError(SOURCE, "setMollieId failed", err, {
+          paymentId: payment.id,
+        }),
       );
+      await logEvent({
+        donationId,
+        type: "mollie_payment_created",
+        source: "server",
+        mollieStatus: "pending",
+        payload: { paymentId: payment.id, recurring: false },
+      });
     }
 
     return new Response(
@@ -236,6 +273,14 @@ export const POST: APIRoute = async ({ request }) => {
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Payment creation failed";
+    if (donationId) {
+      await logEvent({
+        donationId,
+        type: "mollie_payment_failed",
+        source: "server",
+        payload: { error: message },
+      });
+    }
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

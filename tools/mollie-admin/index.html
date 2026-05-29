@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mollie Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8f9fa; color: #111; line-height: 1.5; }
+    .header { background: #111; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+    .header h1 { font-size: 18px; font-weight: 600; }
+    .header .badge { background: #ee172c; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+    .header .badge.test { background: #f59e0b; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid #e5e7eb; }
+    .tab { padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: 600; color: #6b7280; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+    .tab:hover { color: #111; }
+    .tab.active { color: #ee172c; border-bottom-color: #ee172c; }
+
+    /* Search */
+    .search-bar { display: flex; gap: 8px; margin-bottom: 20px; }
+    .search-bar input { flex: 1; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; }
+    .search-bar input:focus { border-color: #ee172c; box-shadow: 0 0 0 3px rgba(238,23,44,0.1); }
+    .search-bar button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    th { background: #f9fafb; text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; border-bottom: 1px solid #e5e7eb; }
+    td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #f3f4f6; }
+    tr:hover td { background: #f9fafb; }
+    tr.expandable { cursor: pointer; }
+
+    /* Status badges */
+    .status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .status.paid, .status.active { background: #dcfce7; color: #166534; }
+    .status.pending, .status.open { background: #fef9c3; color: #854d0e; }
+    .status.failed, .status.canceled, .status.expired { background: #fee2e2; color: #991b1b; }
+    .status.refunded, .status.partially_refunded { background: #e0e7ff; color: #3730a3; }
+    .status.charged_back { background: #fce7f3; color: #9d174d; }
+
+    /* Buttons */
+    .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; }
+    .btn-danger { background: #fee2e2; color: #991b1b; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-primary { background: #111; color: #fff; }
+    .btn-primary:hover { background: #ee172c; }
+    .btn-load { display: block; margin: 16px auto; padding: 10px 32px; }
+
+    /* Pagination */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; padding: 12px; }
+    .pagination .btn { min-width: 80px; }
+    .pagination .btn:disabled { opacity: 0.4; cursor: default; }
+    .page-info { font-size: 13px; color: #6b7280; font-weight: 600; min-width: 80px; text-align: center; }
+
+    /* Detail panel */
+    .detail-row td { background: #f9fafb; padding: 16px 14px; }
+    .detail-section { margin-bottom: 16px; }
+    .detail-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; }
+    .detail-table { box-shadow: none; margin-bottom: 8px; }
+    .detail-table td { font-size: 12px; padding: 6px 10px; }
+    .detail-table th { padding: 6px 10px; font-size: 10px; }
+
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .modal h2 { font-size: 16px; margin-bottom: 12px; }
+    .modal p { font-size: 14px; color: #6b7280; margin-bottom: 20px; }
+    .modal .actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .modal input { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; margin-bottom: 16px; }
+
+    .loading { text-align: center; padding: 40px; color: #6b7280; }
+    .error { background: #fee2e2; color: #991b1b; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }
+    .empty { text-align: center; padding: 40px; color: #9ca3af; }
+    .amount { font-family: "SF Mono", Monaco, monospace; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Mollie Admin</h1>
+  <span class="badge" id="mode-badge">LIVE</span>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" data-tab="customers">Customers</button>
+    <button class="tab" data-tab="payments">Payments</button>
+  </div>
+
+  <div id="error-box" class="error" style="display:none"></div>
+
+  <!-- Customers Tab -->
+  <div id="tab-customers" class="tab-content">
+    <div class="search-bar">
+      <input type="text" id="customer-search" placeholder="Search by ID (cst_xxx), name, or email...">
+      <button class="btn btn-primary" id="customer-lookup-btn">Lookup</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody id="customers-body"></tbody>
+    </table>
+    <div class="pagination" id="customers-pagination" style="display:none">
+      <button class="btn btn-primary" id="customers-prev" disabled>← Prev</button>
+      <span class="page-info" id="customers-page-info">Page 1</span>
+      <button class="btn btn-primary" id="customers-next">Next →</button>
+    </div>
+    <div id="customers-loading" class="loading">Loading customers...</div>
+  </div>
+
+  <!-- Payments Tab -->
+  <div id="tab-payments" class="tab-content" style="display:none">
+    <div class="search-bar">
+      <input type="text" id="payment-search" placeholder="Search by ID (tr_xxx), customer (cst_xxx), or description...">
+      <button class="btn btn-primary" id="payment-lookup-btn">Lookup</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Method</th>
+          <th>Date</th>
+          <th>Customer</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="payments-body"></tbody>
+    </table>
+    <div class="pagination" id="payments-pagination" style="display:none">
+      <button class="btn btn-primary" id="payments-prev" disabled>← Prev</button>
+      <span class="page-info" id="payments-page-info">Page 1</span>
+      <button class="btn btn-primary" id="payments-next">Next →</button>
+    </div>
+    <div id="payments-loading" class="loading">Loading payments...</div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Confirm</h2>
+    <p id="modal-message"></p>
+    <div id="modal-input-wrap" style="display:none">
+      <input type="text" id="modal-input" placeholder="">
+    </div>
+    <div class="actions">
+      <button class="btn" id="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="modal-confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const api = (body) => fetch('/api', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(r => r.json().then(d => r.ok ? d : Promise.reject(d)));
+
+// ── State ──────────────────────────────────────────────────
+let customersData = [];
+let customersPage = 1;
+let customersCursors = [null]; // cursor history: [null, cursor_for_page2, ...]
+let customersNextCursor = null;
+let paymentsData = [];
+let paymentsPage = 1;
+let paymentsCursors = [null];
+let paymentsNextCursor = null;
+let activeTab = 'customers';
+let expandedCustomer = null;
+
+// ── Tabs ───────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab = tab.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+    document.getElementById('tab-' + activeTab).style.display = '';
+  });
+});
+
+// ── Customers ──────────────────────────────────────────────
+async function loadCustomers(page) {
+  document.getElementById('customers-loading').style.display = '';
+  expandedCustomer = null;
+  try {
+    const params = { action: 'list-customers' };
+    const cursor = customersCursors[page - 1];
+    if (cursor) params.from = cursor;
+    const data = await api(params);
+    customersData = data.items;
+    customersNextCursor = data.nextCursor;
+    customersPage = page;
+    if (customersNextCursor && !customersCursors[page]) {
+      customersCursors[page] = customersNextCursor;
+    }
+    renderCustomers();
+  } catch (e) { showError(e.error || e.message); }
+  document.getElementById('customers-loading').style.display = 'none';
+}
+
+function renderCustomers() {
+  const filter = document.getElementById('customer-search').value.toLowerCase();
+  const filtered = customersData.filter(c =>
+    (c.name || '').toLowerCase().includes(filter) ||
+    (c.email || '').toLowerCase().includes(filter) ||
+    (c.id || '').toLowerCase().includes(filter)
+  );
+  const tbody = document.getElementById('customers-body');
+  tbody.innerHTML = filtered.map(c => `
+    <tr class="expandable" onclick="toggleCustomer('${c.id}')">
+      <td><code>${c.id}</code></td>
+      <td>${esc(c.name)}</td>
+      <td>${esc(c.email)}</td>
+      <td>${fmtDate(c.createdAt)}</td>
+    </tr>
+    <tr class="detail-row" id="detail-${c.id}" style="display:none">
+      <td colspan="4"><div id="detail-content-${c.id}" class="loading">Loading...</div></td>
+    </tr>
+  `).join('');
+  if (!filtered.length) tbody.innerHTML = '<tr><td colspan="4" class="empty">No customers found</td></tr>';
+
+  const pag = document.getElementById('customers-pagination');
+  pag.style.display = '';
+  document.getElementById('customers-prev').disabled = customersPage <= 1;
+  document.getElementById('customers-next').disabled = !customersNextCursor;
+  document.getElementById('customers-page-info').textContent = `Page ${customersPage}`;
+}
+
+async function toggleCustomer(id) {
+  const row = document.getElementById('detail-' + id);
+  if (expandedCustomer === id) {
+    row.style.display = 'none';
+    expandedCustomer = null;
+    return;
+  }
+  if (expandedCustomer) {
+    const prev = document.getElementById('detail-' + expandedCustomer);
+    if (prev) prev.style.display = 'none';
+  }
+  expandedCustomer = id;
+  row.style.display = '';
+  const content = document.getElementById('detail-content-' + id);
+  content.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    const [subs, payments] = await Promise.all([
+      api({ action: 'list-subscriptions', customerId: id }),
+      api({ action: 'list-payments', customerId: id }),
+    ]);
+
+    let html = '';
+
+    // Subscriptions
+    html += '<div class="detail-section"><h3>Subscriptions</h3>';
+    if (subs.items.length) {
+      html += '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Interval</th><th>Next Payment</th><th></th></tr></thead><tbody>';
+      for (const s of subs.items) {
+        const canCancel = s.status === 'active';
+        html += `<tr>
+          <td><code>${s.id}</code></td>
+          <td><span class="status ${s.status}">${s.status}</span></td>
+          <td class="amount">${fmtAmount(s.amount)}</td>
+          <td>${esc(s.interval)}</td>
+          <td>${s.nextPaymentDate || '—'}</td>
+          <td>${canCancel ? `<button class="btn btn-danger" onclick="event.stopPropagation(); confirmCancel('${id}','${s.id}','${fmtAmount(s.amount)} / ${esc(s.interval)}')">Cancel</button>` : ''}</td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+    } else {
+      html += '<p style="color:#9ca3af;font-size:13px">No subscriptions</p>';
+    }
+    html += '</div>';
+
+    // Payments
+    html += '<div class="detail-section"><h3>Payments</h3>';
+    if (payments.items.length) {
+      html += '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Description</th><th>Date</th><th></th></tr></thead><tbody>';
+      for (const p of payments.items) {
+        const canRefund = p.status === 'paid' && (!p.amountRemaining || parseFloat(p.amountRemaining.value) > 0);
+        html += `<tr>
+          <td><code>${p.id}</code></td>
+          <td><span class="status ${p.status}">${p.status}</span></td>
+          <td class="amount">${fmtAmount(p.amount)}</td>
+          <td>${esc(p.description)}</td>
+          <td>${fmtDate(p.createdAt)}</td>
+          <td>${canRefund ? `<button class="btn btn-danger" onclick="event.stopPropagation(); confirmRefund('${p.id}', '${p.amount.currency}', '${p.amountRemaining ? p.amountRemaining.value : p.amount.value}')">Refund</button>` : ''}</td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+    } else {
+      html += '<p style="color:#9ca3af;font-size:13px">No payments</p>';
+    }
+    html += '</div>';
+
+    content.innerHTML = html;
+  } catch (e) {
+    content.innerHTML = `<div class="error">${esc(e.error || e.message)}</div>`;
+  }
+}
+
+document.getElementById('customer-search').addEventListener('input', renderCustomers);
+document.getElementById('customers-prev').addEventListener('click', () => loadCustomers(customersPage - 1));
+document.getElementById('customers-next').addEventListener('click', () => loadCustomers(customersPage + 1));
+
+// Direct lookup by customer ID, payment ID, or partial name/email search
+async function customerLookup() {
+  const q = document.getElementById('customer-search').value.trim();
+  if (!q) { loadCustomers(1); return; }
+
+  document.getElementById('customers-loading').style.display = '';
+  expandedCustomer = null;
+
+  try {
+    if (q.startsWith('cst_')) {
+      const customer = await api({ action: 'get-customer', customerId: q });
+      customersData = [customer];
+    } else if (q.startsWith('tr_')) {
+      const payment = await api({ action: 'get-payment', paymentId: q });
+      if (payment.customerId) {
+        const customer = await api({ action: 'get-customer', customerId: payment.customerId });
+        customersData = [customer];
+      } else {
+        showError(`Payment ${q} has no customer`);
+        document.getElementById('customers-loading').style.display = 'none';
+        return;
+      }
+    } else {
+      // Partial search across all customers
+      const data = await api({ action: 'search-customers', query: q });
+      customersData = data.items;
+    }
+    customersNextCursor = null;
+    customersPage = 1;
+    customersCursors = [null];
+    renderCustomers();
+    document.getElementById('customers-page-info').textContent = `${customersData.length} result${customersData.length !== 1 ? 's' : ''}`;
+    document.getElementById('customers-next').disabled = true;
+  } catch (e) {
+    showError(e.error || e.message);
+  }
+  document.getElementById('customers-loading').style.display = 'none';
+}
+
+document.getElementById('customer-lookup-btn').addEventListener('click', customerLookup);
+document.getElementById('customer-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') customerLookup();
+});
+
+// ── Payments ───────────────────────────────────────────────
+async function loadPayments(page) {
+  document.getElementById('payments-loading').style.display = '';
+  try {
+    const params = { action: 'list-payments' };
+    const cursor = paymentsCursors[page - 1];
+    if (cursor) params.from = cursor;
+    const data = await api(params);
+    paymentsData = data.items;
+    paymentsNextCursor = data.nextCursor;
+    paymentsPage = page;
+    if (paymentsNextCursor && !paymentsCursors[page]) {
+      paymentsCursors[page] = paymentsNextCursor;
+    }
+    renderPayments();
+  } catch (e) { showError(e.error || e.message); }
+  document.getElementById('payments-loading').style.display = 'none';
+}
+
+function renderPayments() {
+  const filter = document.getElementById('payment-search').value.toLowerCase();
+  const filtered = paymentsData.filter(p =>
+    (p.id || '').toLowerCase().includes(filter) ||
+    (p.description || '').toLowerCase().includes(filter) ||
+    (p.customerId || '').toLowerCase().includes(filter)
+  );
+  const tbody = document.getElementById('payments-body');
+  tbody.innerHTML = filtered.map(p => {
+    const canRefund = p.status === 'paid' && (!p.amountRemaining || parseFloat(p.amountRemaining.value) > 0);
+    return `<tr>
+      <td><code>${p.id}</code></td>
+      <td><span class="status ${p.status}">${p.status}</span></td>
+      <td class="amount">${fmtAmount(p.amount)}</td>
+      <td>${esc(p.description)}</td>
+      <td>${esc(p.method || '—')}</td>
+      <td>${fmtDate(p.createdAt)}</td>
+      <td><code>${p.customerId || '—'}</code></td>
+      <td>${canRefund ? `<button class="btn btn-danger" onclick="confirmRefund('${p.id}', '${p.amount.currency}', '${p.amountRemaining ? p.amountRemaining.value : p.amount.value}')">Refund</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+  if (!filtered.length) tbody.innerHTML = '<tr><td colspan="8" class="empty">No payments found</td></tr>';
+
+  const pag = document.getElementById('payments-pagination');
+  pag.style.display = '';
+  document.getElementById('payments-prev').disabled = paymentsPage <= 1;
+  document.getElementById('payments-next').disabled = !paymentsNextCursor;
+  document.getElementById('payments-page-info').textContent = `Page ${paymentsPage}`;
+}
+
+document.getElementById('payment-search').addEventListener('input', renderPayments);
+document.getElementById('payments-prev').addEventListener('click', () => loadPayments(paymentsPage - 1));
+document.getElementById('payments-next').addEventListener('click', () => loadPayments(paymentsPage + 1));
+
+// Direct payment lookup by ID, customer ID, or partial description search
+async function paymentLookup() {
+  const q = document.getElementById('payment-search').value.trim();
+  if (!q) { loadPayments(1); return; }
+
+  document.getElementById('payments-loading').style.display = '';
+
+  try {
+    if (q.startsWith('tr_')) {
+      const payment = await api({ action: 'get-payment', paymentId: q });
+      paymentsData = [payment];
+    } else if (q.startsWith('cst_')) {
+      const data = await api({ action: 'list-payments', customerId: q });
+      paymentsData = data.items;
+    } else {
+      // Partial search across all payments
+      const data = await api({ action: 'search-payments', query: q });
+      paymentsData = data.items;
+    }
+    paymentsNextCursor = null;
+    paymentsPage = 1;
+    paymentsCursors = [null];
+    renderPayments();
+    document.getElementById('payments-page-info').textContent = `${paymentsData.length} result${paymentsData.length !== 1 ? 's' : ''}`;
+    document.getElementById('payments-next').disabled = true;
+  } catch (e) {
+    showError(e.error || e.message);
+  }
+  document.getElementById('payments-loading').style.display = 'none';
+}
+
+document.getElementById('payment-lookup-btn').addEventListener('click', paymentLookup);
+document.getElementById('payment-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') paymentLookup();
+});
+
+// ── Modals ─────────────────────────────────────────────────
+let modalResolve = null;
+
+function openModal(title, message, { input = false, placeholder = '', confirmLabel = 'Confirm' } = {}) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-message').textContent = message;
+  document.getElementById('modal-confirm').textContent = confirmLabel;
+  const inputWrap = document.getElementById('modal-input-wrap');
+  const inputEl = document.getElementById('modal-input');
+  if (input) { inputWrap.style.display = ''; inputEl.placeholder = placeholder; inputEl.value = ''; }
+  else inputWrap.style.display = 'none';
+  document.getElementById('modal').classList.add('show');
+  return new Promise(resolve => {
+    modalResolve = resolve;
+    document.getElementById('modal-confirm').onclick = () => {
+      closeModal();
+      resolve(input ? inputEl.value : true);
+    };
+  });
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  if (modalResolve) { modalResolve(null); modalResolve = null; }
+}
+
+async function confirmCancel(customerId, subscriptionId, desc) {
+  const ok = await openModal('Cancel Subscription', `Cancel ${subscriptionId} (${desc})? This cannot be undone.`, { confirmLabel: 'Cancel Subscription' });
+  if (!ok) return;
+  try {
+    await api({ action: 'cancel-subscription', customerId, subscriptionId });
+    expandedCustomer = null;
+    await toggleCustomer(customerId);
+  } catch (e) { showError(e.error || e.message); }
+}
+
+async function confirmRefund(paymentId, currency, maxAmount) {
+  const amount = await openModal('Refund Payment', `Refund ${paymentId}. Max: ${currency} ${maxAmount}. Leave empty for full refund.`, { input: true, placeholder: `${currency} ${maxAmount}`, confirmLabel: 'Issue Refund' });
+  if (amount === null) return;
+  try {
+    const params = { action: 'refund-payment', paymentId };
+    if (amount.trim()) params.amount = { currency, value: parseFloat(amount.replace(',','.')).toFixed(2) };
+    const result = await api(params);
+    showError(`Refund created: ${result.refundId} — ${result.amount.currency} ${result.amount.value} (${result.status})`);
+    document.getElementById('error-box').style.background = '#dcfce7';
+    document.getElementById('error-box').style.color = '#166534';
+    loadPayments(paymentsPage);
+  } catch (e) { showError(e.error || e.message); }
+}
+
+// ── Helpers ─────────────────────────────────────────────────
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('nl-NL', { year:'numeric', month:'short', day:'numeric' }); }
+function fmtAmount(a) { if (!a) return '—'; return `${a.currency} ${a.value}`; }
+function showError(msg) {
+  const box = document.getElementById('error-box');
+  box.textContent = msg;
+  box.style.display = '';
+  box.style.background = ''; box.style.color = '';
+  setTimeout(() => box.style.display = 'none', 8000);
+}
+
+// ── Init ────────────────────────────────────────────────────
+// Detect mode from server (test key starts with test_)
+fetch('/api', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{"action":"list-customers"}' })
+  .then(r => r.json())
+  .then(d => {
+    if (d.error && d.error.includes('Invalid API key')) {
+      document.getElementById('mode-badge').textContent = 'INVALID KEY';
+      document.getElementById('mode-badge').classList.add('test');
+    }
+  }).catch(() => {});
+
+loadCustomers(1);
+loadPayments(1);
+</script>
+
+</body>
+</html>

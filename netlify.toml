@@ -5,6 +5,19 @@
 [build.environment]
   NODE_VERSION = "22.22.3"
 
+# Without this block, Netlify can skip the user-authored functions in
+# netlify/functions/ when the @astrojs/netlify adapter is already
+# publishing the SSR handler under .netlify/v1/functions/ — the
+# Frameworks API output becomes the sole functions surface and the
+# scheduled cron is never registered. Declaring the directory
+# explicitly keeps both function trees discoverable.
+[functions]
+  directory = "netlify/functions"
+  # Pin the TS bundler so Netlify reliably picks up cron-reconcile.ts —
+  # the default zisi bundler can silently skip TS files that the
+  # function detector doesn't recognise.
+  node_bundler = "esbuild"
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -14,7 +27,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     X-XSS-Protection = "1; mode=block"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://*.mollie.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://*.mollie.com"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://*.mollie.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://*.mollie.com"
 
 [[headers]]
   for = "/_astro/*"

@@ -8,6 +8,9 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { sendMail } from "../../../lib/mailer";
 import { runManager } from "../../../data/putumayoLoop";
+import { reportError } from "../../../lib/errors";
+
+const SOURCE = "api/putumayo-loop/contact-hub";
 
 export const POST: APIRoute = async ({ request }) => {
   let body: Record<string, unknown>;
@@ -37,7 +40,7 @@ export const POST: APIRoute = async ({ request }) => {
       replyTo: `${name} <${email}>`,
     });
   } catch (err) {
-    console.error("[putumayo-loop/contact-hub] mail failed:", err);
+    reportError(SOURCE, "mail failed", err);
     return new Response(
       JSON.stringify({ error: "Could not send your message" }),
       { status: 500 },

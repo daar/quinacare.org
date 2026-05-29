@@ -186,8 +186,10 @@ const metrics = [
     if (section) {
       const locale = section.dataset.locale ?? "en-US";
       const formatter = new Intl.NumberFormat(locale);
-      // Skip the EMR stats fetch under Lighthouse for deterministic audits.
-      if (!/Chrome-Lighthouse/.test(navigator.userAgent))
+      // Skip the EMR stats fetch on localhost (covers Lighthouse runs
+      // against the static dist on a temp port, and local dev where there
+      // is no EMR upstream). The fallback values stay visible.
+      if (location.hostname !== "localhost")
         fetch("/api/statistics")
           .then((res) => (res.ok ? res.json() : null))
           .then((stats: Record<string, number> | null) => {
