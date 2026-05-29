@@ -8,7 +8,6 @@ interface Props {
 }
 
 const { title, subtitle, cta, href } = Astro.props;
-const isDonateLink = /\/donate(?:[/?#]|$)/.test(href);
 ---
 
 <section class="relative bg-qcRed py-24 overflow-hidden">
@@ -36,8 +35,6 @@ const isDonateLink = /\/donate(?:[/?#]|$)/.test(href);
       <div class="flex-shrink-0">
         <a
           href={href}
-          target={isDonateLink ? "_blank" : undefined}
-          rel={isDonateLink ? "noopener noreferrer" : undefined}
           class="qc-btn qc-btn--white group relative inline-flex items-center gap-6 px-10 py-6 duration-500"
         >
           <Icon
