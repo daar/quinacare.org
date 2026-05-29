@@ -1,0 +1,91 @@
+---
+interface Props {
+  /** Visually-hidden label for assistive tech describing the whole gallery. */
+  ariaLabel?: string;
+}
+
+const { ariaLabel = "Photo gallery" } = Astro.props;
+---
+
+<div class="qc-gallery not-prose my-10" aria-label={ariaLabel}>
+  <!-- init="false" so we can attach injectStyles before Swiper boots — that's
+       the supported way to style the shadow-DOM nav/pagination internals. -->
+  <swiper-container
+    class="qc-gallery__swiper"
+    init="false"
+    a11y-prev-slide-message="Previous photo"
+    a11y-next-slide-message="Next photo"
+  >
+    <slot />
+  </swiper-container>
+</div>
+
+<script>
+  import { register } from "swiper/element/bundle";
+  register();
+
+  // Custom CSS injected into each carousel's shadow root: brand-red circular
+  // nav buttons with white chevrons, and qcRed pagination dots that fade to
+  // a neutral gray when inactive. Lives here (not global.css) because
+  // Swiper Element renders its arrows + dots inside a Shadow DOM that the
+  // page stylesheet can't reach.
+  const injectStyles = [
+    `
+    :host {
+      --qc-red: #e6172c;
+      /* Swiper's stock arrows pick this up — white chevrons, no pill. */
+      --swiper-navigation-color: #ffffff;
+    }
+    /* Pagination dots: qcRed active pill on a translucent white track. */
+    .swiper-pagination {
+      bottom: 14px !important;
+    }
+    .swiper-pagination-bullet {
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      opacity: 0.55;
+      transition: background 0.2s ease, opacity 0.2s ease, width 0.2s ease;
+      margin: 0 4px !important;
+    }
+    .swiper-pagination-bullet-active {
+      background: var(--qc-red);
+      opacity: 1;
+      width: 22px;
+      border-radius: 4px;
+    }
+    `,
+  ];
+
+  function init() {
+    document
+      .querySelectorAll<HTMLElement>(".qc-gallery__swiper")
+      .forEach((el) => {
+        if ((el as HTMLElement & { initialized?: boolean }).initialized) return;
+        Object.assign(el, {
+          navigation: true,
+          pagination: { clickable: true },
+          keyboard: true,
+          grabCursor: true,
+          spaceBetween: 16,
+          loop: true,
+          autoplay: {
+            delay: 3000,
+            // Keep cycling even after the user clicks an arrow or a dot.
+            disableOnInteraction: false,
+            // Pause while the cursor sits on the carousel so the user can
+            // study a frame without it sliding away.
+            pauseOnMouseEnter: true,
+          },
+          injectStyles,
+        });
+        (el as HTMLElement & { initialize?: () => void }).initialize?.();
+      });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>

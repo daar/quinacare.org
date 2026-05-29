@@ -1,0 +1,38 @@
+---
+// Render the three Quina Yura sponsor tiers (Blaadje / Mango / Huisje)
+// from src/data/yuraBoomTiers.ts. Drops into a markdoc page as
+// {% yura-tiers /%} inside a {% tier-grid %} block; the tier-grid
+// component provides the surrounding grid layout.
+//
+// Each tier renders a TierCard configured as a sponsor-modal trigger:
+// the card carries data-open-modal + data-amount + data-tier so the
+// shared DonationFormCard inside the modal can lock the amount and
+// tag the donation row with the tier id.
+
+import TierCard from "./TierCard.astro";
+import { yuraBoomTiers } from "../../data/yuraBoomTiers";
+import { getLangFromUrl } from "../../i18n";
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+{
+  yuraBoomTiers.map((tier) => {
+    const copy = tier.i18n[lang];
+    return (
+      <TierCard
+        image={tier.image}
+        title={copy.title}
+        price={copy.price}
+        frequency={copy.frequency}
+        impact={copy.impact}
+        yearly={copy.yearly}
+        href={`/donate?amount=${tier.amount}`}
+        modal="sponsor-modal"
+        amount={tier.amount}
+        tier={tier.id}
+        featured={tier.featured}
+      />
+    );
+  })
+}

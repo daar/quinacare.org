@@ -1,6 +1,7 @@
 ---
 import Icon from "../Icon.astro";
 import OptimizedImage from "../OptimizedImage.astro";
+import { resolveImage } from "../../lib/images";
 
 interface Props {
   image: string;
@@ -11,6 +12,27 @@ interface Props {
   yearly: string;
   href: string;
   featured?: boolean;
+  /**
+   * Dialog id of the modal this card should open. Defaults to
+   * "sponsor-modal" for backwards compatibility with the existing
+   * yura-boom flow. Pass an empty string to render a plain link
+   * to `href` instead.
+   */
+  modal?: string;
+  /**
+   * Exact numeric amount in euros. Lets the donation form lock the
+   * value precisely (e.g. 17.5) without having to parse it back out
+   * of `href`. Falls back to the integer captured from
+   * `?amount=N` in the href.
+   */
+  amount?: number;
+  /**
+   * Stable tier identifier (e.g. "leaf"/"mango"/"house"), forwarded
+   * on the dataset for analytics + metadata. Defaults to a slugged
+   * version of `title`, which is only stable when titles don't get
+   * localised.
+   */
+  tier?: string;
 }
 
 const {
@@ -22,11 +44,30 @@ const {
   yearly,
   href,
   featured = false,
+  modal = "sponsor-modal",
+  amount,
+  tier,
 } = Astro.props;
+
+const parsedAmount = href.match(/amount=([\d.]+)/)?.[1] ?? "";
+const dataAmount =
+  amount !== undefined && Number.isFinite(amount)
+    ? String(amount)
+    : parsedAmount;
+const dataTier = tier ?? title.toLowerCase().replace(/\s+/g, "-");
+
+// Resolve the asset-pipeline URL so the modal-open trigger carries
+// a path that actually exists at runtime (e.g. /_astro/leaf.abc123.webp).
+// Falls back to the raw string for paths that genuinely live under
+// /public — there the literal path is already correct.
+const causeImageResolver = resolveImage(image);
+const causeImageUrl = causeImageResolver
+  ? (await causeImageResolver()).default.src
+  : image;
 ---
 
 <div
-  class={`group border p-8 md:p-10 transition-all duration-500 relative overflow-hidden rounded-xl flex flex-col items-center text-center ${featured ? "border-qcRed bg-red-50/30 scale-[1.02] shadow-lg" : "border-gray-100 hover:border-qcRed"}`}
+  class={`group border p-8 md:p-10 transition-all duration-500 relative overflow-hidden rounded-xl flex flex-col items-center text-center h-full ${featured ? "border-qcRed bg-red-50/30 scale-[1.02] shadow-lg" : "border-gray-100 hover:border-qcRed"}`}
 >
   <div class="w-32 h-32 mb-6 relative">
     <OptimizedImage
@@ -45,7 +86,7 @@ const {
     <span class="text-gray-400 text-sm block">{frequency}</span>
   </div>
 
-  <p class="qc-body leading-relaxed mb-2 min-h-[3rem]">
+  <p class="qc-body leading-relaxed mb-2 min-h-[3rem] flex-grow">
     {impact}
   </p>
 
@@ -53,16 +94,34 @@ const {
     {yearly}
   </span>
 
-  <button
-    type="button"
-    data-open-modal="sponsor-modal"
-    data-amount={href.match(/amount=(\d+)/)?.[1] || ""}
-    data-card-type={title.toLowerCase().replace(/\s+/g, "-")}
-    class={`qc-btn block w-full py-3.5 text-center ${
-      featured ? "qc-btn--primary" : "qc-btn--outline"
-    }`}
-  >
-    <Icon name="heart" class="mr-2" />
-    {title}
-  </button>
+  {
+    modal ? (
+      <button
+        type="button"
+        data-open-modal={modal}
+        data-amount={dataAmount}
+        data-tier={dataTier}
+        data-cause-title={title}
+        data-cause-image={causeImageUrl}
+        data-cause-impact={impact}
+        data-cause-frequency={frequency}
+        class={`qc-btn block w-full py-3.5 text-center ${
+          featured ? "qc-btn--primary" : "qc-btn--outline"
+        }`}
+      >
+        <Icon name="heart" class="mr-2" />
+        {title}
+      </button>
+    ) : (
+      <a
+        href={href}
+        class={`qc-btn block w-full py-3.5 text-center ${
+          featured ? "qc-btn--primary" : "qc-btn--outline"
+        }`}
+      >
+        <Icon name="heart" class="mr-2" />
+        {title}
+      </a>
+    )
+  }
 </div>

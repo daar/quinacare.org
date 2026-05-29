@@ -1,5 +1,5 @@
 {
-  "_TODO": "re-enable hidden navbar entries when ready — move items_disabled / submenu_disabled entries back into their arrays, and rename whatCanYouDo's \"cta_disabled\" back to \"cta\" to bring back the Donate button",
+  "_TODO": "re-enable hidden navbar entries when ready — (1) move whoAreWe out of items_disabled and back into items once the About + Organization pages are finalised, (2) move the joinTeam submenu entry out of whatCanYouDo's submenu_disabled and back into submenu once the volunteer flow is ready, (3) move the remaining items_disabled entry (whatDoWeDo) back into items once /projects + /hospital are content-ready, (4) rename whatCanYouDo's cta_disabled back to cta to bring back the Donate button.",
   "items": [
     {
       "id": "whatCanYouDo",
@@ -14,6 +14,13 @@
           "labelKey": "submenu.putumayoLoop",
           "path": "/putumayo-loop",
           "icon": "fa-solid fa-person-running"
+        },
+        {
+          "labelKey": "submenu.yuraBoom",
+          "path": "/yura-boom",
+          "icon": "fa-solid fa-tree",
+          "image": "/images/yura-boom/featured.webp",
+          "descriptionKey": "submenu.yuraBoomDesc"
         }
       ],
       "submenu_disabled": [
@@ -26,13 +33,6 @@
           "labelKey": "submenu.becomePartner",
           "path": "/become-partner",
           "icon": "fa-solid fa-handshake"
-        },
-        {
-          "labelKey": "submenu.yuraBoom",
-          "path": "/yura-boom",
-          "icon": "fa-solid fa-tree",
-          "image": "/images/yura-boom/featured.webp",
-          "descriptionKey": "submenu.yuraBoomDesc"
         },
         {
           "labelKey": "submenu.sponsorBooklet",
@@ -61,6 +61,22 @@
   ],
   "items_disabled": [
     {
+      "id": "whoAreWe",
+      "labelKey": "nav.whoAreWe",
+      "submenu": [
+        {
+          "labelKey": "submenu.aboutUs",
+          "path": "/about",
+          "icon": "fa-solid fa-users"
+        },
+        {
+          "labelKey": "submenu.organization",
+          "path": "/organization",
+          "icon": "fa-solid fa-sitemap"
+        }
+      ]
+    },
+    {
       "id": "whatDoWeDo",
       "labelKey": "nav.whatDoWeDo",
       "submenu": [
@@ -75,37 +91,6 @@
           "icon": "fa-solid fa-hospital",
           "image": "/media/2024/09/2023.07.26-entrance-hospital.IMG_2644.jpg",
           "descriptionKey": "submenu.hospitalDesc"
-        }
-      ]
-    },
-    {
-      "id": "whoAreWe",
-      "labelKey": "nav.whoAreWe",
-      "submenu": [
-        {
-          "labelKey": "submenu.aboutUs",
-          "path": "/about",
-          "icon": "fa-solid fa-users"
-        },
-        {
-          "labelKey": "submenu.organization",
-          "path": "/organization",
-          "icon": "fa-solid fa-sitemap"
-        },
-        {
-          "labelKey": "submenu.media",
-          "path": "/media",
-          "icon": "fa-solid fa-photo-film"
-        },
-        {
-          "labelKey": "submenu.goals",
-          "path": "/goals",
-          "icon": "fa-solid fa-bullseye"
-        },
-        {
-          "labelKey": "submenu.contact",
-          "path": "/contact",
-          "icon": "fa-solid fa-envelope"
         }
       ]
     }

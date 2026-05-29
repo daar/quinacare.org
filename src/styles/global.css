@@ -422,16 +422,6 @@ mark {
   margin-bottom: 1.5em;
 }
 
-.prose-article > p:first-of-type::first-letter {
-  font-size: 4.5rem;
-  font-weight: 700;
-  color: var(--color-qcRed);
-  float: left;
-  margin-right: 0.75rem;
-  line-height: 1;
-  font-family: var(--font-effra);
-}
-
 .prose-article h2,
 .prose-article h3,
 .prose-article h4 {
@@ -459,6 +449,67 @@ mark {
 .prose-article h4 {
   font-size: 1.25rem;
   margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Gallery: a Swiper carousel that fills the article column. Each slide
+   sizes to a fixed aspect ratio so the carousel doesn't jump in height
+   between portrait and landscape photos; object-fit: cover crops the
+   long side. Arrows and pagination dots come from Swiper Element. */
+.qc-gallery {
+  --qc-gallery-radius: 0.75rem;
+}
+
+.qc-gallery__swiper {
+  display: block;
+  width: 100%;
+  /* 4:3 gives a meaningfully bigger image area than 16:10 while still
+     fitting cleanly inside the article column on every breakpoint. */
+  aspect-ratio: 4 / 3;
+  border-radius: var(--qc-gallery-radius);
+  overflow: hidden;
+  background: #0f0f0f;
+}
+
+.qc-gallery__slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.qc-gallery__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Nav/pagination tuning lives in Swiper's shadow root, injected from
+   src/components/markdoc/Gallery.astro — the host page can't reach
+   .swiper-button-* / .swiper-pagination-* through regular stylesheets. */
+
+.prose-article ul,
+.prose-article ol {
+  margin-bottom: 1.5em;
+  padding-left: 1.5em;
+}
+
+.prose-article ul {
+  list-style: disc;
+}
+
+.prose-article ol {
+  list-style: decimal;
+}
+
+.prose-article li {
+  margin-bottom: 0.5em;
+}
+
+.prose-article li > ul,
+.prose-article li > ol {
+  margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 

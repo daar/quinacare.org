@@ -38,6 +38,7 @@
     "nodemailer": "^8.0.2",
     "qrcode": "^1.5.4",
     "sharp": "^0.34.5",
+    "swiper": "^12.2.0",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {

@@ -2,6 +2,16 @@ import { defineMarkdocConfig, component } from "@astrojs/markdoc/config";
 
 export default defineMarkdocConfig({
   tags: {
+    // {% comment %}…{% /comment %} — Markdoc has no built-in block
+    // comment; this tag drops its entire subtree at transform time
+    // so editors can keep TODO / parked-content blocks in .mdoc
+    // files without them appearing on the page.
+    comment: {
+      attributes: {},
+      transform() {
+        return null;
+      },
+    },
     image: {
       render: component("./src/components/markdoc/Image.astro"),
       attributes: {
@@ -11,6 +21,19 @@ export default defineMarkdocConfig({
         height: { type: Number },
         align: { type: String },
         caption: { type: String },
+      },
+    },
+    gallery: {
+      render: component("./src/components/markdoc/Gallery.astro"),
+      attributes: {
+        ariaLabel: { type: String },
+      },
+    },
+    "gallery-image": {
+      render: component("./src/components/markdoc/GalleryImage.astro"),
+      attributes: {
+        src: { type: String, required: true },
+        alt: { type: String },
       },
     },
     download: {
@@ -54,6 +77,10 @@ export default defineMarkdocConfig({
         href: { type: String, required: true },
         featured: { type: Boolean },
       },
+    },
+    "yura-tiers": {
+      render: component("./src/components/markdoc/YuraTiers.astro"),
+      attributes: {},
     },
     "profile-section": {
       render: component("./src/components/markdoc/ProfileSection.astro"),
