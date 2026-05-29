@@ -29,7 +29,16 @@ export default async () => {
   try {
     const res = await fetch(target, {
       method: "POST",
-      headers: { "x-cron-secret": secret },
+      headers: {
+        "x-cron-secret": secret,
+        // Astro's default CSRF check rejects POST/PUT/PATCH/DELETE whose
+        // Origin doesn't match the site origin ("Cross-site POST form
+        // submissions are forbidden"). Node's fetch sends no Origin by
+        // default, so the cron's own call would 403 before our handler
+        // ever runs. Setting Origin to the site URL satisfies the check;
+        // the per-route x-cron-secret remains the real authentication.
+        Origin: base,
+      },
     });
     const body = await res.text();
     console.log(`[cron-reconcile] ${res.status} ${body}`);
