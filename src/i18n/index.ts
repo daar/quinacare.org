@@ -376,8 +376,7 @@ export const ui = {
     "submenu.joinTeam": "Word vrijwilliger",
     "submenu.becomePartner": "Word partner",
     "submenu.yuraBoom": "De Yura Boom",
-    "submenu.yuraBoomDesc":
-      "Koop een blad aan onze symbolische bamboe boom en steun het ziekenhuis.",
+    "submenu.yuraBoomDesc": "Koop een item aan onze symbolische yura-boom",
     "submenu.sponsorBooklet": "Sponsorboekje",
     "submenu.sponsorBookletDesc":
       "Sponsor een personeelslid en maak direct impact op de zorg.",
@@ -770,8 +769,7 @@ export const ui = {
     "submenu.joinTeam": "Join Our Team",
     "submenu.becomePartner": "Become a Partner",
     "submenu.yuraBoom": "The Yura Tree",
-    "submenu.yuraBoomDesc":
-      "Buy a leaf on our symbolic bamboo tree and support the hospital.",
+    "submenu.yuraBoomDesc": "Buy an item on our symbolic Yura tree",
     "submenu.sponsorBooklet": "Sponsor Booklet",
     "submenu.sponsorBookletDesc":
       "Sponsor a staff member and make a direct impact on care.",
@@ -1165,7 +1163,7 @@ export const ui = {
     "submenu.becomePartner": "Sé socio",
     "submenu.yuraBoom": "El Árbol Yura",
     "submenu.yuraBoomDesc":
-      "Compra una hoja en nuestro árbol simbólico de bambú y apoya al hospital.",
+      "Compra un elemento en nuestro árbol Yura simbólico",
     "submenu.sponsorBooklet": "Folleto de patrocinio",
     "submenu.sponsorBookletDesc":
       "Patrocina a un miembro del personal y genera un impacto directo en la atención.",
