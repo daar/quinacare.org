@@ -55,6 +55,22 @@ async function classifyAbandonment(
  * shared secret in the x-cron-secret header so the URL is not callable
  * by the public.
  */
+// GET is a low-trust liveness probe — it confirms the endpoint exists
+// and shows whether the cron secret is configured server-side, without
+// requiring the caller to know the secret. Useful for debugging when
+// the Netlify scheduled function isn't observably firing.
+export const GET: APIRoute = async () => {
+  return new Response(
+    JSON.stringify({
+      ok: true,
+      endpoint: "api/cron/reconcile",
+      cronSecretConfigured: Boolean(cronSecret),
+      mollieApiKeyConfigured: Boolean(mollieApiKey),
+    }),
+    { status: 200, headers: { "Content-Type": "application/json" } },
+  );
+};
+
 export const POST: APIRoute = async ({ request }) => {
   if (!cronSecret) {
     return new Response("Cron not configured", { status: 503 });

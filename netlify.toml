@@ -5,6 +5,15 @@
 [build.environment]
   NODE_VERSION = "22.22.3"
 
+# Without this block, Netlify can skip the user-authored functions in
+# netlify/functions/ when the @astrojs/netlify adapter is already
+# publishing the SSR handler under .netlify/v1/functions/ — the
+# Frameworks API output becomes the sole functions surface and the
+# scheduled cron is never registered. Declaring the directory
+# explicitly keeps both function trees discoverable.
+[functions]
+  directory = "netlify/functions"
+
 [[headers]]
   for = "/*"
   [headers.values]

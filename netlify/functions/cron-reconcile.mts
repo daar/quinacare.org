@@ -5,21 +5,39 @@
 // Requires URL (set by Netlify automatically) and CRON_SECRET (set in
 // the site env). Without CRON_SECRET this is a no-op so the endpoint
 // stays unreachable from outside.
+//
+// Discoverability: this file relies on netlify.toml's [functions]
+// directory block. Without that, the @astrojs/netlify adapter's
+// .netlify/v1/ output can shadow netlify/functions/ at deploy time
+// and this scheduled function is never registered.
 
 export default async () => {
   const base = process.env.URL || process.env.DEPLOY_URL;
   const secret = process.env.CRON_SECRET;
-  if (!base || !secret) {
-    console.warn("[cron-reconcile] URL or CRON_SECRET not set, skipping");
-    return new Response("Not configured", { status: 503 });
+  if (!base) {
+    console.warn("[cron-reconcile] URL/DEPLOY_URL missing, skipping");
+    return new Response("URL missing", { status: 503 });
   }
-  const res = await fetch(`${base}/api/cron/reconcile`, {
-    method: "POST",
-    headers: { "x-cron-secret": secret },
-  });
-  const body = await res.text();
-  console.log(`[cron-reconcile] ${res.status} ${body}`);
-  return new Response(body, { status: res.status });
+  if (!secret) {
+    console.warn("[cron-reconcile] CRON_SECRET not set in Netlify env, skipping");
+    return new Response("CRON_SECRET missing", { status: 503 });
+  }
+  const target = `${base}/api/cron/reconcile`;
+  console.log(`[cron-reconcile] POST ${target}`);
+  try {
+    const res = await fetch(target, {
+      method: "POST",
+      headers: { "x-cron-secret": secret },
+    });
+    const body = await res.text();
+    console.log(`[cron-reconcile] ${res.status} ${body}`);
+    return new Response(body, { status: res.status });
+  } catch (err) {
+    console.error("[cron-reconcile] fetch failed:", err);
+    return new Response("fetch failed", { status: 502 });
+  }
 };
 
-export const config = { schedule: "@hourly" };
+// Use canonical 5-field cron over "@hourly" — Netlify documents the
+// 5-field form as the supported syntax; the @-shorthand is best-effort.
+export const config = { schedule: "0 * * * *" };
