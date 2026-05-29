@@ -287,8 +287,7 @@ export const ui = {
     "putumayoLoop.statsDonors": "donateurs",
     "putumayoLoop.statsRunners": "lopers",
     "putumayoLoop.hubsTitle": "Onze hubs",
-    "putumayoLoop.hubsSubtitle":
-      "Loop mee op één van deze locaties of organiseer je eigen run.",
+    "putumayoLoop.hubsSubtitle": "In een hub of op je eigen plek.",
     "putumayoLoop.hubCaptain": "Hub organisator",
     "putumayoLoop.runnersInHub": "lopers",
     "putumayoLoop.organizeHubTitle": "Wil je zelf een hub organiseren?",
@@ -680,8 +679,7 @@ export const ui = {
     "putumayoLoop.statsDonors": "donors",
     "putumayoLoop.statsRunners": "runners",
     "putumayoLoop.hubsTitle": "Our hubs",
-    "putumayoLoop.hubsSubtitle":
-      "Run with us at one of these locations, or organize your own.",
+    "putumayoLoop.hubsSubtitle": "In a hub or on your own.",
     "putumayoLoop.hubCaptain": "Hub organizer",
     "putumayoLoop.runnersInHub": "runners",
     "putumayoLoop.organizeHubTitle": "Want to organize a hub yourself?",
@@ -1073,8 +1071,7 @@ export const ui = {
     "putumayoLoop.statsDonors": "donantes",
     "putumayoLoop.statsRunners": "corredores",
     "putumayoLoop.hubsTitle": "Nuestros hubs",
-    "putumayoLoop.hubsSubtitle":
-      "Corre con nosotros en una de estas ubicaciones u organiza la tuya.",
+    "putumayoLoop.hubsSubtitle": "En un hub o por tu cuenta.",
     "putumayoLoop.hubCaptain": "Organizador del hub",
     "putumayoLoop.runnersInHub": "corredores",
     "putumayoLoop.organizeHubTitle": "¿Quieres organizar un hub?",
