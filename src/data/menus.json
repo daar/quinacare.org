@@ -1,22 +1,6 @@
 {
-  "_TODO": "re-enable hidden navbar entries when ready — move the remaining items_disabled entry (whatDoWeDo) back into items, and rename whatCanYouDo's \"cta_disabled\" back to \"cta\" to bring back the Donate button",
+  "_TODO": "re-enable hidden navbar entries when ready — (1) move whoAreWe out of items_disabled and back into items once the About + Organization pages are finalised, (2) move the joinTeam submenu entry out of whatCanYouDo's submenu_disabled and back into submenu once the volunteer flow is ready, (3) move the remaining items_disabled entry (whatDoWeDo) back into items once /projects + /hospital are content-ready, (4) rename whatCanYouDo's cta_disabled back to cta to bring back the Donate button.",
   "items": [
-    {
-      "id": "whoAreWe",
-      "labelKey": "nav.whoAreWe",
-      "submenu": [
-        {
-          "labelKey": "submenu.aboutUs",
-          "path": "/about",
-          "icon": "fa-solid fa-users"
-        },
-        {
-          "labelKey": "submenu.organization",
-          "path": "/organization",
-          "icon": "fa-solid fa-sitemap"
-        }
-      ]
-    },
     {
       "id": "whatCanYouDo",
       "labelKey": "nav.whatCanYouDo",
@@ -37,14 +21,14 @@
           "icon": "fa-solid fa-tree",
           "image": "/images/yura-boom/featured.webp",
           "descriptionKey": "submenu.yuraBoomDesc"
-        },
+        }
+      ],
+      "submenu_disabled": [
         {
           "labelKey": "submenu.joinTeam",
           "path": "/join-team",
           "icon": "fa-solid fa-people-group"
-        }
-      ],
-      "submenu_disabled": [
+        },
         {
           "labelKey": "submenu.becomePartner",
           "path": "/become-partner",
@@ -76,6 +60,22 @@
     }
   ],
   "items_disabled": [
+    {
+      "id": "whoAreWe",
+      "labelKey": "nav.whoAreWe",
+      "submenu": [
+        {
+          "labelKey": "submenu.aboutUs",
+          "path": "/about",
+          "icon": "fa-solid fa-users"
+        },
+        {
+          "labelKey": "submenu.organization",
+          "path": "/organization",
+          "icon": "fa-solid fa-sitemap"
+        }
+      ]
+    },
     {
       "id": "whatDoWeDo",
       "labelKey": "nav.whatDoWeDo",
