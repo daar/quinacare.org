@@ -13,6 +13,10 @@
 # explicitly keeps both function trees discoverable.
 [functions]
   directory = "netlify/functions"
+  # Pin the TS bundler so Netlify reliably picks up cron-reconcile.ts —
+  # the default zisi bundler can silently skip TS files that the
+  # function detector doesn't recognise.
+  node_bundler = "esbuild"
 
 [[headers]]
   for = "/*"
