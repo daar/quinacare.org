@@ -422,16 +422,6 @@ mark {
   margin-bottom: 1.5em;
 }
 
-.prose-article > p:first-of-type::first-letter {
-  font-size: 4.5rem;
-  font-weight: 700;
-  color: var(--color-qcRed);
-  float: left;
-  margin-right: 0.75rem;
-  line-height: 1;
-  font-family: var(--font-effra);
-}
-
 .prose-article h2,
 .prose-article h3,
 .prose-article h4 {
