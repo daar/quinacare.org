@@ -38,3 +38,12 @@ __pycache__
 public/pagefind/
 
 backup
+
+# Generated donations-report output (scripts/donations-report.py)
+donations-report-*.txt
+donations-report-*.pdf
+
+# Local Claude Code settings + per-skill secrets (keep skill content
+# tracked, but never commit the local-only bits).
+.claude/settings.local.json
+.claude/**/.env
