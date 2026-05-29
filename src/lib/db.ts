@@ -54,6 +54,20 @@ export async function ensureSchema(): Promise<void> {
       locale     TEXT NOT NULL DEFAULT 'nl',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
+    // Persistent error log — console.error is invisible to end users
+    // and Netlify Function logs are not queryable after the fact, so
+    // we mirror every server- and client-side error here for analysis.
+    `CREATE TABLE IF NOT EXISTS app_errors (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      source     TEXT NOT NULL,
+      level      TEXT NOT NULL DEFAULT 'error',
+      message    TEXT NOT NULL,
+      context    TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_app_errors_source ON app_errors(source)`,
+    `CREATE INDEX IF NOT EXISTS idx_app_errors_created ON app_errors(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_app_errors_level ON app_errors(level)`,
   ]);
   migrated = true;
 }

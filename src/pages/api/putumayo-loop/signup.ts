@@ -24,6 +24,9 @@ import {
   type TranslationKey,
 } from "../../../i18n";
 import { runManager, editions } from "../../../data/putumayoLoop";
+import { reportError } from "../../../lib/errors";
+
+const SOURCE = "api/putumayo-loop/signup";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
 const ALLOWED_DISTANCES = new Set(["10k", "half", "full"]);
@@ -120,7 +123,7 @@ export const POST: APIRoute = async ({ request }) => {
       ],
     });
   } catch (err) {
-    console.error("[putumayo-loop/signup] Turso insert failed:", err);
+    reportError(SOURCE, "Turso insert failed", err, { email, editionYear });
     return new Response(
       JSON.stringify({ error: "Could not save your signup" }),
       { status: 500 },
@@ -179,7 +182,7 @@ export const POST: APIRoute = async ({ request }) => {
       replyTo: `${firstName} ${lastName} <${email}>`,
     });
   } catch (err) {
-    console.error("[putumayo-loop/signup] notification mail failed:", err);
+    reportError(SOURCE, "run-manager notification mail failed", err);
   }
 
   // Hub signups only: also notify the hub captain if their email is on
@@ -194,7 +197,7 @@ export const POST: APIRoute = async ({ request }) => {
         replyTo: `${firstName} ${lastName} <${email}>`,
       });
     } catch (err) {
-      console.error("[putumayo-loop/signup] hub captain mail failed:", err);
+      reportError(SOURCE, "hub-captain mail failed", err, { hubId });
     }
   }
 
@@ -236,10 +239,7 @@ export const POST: APIRoute = async ({ request }) => {
       replyTo: runManager.email,
     });
   } catch (err) {
-    console.error(
-      "[putumayo-loop/signup] runner confirmation mail failed:",
-      err,
-    );
+    reportError(SOURCE, "runner-confirmation mail failed", err, { email });
   }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });

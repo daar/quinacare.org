@@ -2,7 +2,9 @@ export const prerender = false;
 
 import type { APIRoute } from "astro";
 import nodemailer from "nodemailer";
+import { reportError } from "../../../lib/errors";
 
+const SOURCE = "api/contact/send";
 const CONTACT_TO_EMAIL = "care@quinacare.org";
 
 export const POST: APIRoute = async ({ request }) => {
@@ -25,8 +27,9 @@ export const POST: APIRoute = async ({ request }) => {
       import.meta.env.MAIL_FROM || "Quina Care <noreply@quinacare.org>";
 
     if (!host || !user || !pass) {
-      console.error(
-        "[contact] SMTP not configured: missing SMTP_HOST / SMTP_USER / SMTP_PASS",
+      reportError(
+        SOURCE,
+        "SMTP not configured: missing SMTP_HOST / SMTP_USER / SMTP_PASS",
       );
       return new Response(
         JSON.stringify({ error: "Email service not configured" }),
@@ -51,7 +54,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (err) {
-    console.error("[contact] send failed:", err);
+    reportError(SOURCE, "send failed", err);
     const detail = err instanceof Error ? err.message : "Unknown error";
     return new Response(JSON.stringify({ error: detail }), { status: 500 });
   }
