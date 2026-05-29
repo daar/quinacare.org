@@ -24,6 +24,9 @@ const metaDescription =
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/images/og-image.svg", Astro.site).href;
 const ogLocale = { nl: "nl_NL", en: "en_US", es: "es_ES" }[currentLang];
+// Cloudflare Web Analytics — only renders the beacon when the token
+// is set, so local dev stays silent and production lights up.
+const cfAnalyticsToken = import.meta.env.CF_ANALYTICS_TOKEN;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "NGO",
@@ -141,6 +144,16 @@ const structuredData = {
         });
       })();
     </script>
+    {
+      cfAnalyticsToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={`{"token":"${cfAnalyticsToken}"}`}
+        />
+      )
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--astro-font-arimo" preload />
     <Font cssVariable="--astro-font-effra" preload />
