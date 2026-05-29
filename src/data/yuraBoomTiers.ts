@@ -51,7 +51,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         title: "Blaadje",
         price: "€10",
         frequency: "per maand",
-        impact: "Gelijk aan circa 5 pediatrische consulten per maand",
+        impact: "Met uw donatie ondersteund u bijvoorbeeld 3 kinderconsulten.",
         yearly: "€120 per jaar",
       },
       en: {
@@ -59,14 +59,14 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€10",
         frequency: "per month",
         impact:
-          "Equivalent to approximately 5 pediatric consultations per month",
+          "With your donation you support, for example, 3 children's consultations.",
         yearly: "€120 per year",
       },
       es: {
         title: "Hoja",
         price: "€10",
         frequency: "por mes",
-        impact: "Equivalente a aproximadamente 5 consultas pediátricas por mes",
+        impact: "Con tu donación apoyas, por ejemplo, 3 consultas pediátricas.",
         yearly: "€120 por año",
       },
     },
@@ -82,7 +82,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€17,50",
         frequency: "per maand",
         impact:
-          "Gelijk aan circa 5 prenatale consulten inclusief echo per maand",
+          "Met uw donatie ondersteund u bijvoorbeeld de begeleiding van een zwangere tijdens haar zwangerschap",
         yearly: "€210 per jaar",
       },
       en: {
@@ -90,7 +90,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€17.50",
         frequency: "per month",
         impact:
-          "Equivalent to approximately 5 prenatal consultations including ultrasound per month",
+          "With your donation you support, for example, the care of a pregnant woman throughout her pregnancy",
         yearly: "€210 per year",
       },
       es: {
@@ -98,7 +98,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€17,50",
         frequency: "por mes",
         impact:
-          "Equivalente a aproximadamente 5 consultas prenatales incluyendo ecografía por mes",
+          "Con tu donación apoyas, por ejemplo, el seguimiento de una mujer embarazada durante su embarazo",
         yearly: "€210 por año",
       },
     },
@@ -112,7 +112,8 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         title: "Huisje",
         price: "€25",
         frequency: "per maand",
-        impact: "Gelijk aan circa 1 ziekenhuisopname per maand",
+        impact:
+          "Met uw donatie ondersteund u bijvoorbeeld een ziekenhuisovernachting voor een patient",
         yearly: "€300 per jaar",
       },
       en: {
@@ -120,7 +121,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€25",
         frequency: "per month",
         impact:
-          "Equivalent to approximately 1 hospital overnight stay per month",
+          "With your donation you support, for example, an overnight hospital stay for a patient",
         yearly: "€300 per year",
       },
       es: {
@@ -128,7 +129,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€25",
         frequency: "por mes",
         impact:
-          "Equivalente a aproximadamente 1 noche de hospitalización por mes",
+          "Con tu donación apoyas, por ejemplo, una noche de hospitalización para un paciente",
         yearly: "€300 por año",
       },
     },

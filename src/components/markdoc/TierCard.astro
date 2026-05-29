@@ -67,7 +67,7 @@ const causeImageUrl = causeImageResolver
 ---
 
 <div
-  class={`group border p-8 md:p-10 transition-all duration-500 relative overflow-hidden rounded-xl flex flex-col items-center text-center ${featured ? "border-qcRed bg-red-50/30 scale-[1.02] shadow-lg" : "border-gray-100 hover:border-qcRed"}`}
+  class={`group border p-8 md:p-10 transition-all duration-500 relative overflow-hidden rounded-xl flex flex-col items-center text-center h-full ${featured ? "border-qcRed bg-red-50/30 scale-[1.02] shadow-lg" : "border-gray-100 hover:border-qcRed"}`}
 >
   <div class="w-32 h-32 mb-6 relative">
     <OptimizedImage
@@ -86,7 +86,7 @@ const causeImageUrl = causeImageResolver
     <span class="text-gray-400 text-sm block">{frequency}</span>
   </div>
 
-  <p class="qc-body leading-relaxed mb-2 min-h-[3rem]">
+  <p class="qc-body leading-relaxed mb-2 min-h-[3rem] flex-grow">
     {impact}
   </p>
 
