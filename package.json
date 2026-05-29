@@ -44,7 +44,7 @@
     "@cspell/dict-es-es": "^3.0.8",
     "@cspell/dict-nl-nl": "^2.4.2",
     "@eslint/js": "^10.0.1",
-    "@types/nodemailer": "^7.0.11",
+    "@types/nodemailer": "^8.0.0",
     "@types/qrcode": "^1.5.6",
     "cspell": "^10.0.0",
     "eslint": "^10.0.3",
