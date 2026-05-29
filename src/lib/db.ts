@@ -86,6 +86,24 @@ export async function ensureSchema(): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_app_errors_source ON app_errors(source)`,
     `CREATE INDEX IF NOT EXISTS idx_app_errors_created ON app_errors(created_at)`,
     `CREATE INDEX IF NOT EXISTS idx_app_errors_level ON app_errors(level)`,
+    // 404 / missing-page log. WordPress -> Astro migration left stale
+    // URLs in the wild; this table captures every 404 hit so we can
+    // pick the most-requested ones and turn them into redirects.
+    // is_bot is a tagged guess from the User-Agent, never a filter —
+    // both bot and human rows are kept so the heuristic can be
+    // re-evaluated later without losing data.
+    `CREATE TABLE IF NOT EXISTS page_misses (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      path       TEXT NOT NULL,
+      referrer   TEXT,
+      user_agent TEXT,
+      language   TEXT,
+      is_bot     INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_page_misses_created ON page_misses(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_page_misses_path ON page_misses(path)`,
+    `CREATE INDEX IF NOT EXISTS idx_page_misses_bot ON page_misses(is_bot)`,
   ]);
   migrated = true;
 }

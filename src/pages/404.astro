@@ -106,6 +106,31 @@ const t = useTranslations(lang);
   <Footer />
 </Layout>
 
+<script is:inline>
+  // Beacon every 404 hit to /api/page-misses/log so we can build a
+  // redirect table from the WordPress URLs visitors still ask for.
+  // sendBeacon is fire-and-forget, won't delay rendering or block
+  // navigation. The server-side handler adds UA + Accept-Language.
+  (function () {
+    try {
+      navigator.sendBeacon(
+        "/api/page-misses/log",
+        new Blob(
+          [
+            JSON.stringify({
+              path: location.pathname + location.search,
+              referrer: document.referrer || null,
+            }),
+          ],
+          { type: "application/json" },
+        ),
+      );
+    } catch {
+      /* sendBeacon unavailable — not critical */
+    }
+  })();
+</script>
+
 <style>
   .error-code {
     animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
