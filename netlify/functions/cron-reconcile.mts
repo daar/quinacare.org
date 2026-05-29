@@ -19,7 +19,9 @@ export default async () => {
     return new Response("URL missing", { status: 503 });
   }
   if (!secret) {
-    console.warn("[cron-reconcile] CRON_SECRET not set in Netlify env, skipping");
+    console.warn(
+      "[cron-reconcile] CRON_SECRET not set in Netlify env, skipping",
+    );
     return new Response("CRON_SECRET missing", { status: 503 });
   }
   const target = `${base}/api/cron/reconcile`;
