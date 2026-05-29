@@ -194,10 +194,34 @@ def fmt_money(cents, currency="EUR"):
     return f"{sym}{(cents or 0) / 100:.2f}"
 
 
+def _local_tz_label() -> str:
+    """Return a 'UTC+HH:MM' label for the system's current local offset."""
+    offset = datetime.now().astimezone().utcoffset()
+    if offset is None:
+        return "UTC"
+    total = int(offset.total_seconds() / 60)
+    sign = "+" if total >= 0 else "-"
+    return f"UTC{sign}{abs(total) // 60:02d}:{abs(total) % 60:02d}"
+
+
+def _utc_to_local(s):
+    """Convert an SQLite UTC datetime string to system-local time string."""
+    if not s:
+        return s
+    try:
+        dt = datetime.strptime(s[:19], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+        return dt.astimezone().strftime("%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return s
+
+
 def report_text(donations, events_by_donation, since, until, verbose=False, from_id=None):
     lines = []
     lines.append("Quina Care donations funnel report")
-    lines.append(f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC")
+    now_local = datetime.now().astimezone()
+    lines.append(
+        f"Generated: {now_local.strftime('%Y-%m-%d %H:%M')} {_local_tz_label()}"
+    )
     filters = []
     if from_id is not None:
         filters.append(f"id >= {from_id}")
@@ -275,8 +299,9 @@ def report_text(donations, events_by_donation, since, until, verbose=False, from
     lines.append("")
 
     lines.append("=== Donations ===")
+    created_header = f"created ({_local_tz_label()})"
     lines.append(
-        f"  {'id':>4}  {'created (UTC)':<19}  {'method':<11}  {'amount':>9}  {'state':<9}  fault path"
+        f"  {'id':>4}  {created_header:<19}  {'method':<11}  {'amount':>9}  {'state':<9}  fault path"
     )
     lines.append(
         f"  {'-' * 4}  {'-' * 19}  {'-' * 11}  {'-' * 9}  {'-' * 9}  {'-' * 40}"
@@ -284,7 +309,7 @@ def report_text(donations, events_by_donation, since, until, verbose=False, from
     for d, events, state, fault in classified:
         amount = fmt_money(d.get("amount_cents") or 0, d.get("currency") or "EUR")
         method = (d.get("payment_method") or "-")[:11]
-        created = (d.get("created_at") or "")[:19]
+        created = _utc_to_local(d.get("created_at") or "")[:19]
         lines.append(
             f"  {d['id']:>4}  {created:<19}  {method:<11}  {amount:>9}  {state:<9}  {fault}"
         )
@@ -304,7 +329,7 @@ def report_text(donations, events_by_donation, since, until, verbose=False, from
                 prev = e.get("previous_status") or ""
                 trans = f"  [{prev} → {ms}]" if (ms or prev) else ""
                 lines.append(
-                    f"  {e['created_at']}  {e['event_type']:<22}  ({e['source']}){trans}  {short}"
+                    f"  {_utc_to_local(e['created_at'])}  {e['event_type']:<22}  ({e['source']}){trans}  {short}"
                 )
 
     return "\n".join(lines)
