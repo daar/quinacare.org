@@ -172,6 +172,19 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Site-wide qcRed text selection. Previously only set as Tailwind
+   `selection:` utilities on hand-crafted body tags; declaring it here
+   lets the news + projects post pages move to Layout.astro without
+   losing the brand colour on selection. */
+::selection {
+  background: var(--color-qcRed);
+  color: #ffffff;
+}
+::-moz-selection {
+  background: var(--color-qcRed);
+  color: #ffffff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body {
     scroll-behavior: auto;

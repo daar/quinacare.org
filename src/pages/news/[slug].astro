@@ -2,10 +2,10 @@
 import Icon from "../../components/Icon.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import SocialShare from "../../components/SocialShare.astro";
-import "/src/styles/global.css";
 import {
   useTranslations,
   getDateLocale,
@@ -71,260 +71,252 @@ function getNewsPath(slug: string): string {
 }
 ---
 
-<html lang={lang}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <meta
-      name="description"
-      content={post.data.excerpt || `${post.data.title} - Quina Care`}
-    />
-    <title>{post.data.title} | Quina Care</title>
-    <style>
-      #progress-bar {
-        height: 3px;
-        background: var(--color-qcRed);
-        width: 0%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 100;
-        transition: width 0.1s ease;
-      }
-    </style>
-  </head>
-  <body class="text-qcBlack bg-white selection:bg-qcRed selection:text-white">
-    <div id="progress-bar"></div>
-
-    <Nav />
-
-    <header class="pt-40 pb-16" data-pagefind-body>
-      <div class="max-w-3xl mx-auto px-6 text-center">
-        {
-          post.data.categories && post.data.categories.length > 0 && (
-            <span class="qc-meta bg-gray-100 !text-qcBlack px-3 py-1 rounded-sm mb-8 inline-block">
-              {getCategoryLabel(post.data.categories)}
-            </span>
-          )
-        }
-
-        <h1
-          class="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1] mb-8 uppercase"
-        >
-          {post.data.title}
-        </h1>
-
-        <div class="qc-meta flex items-center justify-center gap-4 flex-wrap">
-          <span class="flex items-center gap-1.5">
-            <Icon name="calendar" />
-            {formatDate(post.data.date)}
-          </span>
-          <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-          <span class="flex items-center gap-1.5">
-            <Icon name="clock" />
-            {getReadingTime(post.body || "")}
-            {t("post.readingTime")}
-          </span>
-        </div>
-      </div>
-    </header>
-
-    {
-      post.data.featured_image && (
-        <figure class="max-w-6xl mx-auto px-6 mb-24 group" data-pagefind-body>
-          <div class="relative">
-            <div class="aspect-[21/9] overflow-hidden rounded-xl bg-gray-100 relative z-10">
-              <Image
-                src={post.data.featured_image}
-                class="w-full h-full object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
-                alt={post.data.featured_image_caption || post.data.title}
-                widths={[400, 800, 1200]}
-                sizes="(max-width: 768px) 100vw, 1200px"
-                data-pagefind-meta="image[src]"
-              />
-            </div>
-            <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700" />
-            <div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gray-200 opacity-40 rounded-xl" />
-
-            {(post.data.featured_image_caption ||
-              post.data.featured_image_copyright) && (
-              <figcaption class="mt-6 flex flex-wrap items-center justify-between gap-4 px-2">
-                {post.data.featured_image_caption && (
-                  <div class="flex items-center gap-3">
-                    <svg
-                      class="w-3.5 h-3.5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <p class="qc-meta">
-                      <span class="mx-2 text-gray-200">|</span>
-                      {post.data.featured_image_caption}
-                    </p>
-                  </div>
-                )}
-                {post.data.featured_image_copyright && (
-                  <div class="flex items-center gap-2">
-                    <span class="text-[9px] font-medium uppercase tracking-[0.2em] text-gray-300">
-                      {post.data.featured_image_copyright}
-                    </span>
-                  </div>
-                )}
-              </figcaption>
-            )}
-          </div>
-        </figure>
-      )
+<Layout
+  title={`${post.data.title} | Quina Care`}
+  lang={lang}
+  description={post.data.excerpt || `${post.data.title} - Quina Care`}
+>
+  <style>
+    #progress-bar {
+      height: 3px;
+      background: var(--color-qcRed);
+      width: 0%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      transition: width 0.1s ease;
     }
+  </style>
 
-    <main
-      class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-16 relative"
-      data-pagefind-body
+  <div id="progress-bar"></div>
+
+  <Nav />
+
+  <header class="pt-40 pb-16" data-pagefind-body>
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      {
+        post.data.categories && post.data.categories.length > 0 && (
+          <span class="qc-meta bg-gray-100 !text-qcBlack px-3 py-1 rounded-sm mb-8 inline-block">
+            {getCategoryLabel(post.data.categories)}
+          </span>
+        )
+      }
+
+      <h1
+        class="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1] mb-8 uppercase"
+      >
+        {post.data.title}
+      </h1>
+
+      <div class="qc-meta flex items-center justify-center gap-4 flex-wrap">
+        <span class="flex items-center gap-1.5">
+          <Icon name="calendar" />
+          {formatDate(post.data.date)}
+        </span>
+        <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+        <span class="flex items-center gap-1.5">
+          <Icon name="clock" />
+          {getReadingTime(post.body || "")}
+          {t("post.readingTime")}
+        </span>
+      </div>
+    </div>
+  </header>
+
+  {
+    post.data.featured_image && (
+      <figure class="max-w-6xl mx-auto px-6 mb-24 group" data-pagefind-body>
+        <div class="relative">
+          <div class="aspect-[21/9] overflow-hidden rounded-xl bg-gray-100 relative z-10">
+            <Image
+              src={post.data.featured_image}
+              class="w-full h-full object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
+              alt={post.data.featured_image_caption || post.data.title}
+              widths={[400, 800, 1200]}
+              sizes="(max-width: 768px) 100vw, 1200px"
+              data-pagefind-meta="image[src]"
+            />
+          </div>
+          <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700" />
+          <div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gray-200 opacity-40 rounded-xl" />
+
+          {(post.data.featured_image_caption ||
+            post.data.featured_image_copyright) && (
+            <figcaption class="mt-6 flex flex-wrap items-center justify-between gap-4 px-2">
+              {post.data.featured_image_caption && (
+                <div class="flex items-center gap-3">
+                  <svg
+                    class="w-3.5 h-3.5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <p class="qc-meta">
+                    <span class="mx-2 text-gray-200">|</span>
+                    {post.data.featured_image_caption}
+                  </p>
+                </div>
+              )}
+              {post.data.featured_image_copyright && (
+                <div class="flex items-center gap-2">
+                  <span class="text-[9px] font-medium uppercase tracking-[0.2em] text-gray-300">
+                    {post.data.featured_image_copyright}
+                  </span>
+                </div>
+              )}
+            </figcaption>
+          )}
+        </div>
+      </figure>
+    )
+  }
+
+  <main
+    class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-16 relative"
+    data-pagefind-body
+  >
+    <aside
+      class="hidden lg:block w-32 sticky top-32 h-fit"
+      data-pagefind-ignore
     >
-      <aside
-        class="hidden lg:block w-32 sticky top-32 h-fit"
+      <div class="flex flex-col gap-6">
+        <span
+          class="qc-meta !text-gray-300 transform -rotate-90 origin-left translate-y-8"
+        >
+          {t("post.shareStory")}
+        </span>
+        <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
+        <SocialShare
+          url={Astro.url.href}
+          title={post.data.title}
+          orientation="vertical"
+          lang={lang}
+        />
+      </div>
+    </aside>
+
+    <div class="max-w-2xl mx-auto md:mx-0 flex-1">
+      <article class="prose prose-article">
+        <Content />
+      </article>
+      <div
+        class="lg:hidden mt-12 pt-8 border-t border-gray-100"
         data-pagefind-ignore
       >
-        <div class="flex flex-col gap-6">
-          <span
-            class="qc-meta !text-gray-300 transform -rotate-90 origin-left translate-y-8"
-          >
-            {t("post.shareStory")}
-          </span>
-          <div class="h-12 w-px bg-gray-100 mx-auto mb-4"></div>
-          <SocialShare
-            url={Astro.url.href}
-            title={post.data.title}
-            orientation="vertical"
-            lang={lang}
-          />
-        </div>
-      </aside>
-
-      <div class="max-w-2xl mx-auto md:mx-0 flex-1">
-        <article class="prose prose-article">
-          <Content />
-        </article>
-        <div
-          class="lg:hidden mt-12 pt-8 border-t border-gray-100"
-          data-pagefind-ignore
+        <span class="qc-meta !text-gray-300 mb-4 block"
+          >{t("post.shareStory")}</span
         >
-          <span class="qc-meta !text-gray-300 mb-4 block"
-            >{t("post.shareStory")}</span
-          >
-          <SocialShare
-            url={Astro.url.href}
-            title={post.data.title}
-            orientation="horizontal"
-            lang={lang}
-          />
-        </div>
+        <SocialShare
+          url={Astro.url.href}
+          title={post.data.title}
+          orientation="horizontal"
+          lang={lang}
+        />
       </div>
-    </main>
+    </div>
+  </main>
 
-    {
-      (prevPost || nextPost) && (
-        <section class="py-24 bg-white border-t border-gray-100 mt-20">
-          <div class="max-w-7xl mx-auto px-6 text-center mb-16">
-            <h2 class="text-3xl font-bold uppercase tracking-tighter">
-              {t("post.continueReading").split(" ")[0]}{" "}
-              <span class="text-qcRed italic underline decoration-1 underline-offset-8">
-                {t("post.continueReading").split(" ").slice(1).join(" ")}
-              </span>
-            </h2>
-          </div>
-          <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
-            {nextPost && (
-              <a
-                href={getNewsPath(nextPost.data.slug || nextPost.id)}
-                class="flex gap-6 items-center group cursor-pointer"
-              >
-                <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-                  {nextPost.data.featured_image ? (
-                    <Image
-                      src={nextPost.data.featured_image}
-                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
-                      alt={nextPost.data.title}
-                      width={128}
-                      height={128}
-                    />
-                  ) : (
-                    <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <Icon name="newspaper" class="text-gray-300 text-2xl" />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span class="qc-label">{t("post.next")}</span>
-                  <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
-                    {nextPost.data.title}
-                  </h3>
-                </div>
-              </a>
-            )}
-            {prevPost && (
-              <a
-                href={getNewsPath(prevPost.data.slug || prevPost.id)}
-                class="flex gap-6 items-center group cursor-pointer"
-              >
-                <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
-                  {prevPost.data.featured_image ? (
-                    <Image
-                      src={prevPost.data.featured_image}
-                      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
-                      alt={prevPost.data.title}
-                      width={128}
-                      height={128}
-                    />
-                  ) : (
-                    <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <Icon name="newspaper" class="text-gray-300 text-2xl" />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span class="qc-meta">{t("post.previous")}</span>
-                  <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
-                    {prevPost.data.title}
-                  </h3>
-                </div>
-              </a>
-            )}
-          </div>
-        </section>
-      )
-    }
+  {
+    (prevPost || nextPost) && (
+      <section class="py-24 bg-white border-t border-gray-100 mt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center mb-16">
+          <h2 class="text-3xl font-bold uppercase tracking-tighter">
+            {t("post.continueReading").split(" ")[0]}{" "}
+            <span class="text-qcRed italic underline decoration-1 underline-offset-8">
+              {t("post.continueReading").split(" ").slice(1).join(" ")}
+            </span>
+          </h2>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+          {nextPost && (
+            <a
+              href={getNewsPath(nextPost.data.slug || nextPost.id)}
+              class="flex gap-6 items-center group cursor-pointer"
+            >
+              <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                {nextPost.data.featured_image ? (
+                  <Image
+                    src={nextPost.data.featured_image}
+                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
+                    alt={nextPost.data.title}
+                    width={128}
+                    height={128}
+                  />
+                ) : (
+                  <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <Icon name="newspaper" class="text-gray-300 text-2xl" />
+                  </div>
+                )}
+              </div>
+              <div>
+                <span class="qc-label">{t("post.next")}</span>
+                <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
+                  {nextPost.data.title}
+                </h3>
+              </div>
+            </a>
+          )}
+          {prevPost && (
+            <a
+              href={getNewsPath(prevPost.data.slug || prevPost.id)}
+              class="flex gap-6 items-center group cursor-pointer"
+            >
+              <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                {prevPost.data.featured_image ? (
+                  <Image
+                    src={prevPost.data.featured_image}
+                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500"
+                    alt={prevPost.data.title}
+                    width={128}
+                    height={128}
+                  />
+                ) : (
+                  <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <Icon name="newspaper" class="text-gray-300 text-2xl" />
+                  </div>
+                )}
+              </div>
+              <div>
+                <span class="qc-meta">{t("post.previous")}</span>
+                <h3 class="text-xl font-bold uppercase tracking-tighter group-hover:text-qcRed transition leading-tight">
+                  {prevPost.data.title}
+                </h3>
+              </div>
+            </a>
+          )}
+        </div>
+      </section>
+    )
+  }
 
-    <Footer />
+  <Footer />
 
-    <script>
-      window.onscroll = function () {
-        const winScroll =
-          document.body.scrollTop || document.documentElement.scrollTop;
-        const height =
-          document.documentElement.scrollHeight -
-          document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        const progressBar = document.getElementById("progress-bar");
-        if (progressBar) {
-          progressBar.style.width = scrolled + "%";
-        }
-      };
-    </script>
-  </body>
-</html>
+  <script>
+    window.onscroll = function () {
+      const winScroll =
+        document.body.scrollTop || document.documentElement.scrollTop;
+      const height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const progressBar = document.getElementById("progress-bar");
+      if (progressBar) {
+        progressBar.style.width = scrolled + "%";
+      }
+    };
+  </script>
+</Layout>
