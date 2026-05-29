@@ -13,7 +13,12 @@
 // reads that column.
 
 import Icon from "./Icon.astro";
-import { getLangFromUrl, useTranslations, type Lang } from "../i18n";
+import {
+  getLangFromUrl,
+  useTranslations,
+  type Lang,
+  type TranslationKey,
+} from "../i18n";
 import {
   currencies,
   paymentMethodsByLocale,
@@ -21,7 +26,14 @@ import {
   formatCurrency,
 } from "../lib/currency";
 
-type Frequency = "one-time" | "monthly";
+type Frequency = "one-time" | "monthly" | "quarterly" | "yearly";
+
+const FREQUENCY_LABEL_KEYS: Record<Frequency, string> = {
+  "one-time": "donate.oneTime",
+  monthly: "donate.monthly",
+  quarterly: "donate.quarterly",
+  yearly: "donate.yearly",
+};
 
 type ImpactConfig =
   | { kind: "tiered" }
@@ -71,9 +83,11 @@ interface Props {
   /**
    * Tag for the donation row in the DB. "fundraiser" rows are picked
    * up by getFundraiserStats when their metadata.fundraiser_slug
-   * matches. Default "donate".
+   * matches. "yura-boom" is used by the Quina Yura sponsor flow so
+   * the row can be filtered separately from generic /donate gifts.
+   * Default "donate".
    */
-  context?: "donate" | "fundraiser";
+  context?: "donate" | "fundraiser" | "yura-boom";
 
   /** Arbitrary metadata forwarded to Mollie + the donations row. */
   metadata?: Record<string, unknown>;
@@ -134,6 +148,27 @@ const showFrequencyToggle = frequencies.length > 1;
   </h2>
 
   {
+    /* Optional cause card — populated and revealed when the form is
+      opened from a tier-style modal trigger that carries
+      data-cause-title / data-cause-image / data-cause-impact. */
+  }
+  <div
+    class="dfc-cause hidden mb-6 flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4"
+  >
+    <img
+      alt=""
+      class="dfc-cause-image h-16 w-16 flex-shrink-0 object-contain"
+    />
+    <div class="min-w-0 flex-1">
+      <p
+        class="dfc-cause-title font-bold uppercase tracking-tight text-sm leading-tight"
+      >
+      </p>
+      <p class="dfc-cause-impact qc-meta mt-1 leading-snug"></p>
+    </div>
+  </div>
+
+  {
     showFrequencyToggle && (
       <div class="flex gap-2 mb-6 dfc-frequency">
         {frequencies.map((f) => (
@@ -142,7 +177,7 @@ const showFrequencyToggle = frequencies.length > 1;
             data-frequency={f}
             class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
           >
-            {t(f === "monthly" ? "donate.monthly" : "donate.oneTime")}
+            {t(FREQUENCY_LABEL_KEYS[f] as TranslationKey)}
           </button>
         ))}
       </div>
@@ -417,6 +452,89 @@ const showFrequencyToggle = frequencies.length > 1;
           }
         }
 
+        // When the form is mounted inside a <dialog> that fires the
+        // shared `modal-open` event (DonationModal does this), let each
+        // trigger pin the per-month amount, swap in a cause card with
+        // the tier illustration + impact text, and tag the donation
+        // row with the tier id. The amount controls hide while a
+        // locked amount is in effect so the donor can't override what
+        // the tier card promised — they only pick frequency + method.
+        // The submit total auto-scales with the frequency they pick:
+        // quarterly = 3 × monthly, yearly = 12 × monthly.
+        const FREQUENCY_MULTIPLIER: Record<string, number> = {
+          "one-time": 1,
+          monthly: 1,
+          quarterly: 3,
+          yearly: 12,
+        };
+        function scaleAmount(): number {
+          const mult = FREQUENCY_MULTIPLIER[frequency] ?? 1;
+          return lockedMonthlyAmount !== null
+            ? lockedMonthlyAmount * mult
+            : amount;
+        }
+
+        let lockedMonthlyAmount: number | null = null;
+
+        const causeCard = card.querySelector<HTMLElement>(".dfc-cause");
+        const causeImage =
+          card.querySelector<HTMLImageElement>(".dfc-cause-image");
+        const causeTitle = card.querySelector<HTMLElement>(".dfc-cause-title");
+        const causeImpact =
+          card.querySelector<HTMLElement>(".dfc-cause-impact");
+
+        const hostDialog = card.closest<HTMLDialogElement>("dialog");
+        if (hostDialog) {
+          hostDialog.addEventListener("modal-open", (rawEvt: Event) => {
+            const detail =
+              (rawEvt as CustomEvent<Record<string, string | undefined>>)
+                .detail || {};
+            const lockedAmount = parseFloat(detail.amount ?? "");
+            if (Number.isFinite(lockedAmount) && lockedAmount > 0) {
+              lockedMonthlyAmount = lockedAmount;
+              amount = lockedAmount * (FREQUENCY_MULTIPLIER[frequency] ?? 1);
+              amountGrid.classList.add("hidden");
+              customInput?.classList.add("hidden");
+              if (impactText)
+                (impactText.parentElement as HTMLElement | null)?.classList.add(
+                  "hidden",
+                );
+            } else {
+              lockedMonthlyAmount = null;
+              amountGrid.classList.remove("hidden");
+              customInput?.classList.remove("hidden");
+              if (impactText)
+                (
+                  impactText.parentElement as HTMLElement | null
+                )?.classList.remove("hidden");
+            }
+            if (detail.tier) {
+              (metadata as Record<string, unknown>).tier = detail.tier;
+            }
+
+            // Populate + reveal the cause card if the trigger carried
+            // cause-* fields; hide it otherwise (back to plain form).
+            const causeTitleText = detail.causeTitle ?? "";
+            const causeImageSrc = detail.causeImage ?? "";
+            const causeImpactText = detail.causeImpact ?? "";
+            if (causeCard) {
+              if (causeTitleText || causeImageSrc || causeImpactText) {
+                if (causeTitle) causeTitle.textContent = causeTitleText;
+                if (causeImpact) causeImpact.textContent = causeImpactText;
+                if (causeImage && causeImageSrc) {
+                  causeImage.src = causeImageSrc;
+                  causeImage.alt = causeTitleText;
+                }
+                causeCard.classList.remove("hidden");
+              } else {
+                causeCard.classList.add("hidden");
+              }
+            }
+
+            updateUI();
+          });
+        }
+
         const focusCustom =
           allowCustom &&
           (params.get("custom") === "1" || params.get("amount") === "custom");
@@ -527,6 +645,14 @@ const showFrequencyToggle = frequencies.length > 1;
           const btn = (e.target as HTMLElement).closest("button");
           if (!btn?.dataset.frequency) return;
           frequency = btn.dataset.frequency;
+          // When the amount is locked from a tier-style modal trigger,
+          // scale the displayed total by the period multiplier so the
+          // submit button always shows the actual charge for the
+          // selected frequency (monthly = 1×, quarterly = 3×, yearly =
+          // 12×). The locked monthly value stays the source of truth.
+          if (lockedMonthlyAmount !== null) {
+            amount = scaleAmount();
+          }
           updateUI();
           saveState();
         });

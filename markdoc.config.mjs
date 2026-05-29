@@ -68,6 +68,10 @@ export default defineMarkdocConfig({
         featured: { type: Boolean },
       },
     },
+    "yura-tiers": {
+      render: component("./src/components/markdoc/YuraTiers.astro"),
+      attributes: {},
+    },
     "profile-section": {
       render: component("./src/components/markdoc/ProfileSection.astro"),
       attributes: {
