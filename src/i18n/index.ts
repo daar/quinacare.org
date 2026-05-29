@@ -99,7 +99,7 @@ export const ui = {
     "donation.surgeryDesc":
       "Draag bij aan de kosten van chirurgische ingrepen en de noodzakelijke nabehandeling in ons ziekenhuis.",
     "donation.equipmentDesc":
-      "Draag bij aan bijvoorbeeld medische kosten zoals medicijnen en apparatuur of salarissen van ons locale personeel in het ziekenhuis.",
+      "Draag bij aan medische kosten zoals medicijnen en apparatuur of salarissen van ons lokale personeel in het ziekenhuis.",
     "donation.donate": "Doneer",
     "donation.chooseAmount": "Of kies zelf een bedrag",
     // Homepage - Focus Project
@@ -489,7 +489,7 @@ export const ui = {
     "donation.surgeryDesc":
       "Contribute to the costs of surgical procedures and necessary aftercare at our hospital.",
     "donation.equipmentDesc":
-      "Contribute, for example, to medical costs such as medicines and equipment or to the salaries of our local hospital staff.",
+      "Contribute to medical costs such as medicines and equipment or to the salaries of our local hospital staff.",
     "donation.donate": "Donate",
     "donation.chooseAmount": "Or choose your own amount",
     // Homepage - Focus Project
@@ -882,7 +882,7 @@ export const ui = {
     "donation.surgeryDesc":
       "Contribuye a los costos de procedimientos quirúrgicos y el cuidado posterior necesario en nuestro hospital.",
     "donation.equipmentDesc":
-      "Contribuye, por ejemplo, a gastos médicos como medicamentos y equipos o a los salarios de nuestro personal local del hospital.",
+      "Contribuye a gastos médicos como medicamentos y equipos o a los salarios de nuestro personal local del hospital.",
     "donation.donate": "Donar",
     "donation.chooseAmount": "O elige tu propia cantidad",
     // Homepage - Focus Project
