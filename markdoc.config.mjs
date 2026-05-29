@@ -2,6 +2,16 @@ import { defineMarkdocConfig, component } from "@astrojs/markdoc/config";
 
 export default defineMarkdocConfig({
   tags: {
+    // {% comment %}…{% /comment %} — Markdoc has no built-in block
+    // comment; this tag drops its entire subtree at transform time
+    // so editors can keep TODO / parked-content blocks in .mdoc
+    // files without them appearing on the page.
+    comment: {
+      attributes: {},
+      transform() {
+        return null;
+      },
+    },
     image: {
       render: component("./src/components/markdoc/Image.astro"),
       attributes: {
