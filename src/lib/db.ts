@@ -54,6 +54,24 @@ export async function ensureSchema(): Promise<void> {
       locale     TEXT NOT NULL DEFAULT 'nl',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
+    // Append-only audit log for every observable event in a donation's
+    // lifecycle (form submit → Mollie create → checkout redirect →
+    // return page → webhook → cron reconcile). The live status on the
+    // donations row keeps the latest known state for fast queries;
+    // this table is the source of truth for the funnel.
+    `CREATE TABLE IF NOT EXISTS donation_events (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      donation_id     INTEGER NOT NULL,
+      event_type      TEXT NOT NULL,
+      source          TEXT NOT NULL,
+      mollie_status   TEXT,
+      previous_status TEXT,
+      payload         TEXT NOT NULL DEFAULT '{}',
+      created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_donation_events_donation ON donation_events(donation_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_donation_events_type ON donation_events(event_type)`,
+    `CREATE INDEX IF NOT EXISTS idx_donation_events_created ON donation_events(created_at)`,
     // Persistent error log — console.error is invisible to end users
     // and Netlify Function logs are not queryable after the fact, so
     // we mirror every server- and client-side error here for analysis.

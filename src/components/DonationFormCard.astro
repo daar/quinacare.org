@@ -568,6 +568,29 @@ const showFrequencyToggle = frequencies.length > 1;
             if (data.checkoutUrl) {
               if (data.paymentId) {
                 sessionStorage.setItem(`mollie:${scopeId}`, data.paymentId);
+                // Beacon — capture the redirect to Mollie's checkout
+                // page. sendBeacon survives the navigation away, so
+                // we can later distinguish "abandoned before checkout"
+                // from "abandoned at checkout". Wrapped in try/catch
+                // because a beacon failure must never block the donor
+                // from being redirected.
+                try {
+                  navigator.sendBeacon(
+                    "/api/donations/event",
+                    new Blob(
+                      [
+                        JSON.stringify({
+                          paymentId: data.paymentId,
+                          type: "checkout_redirected",
+                          payload: { scopeId },
+                        }),
+                      ],
+                      { type: "application/json" },
+                    ),
+                  );
+                } catch {
+                  /* sendBeacon unsupported / blocked — not critical */
+                }
               }
               window.location.href = data.checkoutUrl;
               return;
