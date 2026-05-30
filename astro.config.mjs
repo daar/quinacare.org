@@ -25,6 +25,7 @@ export default defineConfig({
     "/doneer": "/donate",
     "/doneer/quina-yura": "/yura-boom",
     "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
+    "/blogs-vlogs": "/news",
   },
   fonts: [
     {
