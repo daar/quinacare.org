@@ -98,9 +98,30 @@ const structuredData = {
       // invisible to end users; this beacon is our only after-the-
       // fact view. Capped at 5 reports per page load so a runaway
       // loop in third-party code can't flood the DB.
+      //
+      // Triage extras (viewport, error constructor name, session id,
+      // since-load timing, network state) are attached to every
+      // beacon so cross-origin "Script error." rows still tell us
+      // something useful about *when* / *where* / *who*.
       (function () {
         let count = 0;
         const MAX = 5;
+        const sessionId =
+          (window.crypto &&
+            window.crypto.randomUUID &&
+            window.crypto.randomUUID()) ||
+          String(Date.now()) + "-" + Math.random().toString(36).slice(2, 8);
+        function baseContext() {
+          return {
+            url: location.pathname,
+            sessionId: sessionId,
+            readyState: document.readyState,
+            since: Math.round(Date.now() - performance.timeOrigin),
+            viewport: { w: window.innerWidth, h: window.innerHeight },
+            dpr: window.devicePixelRatio || 1,
+            online: navigator.onLine,
+          };
+        }
         function send(source, message, context) {
           if (count >= MAX) return;
           count++;
@@ -112,7 +133,7 @@ const structuredData = {
                   JSON.stringify({
                     source: source,
                     message: message,
-                    context: context,
+                    context: Object.assign(baseContext(), context || {}),
                   }),
                 ],
                 { type: "application/json" },
@@ -123,12 +144,17 @@ const structuredData = {
           }
         }
         window.addEventListener("error", function (e) {
-          send("window.error", e.message || "unknown", {
+          const err = e.error;
+          send("window.error", e.message || (err && err.message) || "unknown", {
             filename: e.filename,
             lineno: e.lineno,
             colno: e.colno,
-            stack: e.error && e.error.stack,
-            url: location.pathname,
+            stack: err && err.stack,
+            // When `e.message` is a CORS-stripped "Script error.", the
+            // underlying Error object may still carry a useful name +
+            // toString. Capture both so future analyses aren't blind.
+            errorName: err && err.constructor && err.constructor.name,
+            errorString: err ? String(err) : undefined,
           });
         });
         window.addEventListener("unhandledrejection", function (e) {
@@ -139,7 +165,11 @@ const structuredData = {
               : (reason && reason.message) || "unhandled rejection";
           send("unhandledrejection", message, {
             stack: reason && reason.stack,
-            url: location.pathname,
+            // Many rejections throw non-Error values (`reject("x")`,
+            // `reject({ code: 503 })`) — keep a string of the raw
+            // reason so the original payload isn't lost.
+            errorString: reason !== undefined ? String(reason) : undefined,
+            errorName: reason && reason.constructor && reason.constructor.name,
           });
         });
       })();
