@@ -150,18 +150,28 @@ export const POST: APIRoute = async ({ request }) => {
         stats.unchanged++;
       }
 
-      await logEvent({
-        donationId: id,
-        type: "reconciliation",
-        source: "cron",
-        mollieStatus: payment.status,
-        previousStatus,
-        payload: { changed },
-      });
+      // donation_events is the funnel-trail log. Only persist a row
+      // when the state actually moved — re-confirming an already-known
+      // pending status would otherwise pile up one event per row per
+      // cron run (for long-running open bank transfers that's 14 days
+      // × 24 hours = ~336 no-op rows per donation). The `stats.unchanged`
+      // counter above still captures the rate for the cron log line.
+      if (changed) {
+        await logEvent({
+          donationId: id,
+          type: "reconciliation",
+          source: "cron",
+          mollieStatus: payment.status,
+          previousStatus,
+          payload: { changed },
+        });
+      }
 
       // Terminal Mollie statuses mean the donor is not coming back.
       // Log an `abandoned` event with a precise reason so the funnel
-      // shows WHERE the drop happened, not just THAT it did.
+      // shows WHERE the drop happened, not just THAT it did. The row
+      // was in scope only if it was pending/open, so observing a
+      // terminal status here is by definition a state transition.
       if (TERMINAL.has(payment.status)) {
         const reason = await classifyAbandonment(id, payment.status);
         await logEvent({
@@ -175,17 +185,35 @@ export const POST: APIRoute = async ({ request }) => {
         stats.abandoned++;
       }
     } catch (err: unknown) {
+      // If we can't read this payment from Mollie (wrong mode, 404,
+      // network blip, anything), the row is effectively unreachable
+      // from our side. Transition it to `failed` so the cron's
+      // `WHERE status IN ('pending','open')` filter drops it next
+      // run — same error against the same row every hour was the
+      // bulk of the noise we used to write to app_errors and
+      // donation_events. Keep a single reconciliation event with the
+      // error reason for the funnel audit trail; skip app_errors
+      // entirely (the console.error below is the only ambient signal,
+      // and the donations row's own status now carries the truth).
       stats.errors++;
-      reportError(SOURCE, "Mollie API or processing error", err, { mollieId });
+      const errMsg = err instanceof Error ? err.message : "unknown";
+      console.error(`[${SOURCE}] Mollie API error for ${mollieId}:`, err);
+      try {
+        await updateDonationStatus(mollieId, "failed");
+      } catch (updateErr) {
+        console.error(
+          `[${SOURCE}] updateDonationStatus failed for ${mollieId}:`,
+          updateErr,
+        );
+      }
       try {
         await logEvent({
           donationId: id,
           type: "reconciliation",
           source: "cron",
+          mollieStatus: "failed",
           previousStatus,
-          payload: {
-            error: err instanceof Error ? err.message : "unknown",
-          },
+          payload: { changed: true, error: errMsg },
         });
       } catch {
         /* logging is best-effort */
