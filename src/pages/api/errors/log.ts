@@ -53,11 +53,24 @@ export const POST: APIRoute = async ({ request }) => {
     ? body.source
     : `client:${body.source}`;
 
+  // Browsers emit the literal "Script error." with a null stack when a
+  // cross-origin script throws and the upstream isn't sending CORS
+  // headers we can read. There's nothing actionable in those rows —
+  // tag them as `warning` so dashboards can filter the noise out and
+  // real, fixable errors stay visible.
+  const messageStr = String(body.message);
+  const ctx = (body.context ?? {}) as Record<string, unknown>;
+  const isCorsStripped =
+    messageStr === "Script error." &&
+    (ctx.stack === null || ctx.stack === undefined);
+  const level: "warning" | "error" = isCorsStripped ? "warning" : "error";
+
   await logError({
     source,
-    message: String(body.message).slice(0, 1000),
+    level,
+    message: messageStr.slice(0, 1000),
     context: {
-      ...(body.context ?? {}),
+      ...ctx,
       userAgent: request.headers.get("user-agent") ?? undefined,
       referer: request.headers.get("referer") ?? undefined,
     },
