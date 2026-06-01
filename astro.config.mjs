@@ -23,6 +23,25 @@ export default defineConfig({
   integrations: [markdoc(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      // Vite blocks any Host header that doesn't match localhost by
+      // default. When PUBLIC_WEBHOOK_ORIGIN points at an ngrok /
+      // cloudflared tunnel so Mollie can reach our webhook, requests
+      // to `https://<random>.ngrok-free.dev` get a "Blocked request"
+      // page instead of the dev server. Whitelist the tunnel host
+      // taken from that env var, plus the standard tunnel-provider
+      // suffixes as a belt-and-braces fallback when the env var is
+      // not set but a tunnel is still in use.
+      allowedHosts: [
+        ...(process.env.PUBLIC_WEBHOOK_ORIGIN
+          ? [new URL(process.env.PUBLIC_WEBHOOK_ORIGIN).hostname]
+          : []),
+        ".ngrok-free.app",
+        ".ngrok-free.dev",
+        ".ngrok.io",
+        ".trycloudflare.com",
+      ],
+    },
   },
   i18n: {
     defaultLocale: "nl",
