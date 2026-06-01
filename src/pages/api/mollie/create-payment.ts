@@ -116,10 +116,20 @@ export const POST: APIRoute = async ({ request }) => {
   const mollieLocale = localeMap[locale] || Locale.en_US;
   const currencyConfig = getCurrency(locale);
   const currency = currencyConfig.code;
-  const origin = new URL(request.url).origin;
+  const requestOrigin = new URL(request.url).origin;
   const langPrefix = locale === "nl" ? "" : `/${locale}`;
 
-  // Mollie rejects localhost webhook URLs; omit in dev so test payments work
+  // Mollie rejects localhost webhook URLs. Two paths:
+  //   - Plain `astro dev` on localhost: skip the webhook entirely so
+  //     create() doesn't fail, accepting that no callback will fire.
+  //   - Dev with a tunnel (ngrok / cloudflared): set
+  //     PUBLIC_WEBHOOK_ORIGIN=https://xyz.ngrok-free.app to route
+  //     both the webhook AND the return URL through the public tunnel,
+  //     so end-to-end recurring testing actually works locally.
+  const publicOrigin = import.meta.env.PUBLIC_WEBHOOK_ORIGIN as
+    | string
+    | undefined;
+  const origin = publicOrigin?.trim() || requestOrigin;
   const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1");
   const webhookUrl = isLocal ? undefined : `${origin}/api/mollie/webhook`;
 
