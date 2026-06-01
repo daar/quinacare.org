@@ -34,14 +34,32 @@ console.log(`Mollie mode: ${testMode ? "TEST" : "LIVE"}`);
 
 // ── API handlers ───────────────────────────────────────────
 
-/** Derive effective status: Mollie keeps status=paid even after chargebacks/refunds. */
+/**
+ * Derive effective status. Mollie keeps the payment's own status at
+ * `paid` for the life of the row, even after chargebacks/refunds, and
+ * a refund only counts toward `amountRefunded` once it has *settled*.
+ * While a refund is queued/pending/processing, `amountRemaining`
+ * drops to zero (preventing a second refund) but `amountRefunded`
+ * stays at zero — so reading just those two fields would make the
+ * payment look like a plain `paid` row with no refund button, which
+ * is exactly the case our admin UI was showing as "nothing happened".
+ *
+ * The in-flight delta is therefore `amount - amountRemaining - amountRefunded`.
+ * Surface it explicitly so the row reads as `refund_pending` until
+ * the refund settles, then flips to `refunded` / `partially_refunded`.
+ */
 function effectiveStatus(p) {
   if (p.amountChargedBack && parseFloat(p.amountChargedBack.value) > 0)
     return "charged_back";
-  if (p.amountRefunded && parseFloat(p.amountRefunded.value) > 0) {
-    if (!p.amountRemaining || parseFloat(p.amountRemaining.value) === 0)
-      return "refunded";
-    return "partially_refunded";
+  const total = p.amount ? parseFloat(p.amount.value) : 0;
+  const refunded = p.amountRefunded ? parseFloat(p.amountRefunded.value) : 0;
+  const remaining = p.amountRemaining
+    ? parseFloat(p.amountRemaining.value)
+    : total;
+  const pending = total - remaining - refunded;
+  if (pending > 0.005) return "refund_pending";
+  if (refunded > 0) {
+    return remaining === 0 ? "refunded" : "partially_refunded";
   }
   return p.status;
 }
