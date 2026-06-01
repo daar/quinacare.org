@@ -97,7 +97,11 @@ const numberLocale = localeMap[lang];
     <div
       class="w-full lg:w-[460px] flex-shrink-0 bg-white rounded-xl shadow-2xl p-8"
     >
-      <DonationFormCard lang={lang} scopeId="donate-page" />
+      <DonationFormCard
+        lang={lang}
+        scopeId="donate-page"
+        restoreFrequency={false}
+      />
     </div>
   </div>
 </header>

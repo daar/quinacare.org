@@ -65,6 +65,15 @@ interface Props {
   defaultFrequency?: Frequency;
 
   /**
+   * Whether to rehydrate `frequency` from sessionStorage on mount.
+   * Default true. The /donate page passes false so a fresh page load
+   * always starts at the page-level default (one-time) instead of
+   * surprising a returning visitor with whichever frequency they
+   * happened to click last in the same tab.
+   */
+  restoreFrequency?: boolean;
+
+  /**
    * Payment methods to expose. Defaults to paymentMethodsByLocale for
    * the locale. Pages can pin a smaller list (e.g. only iDEAL + Card).
    */
@@ -109,6 +118,7 @@ const {
   allowCustom = true,
   frequencies = ["one-time", "monthly"] as Frequency[],
   defaultFrequency = "one-time" as Frequency,
+  restoreFrequency = true,
   methods,
   impact = { kind: "tiered" } as ImpactConfig,
   scopeId,
@@ -138,6 +148,7 @@ const showFrequencyToggle = frequencies.length > 1;
   data-methods={JSON.stringify(effectiveMethods)}
   data-frequencies={JSON.stringify(frequencies)}
   data-default-frequency={defaultFrequency}
+  data-restore-frequency={restoreFrequency ? "1" : "0"}
   data-default-amount={effectiveDefaultAmount}
   data-allow-custom={allowCustom ? "1" : "0"}
   data-metadata={JSON.stringify(metadata)}
@@ -422,14 +433,23 @@ const showFrequencyToggle = frequencies.length > 1;
         let amount: number = defaultAmount;
         let method: string = methodsAllowed[0] || "card";
 
-        // Session restore — frequency/method only. Amount always falls
-        // back to the page's default so a fresh visit isn't surprised.
+        // Session restore — method always, frequency only when the
+        // page opts in. The /donate page disables frequency restore
+        // because a returning visitor in the same tab expects the
+        // page default (one-time), not whichever toggle they happened
+        // to click last. Amount always falls back to the page default
+        // so a fresh visit isn't surprised by a stale preset either.
+        const restoreFrequency = card.dataset.restoreFrequency !== "0";
         const storageKey = `donate:${scopeId}`;
         const saved = sessionStorage.getItem(storageKey);
         if (saved) {
           try {
             const s = JSON.parse(saved);
-            if (s.frequency && frequenciesAllowed.includes(s.frequency))
+            if (
+              restoreFrequency &&
+              s.frequency &&
+              frequenciesAllowed.includes(s.frequency)
+            )
               frequency = s.frequency;
             if (s.method && methodsAllowed.includes(s.method))
               method = s.method;
