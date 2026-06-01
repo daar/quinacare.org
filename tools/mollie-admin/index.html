@@ -41,6 +41,23 @@
       .header .badge.test {
         background: #f59e0b;
       }
+      .test-banner {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        color: #78350f;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin: 0 0 16px 0;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .test-banner::before {
+        content: "⚠";
+        font-size: 18px;
+      }
       .container {
         max-width: 1200px;
         margin: 0 auto;
@@ -323,6 +340,14 @@
     </div>
 
     <div class="container">
+      <div
+        id="test-banner"
+        class="test-banner"
+        style="display: none"
+      >
+        Test mode - actions hit Mollie's test environment. No real money
+        moves; refunds and subscriptions here are sandboxed.
+      </div>
       <div class="tabs">
         <button class="tab active" data-tab="customers">Customers</button>
         <button class="tab" data-tab="payments">Payments</button>
@@ -896,20 +921,28 @@
       }
 
       // ── Init ────────────────────────────────────────────────────
-      // Detect mode from server (test key starts with test_)
-      fetch("/api", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: '{"action":"list-customers"}',
-      })
-        .then((r) => r.json())
+      // Ask the server which Mollie key it's running against and
+      // light up the badge + a banner accordingly. Default markup
+      // assumes LIVE; we switch to TEST styling only on the explicit
+      // server response, so a network failure stays loud (the LIVE
+      // badge is a fail-safe — you'd rather over-warn about a test
+      // dashboard than under-warn about a live one).
+      api({ action: "get-mode" })
         .then((d) => {
-          if (d.error && d.error.includes("Invalid API key")) {
-            document.getElementById("mode-badge").textContent = "INVALID KEY";
-            document.getElementById("mode-badge").classList.add("test");
+          if (d.mode === "test") {
+            const badge = document.getElementById("mode-badge");
+            badge.textContent = "TEST";
+            badge.classList.add("test");
+            document.getElementById("test-banner").style.display = "";
           }
         })
-        .catch(() => {});
+        .catch((e) => {
+          if (e?.error?.includes("Invalid API key")) {
+            const badge = document.getElementById("mode-badge");
+            badge.textContent = "INVALID KEY";
+            badge.classList.add("test");
+          }
+        });
 
       loadCustomers(1);
       loadPayments(1);

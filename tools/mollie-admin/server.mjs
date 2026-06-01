@@ -70,6 +70,10 @@ async function handleApi(body) {
   const { action } = body;
 
   switch (action) {
+    case "get-mode": {
+      return { mode: testMode ? "test" : "live" };
+    }
+
     case "list-customers": {
       const params = { limit: 50 };
       if (body.from) params.from = body.from;
