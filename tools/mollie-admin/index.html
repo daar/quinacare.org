@@ -797,7 +797,14 @@
         return new Promise((resolve) => {
           modalResolve = resolve;
           document.getElementById("modal-confirm").onclick = () => {
-            closeModal();
+            // Clear modalResolve BEFORE hiding the modal: closeModal()
+            // also resolves with null as its cancel-path behaviour, and
+            // a promise can only resolve once — calling closeModal()
+            // first would make the real `resolve()` below a silent
+            // no-op, which is why every confirm action used to return
+            // null and bail out without doing anything.
+            modalResolve = null;
+            document.getElementById("modal").classList.remove("show");
             resolve(input ? inputEl.value : true);
           };
         });
