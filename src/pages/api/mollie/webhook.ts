@@ -137,7 +137,13 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Create subscription for recurring first payments
+    // Create subscription for recurring first payments. Isolated from
+    // the outer try/catch on purpose: a Mollie error here (mandate
+    // still pending validation, customer mismatch, etc.) used to fail
+    // the entire webhook with a generic 500 and an opaque "webhook
+    // handler error" row — leaving the donor with a paid first payment
+    // and no recurring subscription. We log it explicitly and absorb
+    // the failure so Mollie doesn't retry the whole webhook forever.
     if (
       payment.status === "paid" &&
       !payment.subscriptionId &&
@@ -148,41 +154,59 @@ export const POST: APIRoute = async ({ request }) => {
         meta.frequency === "yearly")
     ) {
       const customerId = payment.customerId;
-
-      // Guard against duplicate subscriptions: check if customer already has one
-      const subs = await mollieClient.customerSubscriptions
-        .page({ customerId })
-        .catch(() => null);
-      const hasActiveSub = subs
-        ? [...subs].some(
-            (s: { status: string }) =>
-              s.status === "active" || s.status === "pending",
-          )
-        : false;
-
-      if (!hasActiveSub) {
-        const origin = new URL(request.url).origin;
-        const webhookUrl = `${origin}/api/mollie/webhook`;
-        const interval =
-          meta.frequency === "monthly"
-            ? "1 month"
-            : meta.frequency === "quarterly"
-              ? "3 months"
-              : "12 months";
-
-        await mollieClient.customerSubscriptions.create({
+      try {
+        // Guard against duplicate subscriptions: check if the customer
+        // already has one. Treat the page() call's failure separately
+        // so we don't silently create a duplicate when the list call
+        // errors.
+        const subs = await mollieClient.customerSubscriptions.page({
           customerId,
-          amount: { currency, value: meta.amount },
-          interval,
-          description: `Quina Care ${meta.frequency} donation ${currency} ${meta.amount}`,
-          webhookUrl,
-          metadata: {
-            frequency: meta.frequency,
-            amount: meta.amount,
-            currency,
-            locale: meta.locale,
-            context: meta.context,
-          },
+        });
+        const hasActiveSub = [...subs].some(
+          (s: { status: string }) =>
+            s.status === "active" || s.status === "pending",
+        );
+
+        if (!hasActiveSub) {
+          const origin = new URL(request.url).origin;
+          const subscriptionWebhook = `${origin}/api/mollie/webhook`;
+          const interval =
+            meta.frequency === "monthly"
+              ? "1 month"
+              : meta.frequency === "quarterly"
+                ? "3 months"
+                : "12 months";
+
+          await mollieClient.customerSubscriptions.create({
+            customerId,
+            amount: { currency, value: meta.amount },
+            interval,
+            description: `Quina Care ${meta.frequency} donation ${currency} ${meta.amount}`,
+            webhookUrl: subscriptionWebhook,
+            metadata: {
+              frequency: meta.frequency,
+              amount: meta.amount,
+              currency,
+              locale: meta.locale,
+              context: meta.context,
+            },
+          });
+          console.log(
+            `[Mollie] Subscription created for ${customerId} (${interval})`,
+          );
+        }
+      } catch (subErr) {
+        // Common cause: SEPA-DD mandate from the first iDEAL/bancontact
+        // payment is still in "pending" status when we get here, and
+        // Mollie rejects subscription creation with "no valid mandate".
+        // The mandate flips to valid within minutes; a follow-up
+        // mandate webhook (or a small retry job) will reconcile.
+        reportError(SOURCE, "customerSubscriptions.create failed", subErr, {
+          paymentId,
+          customerId,
+          frequency: meta.frequency,
+          amount: meta.amount,
+          currency,
         });
       }
     }
