@@ -177,10 +177,28 @@ export const POST: APIRoute = async ({ request }) => {
                 ? "3 months"
                 : "12 months";
 
+          // Defer the first recurring charge by one full interval.
+          // Mollie's default startDate is "today", and the first
+          // recurring SEPA-DD payment fires on the startDate — which
+          // would double-charge the donor the same day they just
+          // completed the first (iDEAL) payment. Anchor startDate to
+          // today + 1 interval so the donor sees exactly one charge
+          // per period, starting one period from now.
+          const startDate = new Date();
+          if (meta.frequency === "monthly") {
+            startDate.setMonth(startDate.getMonth() + 1);
+          } else if (meta.frequency === "quarterly") {
+            startDate.setMonth(startDate.getMonth() + 3);
+          } else {
+            startDate.setFullYear(startDate.getFullYear() + 1);
+          }
+          const startDateStr = startDate.toISOString().slice(0, 10);
+
           await mollieClient.customerSubscriptions.create({
             customerId,
             amount: { currency, value: meta.amount },
             interval,
+            startDate: startDateStr,
             description: `Quina Care ${meta.frequency} donation ${currency} ${meta.amount}`,
             webhookUrl: subscriptionWebhook,
             metadata: {
@@ -192,7 +210,7 @@ export const POST: APIRoute = async ({ request }) => {
             },
           });
           console.log(
-            `[Mollie] Subscription created for ${customerId} (${interval})`,
+            `[Mollie] Subscription created for ${customerId} (${interval}, starts ${startDateStr})`,
           );
         }
       } catch (subErr) {
