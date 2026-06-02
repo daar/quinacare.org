@@ -18,6 +18,7 @@
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "lighthouse": "npx --yes @lhci/cli@0.14.0 autorun",
     "mollie-admin": "node --env-file=.env tools/mollie-admin/server.mjs",
+    "test": "node --test --experimental-strip-types 'tests/**/*.test.ts'",
     "preview": "astro preview",
     "astro": "astro",
     "prepare": "husky"
