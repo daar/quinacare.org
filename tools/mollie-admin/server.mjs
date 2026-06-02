@@ -74,6 +74,14 @@ function mapPayment(p) {
     method: p.method,
     createdAt: p.createdAt,
     paidAt: p.paidAt,
+    // SEPA Direct Debit payments carry an `incassodatum` on
+    // p.details.dueDate — when the bank actually debits the donor.
+    // For iDEAL/card/PayPal this is null (the donor was charged at
+    // checkout time, so paidAt is the answer instead). Surfacing
+    // both lets the UI show "when will this debit clear" for the
+    // recurring rows that fire days after their createdAt.
+    dueDate: p.details?.dueDate ?? null,
+    sequenceType: p.sequenceType,
     customerId: p.customerId,
     subscriptionId: p.subscriptionId,
     settlementAmount: p.settlementAmount,

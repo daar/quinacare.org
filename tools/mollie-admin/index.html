@@ -413,6 +413,7 @@
               <th>Description</th>
               <th>Method</th>
               <th>Date</th>
+              <th>Incasso</th>
               <th>Customer</th>
               <th></th>
             </tr>
@@ -594,7 +595,7 @@
           html += '<div class="detail-section"><h3>Payments</h3>';
           if (payments.items.length) {
             html +=
-              '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Description</th><th>Date</th><th></th></tr></thead><tbody>';
+              '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Description</th><th>Date</th><th>Incasso</th><th></th></tr></thead><tbody>';
             for (const p of payments.items) {
               const canRefund =
                 p.status === "paid" &&
@@ -605,6 +606,7 @@
           <td class="amount">${fmtAmount(p.amount)}</td>
           <td>${esc(p.description)}</td>
           <td>${fmtDate(p.createdAt)}</td>
+          <td>${fmtIncasso(p)}</td>
           <td>${canRefund ? `<button class="btn btn-danger" onclick="event.stopPropagation(); confirmRefund('${p.id}', '${p.amount.currency}', '${p.amountRemaining ? p.amountRemaining.value : p.amount.value}')">Refund</button>` : ""}</td>
         </tr>`;
             }
@@ -733,6 +735,7 @@
       <td>${esc(p.description)}</td>
       <td>${esc(p.method || "—")}</td>
       <td>${fmtDate(p.createdAt)}</td>
+      <td>${fmtIncasso(p)}</td>
       <td><code>${p.customerId || "—"}</code></td>
       <td>${canRefund ? `<button class="btn btn-danger" onclick="confirmRefund('${p.id}', '${p.amount.currency}', '${p.amountRemaining ? p.amountRemaining.value : p.amount.value}')">Refund</button>` : ""}</td>
     </tr>`;
@@ -740,7 +743,7 @@
           .join("");
         if (!filtered.length)
           tbody.innerHTML =
-            '<tr><td colspan="8" class="empty">No payments found</td></tr>';
+            '<tr><td colspan="9" class="empty">No payments found</td></tr>';
 
         const pag = document.getElementById("payments-pagination");
         pag.style.display = "";
@@ -910,6 +913,17 @@
           month: "short",
           day: "numeric",
         });
+      }
+      // When the bank actually moves the money for this payment.
+      // SEPA Direct Debit: Mollie returns a future debit date on
+      // p.dueDate (3-5 business days after submission); use that so
+      // the row makes clear when the donor will be charged. Paid
+      // non-DD payments: paidAt is the moment the donor cleared
+      // checkout. Anything else: no incasso to talk about yet.
+      function fmtIncasso(p) {
+        if (p.dueDate) return fmtDate(p.dueDate);
+        if (p.paidAt && p.method !== "directdebit") return fmtDate(p.paidAt);
+        return "—";
       }
       function fmtAmount(a) {
         if (!a) return "—";
