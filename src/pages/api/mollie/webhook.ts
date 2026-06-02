@@ -12,6 +12,7 @@ import {
   type DonationFrequency,
 } from "../../../lib/donations";
 import { reportError } from "../../../lib/errors";
+import { donationDescription } from "../../../lib/currency";
 
 const SOURCE = "api/mollie/webhook";
 
@@ -194,12 +195,22 @@ export const POST: APIRoute = async ({ request }) => {
           }
           const startDateStr = startDate.toISOString().slice(0, 10);
 
+          // Route through the shared description helper so the
+          // subscription's description (which Mollie reuses verbatim
+          // on every recurring payment it fires) matches the first
+          // payment's description byte-for-byte. Falls back to "nl"
+          // if locale wasn't stamped on the original metadata - rare,
+          // but the old payment-meta interface didn't always set it.
           await mollieClient.customerSubscriptions.create({
             customerId,
             amount: { currency, value: meta.amount },
             interval,
             startDate: startDateStr,
-            description: `Quina Care ${meta.frequency} donation ${currency} ${meta.amount}`,
+            description: donationDescription({
+              amount: parseFloat(meta.amount),
+              locale: meta.locale ?? "nl",
+              frequency: meta.frequency as "monthly" | "quarterly" | "yearly",
+            }),
             webhookUrl: subscriptionWebhook,
             metadata: {
               frequency: meta.frequency,

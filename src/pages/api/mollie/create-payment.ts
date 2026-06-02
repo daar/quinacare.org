@@ -7,7 +7,7 @@ import {
   PaymentMethod,
   SequenceType,
 } from "@mollie/api-client";
-import { getCurrency } from "../../../lib/currency";
+import { getCurrency, donationDescription } from "../../../lib/currency";
 import {
   insertDonation,
   setMollieId,
@@ -135,7 +135,6 @@ export const POST: APIRoute = async ({ request }) => {
 
   const isRecurring =
     freq === "monthly" || freq === "quarterly" || freq === "yearly";
-  const amountLabel = `${currencyConfig.symbol}${amount}`;
   const fundraiserTitle =
     context === "fundraiser" && typeof metadata?.fundraiser_title === "string"
       ? metadata.fundraiser_title.trim()
@@ -143,17 +142,21 @@ export const POST: APIRoute = async ({ request }) => {
   // If the caller supplied an explicit description, use it verbatim —
   // this lets single-campaign pages send a short, recognisable name
   // (e.g. "Putumayo Loop 2026") that survives the ~22-char card-
-  // statement truncation. Otherwise fall back to the auto-built
-  // fundraiser / recurring / default forms.
+  // statement truncation. Otherwise fall back to the shared
+  // donationDescription helper, the same one the webhook uses to
+  // create the subscription - guarantees identical formatting
+  // between the first payment and every recurring payment that
+  // follows it.
   const explicitDescription =
     typeof body.description === "string" ? body.description.trim() : "";
-  const description = explicitDescription
-    ? explicitDescription
-    : fundraiserTitle
-      ? `${fundraiserTitle} - donation ${amountLabel}`
-      : isRecurring
-        ? `Quina Care ${freq} donation ${amountLabel}`
-        : `Quina Care donation ${amountLabel}`;
+  const description =
+    explicitDescription ||
+    donationDescription({
+      amount,
+      locale,
+      frequency: freq,
+      fundraiserTitle,
+    });
 
   // Insert pending donation in Turso
   let donationId: number | undefined;
