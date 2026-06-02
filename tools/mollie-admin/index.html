@@ -598,7 +598,7 @@
           html += '<div class="detail-section"><h3>Payments</h3>';
           if (payments.items.length) {
             html +=
-              '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Description</th><th>Date</th><th>Incasso</th><th></th></tr></thead><tbody>';
+              '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Description</th><th>Created</th><th>Paid</th><th>Incasso</th><th></th></tr></thead><tbody>';
             for (const p of payments.items) {
               const canRefund =
                 p.status === "paid" &&
@@ -609,6 +609,7 @@
           <td class="amount">${fmtAmount(p.amount)}</td>
           <td>${esc(p.description)}</td>
           <td>${fmtDate(p.createdAt)}</td>
+          <td>${fmtDate(p.paidAt)}</td>
           <td>${fmtIncasso(p)}</td>
           <td>${canRefund ? `<button class="btn btn-danger" onclick="event.stopPropagation(); confirmRefund('${p.id}', '${p.amount.currency}', '${p.amountRemaining ? p.amountRemaining.value : p.amount.value}')">Refund</button>` : ""}</td>
         </tr>`;
