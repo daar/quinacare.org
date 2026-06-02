@@ -32,6 +32,44 @@ const testMode = API_KEY.startsWith("test_");
 
 console.log(`Mollie mode: ${testMode ? "TEST" : "LIVE"}`);
 
+// ── Caches ─────────────────────────────────────────────────
+//
+// Search-by-substring needs the full list, which on this org is
+// ~750 customers + ~300 subscriptions. Walking those plus a parallel
+// mandate fetch per row from cold takes long enough that searching
+// for the same prefix twice felt broken. Cache the heavy bits in
+// memory: customer/subscription lists with a 5-minute TTL (donor
+// signups change minute-to-minute so a stale list is acceptable but
+// only briefly), and consumer names indefinitely (a customer's
+// mandate name doesn't change unless they signed a new one, in
+// which case the next list pull picks up the new customer anyway).
+//
+// Caches live for the lifetime of the node process - if you change
+// data via the Mollie dashboard and want it reflected, restart the
+// server (or wait 5 min).
+
+const TTL_MS = 5 * 60 * 1000;
+const consumerNameCache = new Map(); // customerId -> consumerName | null
+const listCache = new Map(); // kind -> { at, items }
+
+async function cachedConsumerName(customerId) {
+  if (consumerNameCache.has(customerId))
+    return consumerNameCache.get(customerId);
+  const name = await fetchConsumerName(customerId).catch(() => null);
+  consumerNameCache.set(customerId, name);
+  return name;
+}
+
+function getCachedList(kind) {
+  const hit = listCache.get(kind);
+  if (hit && Date.now() - hit.at < TTL_MS) return hit.items;
+  return null;
+}
+
+function setCachedList(kind, items) {
+  listCache.set(kind, { at: Date.now(), items });
+}
+
 // ── API handlers ───────────────────────────────────────────
 
 /**
@@ -150,46 +188,63 @@ async function handleApi(body) {
     case "search-customers": {
       if (!body.query) throw new Error("query required");
       const q = body.query.toLowerCase();
-      const all = [];
-      let p = await mollieClient.customers.page({ limit: 250 });
-      while (true) {
-        all.push(...p);
-        if (!p.nextPageCursor) break;
-        p = await p.nextPage();
+      // Page through every customer in the org, cached - subsequent
+      // searches within the TTL hit memory only, no Mollie calls.
+      let all = getCachedList("customers");
+      if (!all) {
+        all = [];
+        let p = await mollieClient.customers.page({ limit: 250 });
+        while (true) {
+          all.push(...p);
+          if (!p.nextPageCursor) break;
+          p = await p.nextPage();
+        }
+        setCachedList("customers", all);
       }
-      // Cheap field filter first: ID / Mollie-stored name / email.
-      // Anything that matches up here skips the per-customer
-      // mandate fetch entirely.
+      // Cheap field filter: ID / Mollie-stored name / email. When
+      // the query is shaped like an ID (cst_, tr_, mdt_, ...), the
+      // consumer-name fallback can't match (those prefixes never
+      // appear in a bank-account holder name), so skip the parallel
+      // mandate fetch entirely - that pass was the slow part.
+      const isIdQuery = /^(cst_|tr_|sub_|mdt_|re_|cus_)/i.test(body.query);
       const cheapMatch = (c) =>
         (c.id || "").toLowerCase().includes(q) ||
         (c.name || "").toLowerCase().includes(q) ||
         (c.email || "").toLowerCase().includes(q);
       const cheaplyMatched = new Set(all.filter(cheapMatch).map((c) => c.id));
-      // For the rest, fetch the SEPA mandate consumer name in
-      // parallel and treat it as another searchable field. Without
-      // this you couldn't find a donor by their real bank-account
-      // name from the search box.
-      const others = all.filter((c) => !cheaplyMatched.has(c.id));
-      const otherNames = await Promise.all(
-        others.map((c) => fetchConsumerName(c.id).catch(() => null)),
+
+      let nameByCustomer = new Map();
+      if (!isIdQuery) {
+        const others = all.filter((c) => !cheaplyMatched.has(c.id));
+        const otherNames = await Promise.all(
+          others.map((c) => cachedConsumerName(c.id)),
+        );
+        nameByCustomer = new Map(others.map((c, i) => [c.id, otherNames[i]]));
+      }
+      // Always attach consumerName to the rows we DO return - those
+      // are at most a handful, so the extra mandate lookups are
+      // cheap (and cached). Without this the matched rows would
+      // come back with consumerName=null even when one is known.
+      const matched = all.filter(
+        (c) =>
+          cheaplyMatched.has(c.id) ||
+          (nameByCustomer.get(c.id) || "").toLowerCase().includes(q),
       );
-      const nameByCustomer = new Map(
-        others.map((c, i) => [c.id, otherNames[i]]),
+      const matchedNames = await Promise.all(
+        matched.map((c) =>
+          nameByCustomer.has(c.id)
+            ? nameByCustomer.get(c.id)
+            : cachedConsumerName(c.id),
+        ),
       );
-      const items = all
-        .filter(
-          (c) =>
-            cheaplyMatched.has(c.id) ||
-            (nameByCustomer.get(c.id) || "").toLowerCase().includes(q),
-        )
-        .map((c) => ({
-          id: c.id,
-          name: c.name,
-          email: c.email,
-          locale: c.locale,
-          createdAt: c.createdAt,
-          consumerName: nameByCustomer.get(c.id) ?? null,
-        }));
+      const items = matched.map((c, i) => ({
+        id: c.id,
+        name: c.name,
+        email: c.email,
+        locale: c.locale,
+        createdAt: c.createdAt,
+        consumerName: matchedNames[i] ?? null,
+      }));
       return { items, nextCursor: null };
     }
 
@@ -257,6 +312,7 @@ async function handleApi(body) {
           createdAt: s.createdAt,
           canceledAt: s.canceledAt,
           nextPaymentDate: s.nextPaymentDate,
+          startDate: s.startDate,
           customerId: s.customerId,
         }));
         return { items };
@@ -265,7 +321,9 @@ async function handleApi(body) {
       // exposes this as the singular `subscription` accessor (the
       // plural `subscriptions` is undefined on the client); the
       // per-customer one we use above is `customerSubscriptions`.
-      const params = { limit: 50 };
+      // 250 is Mollie's per-page max - large enough that most orgs
+      // fit on one page and the admin can browse without paging.
+      const params = { limit: 250 };
       if (body.from) params.from = body.from;
       const page = await mollieClient.subscription.page(params);
       const subs = [...page];
@@ -296,6 +354,70 @@ async function handleApi(body) {
         consumerName: nameByCustomer.get(s.customerId) ?? null,
       }));
       return { items, nextCursor: page.nextPageCursor || null };
+    }
+
+    case "search-subscriptions": {
+      if (!body.query) throw new Error("query required");
+      const q = body.query.toLowerCase();
+      // Cached full-org list - same TTL story as customers above.
+      let all = getCachedList("subscriptions");
+      if (!all) {
+        all = [];
+        let p = await mollieClient.subscription.page({ limit: 250 });
+        while (true) {
+          all.push(...p);
+          if (!p.nextPageCursor) break;
+          p = await p.nextPage();
+        }
+        setCachedList("subscriptions", all);
+      }
+      const isIdQuery = /^(cst_|tr_|sub_|mdt_|re_|cus_)/i.test(body.query);
+      const cheapMatch = (s) =>
+        (s.id || "").toLowerCase().includes(q) ||
+        (s.customerId || "").toLowerCase().includes(q) ||
+        (s.description || "").toLowerCase().includes(q);
+      const cheaplyMatched = new Set(all.filter(cheapMatch).map((s) => s.id));
+
+      let nameByCustomer = new Map();
+      if (!isIdQuery) {
+        const others = all.filter((s) => !cheaplyMatched.has(s.id));
+        const customerIds = [
+          ...new Set(others.map((s) => s.customerId).filter(Boolean)),
+        ];
+        const consumerNames = await Promise.all(
+          customerIds.map((id) => cachedConsumerName(id)),
+        );
+        nameByCustomer = new Map(
+          customerIds.map((id, i) => [id, consumerNames[i]]),
+        );
+      }
+      const matched = all.filter(
+        (s) =>
+          cheaplyMatched.has(s.id) ||
+          (nameByCustomer.get(s.customerId) || "").toLowerCase().includes(q),
+      );
+      const matchedNames = await Promise.all(
+        matched.map((s) =>
+          nameByCustomer.has(s.customerId)
+            ? nameByCustomer.get(s.customerId)
+            : cachedConsumerName(s.customerId),
+        ),
+      );
+      const items = matched.map((s, i) => ({
+        id: s.id,
+        status: s.status,
+        amount: s.amount,
+        interval: s.interval,
+        description: s.description,
+        method: s.method,
+        createdAt: s.createdAt,
+        canceledAt: s.canceledAt,
+        nextPaymentDate: s.nextPaymentDate,
+        startDate: s.startDate,
+        customerId: s.customerId,
+        consumerName: matchedNames[i] ?? null,
+      }));
+      return { items, nextCursor: null };
     }
 
     case "list-subscription-payments": {

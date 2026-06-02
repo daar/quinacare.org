@@ -674,9 +674,32 @@
         }
       }
 
+      // Filter input flow mirrors the Subscriptions tab: empty value
+      // returns to the paginated listing at page 1, anything else
+      // debounces 350ms and then calls customerLookup() which fires
+      // the appropriate server search (get-customer for cst_*,
+      // get-payment for tr_*, search-customers for anything else).
+      // Without this, typing into the input only filtered the 50
+      // visible rows - a search for cst_xyz on a 750-customer org
+      // would silently return zero and the visible pagination
+      // buttons would lead nowhere.
+      let customerSearchTimer = null;
       document
         .getElementById("customer-search")
-        .addEventListener("input", renderCustomers);
+        .addEventListener("input", (e) => {
+          const q = e.target.value.trim();
+          clearTimeout(customerSearchTimer);
+          if (!q) {
+            customersCursors = [null];
+            loadCustomers(1);
+            return;
+          }
+          // First repaint locally so the user sees instant feedback
+          // on the rows already loaded, then fall through to the
+          // server search for the global view.
+          renderCustomers();
+          customerSearchTimer = setTimeout(customerLookup, 350);
+        });
       document
         .getElementById("customers-prev")
         .addEventListener("click", () => loadCustomers(customersPage - 1));
@@ -907,25 +930,36 @@
             customerId,
             subscriptionId: subId,
           });
+          // Same tabular layout as the customer-detail Subscriptions
+          // section, so both views feel consistent. Single-row table
+          // because we're showing the one subscription that was just
+          // clicked; the extra fields the prose block carried
+          // (description, customer, naam consument, start, created,
+          // canceled) become their own columns so nothing is lost.
+          const canCancel = sub.status === "active";
           let html = "";
           html += '<div class="detail-section"><h3>Subscription</h3>';
-          html += `<p style="font-size:13px;color:#4b5563">
-            <strong>${esc(sub.description || "—")}</strong> ·
-            ${fmtAmount(sub.amount)} every ${esc(sub.interval)} ·
-            status <span class="status ${sub.status}">${sub.status}</span> ·
-            customer <code>${sub.customerId}</code> ·
-            naam consument <strong>${esc(sub.consumerName || "—")}</strong>
-          </p>
-          <p style="font-size:13px;color:#4b5563">
-            start ${fmtDate(sub.startDate)} ·
-            next ${fmtDate(sub.nextPaymentDate)} ·
-            created ${fmtDate(sub.createdAt)}
-            ${sub.canceledAt ? " · canceled " + fmtDate(sub.canceledAt) : ""}
-          </p>`;
-          if (sub.status === "active") {
-            html += `<p style="margin-top:8px"><button class="btn btn-danger" onclick="event.stopPropagation(); confirmCancel('${sub.customerId}','${sub.id}','${fmtAmount(sub.amount)} / ${esc(sub.interval)}')">Cancel subscription</button></p>`;
-          }
-          html += "</div>";
+          html +=
+            '<table class="detail-table"><thead><tr>' +
+            '<th>ID</th><th>Status</th><th>Description</th><th>Amount</th><th>Interval</th>' +
+            '<th>Customer</th><th>Naam consument</th>' +
+            '<th>Start</th><th>Next Payment</th><th>Created</th><th>Canceled</th><th></th>' +
+            "</tr></thead><tbody>";
+          html += `<tr>
+        <td><code>${sub.id}</code></td>
+        <td><span class="status ${sub.status}">${sub.status}</span></td>
+        <td>${esc(sub.description || "—")}</td>
+        <td class="amount">${fmtAmount(sub.amount)}</td>
+        <td>${esc(sub.interval)}</td>
+        <td><code>${sub.customerId || "—"}</code></td>
+        <td>${esc(sub.consumerName || "—")}</td>
+        <td>${fmtDate(sub.startDate)}</td>
+        <td>${fmtDate(sub.nextPaymentDate)}</td>
+        <td>${fmtDate(sub.createdAt)}</td>
+        <td>${sub.canceledAt ? fmtDate(sub.canceledAt) : "—"}</td>
+        <td>${canCancel ? `<button class="btn btn-danger" onclick="event.stopPropagation(); confirmCancel('${sub.customerId}','${sub.id}','${fmtAmount(sub.amount)} / ${esc(sub.interval)}')">Cancel</button>` : ""}</td>
+      </tr>`;
+          html += "</tbody></table></div>";
 
           html += '<div class="detail-section"><h3>Payments for this subscription</h3>';
           if (payments.items.length) {
@@ -954,9 +988,54 @@
         }
       }
 
+      // Filter input flow: empty value -> normal paginated listing
+      // (loadSubscriptions(1)); non-empty -> debounced server search
+      // that walks every page and returns matches across the whole
+      // org. Without this the local filter would silently only look
+      // at the 50 (or 250) rows in front of you, hiding any matching
+      // subscription that happened to live on a later page - which is
+      // exactly the case for sub_LGwPgxvVUY on a 300-subscription org.
+      let subscriptionSearchTimer = null;
       document
         .getElementById("subscription-search")
-        .addEventListener("input", renderSubscriptions);
+        .addEventListener("input", (e) => {
+          const q = e.target.value.trim();
+          clearTimeout(subscriptionSearchTimer);
+          if (!q) {
+            // Back to normal paginated mode. Reload page 1 so the
+            // user sees the full list reset, not the filtered subset
+            // they were just looking at.
+            subscriptionsCursors = [null];
+            loadSubscriptions(1);
+            return;
+          }
+          subscriptionSearchTimer = setTimeout(async () => {
+            document.getElementById("subscriptions-loading").style.display =
+              "";
+            document.getElementById("subscriptions-pagination").style.display =
+              "none";
+            try {
+              const data = await api({
+                action: "search-subscriptions",
+                query: q,
+              });
+              subscriptionsData = data.items;
+              subscriptionsPage = 1;
+              subscriptionsNextCursor = null;
+              renderSubscriptions();
+              // search-subscriptions returns a single page of all
+              // matches, so hide the prev/next buttons regardless of
+              // what renderSubscriptions tried to show.
+              document.getElementById(
+                "subscriptions-pagination",
+              ).style.display = "none";
+            } catch (err) {
+              showError(err.error || err.message);
+            }
+            document.getElementById("subscriptions-loading").style.display =
+              "none";
+          }, 300);
+        });
       document
         .getElementById("subscriptions-prev")
         .addEventListener("click", () => loadSubscriptions(subscriptionsPage - 1));
