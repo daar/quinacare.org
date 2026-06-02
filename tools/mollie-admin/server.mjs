@@ -240,12 +240,48 @@ async function handleApi(body) {
     }
 
     case "list-subscriptions": {
-      if (!body.customerId) throw new Error("customerId required");
-      const page = await mollieClient.customerSubscriptions.page({
-        customerId: body.customerId,
-        limit: 50,
-      });
-      const items = [...page].map((s) => ({
+      // Per-customer call (used by the customer expand row) - keep as
+      // a single page since the existing detail view shows it inline.
+      if (body.customerId) {
+        const page = await mollieClient.customerSubscriptions.page({
+          customerId: body.customerId,
+          limit: 50,
+        });
+        const items = [...page].map((s) => ({
+          id: s.id,
+          status: s.status,
+          amount: s.amount,
+          interval: s.interval,
+          description: s.description,
+          method: s.method,
+          createdAt: s.createdAt,
+          canceledAt: s.canceledAt,
+          nextPaymentDate: s.nextPaymentDate,
+          customerId: s.customerId,
+        }));
+        return { items };
+      }
+      // Org-wide listing for the Subscriptions tab. The Node SDK
+      // exposes this as the singular `subscription` accessor (the
+      // plural `subscriptions` is undefined on the client); the
+      // per-customer one we use above is `customerSubscriptions`.
+      const params = { limit: 50 };
+      if (body.from) params.from = body.from;
+      const page = await mollieClient.subscription.page(params);
+      const subs = [...page];
+      // Surface the SEPA consumer name per row, deduping by customer
+      // so we don't hit the mandate endpoint twice for a customer
+      // who has multiple subscriptions (unlikely but possible).
+      const customerIds = [
+        ...new Set(subs.map((s) => s.customerId).filter(Boolean)),
+      ];
+      const consumerNames = await Promise.all(
+        customerIds.map((id) => fetchConsumerName(id).catch(() => null)),
+      );
+      const nameByCustomer = new Map(
+        customerIds.map((id, i) => [id, consumerNames[i]]),
+      );
+      const items = subs.map((s) => ({
         id: s.id,
         status: s.status,
         amount: s.amount,
@@ -255,7 +291,24 @@ async function handleApi(body) {
         createdAt: s.createdAt,
         canceledAt: s.canceledAt,
         nextPaymentDate: s.nextPaymentDate,
+        startDate: s.startDate,
+        customerId: s.customerId,
+        consumerName: nameByCustomer.get(s.customerId) ?? null,
       }));
+      return { items, nextCursor: page.nextPageCursor || null };
+    }
+
+    case "list-subscription-payments": {
+      if (!body.customerId || !body.subscriptionId)
+        throw new Error("customerId and subscriptionId required");
+      // Up to 250 payments per sub is plenty - even a long-running
+      // monthly sub takes ~21 years to need a second page.
+      const page = await mollieClient.subscriptionPayments.page({
+        customerId: body.customerId,
+        subscriptionId: body.subscriptionId,
+        limit: 250,
+      });
+      const items = [...page].map(mapPayment);
       return { items };
     }
 

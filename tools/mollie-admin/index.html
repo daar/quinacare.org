@@ -354,6 +354,7 @@
       </div>
       <div class="tabs">
         <button class="tab active" data-tab="customers">Customers</button>
+        <button class="tab" data-tab="subscriptions">Subscriptions</button>
         <button class="tab" data-tab="payments">Payments</button>
       </div>
 
@@ -391,6 +392,48 @@
           <button class="btn btn-primary" id="customers-next">Next →</button>
         </div>
         <div id="customers-loading" class="loading">Loading customers...</div>
+      </div>
+
+      <!-- Subscriptions Tab -->
+      <div id="tab-subscriptions" class="tab-content" style="display: none">
+        <div class="search-bar">
+          <input
+            type="text"
+            id="subscription-search"
+            placeholder="Filter by ID, customer, consumer name, or description..."
+          />
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Interval</th>
+              <th>Next Payment</th>
+              <th>Naam consument</th>
+              <th>Customer</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody id="subscriptions-body"></tbody>
+        </table>
+        <div
+          class="pagination"
+          id="subscriptions-pagination"
+          style="display: none"
+        >
+          <button class="btn btn-primary" id="subscriptions-prev" disabled>
+            ← Prev
+          </button>
+          <span class="page-info" id="subscriptions-page-info">Page 1</span>
+          <button class="btn btn-primary" id="subscriptions-next">
+            Next →
+          </button>
+        </div>
+        <div id="subscriptions-loading" class="loading">
+          Loading subscriptions...
+        </div>
       </div>
 
       <!-- Payments Tab -->
@@ -466,8 +509,13 @@
       let paymentsPage = 1;
       let paymentsCursors = [null];
       let paymentsNextCursor = null;
+      let subscriptionsData = [];
+      let subscriptionsPage = 1;
+      let subscriptionsCursors = [null];
+      let subscriptionsNextCursor = null;
       let activeTab = "customers";
       let expandedCustomer = null;
+      let expandedSubscription = null;
 
       // ── Tabs ───────────────────────────────────────────────────
       document.querySelectorAll(".tab").forEach((tab) => {
@@ -767,6 +815,155 @@
         .getElementById("payments-next")
         .addEventListener("click", () => loadPayments(paymentsPage + 1));
 
+      // ── Subscriptions ─────────────────────────────────────────
+      async function loadSubscriptions(page) {
+        const body = { action: "list-subscriptions" };
+        if (page > 1 && subscriptionsCursors[page - 1])
+          body.from = subscriptionsCursors[page - 1];
+
+        document.getElementById("subscriptions-loading").style.display = "";
+        document.getElementById("subscriptions-pagination").style.display = "none";
+        document.getElementById("subscriptions-body").innerHTML = "";
+        expandedSubscription = null;
+
+        try {
+          const data = await api(body);
+          subscriptionsData = data.items;
+          subscriptionsPage = page;
+          subscriptionsNextCursor = data.nextCursor;
+          if (data.nextCursor) subscriptionsCursors[page] = data.nextCursor;
+          renderSubscriptions();
+        } catch (e) {
+          showError(e.error || e.message);
+        }
+        document.getElementById("subscriptions-loading").style.display = "none";
+      }
+
+      function renderSubscriptions() {
+        const filter = document
+          .getElementById("subscription-search")
+          .value.toLowerCase();
+        const filtered = subscriptionsData.filter(
+          (s) =>
+            (s.id || "").toLowerCase().includes(filter) ||
+            (s.customerId || "").toLowerCase().includes(filter) ||
+            (s.consumerName || "").toLowerCase().includes(filter) ||
+            (s.description || "").toLowerCase().includes(filter),
+        );
+        const tbody = document.getElementById("subscriptions-body");
+        tbody.innerHTML = filtered
+          .map(
+            (s) => `
+    <tr class="expandable" onclick="toggleSubscription('${s.id}', '${s.customerId}')">
+      <td><code>${s.id}</code></td>
+      <td><span class="status ${s.status}">${s.status}</span></td>
+      <td class="amount">${fmtAmount(s.amount)}</td>
+      <td>${esc(s.interval)}</td>
+      <td>${fmtDate(s.nextPaymentDate)}</td>
+      <td>${esc(s.consumerName || "—")}</td>
+      <td><code>${s.customerId || "—"}</code></td>
+      <td>${fmtDate(s.createdAt)}</td>
+    </tr>
+    <tr class="detail-row" id="sub-detail-${s.id}" style="display:none">
+      <td colspan="8"><div id="sub-detail-content-${s.id}" class="loading">Loading...</div></td>
+    </tr>
+  `,
+          )
+          .join("");
+        if (!filtered.length)
+          tbody.innerHTML =
+            '<tr><td colspan="8" class="empty">No subscriptions found</td></tr>';
+
+        const pag = document.getElementById("subscriptions-pagination");
+        pag.style.display = "";
+        document.getElementById("subscriptions-prev").disabled =
+          subscriptionsPage <= 1;
+        document.getElementById("subscriptions-next").disabled =
+          !subscriptionsNextCursor;
+        document.getElementById("subscriptions-page-info").textContent =
+          `Page ${subscriptionsPage}`;
+      }
+
+      async function toggleSubscription(subId, customerId) {
+        // Same lifecycle as toggleCustomer: collapse the previous one,
+        // then expand the new one and lazy-load its payments.
+        const prev = expandedSubscription;
+        if (prev) {
+          document.getElementById("sub-detail-" + prev).style.display = "none";
+        }
+        if (prev === subId) {
+          expandedSubscription = null;
+          return;
+        }
+        expandedSubscription = subId;
+        const row = document.getElementById("sub-detail-" + subId);
+        row.style.display = "";
+        const content = document.getElementById("sub-detail-content-" + subId);
+        content.innerHTML = '<div class="loading">Loading...</div>';
+        try {
+          const sub = subscriptionsData.find((s) => s.id === subId) || {};
+          const payments = await api({
+            action: "list-subscription-payments",
+            customerId,
+            subscriptionId: subId,
+          });
+          let html = "";
+          html += '<div class="detail-section"><h3>Subscription</h3>';
+          html += `<p style="font-size:13px;color:#4b5563">
+            <strong>${esc(sub.description || "—")}</strong> ·
+            ${fmtAmount(sub.amount)} every ${esc(sub.interval)} ·
+            status <span class="status ${sub.status}">${sub.status}</span> ·
+            customer <code>${sub.customerId}</code> ·
+            naam consument <strong>${esc(sub.consumerName || "—")}</strong>
+          </p>
+          <p style="font-size:13px;color:#4b5563">
+            start ${fmtDate(sub.startDate)} ·
+            next ${fmtDate(sub.nextPaymentDate)} ·
+            created ${fmtDate(sub.createdAt)}
+            ${sub.canceledAt ? " · canceled " + fmtDate(sub.canceledAt) : ""}
+          </p>`;
+          if (sub.status === "active") {
+            html += `<p style="margin-top:8px"><button class="btn btn-danger" onclick="event.stopPropagation(); confirmCancel('${sub.customerId}','${sub.id}','${fmtAmount(sub.amount)} / ${esc(sub.interval)}')">Cancel subscription</button></p>`;
+          }
+          html += "</div>";
+
+          html += '<div class="detail-section"><h3>Payments for this subscription</h3>';
+          if (payments.items.length) {
+            html +=
+              '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Seq</th><th>Created</th><th>Paid</th><th>Incasso</th></tr></thead><tbody>';
+            for (const p of payments.items) {
+              html += `<tr>
+          <td><code>${p.id}</code></td>
+          <td><span class="status ${p.status}">${p.status}</span></td>
+          <td class="amount">${fmtAmount(p.amount)}</td>
+          <td>${esc(p.sequenceType || "—")}</td>
+          <td>${fmtDate(p.createdAt)}</td>
+          <td>${fmtDate(p.paidAt)}</td>
+          <td>${fmtIncasso(p)}</td>
+        </tr>`;
+            }
+            html += "</tbody></table>";
+          } else {
+            html += '<p style="color:#9ca3af;font-size:13px">No payments yet</p>';
+          }
+          html += "</div>";
+
+          content.innerHTML = html;
+        } catch (e) {
+          content.innerHTML = `<div class="error">${esc(e.error || e.message)}</div>`;
+        }
+      }
+
+      document
+        .getElementById("subscription-search")
+        .addEventListener("input", renderSubscriptions);
+      document
+        .getElementById("subscriptions-prev")
+        .addEventListener("click", () => loadSubscriptions(subscriptionsPage - 1));
+      document
+        .getElementById("subscriptions-next")
+        .addEventListener("click", () => loadSubscriptions(subscriptionsPage + 1));
+
       // Direct payment lookup by ID, customer ID, or partial description search
       async function paymentLookup() {
         const q = document.getElementById("payment-search").value.trim();
@@ -968,6 +1165,7 @@
 
       loadCustomers(1);
       loadPayments(1);
+      loadSubscriptions(1);
     </script>
   </body>
 </html>
