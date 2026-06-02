@@ -22,6 +22,7 @@ import PutumayoLoopHubContactModal from "../components/PutumayoLoopHubContactMod
 import PutumayoLoopEditionNav from "../components/PutumayoLoopEditionNav.astro";
 import { generateQrDataUri } from "../lib/qr";
 import { getCurrentEdition } from "../lib/putumayoLoopRepo";
+import { editionTitle } from "../data/putumayoLoop";
 import { countryName } from "../lib/countryName";
 
 const lang: Lang = "nl";
@@ -29,6 +30,7 @@ const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 const edition = await getCurrentEdition();
 const { hubs, subscribers, donations } = edition;
+const title = editionTitle(edition, lang);
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat(dateLocale, {
@@ -76,7 +78,7 @@ const qrDataUri = await generateQrDataUri(pageUrl);
 const excerpt = t("putumayoLoop.heroSubtitle");
 ---
 
-<Layout title={`${edition.title} | Quina Care`} lang={lang}>
+<Layout title={`${title} | Quina Care`} lang={lang}>
   <Nav />
 
   <!-- Hero -->
@@ -98,7 +100,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           <h1
             class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.95] uppercase"
           >
-            {edition.title}
+            {title}
           </h1>
           <p class="qc-body mt-6 max-w-2xl text-lg">
             {t("putumayoLoop.heroSubtitle")}
@@ -413,7 +415,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
     </h2>
     <p class="qc-body mb-6">{t("putumayoLoop.shareSubtitle")}</p>
     <div class="flex justify-center">
-      <SocialShare url={pageUrl} title={edition.title} lang={lang} />
+      <SocialShare url={pageUrl} title={title} lang={lang} />
     </div>
   </section>
 
@@ -426,14 +428,14 @@ const excerpt = t("putumayoLoop.heroSubtitle");
       impact={{
         kind: "fundraiser",
         organizer: "Quina Care",
-        fallback: edition.title,
+        fallback: title,
         excerpt,
       }}
       metadata={{
         fundraiser_slug: edition.fundraiserSlug,
-        fundraiser_title: edition.title,
+        fundraiser_title: title,
       }}
-      description={edition.title}
+      description={title}
     />
   </DonationModal>
 

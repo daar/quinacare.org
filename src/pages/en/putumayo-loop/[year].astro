@@ -16,6 +16,7 @@ import {
   type Lang,
 } from "../../../i18n";
 import { getEditionByYear } from "../../../lib/putumayoLoopRepo";
+import { editionTitle } from "../../../data/putumayoLoop";
 import { countryName } from "../../../lib/countryName";
 
 const lang: Lang = "en";
@@ -30,6 +31,7 @@ if (!edition || edition.status !== "past") {
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 const { hubs, donations, subscribers } = edition;
+const title = editionTitle(edition, lang);
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat(dateLocale, {
@@ -65,7 +67,7 @@ const sumCount = subscribers.reduce((s, x) => s + (x.count ?? 1), 0);
 const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
 ---
 
-<Layout title={`${edition.title} | Quina Care`} lang={lang}>
+<Layout title={`${title} | Quina Care`} lang={lang}>
   <Nav />
 
   <header class="relative pt-40 pb-12 overflow-hidden">
@@ -90,7 +92,7 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
       <h1
         class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] uppercase"
       >
-        {edition.title}
+        {title}
       </h1>
     </div>
   </header>
@@ -165,7 +167,7 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
             {t("putumayoLoop.videoHeading")}
           </h2>
         </div>
-        <PutumayoLoopVideo videoId={edition.youtubeId} title={edition.title} />
+        <PutumayoLoopVideo videoId={edition.youtubeId} title={title} />
       </section>
     )
   }
@@ -255,14 +257,14 @@ const totalRunners = edition.totalRunners ?? (sumCount > 0 ? sumCount : null);
       impact={{
         kind: "fundraiser",
         organizer: "Quina Care",
-        fallback: edition.title,
-        excerpt: story || edition.title,
+        fallback: title,
+        excerpt: story || title,
       }}
       metadata={{
         fundraiser_slug: edition.fundraiserSlug,
-        fundraiser_title: edition.title,
+        fundraiser_title: title,
       }}
-      description={edition.title}
+      description={title}
     />
   </DonationModal>
 

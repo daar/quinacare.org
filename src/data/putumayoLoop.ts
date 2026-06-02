@@ -83,7 +83,16 @@ export interface EditionConfig {
   slug: string;
   /** Used in the Mollie payment description and metadata.fundraiser_slug. */
   fundraiserSlug: string;
+  /**
+   * Canonical title - used as the fallback when no locale-specific
+   * title is set, and as the input to anything that doesn't render
+   * (e.g. the donation `metadata.fundraiser_title` we pass to Mollie).
+   * Pages should prefer `editionTitle(edition, lang)` so EN/ES viewers
+   * get "Putumayo Run YYYY" instead of the Dutch "Putumayo Loop YYYY".
+   */
   title: string;
+  /** Optional per-language title override. Falls back to `title`. */
+  titles?: Partial<Record<"nl" | "en" | "es", string>>;
   /** ISO date (YYYY-MM-DD). */
   runDate: string;
   status: EditionStatus;
@@ -110,12 +119,29 @@ export interface EditionConfig {
   subscribers?: Subscriber[];
 }
 
+/**
+ * Resolve the right title to display for a given language. Uses the
+ * locale-specific override on `titles` when present, falls back to
+ * the canonical `title` otherwise - so NL viewers still see
+ * "Putumayo Loop YYYY" while EN and ES see "Putumayo Run YYYY".
+ */
+export function editionTitle(
+  edition: { title: string; titles?: EditionConfig["titles"] },
+  lang: "nl" | "en" | "es",
+): string {
+  return edition.titles?.[lang] ?? edition.title;
+}
+
 export const editions: EditionConfig[] = [
   {
     year: 2025,
     slug: "2025",
     fundraiserSlug: "putumayo-loop-2025",
     title: "Putumayo Loop 2025",
+    titles: {
+      en: "Putumayo Run 2025",
+      es: "Putumayo Run 2025",
+    },
     runDate: "2025-10-26",
     status: "past",
     hubs: [],
@@ -206,6 +232,10 @@ export const editions: EditionConfig[] = [
     slug: "2026",
     fundraiserSlug: "putumayo-loop-2026",
     title: "Putumayo Loop 2026",
+    titles: {
+      en: "Putumayo Run 2026",
+      es: "Putumayo Run 2026",
+    },
     runDate: "2026-10-18",
     status: "active",
     hubs: [
