@@ -64,6 +64,26 @@ function effectiveStatus(p) {
   return p.status;
 }
 
+/**
+ * Return the bank-account-holder name from the customer's most
+ * recently created valid mandate, or null if none exists. Used to
+ * give each row in the Customers table a real donor identity (the
+ * customer's `name` is always our placeholder "Quina Care Donor").
+ */
+async function fetchConsumerName(customerId) {
+  const mandates = await mollieClient.customerMandates.page({ customerId });
+  const items = [...mandates];
+  if (!items.length) return null;
+  // The mandate object nests the bank-holder name inside `details`,
+  // not at the top level - same shape as a payment object. Reading
+  // `m.consumerName` always returns undefined here, which is what
+  // made every customer's "Naam consument" column come up empty.
+  const sorted = items
+    .filter((m) => m.details?.consumerName)
+    .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  return sorted[0]?.details?.consumerName ?? null;
+}
+
 function mapPayment(p) {
   return {
     id: p.id,
@@ -104,12 +124,25 @@ async function handleApi(body) {
       const params = { limit: 50 };
       if (body.from) params.from = body.from;
       const page = await mollieClient.customers.page(params);
-      const items = [...page].map((c) => ({
+      const customers = [...page];
+      // Fetch each customer's mandates in parallel to surface the
+      // SEPA-DD consumer name. The customer's own `name` is the one
+      // we assigned at create-payment time ("Quina Care Donor") -
+      // useless for identifying who the actual donor is. The mandate
+      // holds the bank-account holder name, which is the real donor
+      // identity. Best-effort: a per-customer mandate fetch failing
+      // (rate limit, gone, etc.) just leaves that row's
+      // consumerName null, doesn't break the page.
+      const consumerNames = await Promise.all(
+        customers.map((c) => fetchConsumerName(c.id).catch(() => null)),
+      );
+      const items = customers.map((c, i) => ({
         id: c.id,
         name: c.name,
         email: c.email,
         locale: c.locale,
         createdAt: c.createdAt,
+        consumerName: consumerNames[i],
       }));
       return { items, nextCursor: page.nextPageCursor || null };
     }
@@ -124,12 +157,30 @@ async function handleApi(body) {
         if (!p.nextPageCursor) break;
         p = await p.nextPage();
       }
+      // Cheap field filter first: ID / Mollie-stored name / email.
+      // Anything that matches up here skips the per-customer
+      // mandate fetch entirely.
+      const cheapMatch = (c) =>
+        (c.id || "").toLowerCase().includes(q) ||
+        (c.name || "").toLowerCase().includes(q) ||
+        (c.email || "").toLowerCase().includes(q);
+      const cheaplyMatched = new Set(all.filter(cheapMatch).map((c) => c.id));
+      // For the rest, fetch the SEPA mandate consumer name in
+      // parallel and treat it as another searchable field. Without
+      // this you couldn't find a donor by their real bank-account
+      // name from the search box.
+      const others = all.filter((c) => !cheaplyMatched.has(c.id));
+      const otherNames = await Promise.all(
+        others.map((c) => fetchConsumerName(c.id).catch(() => null)),
+      );
+      const nameByCustomer = new Map(
+        others.map((c, i) => [c.id, otherNames[i]]),
+      );
       const items = all
         .filter(
           (c) =>
-            (c.id || "").toLowerCase().includes(q) ||
-            (c.name || "").toLowerCase().includes(q) ||
-            (c.email || "").toLowerCase().includes(q),
+            cheaplyMatched.has(c.id) ||
+            (nameByCustomer.get(c.id) || "").toLowerCase().includes(q),
         )
         .map((c) => ({
           id: c.id,
@@ -137,6 +188,7 @@ async function handleApi(body) {
           email: c.email,
           locale: c.locale,
           createdAt: c.createdAt,
+          consumerName: nameByCustomer.get(c.id) ?? null,
         }));
       return { items, nextCursor: null };
     }

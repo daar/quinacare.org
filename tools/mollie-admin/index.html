@@ -365,7 +365,7 @@
           <input
             type="text"
             id="customer-search"
-            placeholder="Search by ID (cst_xxx), name, or email..."
+            placeholder="Search by ID (cst_xxx), name, consumer name, or email..."
           />
           <button class="btn btn-primary" id="customer-lookup-btn">
             Lookup
@@ -376,6 +376,7 @@
             <tr>
               <th>ID</th>
               <th>Name</th>
+              <th>Naam consument</th>
               <th>Email</th>
               <th>Created</th>
             </tr>
@@ -513,7 +514,8 @@
           (c) =>
             (c.name || "").toLowerCase().includes(filter) ||
             (c.email || "").toLowerCase().includes(filter) ||
-            (c.id || "").toLowerCase().includes(filter),
+            (c.id || "").toLowerCase().includes(filter) ||
+            (c.consumerName || "").toLowerCase().includes(filter),
         );
         const tbody = document.getElementById("customers-body");
         tbody.innerHTML = filtered
@@ -522,18 +524,19 @@
     <tr class="expandable" onclick="toggleCustomer('${c.id}')">
       <td><code>${c.id}</code></td>
       <td>${esc(c.name)}</td>
+      <td>${esc(c.consumerName || "—")}</td>
       <td>${esc(c.email)}</td>
       <td>${fmtDate(c.createdAt)}</td>
     </tr>
     <tr class="detail-row" id="detail-${c.id}" style="display:none">
-      <td colspan="4"><div id="detail-content-${c.id}" class="loading">Loading...</div></td>
+      <td colspan="5"><div id="detail-content-${c.id}" class="loading">Loading...</div></td>
     </tr>
   `,
           )
           .join("");
         if (!filtered.length)
           tbody.innerHTML =
-            '<tr><td colspan="4" class="empty">No customers found</td></tr>';
+            '<tr><td colspan="5" class="empty">No customers found</td></tr>';
 
         const pag = document.getElementById("customers-pagination");
         pag.style.display = "";
