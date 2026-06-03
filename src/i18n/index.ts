@@ -94,7 +94,7 @@ export const ui = {
       "Elke euro gaat rechtstreeks naar het ziekenhuis in Ecuador. Hier zie je wat wij met jouw bijdrage kunnen realiseren.",
     "donation.consultation": "Consult & Diagnostiek",
     "donation.consultationDesc":
-      "Met je donatie financier je een volledig consult inclusief laboratoriumonderzoek en medicatie voor een patiënt.",
+      "Met je donatie financier je een volledig consult op onze polikliniek waar mensen dagelijks terecht kunnen.",
     "donation.prenatal": "Prenatale Check-up",
     "donation.prenatalDesc":
       "Een volledige medische controle inclusief echo voor een aanstaande moeder, essentieel voor een veilige bevalling.",
@@ -488,7 +488,7 @@ export const ui = {
       "Every euro goes directly to the hospital in Ecuador. Here you can see what we can achieve with your contribution.",
     "donation.consultation": "Consultation & Diagnostics",
     "donation.consultationDesc":
-      "With your donation you fund a full consultation including laboratory tests and medication for a patient.",
+      "With your donation you fund a full consultation at our outpatient clinic, where people can come for care every day.",
     "donation.prenatal": "Prenatal Check-up",
     "donation.prenatalDesc":
       "A complete medical check-up including ultrasound for an expectant mother, essential for a safe delivery.",
@@ -885,7 +885,7 @@ export const ui = {
       "Cada euro va directamente al hospital en Ecuador. Aquí puedes ver lo que podemos lograr con tu contribución.",
     "donation.consultation": "Consulta y Diagnóstico",
     "donation.consultationDesc":
-      "Con tu donación financias una consulta completa incluyendo análisis de laboratorio y medicación para un paciente.",
+      "Con tu donación financias una consulta completa en nuestro policlínico, donde las personas pueden acudir cada día.",
     "donation.prenatal": "Control Prenatal",
     "donation.prenatalDesc":
       "Un control médico completo incluyendo ecografía para una futura madre, esencial para un parto seguro.",
