@@ -344,13 +344,9 @@
     </div>
 
     <div class="container">
-      <div
-        id="test-banner"
-        class="test-banner"
-        style="display: none"
-      >
-        Test mode - actions hit Mollie's test environment. No real money
-        moves; refunds and subscriptions here are sandboxed.
+      <div id="test-banner" class="test-banner" style="display: none">
+        Test mode - actions hit Mollie's test environment. No real money moves;
+        refunds and subscriptions here are sandboxed.
       </div>
       <div class="tabs">
         <button class="tab active" data-tab="customers">Customers</button>
@@ -845,7 +841,8 @@
           body.from = subscriptionsCursors[page - 1];
 
         document.getElementById("subscriptions-loading").style.display = "";
-        document.getElementById("subscriptions-pagination").style.display = "none";
+        document.getElementById("subscriptions-pagination").style.display =
+          "none";
         document.getElementById("subscriptions-body").innerHTML = "";
         expandedSubscription = null;
 
@@ -941,9 +938,9 @@
           html += '<div class="detail-section"><h3>Subscription</h3>';
           html +=
             '<table class="detail-table"><thead><tr>' +
-            '<th>ID</th><th>Status</th><th>Description</th><th>Amount</th><th>Interval</th>' +
-            '<th>Customer</th><th>Naam consument</th>' +
-            '<th>Start</th><th>Next Payment</th><th>Created</th><th>Canceled</th><th></th>' +
+            "<th>ID</th><th>Status</th><th>Description</th><th>Amount</th><th>Interval</th>" +
+            "<th>Customer</th><th>Naam consument</th>" +
+            "<th>Start</th><th>Next Payment</th><th>Created</th><th>Canceled</th><th></th>" +
             "</tr></thead><tbody>";
           html += `<tr>
         <td><code>${sub.id}</code></td>
@@ -961,7 +958,8 @@
       </tr>`;
           html += "</tbody></table></div>";
 
-          html += '<div class="detail-section"><h3>Payments for this subscription</h3>';
+          html +=
+            '<div class="detail-section"><h3>Payments for this subscription</h3>';
           if (payments.items.length) {
             html +=
               '<table class="detail-table"><thead><tr><th>ID</th><th>Status</th><th>Amount</th><th>Seq</th><th>Created</th><th>Paid</th><th>Incasso</th></tr></thead><tbody>';
@@ -978,7 +976,8 @@
             }
             html += "</tbody></table>";
           } else {
-            html += '<p style="color:#9ca3af;font-size:13px">No payments yet</p>';
+            html +=
+              '<p style="color:#9ca3af;font-size:13px">No payments yet</p>';
           }
           html += "</div>";
 
@@ -1010,8 +1009,7 @@
             return;
           }
           subscriptionSearchTimer = setTimeout(async () => {
-            document.getElementById("subscriptions-loading").style.display =
-              "";
+            document.getElementById("subscriptions-loading").style.display = "";
             document.getElementById("subscriptions-pagination").style.display =
               "none";
             try {
@@ -1038,10 +1036,14 @@
         });
       document
         .getElementById("subscriptions-prev")
-        .addEventListener("click", () => loadSubscriptions(subscriptionsPage - 1));
+        .addEventListener("click", () =>
+          loadSubscriptions(subscriptionsPage - 1),
+        );
       document
         .getElementById("subscriptions-next")
-        .addEventListener("click", () => loadSubscriptions(subscriptionsPage + 1));
+        .addEventListener("click", () =>
+          loadSubscriptions(subscriptionsPage + 1),
+        );
 
       // Direct payment lookup by ID, customer ID, or partial description search
       async function paymentLookup() {
