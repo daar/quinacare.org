@@ -249,6 +249,9 @@ const showFrequencyToggle = frequencies.length > 1;
         <span class="hidden" data-impact="generic">
           {t("donate.impactGeneric")}
         </span>
+        <span class="hidden" data-impact="custom">
+          {t("donate.impactCustom")}
+        </span>
       </div>
     )
   }
@@ -619,12 +622,23 @@ const showFrequencyToggle = frequencies.length > 1;
 
           // Tiered impact swap — only relevant when the page picked the
           // "tiered" impact kind (other kinds don't render `.dfc-impact`).
+          // The "custom" branch wins whenever the donor is using the
+          // "Ander bedrag" input (focused or carrying a value) so the
+          // impact panel reflects that they're picking their own amount
+          // instead of showing stale tier copy from a preset they
+          // clicked earlier.
           if (impactText) {
-            let impactKey = "generic";
-            if (amount >= 250) impactKey = "equipment";
+            const customActive =
+              !!customInput &&
+              (customInput.value !== "" ||
+                document.activeElement === customInput);
+            let impactKey: string;
+            if (customActive) impactKey = "custom";
+            else if (amount >= 250) impactKey = "equipment";
             else if (amount >= 100) impactKey = "surgery";
             else if (amount >= 50) impactKey = "prenatal";
             else if (amount >= 25) impactKey = "consultation";
+            else impactKey = "generic";
 
             const span = card.querySelector(
               `[data-impact="${impactKey}"]`,
@@ -645,6 +659,12 @@ const showFrequencyToggle = frequencies.length > 1;
         customInput?.addEventListener("focus", () => {
           const val = parse(customInput.value);
           customInput.value = val > 0 ? String(val) : "";
+          // Re-run updateUI so the impact panel flips to the "custom"
+          // text the moment the donor clicks into the field, even
+          // before they type. Without this they'd still see the
+          // previously-selected preset's impact (e.g. prenatal copy
+          // after picking €50).
+          updateUI();
         });
 
         customInput?.addEventListener("input", () => {
@@ -659,6 +679,10 @@ const showFrequencyToggle = frequencies.length > 1;
         customInput?.addEventListener("blur", () => {
           const val = parse(customInput.value);
           customInput.value = val > 0 ? fmt(val) : "";
+          // Refresh the impact text after blur: if the field is now
+          // empty the panel should drop back to the preset/generic
+          // copy instead of staying stuck on "custom".
+          updateUI();
         });
 
         freqToggle?.addEventListener("click", (e) => {

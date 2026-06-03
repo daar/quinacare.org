@@ -166,6 +166,8 @@ export const ui = {
     "donate.yearly": "Jaarlijks",
     "donate.customPlaceholder": "Ander bedrag",
     "donate.impactGeneric": "Jouw donatie maakt direct verschil in de Amazone.",
+    "donate.impactCustom":
+      "Kies zelf je bedrag — elke euro gaat rechtstreeks naar de zorg in het hospitaal.",
     "donate.impactLabel": "Jouw Impact",
     "donate.paymentMethod": "Betaalmethode",
     "donate.creditCard": "Credit/Debit Card",
@@ -561,6 +563,8 @@ export const ui = {
     "donate.customPlaceholder": "Custom amount",
     "donate.impactGeneric":
       "Your donation makes a direct difference in the Amazon.",
+    "donate.impactCustom":
+      "Pick your own amount — every euro goes straight to care at the hospital.",
     "donate.impactLabel": "Your Impact",
     "donate.paymentMethod": "Payment Method",
     "donate.creditCard": "Credit/Debit Card",
@@ -959,6 +963,8 @@ export const ui = {
     "donate.customPlaceholder": "Otra cantidad",
     "donate.impactGeneric":
       "Tu donación marca una diferencia directa en la Amazonía.",
+    "donate.impactCustom":
+      "Elige tu propio monto — cada euro va directamente a la atención en el hospital.",
     "donate.impactLabel": "Tu Impacto",
     "donate.paymentMethod": "Método de Pago",
     "donate.creditCard": "Tarjeta de Crédito/Débito",
