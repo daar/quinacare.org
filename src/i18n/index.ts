@@ -71,7 +71,7 @@ export const ui = {
       "Duizenden patiënten in afgelegen gemeenschappen vertrouwen op ons ziekenhuis. Elk bezoek is een bewijs van wat lokale aanwezigheid mogelijk maakt.",
     "metrics.inpatientCare": "Klinische Zorg",
     "metrics.inpatientCareDesc":
-      "Patiënten die langer onder onze zorg blijven krijgen de tijd die ze nodig hebben om te herstellen. Elke opname is het verschil tussen een snelle controle en echte genezing.",
+      "Patiënten die langer onder onze zorg blijven krijgen de tijd die ze nodig hebben om te herstellen.",
     "achieved.label": "Onze Impact",
     "achieved.title": "Wat we samen hebben bereikt",
     "achieved.subtitle":
@@ -466,7 +466,7 @@ export const ui = {
       "Thousands of patients in remote communities rely on our hospital. Each visit is proof of what a steady local presence makes possible.",
     "metrics.inpatientCare": "Inpatient Care",
     "metrics.inpatientCareDesc":
-      "Patients who stay under our care get the time they need to recover. Every admission marks the difference between a quick check-up and real healing.",
+      "Patients who stay under our care get the time they need to recover.",
     "achieved.label": "Our Impact",
     "achieved.title": "What we've achieved together",
     "achieved.subtitle":
@@ -864,7 +864,7 @@ export const ui = {
       "Miles de pacientes en comunidades remotas confían en nuestro hospital. Cada visita demuestra lo que hace posible una presencia local constante.",
     "metrics.inpatientCare": "Atención Hospitalaria",
     "metrics.inpatientCareDesc":
-      "Los pacientes que permanecen bajo nuestro cuidado reciben el tiempo que necesitan para recuperarse. Cada ingreso marca la diferencia entre una revisión rápida y la verdadera recuperación.",
+      "Los pacientes que permanecen bajo nuestro cuidado reciben el tiempo que necesitan para recuperarse.",
     "achieved.label": "Nuestro Impacto",
     "achieved.title": "Lo que hemos logrado juntos",
     "achieved.subtitle":
