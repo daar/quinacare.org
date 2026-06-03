@@ -167,7 +167,7 @@ export const ui = {
     "donate.customPlaceholder": "Ander bedrag",
     "donate.impactGeneric": "Jouw donatie maakt direct verschil in de Amazone.",
     "donate.impactCustom":
-      "Kies zelf je bedrag — elke euro gaat rechtstreeks naar de zorg in het hospitaal.",
+      "Kies zelf je bedrag — elke euro gaat rechtstreeks naar de zorg in het ziekenhuis.",
     "donate.impactLabel": "Jouw Impact",
     "donate.paymentMethod": "Betaalmethode",
     "donate.creditCard": "Credit/Debit Card",
