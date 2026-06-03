@@ -99,6 +99,7 @@ export const ui = {
     "donation.prenatalDesc":
       "Een volledige medische controle inclusief echo voor een aanstaande moeder, essentieel voor een veilige bevalling.",
     "donation.surgery": "Levensreddende Ingreep",
+    "donation.equipment": "Apparatuur & Voorraad",
     "donation.surgeryDesc":
       "Draag bij aan de kosten van chirurgische ingrepen en de noodzakelijke nabehandeling in ons ziekenhuis.",
     "donation.equipmentDesc":
@@ -493,6 +494,7 @@ export const ui = {
     "donation.prenatalDesc":
       "A complete medical check-up including ultrasound for an expectant mother, essential for a safe delivery.",
     "donation.surgery": "Life-saving Procedure",
+    "donation.equipment": "Equipment & Supplies",
     "donation.surgeryDesc":
       "Contribute to the costs of surgical procedures and necessary aftercare at our hospital.",
     "donation.equipmentDesc":
@@ -890,6 +892,7 @@ export const ui = {
     "donation.prenatalDesc":
       "Un control médico completo incluyendo ecografía para una futura madre, esencial para un parto seguro.",
     "donation.surgery": "Procedimiento que Salva Vidas",
+    "donation.equipment": "Equipos y Suministros",
     "donation.surgeryDesc":
       "Contribuye a los costos de procedimientos quirúrgicos y el cuidado posterior necesario en nuestro hospital.",
     "donation.equipmentDesc":

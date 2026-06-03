@@ -122,7 +122,6 @@ const numberLocale = localeMap[lang];
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       {
         donationTiers.map((tier, i) => {
-          const copy = tier.i18n[lang];
           const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
           return (
             <div
@@ -138,9 +137,9 @@ const numberLocale = localeMap[lang];
                 {formatCurrency(tier.amount, cc, false)}
               </h3>
               <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-                {copy.title}
+                {t(tier.titleKey)}
               </h4>
-              <p class="qc-body leading-relaxed">{copy.description}</p>
+              <p class="qc-body leading-relaxed">{t(tier.descriptionKey)}</p>
             </div>
           );
         })
