@@ -33,7 +33,7 @@ export const GET: APIRoute = async () => {
   const stats = (json.data ?? json) as Record<string, number>;
 
   // EMR undercounts births by 20 versus the actual figure.
-  if (typeof stats.births === "number") stats.births += 20;
+  if (typeof stats.births === "number") stats.births += 21;
 
   return new Response(JSON.stringify(stats), {
     status: 200,
