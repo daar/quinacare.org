@@ -11,6 +11,13 @@ export interface ContactDetails {
   address: string[];
   /** Bank account number (IBAN). */
   bankAccount: string;
+  /**
+   * Dutch Chamber of Commerce (Kamer van Koophandel / Chamber of
+   * Commerce) registration number plus its locale-appropriate label.
+   * The number itself (67959091) is the same in every locale - only
+   * the label changes (KvK / CoC / Cámara de Comercio).
+   */
+  cocNumber: string;
 }
 
 /**
@@ -24,6 +31,7 @@ export const contactByLang: Record<Lang, ContactDetails> = {
     phoneHref: "+31630366030",
     address: ["IJsvogellaan 76", "2261 DK Leidschendam"],
     bankAccount: "NL44 TRIO 0338 5550 48",
+    cocNumber: "KvK 67959091",
   },
   en: {
     email: "care@quinacare.org",
@@ -31,6 +39,7 @@ export const contactByLang: Record<Lang, ContactDetails> = {
     phoneHref: "+31630366030",
     address: ["IJsvogellaan 76", "2261 DK Leidschendam", "The Netherlands"],
     bankAccount: "NL44 TRIO 0338 5550 48 (BIC: TRIONL2U)",
+    cocNumber: "CoC 67959091",
   },
   es: {
     email: "hospitalsanmiguel@quinacare.org",
@@ -38,5 +47,6 @@ export const contactByLang: Record<Lang, ContactDetails> = {
     phoneHref: "+593980159182",
     address: ["IJsvogellaan 76", "2261 DK Leidschendam", "Países Bajos"],
     bankAccount: "2100186477 (Banco Pichincha, Ecuador — BIC: PICHECEQ)",
+    cocNumber: "Cámara de Comercio 67959091",
   },
 };
