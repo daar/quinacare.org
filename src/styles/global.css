@@ -523,6 +523,23 @@ mark {
   color: #1a1a1a;
 }
 
+/* Landing-page Markdoc sections didn't style inline anchors at all,
+   so links in the body (e.g. https://everdienpost.nl on /yura-boom)
+   rendered indistinguishable from surrounding text. Pick a slightly
+   different colour from the prose body (qcRed sits one notch off the
+   #374151 paragraph grey) and a dotted underline - quieter than the
+   solid underline used in long-form articles, since landing copy
+   reads more like marketing prose than reference content. */
+.prose-landing a {
+  color: var(--color-qcRed);
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+}
+
+.prose-landing a:hover {
+  text-decoration-style: solid;
+}
+
 .prose-article .not-prose a {
   color: var(--color-qcRed);
   text-decoration: none;
