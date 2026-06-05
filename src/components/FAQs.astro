@@ -70,9 +70,10 @@ const t = useTranslations(lang);
           />
         </button>
         <div class="faq-content hidden px-6 pb-6">
-          <p class="qc-body leading-relaxed">
-            {t("donate.faq3A")}
-          </p>
+          <p
+            class="qc-body leading-relaxed [&_a]:text-qcRed [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-4 hover:[&_a]:decoration-solid"
+            set:html={t("donate.faq3A")}
+          />
         </div>
       </div>
     </div>

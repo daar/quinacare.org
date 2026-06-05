@@ -221,7 +221,7 @@ export const ui = {
       "Stichting Quina Care is een in Nederland geregistreerde stichting met ANBI-status. Je donaties zijn hierdoor fiscaal aftrekbaar, volgens de geldende regels.",
     "donate.faq3Q": "Kan ik mijn maandelijkse donatie opzeggen?",
     "donate.faq3A":
-      "Ja, je kunt je maandelijkse donatie op elk moment stopzetten door contact met ons op te nemen via care@quinacare.org.",
+      'Ja, je kunt je maandelijkse donatie op elk moment stopzetten. Neem contact met ons op via e-mail (<a href="mailto:care@quinacare.org">care@quinacare.org</a>), telefoon (<a href="tel:+31630366030">06-30 366 030</a>) of het <a href="/contact">contactformulier</a> — kies dan het onderwerp "Donatie opzeggen".',
     // Sponsor form (yura-boom)
     "sponsor.nameLabel": "Naam",
     "sponsor.namePlaceholder": "Je volledige naam",
@@ -618,7 +618,7 @@ export const ui = {
       "Quina Care is a foundation registered in the Netherlands with ANBI status. Your donations are therefore tax-deductible under the applicable rules.",
     "donate.faq3Q": "Can I cancel my monthly donation?",
     "donate.faq3A":
-      "Yes, you can cancel your monthly donation at any time by contacting us at care@quinacare.org.",
+      'Yes, you can cancel your monthly donation at any time. Get in touch by email (<a href="mailto:care@quinacare.org">care@quinacare.org</a>), phone (<a href="tel:+31630366030">+31 6 30 36 60 30</a>), or the <a href="/en/contact">contact form</a> — choose the subject "Cancel donation".',
     // Sponsor form (yura-boom)
     "sponsor.nameLabel": "Name",
     "sponsor.namePlaceholder": "Your full name",
@@ -1019,7 +1019,7 @@ export const ui = {
       "Quina Care es una fundación registrada en los Países Bajos con estatus ANBI. Sus donaciones son por lo tanto deducibles de impuestos según las normas vigentes.",
     "donate.faq3Q": "¿Puedo cancelar mi donación mensual?",
     "donate.faq3A":
-      "Sí, puedes cancelar tu donación mensual en cualquier momento contactándonos en care@quinacare.org.",
+      'Sí, puedes cancelar tu donación mensual en cualquier momento. Contáctanos por correo electrónico (<a href="mailto:care@quinacare.org">care@quinacare.org</a>), teléfono (<a href="tel:+31630366030">+31 6 30 36 60 30</a>) o el <a href="/es/contact">formulario de contacto</a> — elige el asunto "Cancelar donación".',
     // Sponsor form (yura-boom)
     "sponsor.nameLabel": "Nombre",
     "sponsor.namePlaceholder": "Tu nombre completo",
