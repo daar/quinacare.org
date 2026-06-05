@@ -22,6 +22,7 @@ const t = {
     subjectGeneral: "Algemene vraag",
     subjectVolunteer: "Vrijwilligerswerk",
     subjectDonate: "Doneren & Sponsoring",
+    subjectCancellation: "Donatie opzeggen",
     subjectCollaboration: "Samenwerking",
     subjectPress: "Pers & Media",
     subjectComplaint: "Klacht",
@@ -36,6 +37,9 @@ const t = {
     error: "Er ging iets mis. Probeer het opnieuw.",
     messageFrom: "Bericht van",
     from: "Van",
+    privacyNotice: "We gaan zorgvuldig met je gegevens om — lees hoe in onze",
+    privacyLink: "privacyverklaring",
+    privacyPath: "/privacy",
   },
   en: {
     contactDetails: "Contact details",
@@ -54,6 +58,7 @@ const t = {
     subjectGeneral: "General question",
     subjectVolunteer: "Volunteering",
     subjectDonate: "Donations & Sponsoring",
+    subjectCancellation: "Cancel donation",
     subjectCollaboration: "Collaboration",
     subjectPress: "Press & Media",
     subjectComplaint: "Complaint",
@@ -68,6 +73,9 @@ const t = {
     error: "Something went wrong. Please try again.",
     messageFrom: "Message from",
     from: "From",
+    privacyNotice: "We handle your data with care — see how in our",
+    privacyLink: "privacy statement",
+    privacyPath: "/en/privacy",
   },
   es: {
     contactDetails: "Datos de contacto",
@@ -86,6 +94,7 @@ const t = {
     subjectGeneral: "Pregunta general",
     subjectVolunteer: "Voluntariado",
     subjectDonate: "Donaciones y patrocinio",
+    subjectCancellation: "Cancelar donación",
     subjectCollaboration: "Colaboración",
     subjectPress: "Prensa y medios",
     subjectComplaint: "Queja",
@@ -100,6 +109,9 @@ const t = {
     error: "Algo salió mal. Inténtelo de nuevo.",
     messageFrom: "Mensaje de",
     from: "De",
+    privacyNotice: "Tratamos tus datos con cuidado — lee cómo en nuestra",
+    privacyLink: "declaración de privacidad",
+    privacyPath: "/es/privacy",
   },
 }[lang];
 ---
@@ -257,6 +269,7 @@ const t = {
         <option value="general">{t.subjectGeneral}</option>
         <option value="volunteer">{t.subjectVolunteer}</option>
         <option value="donate">{t.subjectDonate}</option>
+        <option value="cancellation">{t.subjectCancellation}</option>
         <option value="collaboration">{t.subjectCollaboration}</option>
         <option value="press">{t.subjectPress}</option>
         <option value="complaint">{t.subjectComplaint}</option>
@@ -294,6 +307,16 @@ const t = {
     </p>
     <p class="contact-success !hidden mt-4 text-lg font-sans text-green-600">
       {t.success}
+    </p>
+
+    <p class="mt-6 text-xs text-gray-500 font-sans">
+      {t.privacyNotice}{" "}
+      <a
+        href={t.privacyPath}
+        class="underline decoration-dotted underline-offset-4 text-qcRed hover:decoration-solid"
+      >
+        {t.privacyLink}
+      </a>.
     </p>
   </form>
 </div>
