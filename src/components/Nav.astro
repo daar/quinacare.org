@@ -16,7 +16,6 @@ interface MenuSubItem {
   icon?: string;
   image?: string;
   descriptionKey?: string;
-  langs?: string[];
 }
 
 interface MenuCta {
@@ -33,22 +32,9 @@ interface MenuItem {
   cta?: MenuCta;
 }
 
+const menuItems = menuData.items as MenuItem[];
+
 const lang = getLangFromUrl(Astro.url);
-
-// Some submenu entries are limited to specific languages via `langs`
-// (e.g. join-team only has a Dutch page). Drop entries that don't apply
-// to the current language so they never render in the nav.
-const menuItems = (menuData.items as MenuItem[]).map((item) =>
-  item.submenu
-    ? {
-        ...item,
-        submenu: item.submenu.filter(
-          (sub) => !sub.langs || sub.langs.includes(lang),
-        ),
-      }
-    : item,
-);
-
 const t = useTranslations(lang);
 const tk = (key: string) => t(key as TranslationKey);
 

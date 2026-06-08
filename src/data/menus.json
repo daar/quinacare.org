@@ -25,8 +25,7 @@
         {
           "labelKey": "submenu.joinTeam",
           "path": "/join-team",
-          "icon": "fa-solid fa-people-group",
-          "langs": ["nl"]
+          "icon": "fa-solid fa-people-group"
         }
       ],
       "submenu_disabled": [
