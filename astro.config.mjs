@@ -51,10 +51,13 @@ export default defineConfig({
     },
   },
   redirects: {
-    "/doneer": "/donate",
-    "/doneer/quina-yura": "/yura-boom",
-    "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
     "/blogs-vlogs": "/news",
+    "/doneer": "/donate",
+    "/doneer/anbi": "/donate",
+    "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
+    "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
+    "/doneer/quina-yura": "/yura-boom",
+    "/vrijwilligers": "/join-team",
   },
   fonts: [
     {
