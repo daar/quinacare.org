@@ -34,10 +34,12 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const pct = Math.min(
-  100,
-  Math.round((entry.data.raised_offset / entry.data.goal_amount) * 100),
+// The displayed percentage shows the true funded amount (can exceed 100%),
+// while the progress bar width stays capped so it never overflows its track.
+const pct = Math.round(
+  (entry.data.raised_offset / entry.data.goal_amount) * 100,
 );
+const barPct = Math.min(100, pct);
 const daysToGo = Math.max(
   0,
   Math.ceil(
@@ -151,7 +153,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
               >
                 <div
                   class="progress-fill bg-gradient-to-r from-qcRed to-rose-400 h-3 rounded-full relative"
-                  style={`width: ${pct}%`}
+                  style={`width: ${barPct}%`}
                 >
                   <div
                     class="absolute inset-0 rounded-full bg-white/20 animate-pulse-subtle"
@@ -400,7 +402,8 @@ const qrDataUri = await generateQrDataUri(shareUrl);
         // off-site donations or any missing from the database.
         const totalRaised = raisedOffset + data.raised_cents / 100;
         const totalBackers = backersOffset + data.donor_count;
-        const pct = Math.min(100, Math.round((totalRaised / goal) * 100));
+        const pct = Math.round((totalRaised / goal) * 100);
+        const barPct = Math.min(100, pct);
 
         const fmt = new Intl.NumberFormat(locale, {
           style: "currency",
@@ -421,7 +424,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 
         const bar = document.querySelector<HTMLElement>(".progress-fill");
         if (bar) {
-          bar.style.setProperty("--target-width", `${pct}%`);
+          bar.style.setProperty("--target-width", `${barPct}%`);
         }
       })
       .catch(() => {});

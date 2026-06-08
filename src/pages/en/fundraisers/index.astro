@@ -32,8 +32,10 @@ for (const f of sorted) {
   );
 }
 
+// True funded percentage — may exceed 100%. The progress bar caps the
+// width separately so it never overflows its track.
 function getPercentage(raised: number, goal: number): number {
-  return Math.min(100, Math.round((raised / goal) * 100));
+  return Math.round((raised / goal) * 100);
 }
 
 function getDaysToGo(endDate: Date): number {
@@ -85,6 +87,7 @@ function formatCurrency(amount: number): string {
                 fundraiser.data.raised_offset,
                 fundraiser.data.goal_amount,
               );
+              const barPct = Math.min(100, pct);
               const days = getDaysToGo(fundraiser.data.end_date);
               const isActive = fundraiser.data.end_date.getTime() > Date.now();
               const qr = qrBySlug.get(fundraiser.data.slug)!;
@@ -157,7 +160,7 @@ function formatCurrency(amount: number): string {
                       <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
                         <div
                           class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
-                          style={`width: ${pct}%`}
+                          style={`width: ${barPct}%`}
                         />
                       </div>
 
@@ -388,7 +391,8 @@ function formatCurrency(amount: number): string {
           // Live Turso totals plus the frontmatter offset.
           const totalRaised = raisedOffset + data.raised_cents / 100;
           const totalBackers = backersOffset + data.donor_count;
-          const pct = Math.min(100, Math.round((totalRaised / goal) * 100));
+          const pct = Math.round((totalRaised / goal) * 100);
+          const barPct = Math.min(100, pct);
 
           const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
           if (raisedEl) raisedEl.textContent = fmt.format(totalRaised);
@@ -400,7 +404,7 @@ function formatCurrency(amount: number): string {
           if (backersEl) backersEl.textContent = String(totalBackers);
 
           const bar = card.querySelector<HTMLElement>(".fc-bar");
-          if (bar) bar.style.width = `${pct}%`;
+          if (bar) bar.style.width = `${barPct}%`;
         })
         .catch(() => {});
     });
