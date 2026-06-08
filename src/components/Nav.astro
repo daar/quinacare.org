@@ -16,6 +16,7 @@ interface MenuSubItem {
   icon?: string;
   image?: string;
   descriptionKey?: string;
+  langs?: string[];
 }
 
 interface MenuCta {
@@ -32,9 +33,22 @@ interface MenuItem {
   cta?: MenuCta;
 }
 
-const menuItems = menuData.items as MenuItem[];
-
 const lang = getLangFromUrl(Astro.url);
+
+// Some submenu entries are limited to specific languages via `langs`
+// (e.g. join-team only has a Dutch page). Drop entries that don't apply
+// to the current language so they never render in the nav.
+const menuItems = (menuData.items as MenuItem[]).map((item) =>
+  item.submenu
+    ? {
+        ...item,
+        submenu: item.submenu.filter(
+          (sub) => !sub.langs || sub.langs.includes(lang),
+        ),
+      }
+    : item,
+);
+
 const t = useTranslations(lang);
 const tk = (key: string) => t(key as TranslationKey);
 
@@ -108,7 +122,7 @@ const searchPath = getLocalizedPath("/search", lang);
 
     {/* Desktop navigation */}
     {
-      /* TODO: re-enable the parked items_disabled entries in menus.json — whoAreWe (About + Organization) and whatDoWeDo (/projects + /hospital) — and lift submenu.joinTeam out of whatCanYouDo's submenu_disabled, once their pages are content-ready. */
+      /* TODO: re-enable the parked items_disabled entries in menus.json — whoAreWe (About + Organization) and whatDoWeDo (/projects + /hospital) — once their pages are content-ready. */
     }
     <div
       class="hidden lg:flex items-center gap-10 text-[14px] font-bold uppercase tracking-[0.15em]"

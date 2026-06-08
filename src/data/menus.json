@@ -1,5 +1,5 @@
 {
-  "_TODO": "re-enable hidden navbar entries when ready — (1) move whoAreWe out of items_disabled and back into items once the About + Organization pages are finalised, (2) move the joinTeam submenu entry out of whatCanYouDo's submenu_disabled and back into submenu once the volunteer flow is ready, (3) move the remaining items_disabled entry (whatDoWeDo) back into items once /projects + /hospital are content-ready, (4) rename whatCanYouDo's cta_disabled back to cta to bring back the Donate button.",
+  "_TODO": "re-enable hidden navbar entries when ready — (1) move whoAreWe out of items_disabled and back into items once the About + Organization pages are finalised, (2) move the remaining items_disabled entry (whatDoWeDo) back into items once /projects + /hospital are content-ready, (3) rename whatCanYouDo's cta_disabled back to cta to bring back the Donate button.",
   "items": [
     {
       "id": "whatCanYouDo",
@@ -21,14 +21,15 @@
           "icon": "fa-solid fa-tree",
           "image": "/images/yura-boom/featured.webp",
           "descriptionKey": "submenu.yuraBoomDesc"
-        }
-      ],
-      "submenu_disabled": [
+        },
         {
           "labelKey": "submenu.joinTeam",
           "path": "/join-team",
-          "icon": "fa-solid fa-people-group"
-        },
+          "icon": "fa-solid fa-people-group",
+          "langs": ["nl"]
+        }
+      ],
+      "submenu_disabled": [
         {
           "labelKey": "submenu.becomePartner",
           "path": "/become-partner",
