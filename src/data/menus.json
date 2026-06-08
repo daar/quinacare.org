@@ -24,7 +24,7 @@
         },
         {
           "labelKey": "submenu.joinTeam",
-          "path": "/join-team",
+          "path": "/word-vrijwilliger",
           "icon": "fa-solid fa-people-group"
         }
       ],

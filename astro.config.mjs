@@ -63,7 +63,7 @@ export default defineConfig({
     "/doneer/quina-yura": "/yura-boom",
     "/fietsen-voor-hospital-san-miguel-2":
       "/fundraisers/fietsen-voor-hospital-san-miguel",
-    "/vrijwilligers": "/join-team",
+    "/vrijwilligers": "/word-vrijwilliger",
   },
   fonts: [
     {
