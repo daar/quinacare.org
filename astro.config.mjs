@@ -55,6 +55,7 @@ export default defineConfig({
     "/doneer": "/donate",
     "/doneer/anbi": "/donate",
     "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
+    "/doneer/esmee-en-diana": "/fundraisers/esmee-en-diana",
     "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
     "/doneer/quina-yura": "/yura-boom",
     "/vrijwilligers": "/join-team",
