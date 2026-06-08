@@ -58,6 +58,8 @@ export default defineConfig({
     "/doneer/esmee-en-diana": "/fundraisers/esmee-en-diana",
     "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
     "/doneer/quina-yura": "/yura-boom",
+    "/fietsen-voor-hospital-san-miguel-2":
+      "/fundraisers/fietsen-voor-hospital-san-miguel",
     "/vrijwilligers": "/join-team",
   },
   fonts: [
