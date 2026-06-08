@@ -54,8 +54,11 @@ export default defineConfig({
     "/blogs-vlogs": "/news",
     "/doneer": "/donate",
     "/doneer/anbi": "/donate",
+    "/doneer/andrea-halve-marathon": "/fundraisers/andrea-halve-marathon",
     "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
     "/doneer/esmee-en-diana": "/fundraisers/esmee-en-diana",
+    "/doneer/karin-martens-maakt-operaties-mogelijk":
+      "/fundraisers/karin-martens",
     "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
     "/doneer/quina-yura": "/yura-boom",
     "/fietsen-voor-hospital-san-miguel-2":
