@@ -28,7 +28,7 @@ jobs:
       - run: npm run check:links
       - run: npm run lighthouse
 
-      - uses: nwtgck/actions-netlify@v3
+      - uses: nwtgck/actions-netlify@v4
         if: github.event_name == 'pull_request'
         with:
           publish-dir: ./dist
