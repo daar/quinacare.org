@@ -7,6 +7,11 @@ const newsSchema = ({ image }: SchemaContext) =>
     title: z.string(),
     date: z.date(),
     status: z.string().optional(),
+    // Pin a post so it's always selected for the homepage strip and the
+    // first page of the blog roll (it claims a slot before any non-pinned
+    // post). Display order stays newest-first by date — pinning only
+    // guarantees inclusion, not position.
+    pinned: z.boolean().default(false),
     slug: z.string().optional(),
     author: z.string().optional(),
     excerpt: z.string().optional(),

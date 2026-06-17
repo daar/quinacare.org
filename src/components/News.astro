@@ -10,6 +10,7 @@ import {
   getCollectionName,
   type Lang,
 } from "../i18n";
+import { selectNews } from "../lib/news";
 
 interface Props {
   lang?: Lang;
@@ -19,12 +20,14 @@ const lang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
-const posts = (await getCollection(getCollectionName(lang)))
-  .filter((post) => post.data.status === "publish")
-  .sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-  )
-  .slice(0, 4);
+// Pinned posts claim a slot first, the rest fill with the newest non-pinned,
+// and the four shown are rendered newest-first. See selectNews.
+const posts = selectNews(
+  (await getCollection(getCollectionName(lang))).filter(
+    (post) => post.data.status === "publish",
+  ),
+  4,
+);
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat(dateLocale, {

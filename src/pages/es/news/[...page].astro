@@ -12,6 +12,7 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../../../i18n";
+import { orderNews } from "../../../lib/news";
 
 const lang: Lang = "es";
 const t = useTranslations(lang);
@@ -19,14 +20,11 @@ const dateLocale = getDateLocale(lang);
 
 export const getStaticPaths = (async ({ paginate }) => {
   const allPosts = await getCollection("news-es");
-  const posts = allPosts
-    .filter((post) => post.data.status === "publish")
-    .sort(
-      (a, b) =>
-        new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-    );
+  const posts = allPosts.filter((post) => post.data.status === "publish");
 
-  return paginate(posts, { pageSize: 10 });
+  // Pinned posts always land on page one (newest-first); everything else
+  // follows by date. See orderNews for the selection algorithm.
+  return paginate(orderNews(posts, 10), { pageSize: 10 });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
