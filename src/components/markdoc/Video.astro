@@ -5,15 +5,31 @@ interface Props {
 }
 
 const { src, poster } = Astro.props;
+
+// Serve local media referenced as "/video/...", "/media/..." or
+// "/images/..." by resolving it to the bundled asset in src/assets.
+// External URLs and any other path pass through unchanged. The glob is
+// lazy, so only the assets actually used get emitted to the build.
+const localAssets = import.meta.glob<string>(
+  "/src/assets/**/*.{mp4,webm,jpg,jpeg,png,webp,gif,avif}",
+  { query: "?url", import: "default" },
+);
+async function resolveAsset(value?: string): Promise<string | undefined> {
+  if (!value || !/^\/(video|media|images)\//.test(value)) return value;
+  const loader = localAssets[`/src/assets${value}`];
+  return loader ? await loader() : value;
+}
+const resolvedSrc = await resolveAsset(src);
+const resolvedPoster = await resolveAsset(poster);
 ---
 
 <div class="relative rounded-xl overflow-hidden my-8">
   <video
     controls
     preload="metadata"
-    poster={poster}
+    poster={resolvedPoster}
     class="w-full aspect-video bg-black"
   >
-    <source src={src} type="video/mp4" />
+    <source src={resolvedSrc} type="video/mp4" />
   </video>
 </div>
