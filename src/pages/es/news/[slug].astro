@@ -122,18 +122,29 @@ function getNewsPath(slug: string): string {
   </header>
 
   {
-    post.data.featured_image && (
+    (
       <figure class="max-w-6xl mx-auto px-6 mb-24 group" data-pagefind-body>
         <div class="relative">
           <div class="aspect-[21/9] overflow-hidden rounded-xl bg-gray-100 relative z-10">
-            <Image
-              src={post.data.featured_image}
-              class="w-full h-full object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
-              alt={post.data.featured_image_caption || post.data.title}
-              widths={[400, 800, 1200]}
-              sizes="(max-width: 768px) 100vw, 1200px"
-              data-pagefind-meta="image[src]"
-            />
+            {post.data.featured_image ? (
+              <Image
+                src={post.data.featured_image}
+                class="w-full h-full object-cover transition-transform duration-[4s] ease-out group-hover:scale-105"
+                alt={post.data.featured_image_caption || post.data.title}
+                widths={[400, 800, 1200]}
+                sizes="(max-width: 768px) 100vw, 1200px"
+                data-pagefind-meta="image[src]"
+              />
+            ) : (
+              <div class="w-full h-full bg-gradient-to-br from-qcBlack to-gray-800 flex items-center justify-center">
+                <img
+                  src="/logo-quina-care.svg"
+                  alt=""
+                  aria-hidden="true"
+                  class="w-48 max-w-[40%] opacity-30 [filter:brightness(0)_invert(1)]"
+                />
+              </div>
+            )}
           </div>
           <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-qcRed opacity-20 rounded-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-700" />
           <div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gray-200 opacity-40 rounded-xl" />
