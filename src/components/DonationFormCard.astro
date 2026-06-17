@@ -338,6 +338,14 @@ const showFrequencyToggle = frequencies.length > 1;
         <Icon name="google-pay" class="text-base" />
         Google Pay
       </button>
+      <button
+        type="button"
+        data-method="applepay"
+        class="flex items-center justify-center gap-2 py-3 px-3 rounded-md border border-gray-200 bg-white text-xs font-bold transition-all"
+      >
+        <Icon name="apple" class="text-base" />
+        Apple Pay
+      </button>
     </div>
   </div>
 
@@ -385,6 +393,25 @@ const showFrequencyToggle = frequencies.length > 1;
         const methodsAllowed: string[] = JSON.parse(
           card.dataset.methods || "[]",
         );
+        // Apple Pay only works in Safari on Apple-Pay-capable devices.
+        // ApplePaySession is absent elsewhere, and canMakePayments() can
+        // throw in insecure contexts, so guard it. When false we hide the
+        // Apple Pay button entirely and never preselect it.
+        let canApplePay = false;
+        try {
+          const aps = (
+            window as unknown as {
+              ApplePaySession?: { canMakePayments(): boolean };
+            }
+          ).ApplePaySession;
+          canApplePay = !!aps && aps.canMakePayments();
+        } catch {
+          canApplePay = false;
+        }
+        const methodAvailable = (m: string | undefined): boolean =>
+          !!m &&
+          methodsAllowed.includes(m) &&
+          (m !== "applepay" || canApplePay);
         const frequenciesAllowed: string[] = JSON.parse(
           card.dataset.frequencies || '["one-time","monthly"]',
         );
@@ -586,11 +613,11 @@ const showFrequencyToggle = frequencies.length > 1;
         function filterPaymentMethods() {
           methodsEl.querySelectorAll("button").forEach((btn) => {
             const m = btn.dataset.method;
-            if (m && !methodsAllowed.includes(m)) btn.classList.add("hidden");
-            else btn.classList.remove("hidden");
+            if (methodAvailable(m)) btn.classList.remove("hidden");
+            else btn.classList.add("hidden");
           });
-          if (!methodsAllowed.includes(method))
-            method = methodsAllowed[0] || "card";
+          if (!methodAvailable(method))
+            method = methodsAllowed.find(methodAvailable) || "card";
         }
 
         function updateUI() {

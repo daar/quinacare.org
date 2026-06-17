@@ -28,6 +28,10 @@ const methodMap: Record<string, PaymentMethod> = {
   // The Mollie API accepts "googlepay" but the SDK enum hasn't caught up
   // (as of @mollie/api-client@4.5.0). Cast the literal until they update.
   googlepay: "googlepay" as PaymentMethod,
+  // Apple Pay runs through the Mollie hosted checkout: Mollie presents the
+  // Apple Pay sheet and handles merchant validation on its own domain, so
+  // no domain-association file is needed on our side.
+  applepay: PaymentMethod.applepay,
 };
 
 const localeMap: Record<string, Locale> = {
