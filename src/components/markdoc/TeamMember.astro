@@ -9,15 +9,38 @@ interface Props {
 }
 
 const { image, name, role, email } = Astro.props;
+
+// Members without a real portrait point at the shared placeholder asset.
+// Render a neutral silhouette avatar instead of the blank placeholder image.
+const hasPhoto = !!image && !image.includes("placeholder");
 ---
 
 <div class="flex flex-col items-center text-center">
   <div class="w-44 h-44 rounded-full overflow-hidden mb-4 ring-2 ring-gray-100">
-    <OptimizedImage
-      src={image}
-      alt={name}
-      class="w-full h-full object-cover !rounded-none !m-0"
-    />
+    {
+      hasPhoto ? (
+        <OptimizedImage
+          src={image}
+          alt={name}
+          class="w-full h-full object-cover !rounded-none !m-0"
+        />
+      ) : (
+        <div
+          class="w-full h-full flex items-end justify-center bg-gray-100"
+          role="img"
+          aria-label={name}
+        >
+          <svg
+            class="w-[80%] h-[80%] text-gray-300"
+            viewBox="0 0 448 512"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
+          </svg>
+        </div>
+      )
+    }
   </div>
   <h3 class="text-base font-bold text-qcBlack mb-1">{name}</h3>
   <p class="text-sm text-gray-500 mb-1">{role}</p>
