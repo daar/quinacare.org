@@ -1,0 +1,60 @@
+---
+// Reusable download card: cover thumbnail + label/title + download icon.
+// Used in the annual-reports grid and embeddable in blog posts.
+import Icon from "./Icon.astro";
+import OptimizedImage from "./OptimizedImage.astro";
+
+interface Props {
+  /** Download target (e.g. a public PDF path). */
+  href: string;
+  /** Cover image (a /media/… path resolved by OptimizedImage). Optional. */
+  cover?: string;
+  /** Small eyebrow label, e.g. "Jaarverslag". */
+  label: string;
+  /** Prominent title, e.g. the year. */
+  title: string;
+  /** Download link text, e.g. "Download pdf". */
+  downloadLabel: string;
+}
+
+const { href, cover, label, title, downloadLabel } = Astro.props;
+---
+
+<a
+  href={href}
+  download
+  class="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-qcRed hover:shadow-lg hover:-translate-y-0.5"
+  aria-label={`${label} ${title} — ${downloadLabel}`}
+>
+  <div class="relative aspect-[1/1.414] overflow-hidden bg-gray-50">
+    {
+      cover ? (
+        <OptimizedImage
+          src={cover}
+          alt={`${label} ${title}`}
+          class="absolute inset-0 m-0! h-full w-full object-cover"
+          layout="none"
+          widths={[220, 440]}
+          sizes="(max-width: 640px) 50vw, 240px"
+        />
+      ) : (
+        <div class="absolute inset-0 flex items-center justify-center">
+          <Icon name="file-lines" class="text-4xl text-gray-200" />
+        </div>
+      )
+    }
+  </div>
+  <div class="flex items-center justify-between gap-2 p-4">
+    <div>
+      <p
+        class="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400"
+      >
+        {label}
+      </p>
+      <p class="text-2xl font-bold tracking-tighter text-qcBlack">{title}</p>
+    </div>
+    <span class="text-qcRed transition group-hover:scale-110">
+      <Icon name="download" class="text-lg" />
+    </span>
+  </div>
+</a>

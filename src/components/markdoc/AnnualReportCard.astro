@@ -3,11 +3,13 @@ import ReportCard from "../ReportCard.astro";
 import { annualReports } from "../../data/annualReports";
 
 interface Props {
-  /** "nl" | "en" | "es" — which language's reports to show. */
+  /** Report year to embed. */
+  year: number;
+  /** "nl" | "en" | "es". */
   lang: string;
 }
 
-const { lang } = Astro.props;
+const { year, lang } = Astro.props;
 const key = (["nl", "en", "es"].includes(lang) ? lang : "nl") as
   | "nl"
   | "en"
@@ -21,24 +23,21 @@ const labels: Record<"nl" | "en" | "es", { report: string; download: string }> =
   };
 const l = labels[key];
 
-// Only list years that have a report in this language, newest first.
-const reports = annualReports
-  .filter((r) => r.files[key])
-  .sort((a, b) => b.year - a.year);
+const report = annualReports.find((r) => r.year === year);
+const href = report?.files[key];
+const cover = report?.covers[key];
 ---
 
-<div
-  class="not-prose my-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"
->
-  {
-    reports.map((r) => (
+{
+  href && (
+    <div class="not-prose my-8 w-44">
       <ReportCard
-        href={r.files[key]!}
-        cover={r.covers[key]}
+        href={href}
+        cover={cover}
         label={l.report}
-        title={String(r.year)}
+        title={String(year)}
         downloadLabel={l.download}
       />
-    ))
-  }
-</div>
+    </div>
+  )
+}

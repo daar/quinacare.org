@@ -163,5 +163,12 @@ export default defineMarkdocConfig({
         lang: { type: String, required: true },
       },
     },
+    "report-card": {
+      render: component("./src/components/markdoc/AnnualReportCard.astro"),
+      attributes: {
+        year: { type: Number, required: true },
+        lang: { type: String, required: true },
+      },
+    },
   },
 });

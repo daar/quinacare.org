@@ -11,6 +11,10 @@ interface Props {
   widths?: number[];
   sizes?: string;
   loading?: "eager" | "lazy";
+  /** Astro image layout. Pass "none" to opt out of the global
+   * "constrained" layout (which forces height:auto) when the image
+   * should fill a fixed-aspect container via object-cover. */
+  layout?: "constrained" | "full-width" | "none";
 }
 
 const {
@@ -22,6 +26,7 @@ const {
   widths,
   sizes,
   loading = "lazy",
+  layout,
 } = Astro.props;
 
 const resolved = resolveImage(src);
@@ -38,6 +43,7 @@ const resolved = resolveImage(src);
       widths={widths}
       sizes={sizes}
       loading={loading}
+      layout={layout}
     />
   ) : (
     <img
