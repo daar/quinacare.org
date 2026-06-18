@@ -45,4 +45,10 @@ const icon = key ? icons[key] : undefined;
     height: 1em;
     vertical-align: -0.125em;
   }
+  /* The scoped `svg` rule above outranks the `.hidden` utility (display:none),
+     so without this an Icon with class="hidden" would still show. Keep the
+     hidden state working (e.g. the mobile hamburger's bars/xmark swap). */
+  svg.hidden {
+    display: none;
+  }
 </style>
