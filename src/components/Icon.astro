@@ -8,11 +8,13 @@ interface Props {
    */
   name: string;
   class?: string;
+  /** Optional id on the rendered <svg> — useful when JS needs to target it. */
+  id?: string;
   /** Accessible name. Omit for decorative icons (rendered aria-hidden). */
   label?: string;
 }
 
-const { name, class: className, label } = Astro.props;
+const { name, class: className, id, label } = Astro.props;
 
 const key = name
   .split(/\s+/)
@@ -26,6 +28,7 @@ const icon = key ? icons[key] : undefined;
     <svg
       viewBox={icon.viewBox}
       class={className}
+      id={id}
       fill="currentColor"
       role={label ? "img" : undefined}
       aria-label={label}

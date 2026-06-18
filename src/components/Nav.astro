@@ -288,7 +288,8 @@ const searchPath = getLocalizedPath("/search", lang);
         aria-label="Menu"
         aria-expanded="false"
       >
-        <Icon name="bars" />
+        <Icon name="bars" id="hamburger-open" />
+        <Icon name="xmark" id="hamburger-close" class="hidden" />
       </button>
     </div>
   </div>
@@ -618,7 +619,12 @@ const searchPath = getLocalizedPath("/search", lang);
     const hamburgerBtn = document.getElementById("hamburger-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const mobileBackdrop = document.getElementById("mobile-menu-backdrop");
-    const hamburgerIcon = hamburgerBtn?.querySelector("i");
+    // Two SVG icons live inside the button; toggle their `hidden` class
+    // to swap states. The previous querySelector("i") + classList.replace
+    // pattern broke when the icon system moved from <i class="fa-…"> to
+    // inline <svg>s.
+    const hamburgerOpenIcon = document.getElementById("hamburger-open");
+    const hamburgerCloseIcon = document.getElementById("hamburger-close");
     const slider = mobileMenu?.querySelector(".mobile-menu-slider");
 
     function closeSubmenu() {
@@ -633,7 +639,8 @@ const searchPath = getLocalizedPath("/search", lang);
     function openMobileMenu() {
       mobileMenu?.classList.remove("hidden");
       mobileBackdrop?.classList.remove("hidden");
-      hamburgerIcon?.classList.replace("fa-bars", "fa-xmark");
+      hamburgerOpenIcon?.classList.add("hidden");
+      hamburgerCloseIcon?.classList.remove("hidden");
       hamburgerBtn?.setAttribute("aria-expanded", "true");
       if (!navSearch?.classList.contains("hidden")) {
         closeSearch();
@@ -643,7 +650,8 @@ const searchPath = getLocalizedPath("/search", lang);
     function closeMobileMenu() {
       mobileMenu?.classList.add("hidden");
       mobileBackdrop?.classList.add("hidden");
-      hamburgerIcon?.classList.replace("fa-xmark", "fa-bars");
+      hamburgerOpenIcon?.classList.remove("hidden");
+      hamburgerCloseIcon?.classList.add("hidden");
       hamburgerBtn?.setAttribute("aria-expanded", "false");
       closeSubmenu();
     }
