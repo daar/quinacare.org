@@ -1,0 +1,62 @@
+---
+import Icon from "../Icon.astro";
+import { annualReports } from "../../data/annualReports";
+
+interface Props {
+  /** "nl" | "en" | "es" — which language's PDFs to link. */
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const key = (["nl", "en", "es"].includes(lang) ? lang : "nl") as
+  | "nl"
+  | "en"
+  | "es";
+
+const labels: Record<"nl" | "en" | "es", { report: string; download: string }> =
+  {
+    nl: { report: "Jaarverslag", download: "Download pdf" },
+    en: { report: "Annual report", download: "Download pdf" },
+    es: { report: "Informe anual", download: "Descargar pdf" },
+  };
+const l = labels[key];
+
+// Only list years that have a report in this language, newest first.
+// Files are served verbatim from public/<lang>/… (see annualReports.ts).
+const reports = annualReports
+  .filter((r) => r.files[key])
+  .sort((a, b) => b.year - a.year);
+---
+
+<div
+  class="not-prose my-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+>
+  {
+    reports.map((r) => (
+      <a
+        href={r.files[key]}
+        download
+        class="group flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-5 transition hover:border-qcRed hover:shadow-lg hover:-translate-y-0.5"
+      >
+        <div class="flex items-start justify-between">
+          <Icon
+            name="file-lines"
+            class="text-2xl text-gray-300 transition group-hover:text-qcRed"
+          />
+          <span class="text-3xl font-bold tracking-tighter text-qcBlack">
+            {r.year}
+          </span>
+        </div>
+        <div class="mt-10">
+          <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">
+            {l.report}
+          </p>
+          <span class="mt-1 inline-flex items-center gap-2 text-sm font-bold text-qcRed">
+            <Icon name="download" />
+            {l.download}
+          </span>
+        </div>
+      </a>
+    ))
+  }
+</div>

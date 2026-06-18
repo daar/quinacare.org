@@ -395,6 +395,7 @@ export const ui = {
     // Submenu - Wie zijn wij?
     "submenu.aboutUs": "Over ons",
     "submenu.organization": "Organisatie",
+    "submenu.annualReports": "Jaarverslagen",
     "submenu.media": "Media",
     "submenu.goals": "Onze doelstellingen",
     // Search
@@ -794,6 +795,7 @@ export const ui = {
     // Submenu - Who are we?
     "submenu.aboutUs": "About Us",
     "submenu.organization": "Organization",
+    "submenu.annualReports": "Annual reports",
     "submenu.media": "Media",
     "submenu.goals": "Our Goals",
     // Search
@@ -1194,6 +1196,7 @@ export const ui = {
     // Submenu - ¿Quiénes somos?
     "submenu.aboutUs": "Sobre nosotros",
     "submenu.organization": "Organización",
+    "submenu.annualReports": "Informes anuales",
     "submenu.media": "Medios",
     "submenu.goals": "Nuestros objetivos",
     // Search

@@ -157,5 +157,11 @@ export default defineMarkdocConfig({
         href: { type: String, required: true },
       },
     },
+    "annual-reports": {
+      render: component("./src/components/markdoc/AnnualReports.astro"),
+      attributes: {
+        lang: { type: String, required: true },
+      },
+    },
   },
 });
