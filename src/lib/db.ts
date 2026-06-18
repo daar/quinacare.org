@@ -104,6 +104,21 @@ export async function ensureSchema(): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_page_misses_created ON page_misses(created_at)`,
     `CREATE INDEX IF NOT EXISTS idx_page_misses_path ON page_misses(path)`,
     `CREATE INDEX IF NOT EXISTS idx_page_misses_bot ON page_misses(is_bot)`,
+    // News post view counter. One row per counted view; de-duplicated to
+    // a single click per hashed IP per 24h in the application layer. The
+    // "most popular" list is a COUNT over a trailing window (30 days).
+    // ip_hash is a salted SHA-256 of the client IP — the raw address is
+    // never stored (see lib/postViews.ts).
+    `CREATE TABLE IF NOT EXISTS post_views (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      slug       TEXT NOT NULL,
+      lang       TEXT NOT NULL DEFAULT 'nl',
+      ip_hash    TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_post_views_created ON post_views(created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_post_views_lang_created ON post_views(lang, created_at)`,
+    `CREATE INDEX IF NOT EXISTS idx_post_views_dedup ON post_views(slug, ip_hash, created_at)`,
   ]);
   migrated = true;
 }

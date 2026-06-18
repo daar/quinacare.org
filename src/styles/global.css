@@ -156,6 +156,35 @@
   text-transform: uppercase;
 }
 
+/* Blog-roll filter pills */
+.qc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.6rem 1.15rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: #f3f4f6;
+  color: #4b5563;
+  transition: all 0.2s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.qc-pill:hover {
+  background: #e5e7eb;
+}
+.qc-pill.is-active {
+  background: var(--color-qcBlack);
+  color: #fff;
+}
+.qc-pill__count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.55;
+}
+
 /* Footer heading */
 .qc-footer-heading {
   font-family: var(--footer-heading-font);

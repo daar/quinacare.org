@@ -1,0 +1,31 @@
+---
+// Fire-and-forget view beacon for a news post. Posts the slug+lang to
+// /api/news/track on load; the server records one view per IP per 24h
+// (production only). Uses sendBeacon so it never blocks navigation.
+interface Props {
+  slug: string;
+  lang: string;
+}
+const { slug, lang } = Astro.props;
+---
+
+<script define:vars={{ slug, lang }}>
+  try {
+    const payload = JSON.stringify({ slug, lang });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(
+        "/api/news/track",
+        new Blob([payload], { type: "application/json" }),
+      );
+    } else {
+      fetch("/api/news/track", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: payload,
+        keepalive: true,
+      });
+    }
+  } catch {
+    /* never block the page on a failed beacon */
+  }
+</script>

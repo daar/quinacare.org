@@ -1,0 +1,495 @@
+---
+// Shared blog-roll listing used by /news in every language.
+// A featured hero (newest/pinned post) + a card grid, with a sticky
+// sidebar holding: a tag filter (by post type), a date-range filter, and
+// a live "most popular" list (fetched from /api/news/popular, backed by
+// the Turso view counter). Grid filtering and "load more" are client-side.
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import {
+  useTranslations,
+  getDateLocale,
+  getLocalizedPath,
+  type Lang,
+} from "../i18n";
+
+interface Props {
+  posts: any[];
+  lang: Lang;
+}
+
+const { posts, lang } = Astro.props;
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+const INITIAL = 9;
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat(dateLocale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(date));
+}
+function isoDate(date: Date): string {
+  return new Date(date).toISOString().slice(0, 10);
+}
+function newsPath(post: any): string {
+  return getLocalizedPath(`/news/${post.data.slug || post.id}`, lang);
+}
+function slugOf(post: any): string {
+  return post.data.slug || post.id;
+}
+
+type PostType = "article" | "newsletter" | "report";
+function postType(post: any): PostType {
+  const slug = slugOf(post).toLowerCase();
+  if (slug.startsWith("jaarverslag-")) return "report";
+  if (
+    slug.startsWith("nieuwsbrief-") ||
+    slug.startsWith("newsletter-") ||
+    slug.startsWith("boletin-")
+  )
+    return "newsletter";
+  return "article";
+}
+
+const typeStyles: Record<
+  PostType,
+  { label: string; dot: string; text: string }
+> = {
+  article: { label: t("type.article"), dot: "bg-qcRed", text: "text-qcRed" },
+  newsletter: {
+    label: t("type.newsletter"),
+    dot: "bg-amber-500",
+    text: "text-amber-600",
+  },
+  report: {
+    label: t("type.report"),
+    dot: "bg-emerald-500",
+    text: "text-emerald-600",
+  },
+};
+
+const featured = posts[0] ?? null;
+const rest = posts.slice(1);
+
+const counts: Record<string, number> = {
+  all: posts.length,
+  article: 0,
+  newsletter: 0,
+  report: 0,
+};
+for (const p of posts) counts[postType(p)]++;
+const filters = [
+  { key: "all", label: t("news.all") },
+  { key: "article", label: t("news.articles") },
+  { key: "newsletter", label: t("news.newsletters") },
+  { key: "report", label: t("news.reports") },
+].filter((f) => f.key === "all" || counts[f.key] > 0);
+---
+
+<div
+  class="grid grid-cols-1 gap-y-12 px-6 pt-24 pb-28 lg:grid-cols-[380px_1fr] lg:items-start lg:gap-14 lg:px-10"
+>
+  <aside class="order-2 space-y-10 lg:order-1 lg:sticky lg:top-24">
+    <!-- Tag filter -->
+    <div>
+      <h3 class="qc-label mb-4">{t("news.filterBy")}</h3>
+      <div class="flex flex-wrap gap-2 lg:flex-col">
+        {
+          filters.map((f) => (
+            <button
+              type="button"
+              class:list={[
+                "qc-pill w-full justify-between",
+                { "is-active": f.key === "all" },
+              ]}
+              data-filter={f.key}
+            >
+              {f.label}
+              <span class="qc-pill__count">{counts[f.key]}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Date range -->
+    <div>
+      <h3 class="qc-label mb-4">{t("news.dateRange")}</h3>
+      <div class="space-y-3">
+        <label class="block">
+          <span class="qc-meta mb-1 block">{t("news.from")}</span>
+          <input
+            type="date"
+            id="date-from"
+            class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:border-qcRed focus:outline-none"
+          />
+        </label>
+        <label class="block">
+          <span class="qc-meta mb-1 block">{t("news.to")}</span>
+          <input
+            type="date"
+            id="date-to"
+            class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:border-qcRed focus:outline-none"
+          />
+        </label>
+        <button
+          type="button"
+          id="date-clear"
+          class="text-sm font-bold text-gray-400 transition-colors hover:text-qcRed"
+        >
+          {t("news.clear")}
+        </button>
+      </div>
+    </div>
+
+    <!-- Most popular -->
+    <div id="popular-section" hidden>
+      <h3 class="qc-label mb-4">{t("news.popular")}</h3>
+      <ol id="popular-list" class="space-y-4"></ol>
+    </div>
+  </aside>
+
+  <div class="order-1 lg:order-2">
+    <header class="mb-12">
+      <span class="qc-label mb-4">{t("news.subtitle")}</span>
+      <h1 class="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
+        {t("news.title")}<span class="text-qcRed">.</span>
+      </h1>
+      <p class="qc-body mt-6 max-w-2xl">{t("news.intro")}</p>
+    </header>
+    {
+      featured && (
+        <a
+          href={newsPath(featured)}
+          id="featured"
+          data-type={postType(featured)}
+          data-date={isoDate(featured.data.date)}
+          data-slug={slugOf(featured)}
+          class="group mb-12 block"
+        >
+          <article class="grid overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl md:grid-cols-2">
+            <div class="relative min-h-[260px] overflow-hidden bg-gray-100 md:min-h-[360px]">
+              {featured.data.featured_image ? (
+                <Image
+                  src={featured.data.featured_image}
+                  alt={featured.data.title}
+                  layout="none"
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  widths={[500, 800, 1100]}
+                  sizes="(max-width: 1024px) 100vw, 560px"
+                />
+              ) : (
+                <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                  <img
+                    src="/logo-quina-care.svg"
+                    alt=""
+                    class="w-24 opacity-15"
+                  />
+                </div>
+              )}
+              <span class="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] shadow-sm backdrop-blur">
+                <span
+                  class={`h-1.5 w-1.5 rounded-full ${typeStyles[postType(featured)].dot}`}
+                />
+                <span class={typeStyles[postType(featured)].text}>
+                  {typeStyles[postType(featured)].label}
+                </span>
+              </span>
+            </div>
+            <div class="flex flex-col justify-center p-8 lg:p-10">
+              <div class="qc-meta mb-3 flex items-center gap-1.5">
+                <Icon name="calendar" />
+                {formatDate(featured.data.date)}
+              </div>
+              <h2 class="text-2xl font-bold leading-tight tracking-tighter transition-colors group-hover:text-qcRed md:text-3xl">
+                {featured.data.title}
+              </h2>
+              {featured.data.excerpt && (
+                <p class="qc-body mt-4 line-clamp-3 !text-base">
+                  {featured.data.excerpt}
+                </p>
+              )}
+              <span class="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.15em] text-qcBlack transition-colors group-hover:text-qcRed">
+                {t("news.readPost")}
+                <svg
+                  class="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </span>
+            </div>
+          </article>
+        </a>
+      )
+    }
+
+    <div
+      id="blog-grid"
+      data-initial={INITIAL}
+      data-lang={lang}
+      class="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+    >
+      {
+        rest.map((post) => {
+          const ts = typeStyles[postType(post)];
+          return (
+            <article
+              class="group transition-transform duration-300 hover:-translate-y-1"
+              data-type={postType(post)}
+              data-date={isoDate(post.data.date)}
+              data-slug={slugOf(post)}
+              data-title={post.data.title}
+              data-href={newsPath(post)}
+            >
+              <a href={newsPath(post)} class="flex h-full flex-col">
+                <div class="relative aspect-[16/10] overflow-hidden rounded-2xl bg-gray-100">
+                  {post.data.featured_image ? (
+                    <Image
+                      src={post.data.featured_image}
+                      alt={post.data.title}
+                      layout="none"
+                      class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      widths={[300, 500, 700]}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 320px"
+                    />
+                  ) : (
+                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                      <img
+                        src="/logo-quina-care.svg"
+                        alt=""
+                        class="w-16 opacity-15"
+                      />
+                    </div>
+                  )}
+                  <span class="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] shadow-sm backdrop-blur">
+                    <span class={`h-1.5 w-1.5 rounded-full ${ts.dot}`} />
+                    <span class={ts.text}>{ts.label}</span>
+                  </span>
+                </div>
+                <div class="flex flex-1 flex-col pt-5">
+                  <div class="qc-meta mb-2 flex items-center gap-1.5">
+                    <Icon name="calendar" />
+                    {formatDate(post.data.date)}
+                  </div>
+                  <h3 class="text-lg font-bold leading-snug tracking-tight transition-colors group-hover:text-qcRed">
+                    {post.data.title}
+                  </h3>
+                  {post.data.excerpt && (
+                    <p class="qc-body mt-2 line-clamp-2 !text-sm">
+                      {post.data.excerpt}
+                    </p>
+                  )}
+                </div>
+              </a>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <p id="blog-empty" class="qc-body hidden py-20 text-center">
+      {t("news.empty")}
+    </p>
+
+    <div id="load-more-wrap" class="mt-16 flex justify-center">
+      <button
+        id="load-more"
+        type="button"
+        class="qc-btn inline-flex items-center gap-2 rounded-full bg-qcBlack px-8 py-4 text-white transition-colors hover:bg-qcRed"
+      >
+        {t("news.showMore")}
+        <svg
+          class="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const grid = document.getElementById("blog-grid");
+  if (grid) {
+    const step = Number(grid.dataset.initial) || 9;
+    const lang = grid.dataset.lang || "nl";
+    const cards = Array.from(grid.children) as HTMLElement[];
+    const pills = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-filter]"),
+    );
+    const featured = document.getElementById("featured");
+    const fromInput = document.getElementById(
+      "date-from",
+    ) as HTMLInputElement | null;
+    const toInput = document.getElementById(
+      "date-to",
+    ) as HTMLInputElement | null;
+    const clearBtn = document.getElementById("date-clear");
+    const moreWrap = document.getElementById("load-more-wrap");
+    const moreBtn = document.getElementById("load-more");
+    const empty = document.getElementById("blog-empty");
+
+    let active = "all";
+    let visible = step;
+
+    const inRange = (el: HTMLElement) => {
+      const from = fromInput?.value || "";
+      const to = toInput?.value || "";
+      const d = el.dataset.date || "";
+      if (from && d < from) return false;
+      if (to && d > to) return false;
+      return true;
+    };
+    const matches = (el: HTMLElement) =>
+      (active === "all" || el.dataset.type === active) && inRange(el);
+
+    const update = () => {
+      const shown = cards.filter(matches);
+      cards.forEach((c) => (c.style.display = "none"));
+      shown.slice(0, visible).forEach((c) => (c.style.display = ""));
+      if (featured) featured.style.display = matches(featured) ? "" : "none";
+      if (moreWrap)
+        moreWrap.style.display = shown.length > visible ? "flex" : "none";
+      if (empty)
+        empty.style.display =
+          shown.length === 0 && (!featured || featured.style.display === "none")
+            ? "block"
+            : "none";
+    };
+
+    pills.forEach((pill) =>
+      pill.addEventListener("click", () => {
+        active = pill.dataset.filter || "all";
+        visible = step;
+        pills.forEach((p) => p.classList.toggle("is-active", p === pill));
+        update();
+      }),
+    );
+    [fromInput, toInput].forEach((input) =>
+      input?.addEventListener("change", () => {
+        visible = step;
+        update();
+      }),
+    );
+    clearBtn?.addEventListener("click", () => {
+      if (fromInput) fromInput.value = "";
+      if (toInput) toInput.value = "";
+      visible = step;
+      update();
+    });
+    moreBtn?.addEventListener("click", () => {
+      visible += step;
+      update();
+    });
+    update();
+
+    // Most popular — resolve slugs to the rendered cards/featured for
+    // their title + link, so the DB only needs to store slugs + counts.
+    type Pop = { title: string; href: string; thumb: string };
+    const thumbOf = (el: Element): string => {
+      const img = el.querySelector("img");
+      return img?.currentSrc || img?.getAttribute("src") || "";
+    };
+    const lookup = (slug: string): Pop | null => {
+      const card = document.querySelector<HTMLElement>(
+        `#blog-grid > [data-slug="${slug}"]`,
+      );
+      if (card?.dataset.title && card.dataset.href)
+        return {
+          title: card.dataset.title,
+          href: card.dataset.href,
+          thumb: thumbOf(card),
+        };
+      if (featured && featured.dataset.slug === slug)
+        return {
+          title: featured.querySelector("h2")?.textContent?.trim() || "",
+          href: (featured as HTMLAnchorElement).href,
+          thumb: thumbOf(featured),
+        };
+      return null;
+    };
+
+    // The 5 newest posts in DOM order (featured first), used as a
+    // fallback when there's no view data yet (e.g. local dev, or a fresh
+    // production deploy before the counter has accumulated anything).
+    const latest = (): Pop[] => {
+      const els: HTMLElement[] = [];
+      if (featured) els.push(featured);
+      els.push(...cards);
+      return els
+        .slice(0, 5)
+        .map((el) =>
+          el === featured
+            ? {
+                title: featured.querySelector("h2")?.textContent?.trim() || "",
+                href: (featured as HTMLAnchorElement).href,
+                thumb: thumbOf(featured),
+              }
+            : {
+                title: el.dataset.title || "",
+                href: el.dataset.href || "",
+                thumb: thumbOf(el),
+              },
+        )
+        .filter((it) => it.title && it.href);
+    };
+
+    const renderPopular = (items: Pop[]) => {
+      const section = document.getElementById("popular-section");
+      const ol = document.getElementById("popular-list");
+      if (!section || !ol || items.length === 0) return;
+      ol.innerHTML = "";
+      for (const it of items) {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = it.href;
+        a.className = "group flex items-center gap-3";
+        if (it.thumb) {
+          const img = document.createElement("img");
+          img.src = it.thumb;
+          img.alt = "";
+          img.loading = "lazy";
+          img.className =
+            "h-12 w-12 shrink-0 rounded-lg bg-gray-100 object-cover";
+          a.append(img);
+        }
+        const title = document.createElement("span");
+        title.className =
+          "line-clamp-2 text-sm font-bold leading-snug text-qcBlack transition-colors group-hover:text-qcRed";
+        title.textContent = it.title;
+        a.append(title);
+        li.append(a);
+        ol.append(li);
+      }
+      section.hidden = false;
+    };
+
+    fetch(`/api/news/popular?lang=${encodeURIComponent(lang)}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((list: { slug: string }[]) => {
+        const resolved = Array.isArray(list)
+          ? list.map((p) => lookup(p.slug)).filter((x): x is Pop => !!x)
+          : [];
+        renderPopular(resolved.length > 0 ? resolved : latest());
+      })
+      .catch(() => renderPopular(latest()));
+  }
+</script>
