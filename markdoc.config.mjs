@@ -170,5 +170,15 @@ export default defineMarkdocConfig({
         lang: { type: String, required: true },
       },
     },
+    "download-card": {
+      render: component("./src/components/markdoc/DownloadCard.astro"),
+      attributes: {
+        href: { type: String, required: true },
+        label: { type: String, required: true },
+        title: { type: String, required: true },
+        lang: { type: String },
+        cover: { type: String },
+      },
+    },
   },
 });

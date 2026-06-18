@@ -1,0 +1,33 @@
+---
+// Markdoc tag that embeds a single reusable ReportCard download card in
+// post content — e.g. a newsletter PDF. Generic on purpose: pass the
+// download href, an eyebrow label and a title; the download wording is
+// derived from the language.
+import ReportCard from "../ReportCard.astro";
+
+interface Props {
+  /** Download target (a public PDF path). */
+  href: string;
+  /** Small eyebrow label, e.g. "Nieuwsbrief". */
+  label: string;
+  /** Prominent title, e.g. "Oktober 2017". */
+  title: string;
+  /** "nl" | "en" | "es" — drives the download wording. */
+  lang?: string;
+  /** Optional cover image (a /media/… path). */
+  cover?: string;
+}
+
+const { href, label, title, lang = "nl", cover } = Astro.props;
+const downloadLabel = lang === "es" ? "Descargar pdf" : "Download pdf";
+---
+
+<div class="not-prose my-8 w-44">
+  <ReportCard
+    href={href}
+    cover={cover}
+    label={label}
+    title={title}
+    downloadLabel={downloadLabel}
+  />
+</div>
