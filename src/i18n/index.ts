@@ -1350,9 +1350,19 @@ export function switchPath(
   toLang: Lang,
   translatePostSlug?: (slug: string, from: Lang, to: Lang) => string | null,
 ): string {
-  const fromMatch = path.match(/^\/(en|es)(?=\/|$)/);
+  // Browsers percent-encode non-ASCII segments in location.pathname
+  // (e.g. "campañas" → "campa%C3%B1as"), but ROUTES holds the decoded
+  // native form. Decode once so canonicalFromSegment matches and the
+  // switcher does not fall back to the landing page.
+  let decoded = path;
+  try {
+    decoded = decodeURI(path);
+  } catch {
+    /* malformed escape — fall through with the raw path */
+  }
+  const fromMatch = decoded.match(/^\/(en|es)(?=\/|$)/);
   const fromLang: Lang = fromMatch ? (fromMatch[1] as Lang) : defaultLang;
-  const cleanPath = path.replace(/^\/(nl|en|es)(?=\/|$)/, "");
+  const cleanPath = decoded.replace(/^\/(nl|en|es)(?=\/|$)/, "");
   const segs = cleanPath.split("/").filter(Boolean);
   if (segs.length === 0) return withPrefix("/", toLang);
 
