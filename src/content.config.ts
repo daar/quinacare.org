@@ -49,6 +49,9 @@ const projectSchema = ({ image }: SchemaContext) =>
     featured_image_alt: z.string().optional(),
     date: z.date(),
     status: z.enum(["active", "completed", "upcoming"]).default("active"),
+    // When true, eligible to be highlighted by the FocusProject section on
+    // the landing page (newest featured project wins).
+    featured: z.boolean().default(false),
   });
 
 const fundraiserSchema = ({ image }: SchemaContext) =>
