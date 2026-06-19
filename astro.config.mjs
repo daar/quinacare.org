@@ -75,6 +75,14 @@ export default defineConfig({
       subsets: ["latin"],
     },
     {
+      provider: fontProviders.google(),
+      name: "Cormorant Garamond",
+      cssVariable: "--astro-font-cormorant",
+      weights: [300],
+      styles: ["italic"],
+      subsets: ["latin"],
+    },
+    {
       provider: fontProviders.local(),
       name: "Effra",
       cssVariable: "--astro-font-effra",
