@@ -58,6 +58,9 @@ const fundraiserSchema = ({ image }: SchemaContext) =>
   z.object({
     title: z.string(),
     slug: z.string(),
+    // Links the language variants of a fundraiser whose slugs differ across
+    // languages; identical slugs link automatically via same-slug fallback.
+    translationKey: z.string().optional(),
     organizer: z.string(),
     excerpt: z.string(),
     goal_amount: z.number(),
