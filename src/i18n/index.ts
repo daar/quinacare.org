@@ -1271,16 +1271,103 @@ export function useTranslations(lang: Lang) {
   };
 }
 
-export function getLocalizedPath(path: string, lang: Lang): string {
-  // Remove any existing language prefix
-  const cleanPath = path.replace(/^\/(nl|en|es)/, "");
+/**
+ * Per-language native route segments, keyed by the canonical segment used
+ * throughout the code/menus (the previous shared slug). EN is the native
+ * English form. Anything not listed is kept verbatim across languages.
+ */
+export const ROUTES: Record<string, Record<Lang, string>> = {
+  news: { nl: "actueel", en: "news", es: "noticias" },
+  donate: { nl: "doneer", en: "donate", es: "donar" },
+  projects: { nl: "projecten", en: "projects", es: "proyectos" },
+  fundraisers: { nl: "acties", en: "fundraisers", es: "campañas" },
+  search: { nl: "zoeken", en: "search", es: "buscar" },
+  "putumayo-loop": {
+    nl: "putumayo-loop",
+    en: "putumayo-run",
+    es: "putumayo-carrera",
+  },
+  about: { nl: "over-ons", en: "about", es: "sobre-nosotros" },
+  contact: { nl: "contact", en: "contact", es: "contacto" },
+  organization: { nl: "organisatie", en: "organization", es: "organizacion" },
+  hospital: { nl: "ziekenhuis", en: "hospital", es: "hospital" },
+  "become-partner": {
+    nl: "word-partner",
+    en: "become-partner",
+    es: "hazte-socio",
+  },
+  "word-vrijwilliger": {
+    nl: "word-vrijwilliger",
+    en: "become-volunteer",
+    es: "hazte-voluntario",
+  },
+  jaarverslagen: {
+    nl: "jaarverslagen",
+    en: "annual-reports",
+    es: "informes-anuales",
+  },
+  privacy: { nl: "privacy", en: "privacy", es: "privacidad" },
+  "yura-boom": { nl: "yura-boom", en: "yura-boom", es: "yura-boom" },
+};
 
-  // For default language, don't add prefix
-  if (lang === defaultLang) {
-    return cleanPath || "/";
+/** Find the canonical key whose native segment for `lang` equals `segment`. */
+function canonicalFromSegment(segment: string, lang: Lang): string | null {
+  if (ROUTES[segment]) return segment; // already canonical
+  for (const [key, map] of Object.entries(ROUTES)) {
+    if (map[lang] === segment) return key;
+  }
+  return null;
+}
+
+function withPrefix(cleanPath: string, lang: Lang): string {
+  const path = cleanPath || "/";
+  return lang === defaultLang ? path : `/${lang}${path === "/" ? "" : path}`;
+}
+
+/**
+ * Build a localized URL from a CANONICAL path (the form used in menus and
+ * link builders, e.g. "/news/my-post" or "/jaarverslagen"). The first
+ * segment is translated to the target language's native route; the rest
+ * (post/fundraiser/project slugs, years, "return", nested leaves) is kept.
+ */
+export function getLocalizedPath(path: string, lang: Lang): string {
+  const cleanPath = path.replace(/^\/(nl|en|es)(?=\/|$)/, "");
+  const segs = cleanPath.split("/").filter(Boolean);
+  if (segs.length > 0 && ROUTES[segs[0]]) {
+    segs[0] = ROUTES[segs[0]][lang];
+  }
+  return withPrefix(segs.length ? `/${segs.join("/")}` : "/", lang);
+}
+
+/**
+ * Translate a CURRENT NATIVE path to another language's native path (for
+ * the language switcher / hreflang). Reverses the first segment via ROUTES;
+ * for news-post URLs, an optional translator maps the post slug between
+ * languages. Falls back to the target home when nothing matches.
+ */
+export function switchPath(
+  path: string,
+  toLang: Lang,
+  translatePostSlug?: (slug: string, from: Lang, to: Lang) => string | null,
+): string {
+  const fromMatch = path.match(/^\/(en|es)(?=\/|$)/);
+  const fromLang: Lang = fromMatch ? (fromMatch[1] as Lang) : defaultLang;
+  const cleanPath = path.replace(/^\/(nl|en|es)(?=\/|$)/, "");
+  const segs = cleanPath.split("/").filter(Boolean);
+  if (segs.length === 0) return withPrefix("/", toLang);
+
+  const canonical = canonicalFromSegment(segs[0], fromLang);
+  if (!canonical) return withPrefix("/", toLang);
+
+  segs[0] = ROUTES[canonical][toLang];
+
+  if (canonical === "news" && segs[1]) {
+    const translated = translatePostSlug?.(segs[1], fromLang, toLang);
+    if (translated) segs[1] = translated;
+    else segs.length = 1; // no translation → land on the news index
   }
 
-  return `/${lang}${cleanPath}`;
+  return withPrefix(`/${segs.join("/")}`, toLang);
 }
 
 export function getDateLocale(lang: Lang): string {
@@ -1300,12 +1387,13 @@ export function getCollectionName(
 
 export function getAlternateUrls(
   currentUrl: URL,
+  translatePostSlug?: (slug: string, from: Lang, to: Lang) => string | null,
 ): { lang: Lang; url: string }[] {
   const pathname = currentUrl.pathname;
   const origin = currentUrl.origin;
 
   return (Object.keys(languages) as Lang[]).map((lang) => ({
     lang,
-    url: `${origin}${getLocalizedPath(pathname, lang)}`,
+    url: `${origin}${switchPath(pathname, lang, translatePostSlug)}`,
   }));
 }

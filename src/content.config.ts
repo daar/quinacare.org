@@ -17,6 +17,9 @@ const newsSchema = ({ image }: SchemaContext) =>
     excerpt: z.string().optional(),
     categories: z.array(z.string()).optional(),
     language: z.string().optional(),
+    // Shared key across the language variants of the same post, so the
+    // language switcher can map between their native slugs.
+    translationKey: z.string().optional(),
     featured_image: image().optional(),
     featured_image_caption: z.string().optional(),
     featured_image_copyright: z.string().optional(),

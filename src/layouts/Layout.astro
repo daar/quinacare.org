@@ -7,6 +7,7 @@ import {
   defaultLang,
   type Lang,
 } from "../i18n";
+import { buildPostTranslator } from "../lib/postTranslations";
 
 interface Props {
   title?: string;
@@ -16,7 +17,7 @@ interface Props {
 
 const currentLang = Astro.props.lang ?? getLangFromUrl(Astro.url);
 const { title = "Quina Care - Zorg Zonder Grenzen", description } = Astro.props;
-const alternateUrls = getAlternateUrls(Astro.url);
+const alternateUrls = getAlternateUrls(Astro.url, await buildPostTranslator());
 
 const metaDescription =
   description ||
