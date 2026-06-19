@@ -21,6 +21,9 @@ async function resolveAsset(value?: string): Promise<string | undefined> {
 }
 const resolvedSrc = await resolveAsset(src);
 const resolvedPoster = await resolveAsset(poster);
+
+const ext = (src.split(".").pop() || "mp4").toLowerCase();
+const mimeType = ext === "webm" ? "video/webm" : ext === "ogg" ? "video/ogg" : "video/mp4";
 ---
 
 <div class="relative rounded-xl overflow-hidden my-8">
@@ -30,6 +33,6 @@ const resolvedPoster = await resolveAsset(poster);
     poster={resolvedPoster}
     class="w-full aspect-video bg-black"
   >
-    <source src={resolvedSrc} type="video/mp4" />
+    <source src={resolvedSrc} type={mimeType} />
   </video>
 </div>
