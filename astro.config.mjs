@@ -51,18 +51,18 @@ export default defineConfig({
     },
   },
   redirects: {
-    "/blogs-vlogs": "/news",
-    "/doneer": "/donate",
-    "/doneer/anbi": "/donate",
-    "/doneer/andrea-halve-marathon": "/fundraisers/andrea-halve-marathon",
-    "/doneer/demi-en-thomas": "/fundraisers/demi-en-thomas",
-    "/doneer/esmee-en-diana": "/fundraisers/esmee-en-diana",
-    "/doneer/karin-martens-maakt-operaties-mogelijk":
-      "/fundraisers/karin-martens",
+    // Legacy WordPress URLs, retargeted to the native routes. Note:
+    // /doneer is now the real NL donate page, so it no longer redirects.
+    "/blogs-vlogs": "/actueel",
+    "/doneer/anbi": "/doneer",
+    "/doneer/andrea-halve-marathon": "/acties/andrea-halve-marathon",
+    "/doneer/demi-en-thomas": "/acties/demi-en-thomas",
+    "/doneer/esmee-en-diana": "/acties/esmee-en-diana",
+    "/doneer/karin-martens-maakt-operaties-mogelijk": "/acties/karin-martens",
     "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
     "/doneer/quina-yura": "/yura-boom",
     "/fietsen-voor-hospital-san-miguel-2":
-      "/fundraisers/fietsen-voor-hospital-san-miguel",
+      "/acties/fietsen-voor-hospital-san-miguel",
     "/vrijwilligers": "/word-vrijwilliger",
   },
   fonts: [

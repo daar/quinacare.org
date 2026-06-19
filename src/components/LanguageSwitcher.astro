@@ -1,22 +1,19 @@
 ---
-import {
-  languages,
-  getLangFromUrl,
-  getLocalizedPath,
-  type Lang,
-} from "../i18n";
+import { languages, getLangFromUrl, switchPath, type Lang } from "../i18n";
+import { buildPostTranslator } from "../lib/postTranslations";
 
 const currentUrl = Astro.url;
 const currentLang = (Astro.currentLocale as Lang) ?? getLangFromUrl(currentUrl);
 const currentPath = currentUrl.pathname;
 const langEntries = Object.entries(languages) as [Lang, string][];
+const translatePostSlug = await buildPostTranslator();
 ---
 
 <nav aria-label="Language switcher" class="flex items-center gap-2">
   {
     langEntries.map(([code, name], index) => {
       const isActive = code === currentLang;
-      const href = getLocalizedPath(currentPath, code);
+      const href = switchPath(currentPath, code, translatePostSlug);
 
       return (
         <>
