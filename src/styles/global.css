@@ -612,6 +612,24 @@ mark {
   margin: 2.5em 0;
 }
 
+.prose-article .qc-img-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 2.5em 0;
+}
+
+@media (min-width: 640px) {
+  .prose-article .qc-img-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.prose-article .qc-img-row figure,
+.prose-article .qc-img-row img {
+  margin: 0;
+}
+
 .prose-article figcaption {
   text-align: center;
   font-size: 0.75rem;
