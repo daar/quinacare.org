@@ -44,6 +44,9 @@ const projectSchema = ({ image }: SchemaContext) =>
   z.object({
     title: z.string(),
     slug: z.string(),
+    // Links the language variants of a project; identical slugs across
+    // languages link automatically via same-slug fallback.
+    translationKey: z.string().optional(),
     excerpt: z.string(),
     featured_image: image().optional(),
     featured_image_alt: z.string().optional(),
@@ -58,6 +61,9 @@ const fundraiserSchema = ({ image }: SchemaContext) =>
   z.object({
     title: z.string(),
     slug: z.string(),
+    // Links the language variants of a fundraiser whose slugs differ across
+    // languages; identical slugs link automatically via same-slug fallback.
+    translationKey: z.string().optional(),
     organizer: z.string(),
     excerpt: z.string(),
     goal_amount: z.number(),
