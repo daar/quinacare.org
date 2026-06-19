@@ -317,7 +317,7 @@ translationKey: "${p.slug}"
 author: "Quina Care"
 excerpt: "${excerpt[p.lang]}"
 language: "${p.lang}"
-featured_image: "${p.featuredRel}"
+featured_image: "../../../../assets/media/placeholders/newsletter.png"
 ---
 
 ${invite[p.lang]}
