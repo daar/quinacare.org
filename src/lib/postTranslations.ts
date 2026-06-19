@@ -28,7 +28,18 @@ async function build(): Promise<void> {
       allSlugs: { nl: new Set(), en: new Set(), es: new Set() },
     };
     for (const lang of LANGS) {
-      const entries = await getCollection(`${kind}-${lang}` as "news-nl");
+      let entries = await getCollection(`${kind}-${lang}` as "news-nl");
+      // Only index entries that are actually built, so the switcher never
+      // links to an unpublished page. News is publish-only everywhere;
+      // fundraisers/projects drafts are built in dev but excluded in prod.
+      if (kind === "news")
+        entries = entries.filter(
+          (p) => (p.data as { status?: string }).status === "publish",
+        );
+      else
+        entries = entries.filter(
+          (p) => import.meta.env.DEV || !(p.data as { draft?: boolean }).draft,
+        );
       for (const p of entries) {
         const slug = p.data.slug || p.id;
         idx.allSlugs[lang].add(slug);
