@@ -6,16 +6,20 @@ interface Props {
 
 const { src, poster } = Astro.props;
 
-// Serve local media referenced as "/video/...", "/media/..." or
-// "/images/..." by resolving it to the bundled asset in src/assets.
-// External URLs and any other path pass through unchanged. The glob is
-// lazy, so only the assets actually used get emitted to the build.
+// Resolve poster images referenced as "/media/..." or "/images/..." to the
+// bundled asset in src/assets. External URLs and any other path pass through
+// unchanged. The glob is lazy, so only the assets actually used get emitted.
+//
+// Videos are NOT bundled: large files routed through Vite's ?url pipeline get
+// read into memory at build time and OOM-kill the build. They live in
+// public/video/... instead and are served verbatim, so "/video/..." paths
+// fall through here untouched.
 const localAssets = import.meta.glob<string>(
-  "/src/assets/**/*.{mp4,webm,jpg,jpeg,png,webp,gif,avif}",
+  "/src/assets/**/*.{jpg,jpeg,png,webp,gif,avif}",
   { query: "?url", import: "default" },
 );
 async function resolveAsset(value?: string): Promise<string | undefined> {
-  if (!value || !/^\/(video|media|images)\//.test(value)) return value;
+  if (!value || !/^\/(media|images)\//.test(value)) return value;
   const loader = localAssets[`/src/assets${value}`];
   return loader ? await loader() : value;
 }
