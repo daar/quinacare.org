@@ -4,7 +4,6 @@ import markdoc from "@astrojs/markdoc";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
-import routeRedirects from "./src/data/routeRedirects.mjs";
 import missRedirects from "./src/data/missRedirects.mjs";
 
 // https://astro.build/config
@@ -53,8 +52,6 @@ export default defineConfig({
     },
   },
   redirects: {
-    // Old canonical routes/slugs -> new native URLs (auto-generated).
-    ...routeRedirects,
     // Resolved from the Turso 404 log (auto-generated).
     ...missRedirects,
     // Legacy WordPress URLs, retargeted to the native routes. Note:
@@ -78,6 +75,14 @@ export default defineConfig({
       cssVariable: "--astro-font-arimo",
       weights: [400, 500, 600, 700],
       styles: ["normal"],
+      subsets: ["latin"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Cormorant Garamond",
+      cssVariable: "--astro-font-cormorant",
+      weights: [300],
+      styles: ["italic"],
       subsets: ["latin"],
     },
     {

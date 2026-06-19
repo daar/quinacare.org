@@ -1348,11 +1348,26 @@ export function getLocalizedPath(path: string, lang: Lang): string {
 export function switchPath(
   path: string,
   toLang: Lang,
-  translatePostSlug?: (slug: string, from: Lang, to: Lang) => string | null,
+  translatePostSlug?: (
+    slug: string,
+    from: Lang,
+    to: Lang,
+    kind?: "news" | "fundraisers",
+  ) => string | null,
 ): string {
-  const fromMatch = path.match(/^\/(en|es)(?=\/|$)/);
+  // Browsers percent-encode non-ASCII segments in location.pathname
+  // (e.g. "campañas" → "campa%C3%B1as"), but ROUTES holds the decoded
+  // native form. Decode once so canonicalFromSegment matches and the
+  // switcher does not fall back to the landing page.
+  let decoded = path;
+  try {
+    decoded = decodeURI(path);
+  } catch {
+    /* malformed escape — fall through with the raw path */
+  }
+  const fromMatch = decoded.match(/^\/(en|es)(?=\/|$)/);
   const fromLang: Lang = fromMatch ? (fromMatch[1] as Lang) : defaultLang;
-  const cleanPath = path.replace(/^\/(nl|en|es)(?=\/|$)/, "");
+  const cleanPath = decoded.replace(/^\/(nl|en|es)(?=\/|$)/, "");
   const segs = cleanPath.split("/").filter(Boolean);
   if (segs.length === 0) return withPrefix("/", toLang);
 
@@ -1361,10 +1376,10 @@ export function switchPath(
 
   segs[0] = ROUTES[canonical][toLang];
 
-  if (canonical === "news" && segs[1]) {
-    const translated = translatePostSlug?.(segs[1], fromLang, toLang);
+  if ((canonical === "news" || canonical === "fundraisers") && segs[1]) {
+    const translated = translatePostSlug?.(segs[1], fromLang, toLang, canonical);
     if (translated) segs[1] = translated;
-    else segs.length = 1; // no translation → land on the news index
+    else segs.length = 1; // no translation → land on the collection index
   }
 
   return withPrefix(`/${segs.join("/")}`, toLang);
@@ -1387,7 +1402,12 @@ export function getCollectionName(
 
 export function getAlternateUrls(
   currentUrl: URL,
-  translatePostSlug?: (slug: string, from: Lang, to: Lang) => string | null,
+  translatePostSlug?: (
+    slug: string,
+    from: Lang,
+    to: Lang,
+    kind?: "news" | "fundraisers",
+  ) => string | null,
 ): { lang: Lang; url: string }[] {
   const pathname = currentUrl.pathname;
   const origin = currentUrl.origin;
