@@ -112,6 +112,16 @@ const monthName = {
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const label = { nl: "Nieuwsbrief", en: "Newsletter", es: "Boletín" };
 
+// Native per-language slug from the canonical (NL-based) slug. The canonical
+// stays the cross-language translationKey so the switcher can link variants.
+function nativeSlug(slug, lang) {
+  if (lang === "en" && slug.startsWith("nieuwsbrief-"))
+    return "newsletter-" + slug.slice("nieuwsbrief-".length);
+  if (lang === "es" && slug.startsWith("nieuwsbrief-"))
+    return "boletin-" + slug.slice("nieuwsbrief-".length);
+  return slug;
+}
+
 const invite = {
   nl: "Elke paar maanden versturen we een nieuwsbrief met updates over ons werk in Ecuador, de mensen achter de missie en de voortgang van onze projecten. Benieuwd? Download de nieuwsbrief hieronder en lees met ons mee.",
   en: "Every few months we send out a newsletter with updates about our work in Ecuador, the people behind the mission and the progress of our projects. Curious? Download the newsletter below and read along with us.",
@@ -302,7 +312,8 @@ for (const p of posts) {
 title: "${p.postTitle.replace(/"/g, '\\"')}"
 date: ${p.date}
 status: publish
-slug: "${p.slug}"
+slug: "${nativeSlug(p.slug, p.lang)}"
+translationKey: "${p.slug}"
 author: "Quina Care"
 excerpt: "${excerpt[p.lang]}"
 language: "${p.lang}"
