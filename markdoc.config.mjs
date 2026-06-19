@@ -29,6 +29,10 @@ export default defineMarkdocConfig({
         ariaLabel: { type: String },
       },
     },
+    "image-row": {
+      render: component("./src/components/markdoc/Row.astro"),
+      attributes: {},
+    },
     "gallery-image": {
       render: component("./src/components/markdoc/GalleryImage.astro"),
       attributes: {
