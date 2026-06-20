@@ -4,7 +4,7 @@ import markdoc from "@astrojs/markdoc";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
-import missRedirects from "./src/data/missRedirects.mjs";
+import missesRedirects from "./src/data/missesRedirects.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -53,7 +53,7 @@ export default defineConfig({
   },
   redirects: {
     // Resolved from the Turso 404 log (auto-generated).
-    ...missRedirects,
+    ...missesRedirects,
     // Legacy WordPress URLs, retargeted to the native routes. Note:
     // /doneer is now the real NL donate page, so it no longer redirects.
     "/blogs-vlogs": "/actueel",

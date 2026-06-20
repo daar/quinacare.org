@@ -112,6 +112,15 @@ const t = useTranslations(lang);
   // sendBeacon is fire-and-forget, won't delay rendering or block
   // navigation. The server-side handler adds UA + Accept-Language.
   (function () {
+    // Don't log local/dev misses — keep the 404 table to real visitors.
+    var h = location.hostname;
+    if (
+      h === "localhost" ||
+      h === "127.0.0.1" ||
+      h === "0.0.0.0" ||
+      h.endsWith(".local")
+    )
+      return;
     try {
       navigator.sendBeacon(
         "/api/page-misses/log",
