@@ -395,6 +395,7 @@ export const ui = {
     "putumayoLoop.story2025":
       "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 170 deelnemers. Een dag om nooit te vergeten.",
     "submenu.joinTeam": "Word vrijwilliger",
+    "submenu.bequest": "Nalatenschap",
     "submenu.becomePartner": "Word partner",
     "submenu.yuraBoom": "De Yura Boom",
     "submenu.yuraBoomDesc": "Koop een item aan onze symbolische yura-boom",
@@ -810,6 +811,7 @@ export const ui = {
     "putumayoLoop.story2025":
       "In 2025 we celebrated the fifth anniversary of the Putumayo Run. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 170 participants in total. A day to remember.",
     "submenu.joinTeam": "Join Our Team",
+    "submenu.bequest": "Bequests",
     "submenu.becomePartner": "Become a Partner",
     "submenu.yuraBoom": "The Yura Tree",
     "submenu.yuraBoomDesc": "Buy an item on our symbolic Yura tree",
@@ -1225,6 +1227,7 @@ export const ui = {
     "putumayoLoop.story2025":
       "En 2025 celebramos el quinto aniversario del Putumayo Run. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 170 participantes en total. Un día para recordar.",
     "submenu.joinTeam": "Únete al equipo",
+    "submenu.bequest": "Legado",
     "submenu.becomePartner": "Sé socio",
     "submenu.yuraBoom": "El Árbol Yura",
     "submenu.yuraBoomDesc":
@@ -1300,6 +1303,11 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
     nl: "word-vrijwilliger",
     en: "become-volunteer",
     es: "hazte-voluntario",
+  },
+  nalatenschap: {
+    nl: "nalatenschap",
+    en: "bequest",
+    es: "legado",
   },
   jaarverslagen: {
     nl: "jaarverslagen",

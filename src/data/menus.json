@@ -65,6 +65,11 @@
           "labelKey": "submenu.joinTeam",
           "path": "/word-vrijwilliger",
           "icon": "fa-solid fa-people-group"
+        },
+        {
+          "labelKey": "submenu.bequest",
+          "path": "/nalatenschap",
+          "icon": "fa-solid fa-hand-holding-dollar"
         }
       ],
       "submenu_disabled": [

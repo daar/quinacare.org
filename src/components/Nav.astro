@@ -131,11 +131,45 @@ const searchPath = getLocalizedPath("/search", lang);
 
               <div class="submenu-dropdown absolute top-full left-1/2 -translate-x-1/2 pt-4 w-80">
                 <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
-                  {/* Simple list items (no image) */}
-                  <div class="p-2">
-                    {item.submenu
-                      .filter((sub) => !sub.image)
-                      .map((sub) => (
+                  {/* Submenu items in source order. Keep this in lockstep
+                      with the mobile panel below so the ordering is
+                      identical on both layouts (featured image cards
+                      render inline, not grouped at the bottom). */}
+                  <div class="p-2 space-y-1">
+                    {item.submenu.map((sub) =>
+                      sub.image ? (
+                        <a
+                          href={getLocalizedPath(sub.path, lang)}
+                          class="block rounded-lg overflow-hidden transition group/item"
+                        >
+                          <div class="relative">
+                            <OptimizedImage
+                              src={sub.image}
+                              alt=""
+                              class="w-full h-36 object-cover bg-gray-100"
+                              widths={[440]}
+                              sizes="440px"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                            <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
+                              <span class="w-7 h-7 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
+                                <Icon
+                                  name="arrow-right"
+                                  class="text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform"
+                                />
+                              </span>
+                              <span class="text-[12px] font-bold uppercase tracking-[0.12em] text-white">
+                                {tk(sub.labelKey)}
+                              </span>
+                            </div>
+                          </div>
+                          {sub.descriptionKey && (
+                            <p class="px-3 py-2 text-[10px] text-gray-400 leading-snug normal-case tracking-normal font-normal line-clamp-2">
+                              {tk(sub.descriptionKey)}
+                            </p>
+                          )}
+                        </a>
+                      ) : (
                         <a
                           href={getLocalizedPath(sub.path, lang)}
                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition group/item"
@@ -148,49 +182,9 @@ const searchPath = getLocalizedPath("/search", lang);
                             {tk(sub.labelKey)}
                           </span>
                         </a>
-                      ))}
+                      ),
+                    )}
                   </div>
-
-                  {/* Featured items (with image) */}
-                  {item.submenu.some((sub) => sub.image) && (
-                    <div class="border-t border-gray-100 p-2 space-y-1">
-                      {item.submenu
-                        .filter((sub) => sub.image)
-                        .map((sub) => (
-                          <a
-                            href={getLocalizedPath(sub.path, lang)}
-                            class="block rounded-lg overflow-hidden transition group/item"
-                          >
-                            <div class="relative">
-                              <OptimizedImage
-                                src={sub.image!}
-                                alt=""
-                                class="w-full h-36 object-cover bg-gray-100"
-                                widths={[440]}
-                                sizes="440px"
-                              />
-                              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                              <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
-                                <span class="w-7 h-7 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
-                                  <Icon
-                                    name="arrow-right"
-                                    class="text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform"
-                                  />
-                                </span>
-                                <span class="text-[12px] font-bold uppercase tracking-[0.12em] text-white">
-                                  {tk(sub.labelKey)}
-                                </span>
-                              </div>
-                            </div>
-                            {sub.descriptionKey && (
-                              <p class="px-3 py-2 text-[10px] text-gray-400 leading-snug normal-case tracking-normal font-normal line-clamp-2">
-                                {tk(sub.descriptionKey)}
-                              </p>
-                            )}
-                          </a>
-                        ))}
-                    </div>
-                  )}
 
                   {/* CTA button */}
                   {item.cta && (

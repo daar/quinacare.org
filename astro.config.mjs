@@ -62,6 +62,11 @@ export default defineConfig({
     "/es/donate/return": "/es/donar/return",
     // Old WordPress ES contact slug.
     "/es/es-contacto": "/es/contacto",
+    // The bequest post moved from the news collection to a standalone page
+    // under "What can you do"; keep the old published news URLs alive.
+    "/actueel/nalatenschap": "/nalatenschap",
+    "/en/news/bequest": "/en/bequest",
+    "/es/noticias/legado": "/es/legado",
     // Legacy WordPress URLs, retargeted to the native routes. Note:
     // /doneer is now the real NL donate page, so it no longer redirects.
     "/blogs-vlogs": "/actueel",
