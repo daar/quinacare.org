@@ -5,7 +5,7 @@ import type { Lang } from "../i18n";
 // Entries that share a `translationKey` are linked explicitly; entries
 // without one fall back to a same-slug lookup, so identical slugs across
 // languages link automatically without needing the key.
-export type TranslateKind = "news" | "fundraisers";
+export type TranslateKind = "news" | "fundraisers" | "projects";
 const LANGS: Lang[] = ["nl", "en", "es"];
 
 type KeyMap = Map<string, Partial<Record<Lang, string>>>;
@@ -26,7 +26,7 @@ async function build(): Promise<void> {
   if (indices) return;
   if (!buildPromise) {
     buildPromise = (async () => {
-      const kinds: TranslateKind[] = ["news", "fundraisers"];
+      const kinds: TranslateKind[] = ["news", "fundraisers", "projects"];
       const result = {} as Record<TranslateKind, KindIndex>;
       for (const kind of kinds) {
         const idx: KindIndex = {

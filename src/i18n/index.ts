@@ -32,6 +32,7 @@ export const ui = {
     "news.showMore": "Meer laden",
     "news.empty": "Geen berichten gevonden.",
     "type.article": "Artikel",
+    "type.vlog": "Vlog",
     "type.newsletter": "Nieuwsbrief",
     "type.report": "Jaarverslag",
     "news.filterBy": "Filteren",
@@ -446,6 +447,7 @@ export const ui = {
     "news.showMore": "Load more",
     "news.empty": "No posts found.",
     "type.article": "Article",
+    "type.vlog": "Vlog",
     "type.newsletter": "Newsletter",
     "type.report": "Annual report",
     "news.filterBy": "Filter",
@@ -862,6 +864,7 @@ export const ui = {
     "news.showMore": "Cargar más",
     "news.empty": "No se encontraron publicaciones.",
     "type.article": "Artículo",
+    "type.vlog": "Vlog",
     "type.newsletter": "Boletín",
     "type.report": "Informe anual",
     "news.filterBy": "Filtrar",
@@ -1360,7 +1363,7 @@ export function switchPath(
     slug: string,
     from: Lang,
     to: Lang,
-    kind?: "news" | "fundraisers",
+    kind?: "news" | "fundraisers" | "projects",
   ) => string | null,
 ): string {
   // Browsers percent-encode non-ASCII segments in location.pathname
@@ -1384,7 +1387,12 @@ export function switchPath(
 
   segs[0] = ROUTES[canonical][toLang];
 
-  if ((canonical === "news" || canonical === "fundraisers") && segs[1]) {
+  if (
+    (canonical === "news" ||
+      canonical === "fundraisers" ||
+      canonical === "projects") &&
+    segs[1]
+  ) {
     const translated = translatePostSlug?.(segs[1], fromLang, toLang, canonical);
     if (translated) segs[1] = translated;
     else segs.length = 1; // no translation → land on the collection index
@@ -1414,7 +1422,7 @@ export function getAlternateUrls(
     slug: string,
     from: Lang,
     to: Lang,
-    kind?: "news" | "fundraisers",
+    kind?: "news" | "fundraisers" | "projects",
   ) => string | null,
 ): { lang: Lang; url: string }[] {
   const pathname = currentUrl.pathname;

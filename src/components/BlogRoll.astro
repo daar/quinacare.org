@@ -41,7 +41,7 @@ function slugOf(post: any): string {
   return post.data.slug || post.id;
 }
 
-type PostType = "article" | "newsletter" | "report";
+type PostType = "article" | "vlog" | "newsletter" | "report";
 function postType(post: any): PostType {
   const slug = slugOf(post).toLowerCase();
   if (
@@ -56,6 +56,19 @@ function postType(post: any): PostType {
     slug.startsWith("boletin-")
   )
     return "newsletter";
+  // A vlog is a post whose body is essentially just an embedded video with a
+  // short lead-in. Detect it from the raw body: a {% video %} tag plus little
+  // text once tags/markdown are stripped (articles that happen to embed a
+  // video carry far more prose and stay "article").
+  const body = typeof post.body === "string" ? post.body : "";
+  if (/\{%\s*video[\s}]/.test(body)) {
+    const text = body
+      .replace(/\{%[\s\S]*?%\}/g, " ")
+      .replace(/[#>*_`|[\]()!-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (text.length <= 400) return "vlog";
+  }
   return "article";
 }
 
@@ -64,6 +77,11 @@ const typeStyles: Record<
   { label: string; dot: string; text: string }
 > = {
   article: { label: t("type.article"), dot: "bg-qcRed", text: "text-qcRed" },
+  vlog: {
+    label: t("type.vlog"),
+    dot: "bg-indigo-500",
+    text: "text-indigo-600",
+  },
   newsletter: {
     label: t("type.newsletter"),
     dot: "bg-amber-500",
@@ -82,6 +100,7 @@ const rest = posts.slice(1);
 const counts: Record<string, number> = {
   all: posts.length,
   article: 0,
+  vlog: 0,
   newsletter: 0,
   report: 0,
 };
@@ -89,6 +108,7 @@ for (const p of posts) counts[postType(p)]++;
 const filters = [
   { key: "all", label: t("news.all") },
   { key: "article", label: t("news.articles") },
+  { key: "vlog", label: t("news.vlogs") },
   { key: "newsletter", label: t("news.newsletters") },
   { key: "report", label: t("news.reports") },
 ].filter((f) => f.key === "all" || counts[f.key] > 0);
