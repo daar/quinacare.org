@@ -8,6 +8,7 @@ import {
   SequenceType,
 } from "@mollie/api-client";
 import { getCurrency, donationDescription } from "../../../lib/currency";
+import { getLocalizedPath, type Lang } from "../../../i18n";
 import {
   insertDonation,
   setMollieId,
@@ -121,7 +122,6 @@ export const POST: APIRoute = async ({ request }) => {
   const currencyConfig = getCurrency(locale);
   const currency = currencyConfig.code;
   const requestOrigin = new URL(request.url).origin;
-  const langPrefix = locale === "nl" ? "" : `/${locale}`;
 
   // Mollie rejects localhost webhook URLs. Two paths:
   //   - Plain `astro dev` on localhost: skip the webhook entirely so
@@ -191,9 +191,14 @@ export const POST: APIRoute = async ({ request }) => {
   // Build the return URL with the donationId so the return page can
   // verify even when sessionStorage is empty (some iDEAL flows return
   // in a new tab/browser, losing sessionStorage).
+  //
+  // The donate route is localized (NL /doneer, EN /donate, ES /donar), so
+  // resolve the native path via ROUTES — hardcoding "/donate/return" 404'd
+  // NL and ES donors after payment.
+  const returnPath = getLocalizedPath("/donate/return", locale as Lang);
   const returnUrl = donationId
-    ? `${origin}${langPrefix}/donate/return?context=${context}&donationId=${donationId}`
-    : `${origin}${langPrefix}/donate/return?context=${context}`;
+    ? `${origin}${returnPath}?context=${context}&donationId=${donationId}`
+    : `${origin}${returnPath}?context=${context}`;
 
   try {
     if (isRecurring) {
