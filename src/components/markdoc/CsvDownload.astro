@@ -25,11 +25,11 @@ const { href, label = "Download CSV" } = Astro.props;
   .qc-csv-row {
     display: flex;
     justify-content: flex-end;
-    /* Lift the button onto the line of the preceding section heading.
-       This component only renders on the equipment pages, so other
-       pages that share the codebase are unaffected. */
-    margin-top: -5rem;
-    margin-bottom: 1.5rem;
+    /* Sit just below the preceding section heading with a small gap.
+       (Previously lifted onto the heading line with a negative margin,
+       which overlapped the heading on narrow/mobile viewports.) */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   .qc-csv-btn {
     display: inline-flex;
