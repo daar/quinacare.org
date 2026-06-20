@@ -1,7 +1,11 @@
 ---
-
+interface Props {
+  /** Columns from the sm breakpoint up: 2 (default) or 3. */
+  cols?: number;
+}
+const { cols = 2 } = Astro.props;
 ---
 
-<div class="qc-img-row">
+<div class="qc-img-row" data-cols={cols === 3 ? "3" : "2"}>
   <slot />
 </div>

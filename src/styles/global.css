@@ -623,6 +623,9 @@ mark {
   .prose-article .qc-img-row {
     grid-template-columns: 1fr 1fr;
   }
+  .prose-article .qc-img-row[data-cols="3"] {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .prose-article .qc-img-row figure,

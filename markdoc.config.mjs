@@ -31,7 +31,10 @@ export default defineMarkdocConfig({
     },
     "image-row": {
       render: component("./src/components/markdoc/Row.astro"),
-      attributes: {},
+      attributes: {
+        // Columns from the sm breakpoint up (default 2; use 3 for a trio).
+        cols: { type: Number, default: 2 },
+      },
     },
     "gallery-image": {
       render: component("./src/components/markdoc/GalleryImage.astro"),
