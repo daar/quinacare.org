@@ -623,11 +623,37 @@ mark {
   .prose-article .qc-img-row {
     grid-template-columns: 1fr 1fr;
   }
+  .prose-article .qc-img-row[data-cols="3"] {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .prose-article .qc-img-row figure,
 .prose-article .qc-img-row img {
   margin: 0;
+}
+
+/* Tables in article prose (e.g. the equipment list) */
+.prose-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  font-size: 0.95rem;
+}
+.prose-article thead th {
+  font-weight: 700;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 2px solid var(--color-qcRed);
+}
+.prose-article tbody td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid #ece7e3;
+}
+.prose-article tbody tr:nth-child(even) {
+  background: #faf8f6;
+}
+.prose-article tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .prose-article figcaption {

@@ -54,6 +54,14 @@ export default defineConfig({
   redirects: {
     // Resolved from the Turso 404 log (auto-generated).
     ...missesRedirects,
+    // Payment-return safety net: Mollie historically redirected NL/ES donors
+    // to the non-localized /donate/return, which 404'd. create-payment now
+    // builds the native path, but keep these so in-flight / cached payment
+    // returns still land on the right page (query string is preserved).
+    "/donate/return": "/doneer/return",
+    "/es/donate/return": "/es/donar/return",
+    // Old WordPress ES contact slug.
+    "/es/es-contacto": "/es/contacto",
     // Legacy WordPress URLs, retargeted to the native routes. Note:
     // /doneer is now the real NL donate page, so it no longer redirects.
     "/blogs-vlogs": "/actueel",

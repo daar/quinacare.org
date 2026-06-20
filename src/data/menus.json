@@ -1,5 +1,5 @@
 {
-  "_TODO": "re-enable hidden navbar entries when ready — (1) move the remaining items_disabled entry (whatDoWeDo) back into items once /projects + /hospital are content-ready, (2) rename whatCanYouDo's cta_disabled back to cta to bring back the Donate button.",
+  "_TODO": "re-enable hidden navbar entries when ready — rename whatCanYouDo's cta_disabled back to cta to bring back the Donate button.",
   "items": [
     {
       "id": "whoAreWe",
@@ -19,6 +19,24 @@
           "labelKey": "submenu.annualReports",
           "path": "/jaarverslagen",
           "icon": "fa-solid fa-file-lines"
+        }
+      ]
+    },
+    {
+      "id": "whatDoWeDo",
+      "labelKey": "nav.whatDoWeDo",
+      "submenu": [
+        {
+          "labelKey": "submenu.projects",
+          "path": "/projects",
+          "icon": "fa-solid fa-diagram-project"
+        },
+        {
+          "labelKey": "submenu.hospital",
+          "path": "/hospital",
+          "icon": "fa-solid fa-hospital",
+          "image": "/media/2024/09/2023.07.26-entrance-hospital.IMG_2644.jpg",
+          "descriptionKey": "submenu.hospitalDesc"
         }
       ]
     },
@@ -80,24 +98,5 @@
       "path": "/contact"
     }
   ],
-  "items_disabled": [
-    {
-      "id": "whatDoWeDo",
-      "labelKey": "nav.whatDoWeDo",
-      "submenu": [
-        {
-          "labelKey": "submenu.projects",
-          "path": "/projects",
-          "icon": "fa-solid fa-diagram-project"
-        },
-        {
-          "labelKey": "submenu.hospital",
-          "path": "/hospital",
-          "icon": "fa-solid fa-hospital",
-          "image": "/media/2024/09/2023.07.26-entrance-hospital.IMG_2644.jpg",
-          "descriptionKey": "submenu.hospitalDesc"
-        }
-      ]
-    }
-  ]
+  "items_disabled": []
 }

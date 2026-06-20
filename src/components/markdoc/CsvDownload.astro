@@ -1,0 +1,57 @@
+---
+interface Props {
+  /** Public path to the pre-generated CSV. */
+  href: string;
+  /** Localized link label. */
+  label?: string;
+}
+const { href, label = "Download CSV" } = Astro.props;
+---
+
+<div class="qc-csv-row not-prose">
+  <a href={href} download class="qc-csv-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+      <path
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path>
+    </svg>
+    <span>{label}</span>
+  </a>
+</div>
+
+<style>
+  .qc-csv-row {
+    display: flex;
+    justify-content: flex-end;
+    /* Lift the button onto the line of the preceding section heading.
+       This component only renders on the equipment pages, so other
+       pages that share the codebase are unaffected. */
+    margin-top: -5rem;
+    margin-bottom: 1.5rem;
+  }
+  .qc-csv-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    /* !important to override the global `.prose-article .not-prose a`
+       rules, which force qcRed text and white-on-hover. */
+    color: #6b7280 !important;
+    text-decoration: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.45rem;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+  }
+  .qc-csv-btn:hover {
+    background-color: #f3f4f6;
+  }
+  .qc-csv-btn svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+</style>
