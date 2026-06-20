@@ -16,43 +16,58 @@ type KindIndex = {
 };
 
 let indices: Record<TranslateKind, KindIndex> | null = null;
+// Cache the in-flight build so concurrent callers share one run; `indices`
+// is only assigned once it is fully populated, so a second caller can never
+// observe a half-built index (which previously crashed with `slugToKey` of
+// undefined).
+let buildPromise: Promise<void> | null = null;
 
 async function build(): Promise<void> {
   if (indices) return;
-  const kinds: TranslateKind[] = ["news", "fundraisers"];
-  indices = {} as Record<TranslateKind, KindIndex>;
-  for (const kind of kinds) {
-    const idx: KindIndex = {
-      keyToSlugs: new Map(),
-      slugToKey: { nl: new Map(), en: new Map(), es: new Map() },
-      allSlugs: { nl: new Set(), en: new Set(), es: new Set() },
-    };
-    for (const lang of LANGS) {
-      let entries = await getCollection(`${kind}-${lang}` as "news-nl");
-      // Only index entries that are actually built, so the switcher never
-      // links to an unpublished page. News is publish-only everywhere;
-      // fundraisers/projects drafts are built in dev but excluded in prod.
-      if (kind === "news")
-        entries = entries.filter(
-          (p) => (p.data as { status?: string }).status === "publish",
-        );
-      else
-        entries = entries.filter(
-          (p) => import.meta.env.DEV || !(p.data as { draft?: boolean }).draft,
-        );
-      for (const p of entries) {
-        const slug = p.data.slug || p.id;
-        idx.allSlugs[lang].add(slug);
-        const key = (p.data as { translationKey?: string }).translationKey;
-        if (!key) continue;
-        const entry = idx.keyToSlugs.get(key) ?? {};
-        entry[lang] = slug;
-        idx.keyToSlugs.set(key, entry);
-        idx.slugToKey[lang].set(slug, key);
+  if (!buildPromise) {
+    buildPromise = (async () => {
+      const kinds: TranslateKind[] = ["news", "fundraisers"];
+      const result = {} as Record<TranslateKind, KindIndex>;
+      for (const kind of kinds) {
+        const idx: KindIndex = {
+          keyToSlugs: new Map(),
+          slugToKey: { nl: new Map(), en: new Map(), es: new Map() },
+          allSlugs: { nl: new Set(), en: new Set(), es: new Set() },
+        };
+        for (const lang of LANGS) {
+          let entries = await getCollection(`${kind}-${lang}` as "news-nl");
+          // Only index entries that are actually built, so the switcher never
+          // links to an unpublished page. News is publish-only everywhere;
+          // fundraisers/projects drafts are built in dev but excluded in prod.
+          if (kind === "news")
+            entries = entries.filter(
+              (p) => (p.data as { status?: string }).status === "publish",
+            );
+          else
+            entries = entries.filter(
+              (p) =>
+                import.meta.env.DEV || !(p.data as { draft?: boolean }).draft,
+            );
+          for (const p of entries) {
+            const slug = p.data.slug || p.id;
+            idx.allSlugs[lang].add(slug);
+            const key = (p.data as { translationKey?: string }).translationKey;
+            if (!key) continue;
+            const entry = idx.keyToSlugs.get(key) ?? {};
+            entry[lang] = slug;
+            idx.keyToSlugs.set(key, entry);
+            idx.slugToKey[lang].set(slug, key);
+          }
+        }
+        result[kind] = idx;
       }
-    }
-    indices[kind] = idx;
+      indices = result;
+    })().catch((e) => {
+      buildPromise = null; // allow a retry on a transient failure
+      throw e;
+    });
   }
+  await buildPromise;
 }
 
 /**
@@ -67,7 +82,8 @@ export async function buildPostTranslator(): Promise<
 > {
   await build();
   return (slug, from, to, kind = "news") => {
-    const idx = indices![kind];
+    const idx = indices?.[kind];
+    if (!idx) return null;
     const key = idx.slugToKey[from].get(slug);
     if (key) {
       const linked = idx.keyToSlugs.get(key)?.[to];

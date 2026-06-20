@@ -24,8 +24,10 @@ const labels: Record<"nl" | "en" | "es", { report: string; download: string }> =
 const l = labels[key];
 
 const report = annualReports.find((r) => r.year === year);
-const href = report?.files[key];
-const cover = report?.covers[key];
+// Fall back to the EN (then NL) PDF when a language has no own report file —
+// older reports (2017-2021) were never produced in Spanish.
+const href = report?.files[key] ?? report?.files.en ?? report?.files.nl;
+const cover = report?.covers[key] ?? report?.covers.en ?? report?.covers.nl;
 ---
 
 {
