@@ -36,6 +36,13 @@ export default defineMarkdocConfig({
         cols: { type: Number, default: 2 },
       },
     },
+    "csv-download": {
+      render: component("./src/components/markdoc/CsvDownload.astro"),
+      attributes: {
+        href: { type: String, required: true },
+        label: { type: String },
+      },
+    },
     "gallery-image": {
       render: component("./src/components/markdoc/GalleryImage.astro"),
       attributes: {
