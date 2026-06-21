@@ -1317,6 +1317,17 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
     en: "before-the-renovation",
     es: "antes-de-la-renovacion",
   },
+  beleid: {
+    nl: "beleid",
+    en: "policy",
+    es: "politica",
+  },
+  doelstelling: {
+    nl: "doelstelling",
+    en: "aim",
+    es: "objetivo",
+  },
+  putumayo: { nl: "putumayo", en: "putumayo", es: "putumayo" },
   jaarverslagen: {
     nl: "jaarverslagen",
     en: "annual-reports",
