@@ -1328,6 +1328,7 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
     es: "objetivo",
   },
   putumayo: { nl: "putumayo", en: "putumayo", es: "putumayo" },
+  staff: { nl: "personeelsleden", en: "staff", es: "personal" },
   jaarverslagen: {
     nl: "jaarverslagen",
     en: "annual-reports",
