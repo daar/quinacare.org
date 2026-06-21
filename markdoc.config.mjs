@@ -43,6 +43,13 @@ export default defineMarkdocConfig({
         label: { type: String },
       },
     },
+    streetview: {
+      render: component("./src/components/markdoc/StreetView.astro"),
+      attributes: {
+        src: { type: String, required: true },
+        label: { type: String },
+      },
+    },
     "gallery-image": {
       render: component("./src/components/markdoc/GalleryImage.astro"),
       attributes: {

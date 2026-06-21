@@ -1,0 +1,31 @@
+---
+interface Props {
+  /** Google Street View / Maps embed URL. */
+  src: string;
+  /** Accessible label / caption (e.g. the room name). */
+  label?: string;
+}
+const { src, label } = Astro.props;
+---
+
+<figure class="qc-streetview not-prose">
+  <iframe
+    src={src}
+    title={label ?? "Street View"}
+    loading="lazy"
+    allowfullscreen
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+</figure>
+
+<style>
+  .qc-streetview {
+    margin: 1.5rem 0;
+  }
+  .qc-streetview iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 0.5rem;
+    display: block;
+  }
+</style>

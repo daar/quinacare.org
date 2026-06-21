@@ -1312,6 +1312,11 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
     en: "bequest",
     es: "legado",
   },
+  "voor-de-renovatie": {
+    nl: "voor-de-renovatie",
+    en: "before-the-renovation",
+    es: "antes-de-la-renovacion",
+  },
   jaarverslagen: {
     nl: "jaarverslagen",
     en: "annual-reports",
