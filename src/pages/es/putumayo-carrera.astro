@@ -22,7 +22,11 @@ import PutumayoLoopHubContactModal from "../../components/PutumayoLoopHubContact
 import PutumayoLoopEditionNav from "../../components/PutumayoLoopEditionNav.astro";
 import { generateQrDataUri } from "../../lib/qr";
 import { getCurrentEdition } from "../../lib/putumayoLoopRepo";
-import { editionTitle } from "../../data/putumayoLoop";
+import {
+  editionTitle,
+  ALL_DISTANCES,
+  hubDistances,
+} from "../../data/putumayoLoop";
 import { countryName } from "../../lib/countryName";
 
 const lang: Lang = "es";
@@ -278,9 +282,18 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             <h3 class="text-xl font-bold tracking-tighter uppercase mb-1 group-hover:text-qcRed transition">
               {hub.name}
             </h3>
-            <p class="qc-meta mb-3">
+            <p class="qc-meta mb-2">
               {hub.city}, {countryName(hub.country, lang)}
             </p>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              {ALL_DISTANCES.filter((d) =>
+                hubDistances(hub).includes(d.value),
+              ).map((d) => (
+                <span class="inline-flex items-center rounded-full bg-red-50 text-qcRed text-[11px] font-bold px-2 py-0.5">
+                  {d.label}
+                </span>
+              ))}
+            </div>
             {hub.captain && (
               <p class="qc-body text-sm">
                 <span class="qc-meta block">
