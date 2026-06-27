@@ -6,6 +6,19 @@
 // from the `donations` table via getFundraiserStats. The repo at
 // `src/lib/putumayoLoopRepo.ts` joins the three sources.
 
+/** A distance a runner can pick at signup. */
+export type Distance = "10k" | "half" | "full";
+
+/**
+ * All distances the run offers, in display order, with their km labels.
+ * A hub may offer a subset of these (see `Hub.distances`).
+ */
+export const ALL_DISTANCES: { value: Distance; label: string }[] = [
+  { value: "10k", label: "10 km" },
+  { value: "half", label: "21 km" },
+  { value: "full", label: "42 km" },
+];
+
 export interface Hub {
   id: string;
   name: string;
@@ -21,6 +34,17 @@ export interface Hub {
    * runManager as the sole recipient.
    */
   captainEmail?: string;
+  /**
+   * Distances this hub offers, as a subset of `ALL_DISTANCES` values in
+   * display order. Omit to offer every distance (the default). Example:
+   * Hulst runs only 10 km and 21 km, so it sets `["10k", "half"]`.
+   */
+  distances?: Distance[];
+}
+
+/** The distances a hub offers, defaulting to all when unset. */
+export function hubDistances(hub: Pick<Hub, "distances">): Distance[] {
+  return hub.distances ?? ALL_DISTANCES.map((d) => d.value);
 }
 
 export interface Subscriber {
@@ -40,7 +64,7 @@ export interface Subscriber {
   /** Aggregate count — one entry can stand in for N runners (past editions). */
   count?: number;
   /** Distance picked at signup. */
-  distance?: "10k" | "half" | "full";
+  distance?: Distance;
   /**
    * Free-text "City, country" supplied by individual runners at signup.
    * Used by the live signup feed; un-set for hub signups (the hub
@@ -265,6 +289,8 @@ export const editions: EditionConfig[] = [
         coords: [51.28039231477035, 4.0526885572096605],
         captain: "Cindy Martens",
         captainEmail: "cindymartens@live.nl",
+        // Hulst only runs the 10 km and 21 km — no full marathon.
+        distances: ["10k", "half"],
       },
     ],
     target: 25000,

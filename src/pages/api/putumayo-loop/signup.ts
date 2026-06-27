@@ -23,7 +23,12 @@ import {
   type Lang,
   type TranslationKey,
 } from "../../../i18n";
-import { runManager, editions } from "../../../data/putumayoLoop";
+import {
+  runManager,
+  editions,
+  hubDistances,
+  type Distance,
+} from "../../../data/putumayoLoop";
 import { reportError } from "../../../lib/errors";
 
 const SOURCE = "api/putumayo-loop/signup";
@@ -72,6 +77,20 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: "Hub id required" }), {
       status: 400,
     });
+  }
+  // A hub only offers a subset of distances (e.g. Hulst skips the full
+  // marathon). Reject a distance the chosen hub doesn't run, so a tampered
+  // request can't bypass the UI's per-hub filtering.
+  if (mode === "hub" && hubId) {
+    const hub = editions
+      .find((e) => e.year === editionYear)
+      ?.hubs.find((h) => h.id === hubId);
+    if (hub && !hubDistances(hub).includes(distance as Distance)) {
+      return new Response(
+        JSON.stringify({ error: "Distance not available for this hub" }),
+        { status: 400 },
+      );
+    }
   }
   if (mode === "individual" && !location) {
     return new Response(JSON.stringify({ error: "Location required" }), {

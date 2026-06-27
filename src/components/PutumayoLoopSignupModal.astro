@@ -1,6 +1,6 @@
 ---
 import Icon from "./Icon.astro";
-import type { Hub } from "../data/putumayoLoop";
+import { ALL_DISTANCES, hubDistances, type Hub } from "../data/putumayoLoop";
 import { useTranslations, type Lang } from "../i18n";
 import { ISO_COUNTRY_CODES } from "../lib/countryCodes";
 
@@ -29,12 +29,20 @@ const countryOptions = ISO_COUNTRY_CODES.map((code) => {
   .filter((c): c is { code: string; name: string } => c !== null)
   .sort((a, b) => a.name.localeCompare(b.name, lang));
 const countryListId = `${id}-country-options`;
+
+// Per-hub distance availability, handed to the client script so the
+// distance picker only offers the distances the chosen hub runs.
+// Individual runners (no hub) get every distance.
+const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
+  hubs.map((h) => [h.id, hubDistances(h)]),
+);
 ---
 
 <dialog
   id={id}
   data-year={year}
   data-lang={lang}
+  data-hub-distances={JSON.stringify(hubDistanceMap)}
   class="pl-signup-modal fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
 >
   <div
@@ -206,14 +214,13 @@ const countryListId = `${id}-country-options`;
             <legend class="qc-label mb-2">
               {t("putumayoLoop.distanceLabel")}
             </legend>
-            <div class="grid grid-cols-3 gap-2">
+            <div class="distance-options grid grid-cols-3 gap-2">
               {
-                [
-                  { value: "10k", label: "10 km" },
-                  { value: "half", label: "21 km" },
-                  { value: "full", label: "42 km" },
-                ].map((d) => (
-                  <label class="flex items-center justify-center cursor-pointer py-2.5 px-3 text-sm font-bold border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50 has-checked:text-qcRed">
+                ALL_DISTANCES.map((d) => (
+                  <label
+                    class="distance-option flex items-center justify-center cursor-pointer py-2.5 px-3 text-sm font-bold border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50 has-checked:text-qcRed"
+                    data-distance={d.value}
+                  >
                     <input
                       type="radio"
                       name="distance"
@@ -299,6 +306,9 @@ const countryListId = `${id}-country-options`;
           dialog
             .querySelector<HTMLDivElement>(".individual-location")
             ?.classList.add("hidden");
+          // Re-sync the dependent fields (incl. re-enabling every distance)
+          // so a fresh open never inherits the previous session's state.
+          syncMode();
           dialog.showModal();
           document.body.style.overflow = "hidden";
         };
@@ -347,6 +357,40 @@ const countryListId = `${id}-country-options`;
         const radios =
           dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
 
+        // hubId -> the distances that hub offers. Individual runners (no
+        // hub) and any hub missing from the map get every distance.
+        let hubDistanceMap: Record<string, string[]> = {};
+        try {
+          hubDistanceMap = JSON.parse(dialog.dataset.hubDistances || "{}");
+        } catch {
+          hubDistanceMap = {};
+        }
+        const distanceOptions =
+          dialog.querySelectorAll<HTMLElement>(".distance-option");
+
+        // Show/enable only the distances available for the current pick.
+        // A hidden radio is disabled so it's excluded from validation
+        // (and can't be submitted); if the previously-checked distance
+        // is no longer offered, clear it so the runner re-picks.
+        const syncDistances = () => {
+          const selected = Array.from(radios).find((r) => r.checked)?.value;
+          const allowed =
+            selected === "hub" && hubInput?.value
+              ? hubDistanceMap[hubInput.value]
+              : null; // null = all distances
+          distanceOptions.forEach((label) => {
+            const input = label.querySelector<HTMLInputElement>(
+              'input[name="distance"]',
+            );
+            const ok = !allowed || allowed.includes(label.dataset.distance!);
+            label.classList.toggle("hidden", !ok);
+            if (input) {
+              input.disabled = !ok;
+              if (!ok) input.checked = false;
+            }
+          });
+        };
+
         const syncMode = () => {
           // The radio is no longer pre-selected — the user has to make a
           // deliberate pick. Both detail blocks stay hidden until one of
@@ -362,8 +406,11 @@ const countryListId = `${id}-country-options`;
           if (hubInput) hubInput.required = selected === "hub";
           if (cityInput) cityInput.required = selected === "individual";
           if (countryInput) countryInput.required = selected === "individual";
+          syncDistances();
         };
         radios.forEach((r) => r.addEventListener("change", syncMode));
+        // Switching hubs can change which distances are on offer.
+        hubInput?.addEventListener("change", syncDistances);
         syncMode();
 
         const btnText = form?.querySelector<HTMLElement>(".signup-btn-text");
