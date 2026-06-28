@@ -1,20 +1,22 @@
 ---
 name: donations-report
-description: Generate a comprehensive Quina Care donations funnel report from the Turso production database. Use whenever the user asks to "analyse donations", "show donations report", "donation status", "where are donors dropping off", "abandonment report", or invokes /donations-report. Supports an optional time window like "last 7 days" or "since 2026-05-01".
+description: Generate a Quina Care donations funnel + KPI dashboard from the Turso production database. By default it writes a self-contained HTML dashboard (inline SVG charts — payment methods, success vs failure, geography/currency, gift size & frequency, daily trend) into reports/donations/. Use whenever the user asks to "analyse donations", "show donations report", "donation status", "donation KPIs", "where are donors dropping off", "abandonment report", or invokes /donations-report. Supports an optional time window like "last 7 days" or "since 2026-05-01".
 ---
 
-# Quina Care donations funnel report
+# Quina Care donations report + KPI dashboard
 
-Pulls every donation and its donation_events audit trail from the Turso production database, classifies each payment's funnel state and fault path, and prints a readable report.
+Pulls every donation and its `donation_events` audit trail from the Turso production database, classifies each payment's funnel state and fault path, and renders it.
 
 The script is `scripts/donations-report.py` — pure stdlib Python 3, no `pip install` needed.
+
+**Default output is an HTML dashboard** written to `reports/donations/` (gitignored). It's self-contained (inline SVG charts, no external assets/JS — works offline and prints cleanly to PDF) and covers: KPI strip (totals, conversion, raised per currency, avg/median gift), success-vs-failure, payment-method conversion, geography & currency, gift-size histogram, frequency, daily trend, and fault paths. `--format text` still gives the console funnel report; `--format json` the raw data.
 
 ## When to invoke
 
 Trigger on any of:
 
 - `/donations-report` (optionally with a window arg like `last 7 days`, `since 2026-05-01`, `between 2026-05-01 and 2026-05-20`)
-- "show me the donations report", "analyse donations", "donation status", "donations funnel", "where are donors dropping off", "abandonment report", "payment stats".
+- "show me the donations report", "donation KPIs / dashboard", "analyse donations", "donation status", "donations funnel", "where are donors dropping off", "abandonment report", "payment stats".
 
 ## Steps
 
@@ -22,47 +24,60 @@ Trigger on any of:
 
 Look for `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` in this order:
 
-1. Process env (`$env:TURSO_DATABASE_URL`).
-2. `.claude/skills/donations-report/.env` (one `KEY=VALUE` per line; lines starting with `#` are comments).
-3. Ask the user with AskUserQuestion. Offer to save them to `.claude/skills/donations-report/.env` so the next run is hands-off.
+1. Process env.
+2. The repo-root `.env` (this repo keeps the Turso creds there; load with `set -a; . ./.env; set +a`).
+3. `.claude/skills/donations-report/.env` (one `KEY=VALUE` per line).
+4. Ask the user with AskUserQuestion; offer to save them so the next run is hands-off.
 
-**Never print the auth token** back to the user. It's gitignored under `.claude/` but treat it like a secret in conversation.
+**Never print the auth token** back to the user — treat it as a secret in conversation.
 
 ### 2. Resolve the time window
 
 If the user gave a window, translate to UTC dates and pass as `--since` / `--until`. Today's date is in the system reminder — use it for relative windows.
 
-Examples:
-
-- "last 7 days" → `--since 2026-05-22` (today minus 7 days)
+- "last 14 days" → `--since <today−14>`
 - "since May 1" → `--since 2026-05-01`
 - "between May 1 and May 20" → `--since 2026-05-01 --until 2026-05-20`
-- (no window) → run without flags = full history
+- (no window) → full history
 
-### 3. Run the script
+### 3. Run the script (bash)
 
-PowerShell (the user's default shell):
-
-```powershell
-$env:TURSO_DATABASE_URL = "<url from step 1>"
-$env:TURSO_AUTH_TOKEN = "<token from step 1>"
-python scripts\donations-report.py [--since YYYY-MM-DD] [--until YYYY-MM-DD]
+```bash
+set -a; . ./.env; set +a          # load Turso creds from repo-root .env
+python3 scripts/donations-report.py [--since YYYY-MM-DD] [--until YYYY-MM-DD]
 ```
 
-If `python` is not on PATH, try `py -3` or the portable Node-style fallback (the repo has used `C:\test\node-v22.22.3-win-x64\node-v22.22.3-win-x64\` for Node — there is no equivalent for Python; if Python is genuinely missing, tell the user to install it from python.org or use `winget install python`).
+This writes `reports/donations/donations-<timestamp>.html` and prints the path. If `python3` is missing, tell the user to install it (`python.org` / `apt install python3`).
 
-### 4. Present the report
+### 4. Render a PDF (optional) + present
 
-1. Paste the full script output verbatim in a fenced code block.
-2. Below it, add **2–4 sentences of synthesis** pulling out the most striking findings — top fault path, lowest-converting payment method, anything new since the last run if the user mentioned a prior report, etc. Match the analytical depth of the existing donation analyses in this codebase.
+The HTML prints to PDF cleanly. If a headless browser is available, render one next to the HTML:
 
-### Optional flags the user might ask for
+```bash
+HTML=$(ls -t reports/donations/*.html | head -1)
+google-chrome --headless=new --disable-gpu --no-sandbox --no-pdf-header-footer \
+  --print-to-pdf="${HTML%.html}.pdf" "file://$HTML"
+```
 
-- `--format json` — raw JSON suitable for further programmatic analysis.
-- `--verbose` — appends the full per-donation event timeline at the bottom of the text report (useful when debugging a specific row).
+(try `chromium` / `chromium-browser` if `google-chrome` is absent; otherwise tell the user to open the HTML and "Save as PDF").
+
+Then:
+
+1. **Send the generated file(s) to the user** with SendUserFile (the HTML, and the PDF if rendered) — the dashboard *is* the deliverable.
+2. Add **2–4 sentences of synthesis** of the most striking findings (top fault path, lowest-converting method, currency/geo split, trend spikes). For a quick in-chat funnel table, also run `--format text` and paste that. Match the analytical depth of the existing donation analyses in this codebase.
+
+### Flags
+
+- `--format html|text|json` — default `html`. `text` = console funnel report; `json` = raw data.
+- `--out-dir DIR` — change the output folder (default `reports/donations/`).
+- `--out FILE` — write to an explicit path.
+- `--stdout` — stream html/json to stdout instead of writing a file.
+- `--verbose` — append per-donation event timelines (text format only).
 
 ## Notes
 
-- `TURSO_DATABASE_URL` accepts either `libsql://…` or `https://…` form; the script converts as needed.
-- The script is idempotent and read-only — no UPDATEs, no INSERTs. Safe to run as often as the user wants.
-- Output for a few hundred donations is well under 50 KB; comfortable to paste in full.
+- `TURSO_DATABASE_URL` accepts either `libsql://…` or `https://…`; the script converts as needed.
+- Read-only and idempotent — no UPDATEs/INSERTs. Safe to run as often as wanted.
+- `reports/` is gitignored — generated dashboards are artifacts, not committed.
+- The HTML has **no external dependencies** (inline `<style>` + inline SVG), so it's CSP-safe, works offline, and renders identically when printed to PDF.
+- "Demographics" available from the data = **locale/geography** (nl→Netherlands·EUR, en→USA·USD, es→Ecuador·USD), **frequency**, and **gift size** — there is no personal demographic data (age/gender/name) in the donations table.

@@ -42,6 +42,7 @@ backup
 # Generated donations-report output (scripts/donations-report.py)
 donations-report-*.txt
 donations-report-*.pdf
+reports/
 
 # Local Claude Code settings + per-skill secrets (keep skill content
 # tracked, but never commit the local-only bits).
