@@ -28,13 +28,17 @@ function pdfUrls(file) {
       maxBuffer: 1 << 26,
     }).toString();
     for (const m of text.matchAll(/https?:\/\/[^\s)"'<>]+/gi)) urls.add(m[0]);
-  } catch {}
+  } catch {
+    /* no pdftotext output for this file — fall through to strings */
+  }
   try {
     const raw = execSync(`strings ${JSON.stringify(file)}`, {
       maxBuffer: 1 << 27,
     }).toString();
     for (const m of raw.matchAll(/\/URI\s*\(([^)]*)\)/g)) urls.add(m[1]);
-  } catch {}
+  } catch {
+    /* strings unavailable — return whatever we already collected */
+  }
   return urls;
 }
 

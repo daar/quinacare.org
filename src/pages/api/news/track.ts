@@ -49,7 +49,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return new Response("Bad", { status: 400 });
   }
 
-  let ip: string | null = null;
+  let ip: string | null;
   try {
     ip = clientAddress || null;
   } catch {
