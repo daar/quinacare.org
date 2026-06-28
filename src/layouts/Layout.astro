@@ -107,6 +107,41 @@ const structuredData = {
       (function () {
         let count = 0;
         const MAX = 5;
+        // Local/dev hosts never beacon — keeps the prod error log clean
+        // (mirrors the 404 logger's guard in src/pages/404.astro).
+        const host = location.hostname;
+        const isLocal =
+          host === "localhost" ||
+          host === "127.0.0.1" ||
+          host === "0.0.0.0" ||
+          host.endsWith(".local");
+        // Known third-party / browser-extension / in-app-WebView noise:
+        // globals and handlers injected into every page that aren't our
+        // code (Chrome/Firefox iOS, Dark Reader, DuckDuckGo WebView, the
+        // Cloudflare beacon, cross-origin "Script error." with no detail,
+        // benign fetch aborts). Dropped so the Turso log stays actionable.
+        // See the /app_errors skill for the triage that produced this list.
+        const NOISE_MSG = [
+          /^Script error\.?$/,
+          /__gCrWeb|__firefox__|DarkReader/,
+          /runtime\.sendMessage/,
+          /WKWebView API client did not respond/,
+          /showSearchResults/,
+          /operation was aborted|AbortError/,
+        ];
+        const NOISE_SRC =
+          /cloudflareinsights\.com|extension:\/\/|webkit-masked-url/;
+        function isNoise(message, context) {
+          for (let i = 0; i < NOISE_MSG.length; i++) {
+            if (NOISE_MSG[i].test(message || "")) return true;
+          }
+          const hay = [
+            context && context.filename,
+            context && context.stack,
+            context && context.errorString,
+          ].join(" ");
+          return NOISE_SRC.test(hay);
+        }
         const sessionId =
           (window.crypto &&
             window.crypto.randomUUID &&
@@ -124,7 +159,7 @@ const structuredData = {
           };
         }
         function send(source, message, context) {
-          if (count >= MAX) return;
+          if (isLocal || count >= MAX || isNoise(message, context)) return;
           count++;
           try {
             navigator.sendBeacon(
