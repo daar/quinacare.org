@@ -439,16 +439,41 @@ const showFrequencyToggle = frequencies.length > 1;
           return cc.pattern.replace("%s", cc.symbol).replace("%v", value);
         }
 
+        // Parse a user-typed amount, accepting either "," or "." as the
+        // decimal separator regardless of locale — a Dutch donor typing
+        // "72,30" and an English one typing "72.30" both mean 72.30. The
+        // last separator counts as the decimal point only when it's
+        // followed by 1-2 digits (cents); otherwise every separator is
+        // treated as thousands grouping ("1.234"/"1,234" -> 1234). The
+        // result is rounded to cents — the backend bills amount.toFixed(2).
         function parse(input: string): number {
-          const cleaned = input
-            .replace(cc.symbol, "")
-            .replaceAll(cc.thousand, "")
-            .replace(cc.decimal, ".")
-            .replace(/[^\d.]/g, "")
-            .trim();
-          const n = parseFloat(cleaned);
-          return isNaN(n) ? 0 : Math.floor(n);
+          const s = input.replace(/[^\d.,]/g, "");
+          if (!s) return 0;
+          const lastSep = Math.max(s.lastIndexOf(","), s.lastIndexOf("."));
+          let intPart = s;
+          let decPart = "";
+          if (lastSep !== -1) {
+            const tail = s.slice(lastSep + 1);
+            if (tail.length >= 1 && tail.length <= 2) {
+              intPart = s.slice(0, lastSep);
+              decPart = tail;
+            }
+          }
+          intPart = intPart.replace(/[.,]/g, "") || "0";
+          const n = parseFloat(decPart ? `${intPart}.${decPart}` : intPart);
+          return isNaN(n) ? 0 : Math.round(n * 100) / 100;
         }
+
+        // True when the amount carries cents, so display helpers know
+        // whether to render the decimal part.
+        const hasCents = (n: number): boolean =>
+          Math.round(n * 100) % 100 !== 0;
+
+        // Plain, editable representation (no symbol/grouping) using the
+        // locale's decimal separator — what we drop into the input on
+        // focus so the donor edits "72,30" (NL) rather than "72.3".
+        const plain = (n: number): string =>
+          (hasCents(n) ? n.toFixed(2) : String(n)).replace(".", cc.decimal);
 
         const amountGrid = card.querySelector<HTMLElement>(".dfc-amounts")!;
         const customInput = card.querySelector<HTMLInputElement>(".dfc-custom");
@@ -645,7 +670,7 @@ const showFrequencyToggle = frequencies.length > 1;
           });
 
           filterPaymentMethods();
-          submitAmount.textContent = fmt(amount);
+          submitAmount.textContent = fmt(amount, hasCents(amount));
 
           // Tiered impact swap — only relevant when the page picked the
           // "tiered" impact kind (other kinds don't render `.dfc-impact`).
@@ -685,7 +710,7 @@ const showFrequencyToggle = frequencies.length > 1;
 
         customInput?.addEventListener("focus", () => {
           const val = parse(customInput.value);
-          customInput.value = val > 0 ? String(val) : "";
+          customInput.value = val > 0 ? plain(val) : "";
           // Re-run updateUI so the impact panel flips to the "custom"
           // text the moment the donor clicks into the field, even
           // before they type. Without this they'd still see the
@@ -695,7 +720,7 @@ const showFrequencyToggle = frequencies.length > 1;
         });
 
         customInput?.addEventListener("input", () => {
-          const val = parseInt(customInput.value.replace(/[^\d]/g, ""), 10);
+          const val = parse(customInput.value);
           if (val > 0) {
             amount = val;
             updateUI();
@@ -705,7 +730,7 @@ const showFrequencyToggle = frequencies.length > 1;
 
         customInput?.addEventListener("blur", () => {
           const val = parse(customInput.value);
-          customInput.value = val > 0 ? fmt(val) : "";
+          customInput.value = val > 0 ? fmt(val, hasCents(val)) : "";
           // Refresh the impact text after blur: if the field is now
           // empty the panel should drop back to the preset/generic
           // copy instead of staying stuck on "custom".
