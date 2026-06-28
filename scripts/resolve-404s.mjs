@@ -11,6 +11,7 @@
 // Usage:  node --env-file=.env scripts/resolve-404s.mjs [--clear]
 import fs from "fs";
 import path from "path";
+import { pathToFileURL } from "url";
 import { createClient } from "@libsql/client";
 
 const ROOT = process.cwd();
@@ -116,7 +117,14 @@ const paths = [
   ...new Set(rows.filter((r) => !r.is_bot && !isLocal(r)).map((r) => String(r.path))),
 ];
 
-const redirects = {};
+// Cumulative: seed from the redirects already on disk so a re-run — or a
+// now-smaller/cleared page_misses log — never drops previously-resolved
+// entries. New resolutions below override on key conflict.
+const redirectsPath = path.join(ROOT, "src/data/missesRedirects.mjs");
+const redirects = fs.existsSync(redirectsPath)
+  ? { ...(await import(pathToFileURL(redirectsPath).href)).default }
+  : {};
+const seededCount = Object.keys(redirects).length;
 const published = [];
 const skipped = [];
 

@@ -81,3 +81,4 @@ Stage `src/data/missesRedirects.mjs` plus every published `.mdoc` (group a post'
 - `routeRedirects.mjs` was removed: redirects come **only** from this 404 log plus the manual legacy block in `astro.config.mjs`.
 - Targets always use the **native localized routes** (see `SEG` in the script, mirroring `src/i18n` `ROUTES`).
 - The script is safe to re-run; publishing and the generated file are idempotent. Only `--clear` is destructive (and snapshotted).
+- **Redirect generation is cumulative**: each run seeds from the existing `missesRedirects.mjs` and merges in the new resolutions (new wins on key conflict), so a cleared/smaller `page_misses` log never drops previously-resolved redirects. To intentionally remove a stale redirect, delete its line from `missesRedirects.mjs` directly.
