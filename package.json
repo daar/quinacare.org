@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "svg:minify": "svgo -r --folder src/assets --quiet --exclude instagram.svg --exclude Asset-2.svg && svgo -r --folder public --quiet --exclude favicon.svg",
     "check:images": "node scripts/check-image-sizes.mjs",
+    "resize:images": "node scripts/resize-images.mjs",
     "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
     "lighthouse": "npx --yes @lhci/cli@0.14.0 autorun",
     "mollie-admin": "node --env-file=.env tools/mollie-admin/server.mjs",
@@ -65,6 +66,7 @@
   "lint-staged": {
     "*.{js,ts,mjs,cjs,json,css,md}": "prettier --write",
     "*.astro": "prettier --write --plugin prettier-plugin-astro",
-    "*.mdoc": "cspell --no-must-find-files"
+    "*.mdoc": "cspell --no-must-find-files",
+    "*.{jpg,jpeg,png,webp}": "node scripts/resize-images.mjs"
   }
 }

@@ -1,10 +1,21 @@
 // @ts-check
 import { defineConfig, fontProviders } from "astro/config";
+import sharp from "sharp";
 import markdoc from "@astrojs/markdoc";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
 import missesRedirects from "./src/data/missesRedirects.mjs";
+
+// Keep the build-time image-optimization pass within the Netlify
+// container's memory. Source images are already capped to a sane size
+// (scripts/resize-images.mjs + the pre-commit hook), so this is just
+// insurance: a single-threaded, cacheless libvips avoids it retaining
+// decoded buffers across the many images Astro optimizes in parallel.
+// These are global, static Sharp settings shared with Astro's image
+// service (same process, same module).
+sharp.concurrency(1);
+sharp.cache(false);
 
 // https://astro.build/config
 export default defineConfig({
