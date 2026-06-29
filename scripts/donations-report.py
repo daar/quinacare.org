@@ -408,10 +408,33 @@ STATE_COLORS = {
     "failed": "#dc2626",
 }
 PALETTE = ["#b91c1c", "#2563eb", "#059669", "#d97706", "#7c3aed", "#0891b2"]
+# Dutch display labels for the HTML dashboard (the text/json reports stay
+# in English). Geography doubles as a currency hint.
 LOCALE_LABEL = {
-    "nl": "Netherlands · EUR",
-    "en": "USA · USD",
+    "nl": "Nederland · EUR",
+    "en": "VS · USD",
     "es": "Ecuador · USD",
+}
+METHOD_LABEL = {
+    "ideal": "iDEAL",
+    "card": "kaart",
+    "applepay": "Apple Pay",
+    "paypal": "PayPal",
+    "subscription": "abonnement",
+    "unknown": "onbekend",
+}
+FREQ_LABEL = {
+    "one-time": "eenmalig",
+    "monthly": "maandelijks",
+    "quarterly": "per kwartaal",
+    "yearly": "jaarlijks",
+}
+CONTEXT_LABEL = {
+    "donate": "doneren",
+    "fundraisers": "acties",
+    "putumayo-run": "Putumayo Run",
+    "yura-boom": "Yura-boom",
+    "unknown": "onbekend",
 }
 AMOUNT_TIERS = [
     (0, 1000, "< €10"),
@@ -428,27 +451,31 @@ def _e(s):
     return _html.escape(str(s if s is not None else ""))
 
 
-WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+WEEKDAYS = ["ma", "di", "wo", "do", "vr", "za", "zo"]
 # Monthly-equivalent factor for recurring revenue (MRR).
 MRR_FACTOR = {"monthly": 1.0, "quarterly": 1 / 3, "yearly": 1 / 12, "one-time": 0.0}
-# The ordered funnel stages, each keyed by the event_type that proves a
+# The ordered funnel stages: Dutch label + the event_type that proves a
 # donation reached it (the last stage is the paid state, not an event).
 FUNNEL = [
-    ("Started (created)", "created"),
-    ("Mollie payment created", "mollie_payment_created"),
-    ("Redirected to checkout", "checkout_redirected"),
-    ("Returned to site", "return_page_loaded"),
-    ("Paid", None),
+    ("Gestart", "created"),
+    ("Mollie-betaling aangemaakt", "mollie_payment_created"),
+    ("Doorgestuurd naar checkout", "checkout_redirected"),
+    ("Teruggekeerd op site", "return_page_loaded"),
+    ("Betaald", None),
 ]
 
 
-def _minutes_between(a_str, b_str):
-    try:
-        a = datetime.strptime(a_str[:19], "%Y-%m-%d %H:%M:%S")
-        b = datetime.strptime(b_str[:19], "%Y-%m-%d %H:%M:%S")
-        return (b - a).total_seconds() / 60
-    except (ValueError, TypeError):
-        return None
+def _effective_context(d):
+    """Split the generic 'fundraiser' context into real fundraisers vs the
+    Putumayo run, using metadata.fundraiser_slug."""
+    ctx = d.get("context") or "unknown"
+    if ctx == "fundraiser":
+        try:
+            slug = str(json.loads(d.get("metadata") or "{}").get("fundraiser_slug") or "")
+        except (ValueError, TypeError):
+            slug = ""
+        return "putumayo-run" if slug.startswith("putumayo-loop") else "fundraisers"
+    return ctx
 
 
 def _aggregate(donations, events_by_donation):
@@ -477,7 +504,6 @@ def _aggregate(donations, events_by_donation):
         "mrr_by_currency": defaultdict(float),
         "recurring_paid": 0,
         "paid_values": [],  # major units, mixed currency
-        "complete_minutes": [],  # created->paid latency for paid donations
         "customers": set(),
         "customer_paid_counts": defaultdict(int),
     }
@@ -489,7 +515,7 @@ def _aggregate(donations, events_by_donation):
         method = d.get("payment_method") or "unknown"
         locale = d.get("locale") or "unknown"
         freq = d.get("frequency") or "one-time"
-        ctx = d.get("context") or "unknown"
+        ctx = _effective_context(d)
         cents = d.get("amount_cents") or 0
         cur = d.get("currency") or "EUR"
         a["method_total"][method] += 1
@@ -538,9 +564,6 @@ def _aggregate(donations, events_by_donation):
                 a["recurring_paid"] += 1
             if cust:
                 a["customer_paid_counts"][cust] += 1
-            mins = _minutes_between(d.get("created_at"), d.get("updated_at"))
-            if mins is not None and mins >= 0:
-                a["complete_minutes"].append(mins)
         elif state in ("expired", "failed", "canceled"):
             a["lost_by_currency"][cur] += cents
     return a
@@ -549,7 +572,7 @@ def _aggregate(donations, events_by_donation):
 def _svg_hbars(rows, accent, w=560, label_w=150):
     """rows: list of (label, value, right_annotation). Bars scaled to max."""
     if not rows:
-        return "<p class='muted'>No data.</p>"
+        return "<p class='muted'>Geen gegevens.</p>"
     maxv = max([r[1] for r in rows]) or 1
     bar_area = w - label_w - 70
     row_h = 30
@@ -601,7 +624,7 @@ def _svg_stacked(segments, w=560, h=30):
 def _svg_columns(days, w=720, h=170, axis=None):
     """days: list of (label, total, paid). Column chart, paid overlaid."""
     if not days:
-        return "<p class='muted'>No data.</p>"
+        return "<p class='muted'>Geen gegevens.</p>"
     if axis is None:
         axis = lambda s: s[8:]  # noqa: E731 — default: day-of-month
     maxv = max([d[1] for d in days]) or 1
@@ -629,14 +652,6 @@ def _svg_columns(days, w=720, h=170, axis=None):
     return "".join(out)
 
 
-def _fmt_dur(minutes):
-    if minutes is None:
-        return "—"
-    if minutes < 90:
-        return f"{minutes:.0f}m"
-    return f"{minutes / 60:.1f}h"
-
-
 def _money_pair(eur_cents, usd_cents):
     parts = []
     if eur_cents:
@@ -650,8 +665,9 @@ def _card(big, small):
     return f'<div class="kpi"><div class="kpi-big">{big}</div><div class="kpi-small">{_e(small)}</div></div>'
 
 
-def _section(title, body):
-    return f'<section class="card"><h2>{_e(title)}</h2>{body}</section>'
+def _section(title, body, help=None):
+    h = f'<p class="help">{_e(help)}</p>' if help else ""
+    return f'<section class="card"><h2>{_e(title)}</h2>{h}{body}</section>'
 
 
 def report_html(donations, events_by_donation, since, until, from_id=None):
@@ -677,22 +693,20 @@ def report_html(donations, events_by_donation, since, until, from_id=None):
     mrr_usd = a["mrr_by_currency"].get("USD", 0)
     lost_eur = a["lost_by_currency"].get("EUR", 0)
     lost_usd = a["lost_by_currency"].get("USD", 0)
-    med_min = statistics.median(a["complete_minutes"]) if a["complete_minutes"] else None
     known = len(a["customers"])
     repeat = sum(1 for n in a["customer_paid_counts"].values() if n > 1)
 
-    # KPI strip
+    # KPI strip (NL)
     kpis = [
-        _card(str(a["total"]), "donations in scope"),
-        _card(f'{paid_n} <span class="pct">{paid_pct:.0f}%</span>', "paid (conversion)"),
-        _card(f"€{eur / 100:,.0f}", "raised · NL (EUR)"),
-        _card(f"${usd / 100:,.0f}", "raised · US/EC (USD)"),
-        _card(_money_pair(mrr_eur, mrr_usd) + "<span class='pct'>/mo</span>", "recurring revenue (MRR)"),
-        _card(str(a["recurring_paid"]), "recurring donations (paid)"),
-        _card(f"{avg:,.0f} / {med:,.0f}", "avg / median gift"),
-        _card(_money_pair(lost_eur, lost_usd), "lost (expired/failed/canceled)"),
-        _card(_fmt_dur(med_min), "median time to pay"),
-        _card(f"{repeat} <span class='pct'>/ {known}</span>", "repeat / known donors"),
+        _card(str(a["total"]), "donaties in selectie"),
+        _card(f'{paid_n} <span class="pct">{paid_pct:.0f}%</span>', "betaald (conversie)"),
+        _card(f"€{eur / 100:,.0f}", "opgehaald · NL (EUR)"),
+        _card(f"${usd / 100:,.0f}", "opgehaald · VS/EC (USD)"),
+        _card(_money_pair(mrr_eur, mrr_usd) + "<span class='pct'>/mnd</span>", "terugkerende inkomsten (MRR)"),
+        _card(str(a["recurring_paid"]), "terugkerende donaties (betaald)"),
+        _card(f"€{avg:,.0f} / €{med:,.0f}", "gem. / mediaan gift"),
+        _card(_money_pair(lost_eur, lost_usd), "misgelopen (verlopen/mislukt/geannuleerd)"),
+        _card(f"{repeat} <span class='pct'>/ {known}</span>", "terugkerende / bekende donateurs"),
     ]
 
     # Conversion funnel (drop-off)
@@ -717,7 +731,7 @@ def report_html(donations, events_by_donation, since, until, from_id=None):
     for m, tried in sorted(a["method_total"].items(), key=lambda kv: -kv[1]):
         paid = a["method_paid"].get(m, 0)
         rate = paid / tried * 100 if tried else 0
-        method_rows.append((m, rate, f"{paid}/{tried} · {rate:.0f}%"))
+        method_rows.append((METHOD_LABEL.get(m, m), rate, f"{paid}/{tried} · {rate:.0f}%"))
 
     # Conversion by gift size
     tier_conv_rows = []
@@ -738,19 +752,24 @@ def report_html(donations, events_by_donation, since, until, from_id=None):
         if paid:
             avg_c = a["locale_paid_cents"].get(lo, 0) / paid
             sym = "€" if lo == "nl" else "$"
-            avg_geo_rows.append((LOCALE_LABEL.get(lo, lo), avg_c, f"{sym}{avg_c / 100:,.0f}"))
+            # avg gift + how many paid donations that average is based on
+            avg_geo_rows.append(
+                (LOCALE_LABEL.get(lo, lo), avg_c, f"{sym}{avg_c / 100:,.0f} · {paid}×")
+            )
 
     # Frequency
     freq_segs = []
     for i, (f, n) in enumerate(sorted(a["freq_total"].items(), key=lambda kv: -kv[1])):
-        freq_segs.append((f, n, PALETTE[i % len(PALETTE)]))
+        freq_segs.append((FREQ_LABEL.get(f, f), n, PALETTE[i % len(PALETTE)]))
 
-    # By context (conversion)
+    # By context (conversion) — fundraisers and Putumayo Run split out
     context_rows = []
     for ctx, tried in sorted(a["context_total"].items(), key=lambda kv: -kv[1]):
         paid = a["context_paid"].get(ctx, 0)
         rate = paid / tried * 100 if tried else 0
-        context_rows.append((ctx, rate, f"{paid}/{tried} · {rate:.0f}%"))
+        context_rows.append(
+            (CONTEXT_LABEL.get(ctx, ctx), rate, f"{paid}/{tried} · {rate:.0f}%")
+        )
 
     # Day-of-week pattern
     weekday_rows = [
@@ -775,7 +794,8 @@ def report_html(donations, events_by_donation, since, until, from_id=None):
     .kpi-big .pct{font-size:14px;color:#16a34a;font-weight:600}
     .kpi-small{color:var(--muted);font-size:12px;margin-top:2px}
     .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
-    .card h2{margin:0 0 12px;font-size:16px;letter-spacing:-.01em}
+    .card h2{margin:0 0 4px;font-size:16px;letter-spacing:-.01em}
+    .card .help{margin:0 0 12px;font-size:12px;color:var(--muted);line-height:1.45}
     .card h3{margin:16px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     text.lbl{font:600 13px sans-serif;fill:#374151}
@@ -791,49 +811,100 @@ def report_html(donations, events_by_donation, since, until, from_id=None):
     """
 
     head = (
-        f'<header><h1>Quina Care — donations dashboard</h1>'
-        f'<div class="meta">Window: {_e(window)} · {a["total"]} donations · '
-        f'generated {now_local.strftime("%Y-%m-%d %H:%M")} {_local_tz_label()}</div></header>'
+        f'<header><h1>Quina Care — donatiedashboard</h1>'
+        f'<div class="meta">Periode: {_e(window)} · {a["total"]} donaties · '
+        f'gegenereerd {now_local.strftime("%Y-%m-%d %H:%M")} {_local_tz_label()}</div></header>'
     )
+
     def _grid2(*cards):
         return '<div class="grid2">' + "".join(cards) + "</div>"
 
     doc = (
-        "<!doctype html><html lang='en'><head><meta charset='utf-8'>"
+        "<!doctype html><html lang='nl'><head><meta charset='utf-8'>"
         "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-        "<title>Quina Care donations dashboard</title>"
+        "<title>Quina Care donatiedashboard</title>"
         f"<style>{css}</style></head><body><div class='wrap'>"
         + head
         + '<div class="kpis">'
         + "".join(kpis)
         + "</div>"
         + _section(
-            "Conversion funnel (% of started)", _svg_hbars(funnel_rows, "#b91c1c")
+            "Conversietrechter (% van gestart)",
+            _svg_hbars(funnel_rows, "#b91c1c"),
+            "Hoeveel bezoekers elke stap halen, als % van wie begon. De grootste "
+            "terugval tussen twee stappen laat zien waar donateurs afhaken.",
         )
         + _grid2(
-            _section("Success vs failure", _svg_stacked(state_segs)),
-            _section("Fault paths", _svg_hbars(fault_rows, "#9ca3af")),
+            _section(
+                "Geslaagd vs. mislukt",
+                _svg_stacked(state_segs),
+                "Verdeling van alle donaties over de uitkomsten. Groen = betaald; "
+                "verlopen/geannuleerd/mislukt zijn niet-voltooide pogingen.",
+            ),
+            _section(
+                "Uitvalredenen",
+                _svg_hbars(fault_rows, "#9ca3af"),
+                "Waar niet-betaalde donaties stranden. ‘expired_at_checkout’ = "
+                "doorgestuurd naar Mollie maar nooit afgerond.",
+            ),
         )
         + _grid2(
-            _section("Payment methods — conversion", _svg_hbars(method_rows, "#b91c1c")),
-            _section("Conversion by gift size", _svg_hbars(tier_conv_rows, "#7c3aed")),
+            _section(
+                "Betaalmethoden — conversie",
+                _svg_hbars(method_rows, "#b91c1c"),
+                "Aandeel betaald per methode (betaald/geprobeerd). Lage percentages "
+                "op kleine aantallen zijn ruis, geen probleem.",
+            ),
+            _section(
+                "Conversie per giftgrootte",
+                _svg_hbars(tier_conv_rows, "#7c3aed"),
+                "Betaalt elk bedragklasse even goed af? Lage conversie bij grote "
+                "bedragen kan op drempelvrees of betaalfricties wijzen.",
+            ),
         )
         + _grid2(
-            _section("Geography & currency", _svg_stacked(locale_segs)),
-            _section("Average gift by geography", _svg_hbars(avg_geo_rows, "#059669")),
+            _section(
+                "Geografie & valuta",
+                _svg_stacked(locale_segs),
+                "Verdeling van donaties per taal/regio (tevens de valuta): "
+                "NL=EUR, VS/EC=USD.",
+            ),
+            _section(
+                "Gemiddelde gift per regio",
+                _svg_hbars(avg_geo_rows, "#059669"),
+                "Gemiddelde betaalde gift per regio, met het aantal betaalde "
+                "donaties (×) waarop dat gemiddelde berust.",
+            ),
         )
         + _grid2(
-            _section("Frequency", _svg_stacked(freq_segs)),
-            _section("Conversion by context", _svg_hbars(context_rows, "#0891b2")),
+            _section(
+                "Frequentie",
+                _svg_stacked(freq_segs),
+                "Eenmalige vs. terugkerende donaties (maandelijks/kwartaal/jaarlijks). "
+                "Terugkerend = voorspelbare inkomsten.",
+            ),
+            _section(
+                "Conversie per context",
+                _svg_hbars(context_rows, "#0891b2"),
+                "Conversie per herkomst van de donatie: algemeen doneren, acties, "
+                "de Putumayo Run en Yura-boom.",
+            ),
         )
         + _section(
-            "Day of week (green = paid)",
+            "Dag van de week (groen = betaald)",
             _svg_columns(weekday_rows, axis=lambda s: s),
+            "Op welke weekdagen er wordt gedoneerd — handig voor de timing van "
+            "campagnes en mailings.",
         )
-        + _section("Donations over time (green = paid)", _svg_columns(day_rows))
-        + "<footer>Read-only snapshot from the Turso production database · "
-        "scripts/donations-report.py · known-donor metrics cover only rows "
-        "with a Mollie customer id (mostly recurring)</footer>"
+        + _section(
+            "Donaties in de tijd (groen = betaald)",
+            _svg_columns(day_rows),
+            "Aantal donaties per dag binnen de periode; groen is het betaalde deel. "
+            "Pieken vallen meestal samen met een campagne of mailing.",
+        )
+        + "<footer>Alleen-lezen momentopname uit de Turso-productiedatabase · "
+        "scripts/donations-report.py · cijfers over bekende donateurs gelden "
+        "alleen voor rijen met een Mollie-customer-id (vooral terugkerend)</footer>"
         + "</div></body></html>"
     )
     return doc
