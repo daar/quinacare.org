@@ -408,6 +408,7 @@ export const ui = {
     "submenu.hospital": "Ons ziekenhuis",
     "submenu.hospitalDesc":
       "Ontdek ons ziekenhuis in het hart van de Ecuadoriaanse Amazone.",
+    "submenu.staff": "Personeelsleden",
     "submenu.contact": "Contact",
     // Submenu - Wie zijn wij?
     "submenu.aboutUs": "Over ons",
@@ -825,6 +826,7 @@ export const ui = {
     "submenu.hospital": "Our Hospital",
     "submenu.hospitalDesc":
       "Discover our hospital in the heart of the Ecuadorian Amazon.",
+    "submenu.staff": "Staff",
     "submenu.contact": "Contact",
     // Submenu - Who are we?
     "submenu.aboutUs": "About Us",
@@ -1243,6 +1245,7 @@ export const ui = {
     "submenu.hospital": "Nuestro hospital",
     "submenu.hospitalDesc":
       "Descubre nuestro hospital en el corazón de la Amazonía ecuatoriana.",
+    "submenu.staff": "Personal",
     "submenu.contact": "Contacto",
     // Submenu - ¿Quiénes somos?
     "submenu.aboutUs": "Sobre nosotros",

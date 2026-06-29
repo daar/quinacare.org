@@ -37,6 +37,11 @@
           "icon": "fa-solid fa-hospital",
           "image": "/media/2024/09/2023.07.26-entrance-hospital.IMG_2644.jpg",
           "descriptionKey": "submenu.hospitalDesc"
+        },
+        {
+          "labelKey": "submenu.staff",
+          "path": "/staff",
+          "icon": "fa-solid fa-user-doctor"
         }
       ]
     },
