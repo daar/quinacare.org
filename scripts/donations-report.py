@@ -436,6 +436,9 @@ CONTEXT_LABEL = {
     "yura-boom": "Yura-boom",
     "unknown": "onbekend",
 }
+# Always shown in the context chart (with 0 when none in the period), so the
+# breakdown is comparable across reports even when a channel had no donations.
+CONTEXT_ORDER = ["donate", "fundraisers", "putumayo-run", "yura-boom"]
 AMOUNT_TIERS = [
     (0, 1000, "< €10"),
     (1000, 2500, "10–24"),
@@ -762,9 +765,14 @@ def report_html(donations, events_by_donation, since, until, from_id=None):
     for i, (f, n) in enumerate(sorted(a["freq_total"].items(), key=lambda kv: -kv[1])):
         freq_segs.append((FREQ_LABEL.get(f, f), n, PALETTE[i % len(PALETTE)]))
 
-    # By context (conversion) — fundraisers and Putumayo Run split out
+    # By context (conversion) — fundraisers and Putumayo Run split out. Always
+    # list the known channels (0 when none this period), then any extras seen.
+    ctx_keys = CONTEXT_ORDER + [
+        c for c in a["context_total"] if c not in CONTEXT_ORDER
+    ]
     context_rows = []
-    for ctx, tried in sorted(a["context_total"].items(), key=lambda kv: -kv[1]):
+    for ctx in ctx_keys:
+        tried = a["context_total"].get(ctx, 0)
         paid = a["context_paid"].get(ctx, 0)
         rate = paid / tried * 100 if tried else 0
         context_rows.append(
