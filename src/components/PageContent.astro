@@ -23,7 +23,7 @@ const articleMax = page.data.layout === "wide" ? "max-w-5xl" : "max-w-3xl";
   ) : (
     <>
       {page.data.featured_image ? (
-        <header class="relative min-h-[60vh] flex items-end overflow-hidden">
+        <header class="relative min-h-[60vh] flex items-end overflow-hidden mb-12 md:mb-16">
           <div class="absolute inset-0 z-0">
             <Image
               src={page.data.featured_image}
