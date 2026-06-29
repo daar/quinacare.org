@@ -27,7 +27,8 @@ function frontmatter(file) {
   const raw = fs.readFileSync(file, "utf8");
   const m = raw.match(/^---\n([\s\S]*?)\n---/);
   const b = m ? m[1] : "";
-  const get = (k) => (b.match(new RegExp(`^${k}:\\s*"?(.*?)"?\\s*$`, "m")) || [])[1];
+  const get = (k) =>
+    (b.match(new RegExp(`^${k}:\\s*"?(.*?)"?\\s*$`, "m")) || [])[1];
   return {
     title: get("title") || "",
     slug: get("slug") || path.basename(file, ".mdoc"),
@@ -45,7 +46,14 @@ for (const kind of ["news", "pages", "fundraisers"]) {
     for (const file of walk(path.join(ROOT, kind, lang))) {
       const fm = frontmatter(file);
       const isDraft = kind === "news" ? fm.status !== "publish" : fm.draft;
-      entries.push({ kind, lang, file, base: path.basename(file, ".mdoc"), ...fm, isDraft });
+      entries.push({
+        kind,
+        lang,
+        file,
+        base: path.basename(file, ".mdoc"),
+        ...fm,
+        isDraft,
+      });
     }
   }
 }
@@ -72,7 +80,10 @@ function propose(e) {
     const canonical = m[1];
     if (allBase.has(`${e.kind}|${e.lang}|${canonical}`))
       return ["🗑 Delete", `Duplicate of \`${canonical}\``];
-    return ["🔀 Merge/Rename", `Collision suffix — collapse to \`${canonical}\``];
+    return [
+      "🔀 Merge/Rename",
+      `Collision suffix — collapse to \`${canonical}\``,
+    ];
   }
   if (e.bodyLen < 200) return ["🗑 Delete", "Stub — almost no body content"];
   if (e.translationKey && publishedKey.has(`${e.kind}|${e.translationKey}`))
@@ -94,7 +105,10 @@ const rows = drafts.map(
   (e) =>
     `| ${e.kind} | ${e.lang} | \`${e.base}\` | ${e.title || "—"} | ${e.prop[0]} | ${e.prop[1]} |`,
 );
-const counts = drafts.reduce((m, e) => ((m[e.prop[0]] = (m[e.prop[0]] || 0) + 1), m), {});
+const counts = drafts.reduce(
+  (m, e) => ((m[e.prop[0]] = (m[e.prop[0]] || 0) + 1), m),
+  {},
+);
 
 console.log(`Total drafts: ${drafts.length}`);
 console.log(

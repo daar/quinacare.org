@@ -8,7 +8,11 @@ const ROUTES = {
   projects: { nl: "projecten", en: "projects", es: "proyectos" },
   fundraisers: { nl: "acties", en: "fundraisers", es: "campañas" },
   search: { nl: "zoeken", en: "search", es: "buscar" },
-  "putumayo-loop": { nl: "putumayo-loop", en: "putumayo-run", es: "putumayo-carrera" },
+  "putumayo-loop": {
+    nl: "putumayo-loop",
+    en: "putumayo-run",
+    es: "putumayo-carrera",
+  },
 };
 const prefix = (lang) => (lang === "nl" ? "" : `/${lang}`);
 const R = {};
@@ -43,7 +47,10 @@ const pageChanges = {
     "become-partner": "word-partner",
     "donate/sponsor-booklet": "doneer/sponsor-booklet",
   },
-  en: { "word-vrijwilliger": "become-volunteer", jaarverslagen: "annual-reports" },
+  en: {
+    "word-vrijwilliger": "become-volunteer",
+    jaarverslagen: "annual-reports",
+  },
   es: {
     about: "sobre-nosotros",
     organization: "organizacion",
@@ -57,7 +64,8 @@ const pageChanges = {
 };
 for (const [lang, m] of Object.entries(pageChanges)) {
   const p = prefix(lang);
-  for (const [oldS, newS] of Object.entries(m)) R[`${p}/${oldS}`] = `${p}/${newS}`;
+  for (const [oldS, newS] of Object.entries(m))
+    R[`${p}/${oldS}`] = `${p}/${newS}`;
 }
 
 // C. Generated post slug changes (EN/ES): old /news/<key> -> new <native route>/<slug>
@@ -72,7 +80,8 @@ for (const lang of ["en", "es"]) {
         const slug = t.match(/^slug:\s*"([^"]+)"/m)?.[1];
         const key = t.match(/^translationKey:\s*"([^"]+)"/m)?.[1];
         if (slug && key && slug !== key) {
-          R[`${prefix(lang)}/news/${key}`] = `${prefix(lang)}/${ROUTES.news[lang]}/${slug}`;
+          R[`${prefix(lang)}/news/${key}`] =
+            `${prefix(lang)}/${ROUTES.news[lang]}/${slug}`;
         }
       }
     }
@@ -82,10 +91,14 @@ for (const lang of ["en", "es"]) {
 
 // D. Moved download PDFs
 Object.assign(R, {
-  "/downloads/sponsor-booklet/251110_Sponsorboekje.pdf": "/nl/sponsorboekje/251110_Sponsorboekje.pdf",
-  "/downloads/sponsor-booklet/251125_Sponsor-booklet.pdf": "/en/sponsor-booklet/251125_Sponsor-booklet.pdf",
-  "/downloads/sponsor-booklet/251125_Cuaderno-de-patrocinio.pdf": "/es/cuaderno-de-patrocinio/251125_Cuaderno-de-patrocinio.pdf",
-  "/downloads/Quina-Care-Introductieboekje-Vrijwilligers.pdf": "/nl/vrijwilligersboekje/Quina-Care-Introductieboekje-Vrijwilligers.pdf",
+  "/downloads/sponsor-booklet/251110_Sponsorboekje.pdf":
+    "/nl/sponsorboekje/251110_Sponsorboekje.pdf",
+  "/downloads/sponsor-booklet/251125_Sponsor-booklet.pdf":
+    "/en/sponsor-booklet/251125_Sponsor-booklet.pdf",
+  "/downloads/sponsor-booklet/251125_Cuaderno-de-patrocinio.pdf":
+    "/es/cuaderno-de-patrocinio/251125_Cuaderno-de-patrocinio.pdf",
+  "/downloads/Quina-Care-Introductieboekje-Vrijwilligers.pdf":
+    "/nl/vrijwilligersboekje/Quina-Care-Introductieboekje-Vrijwilligers.pdf",
 });
 
 const out =

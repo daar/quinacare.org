@@ -16,9 +16,25 @@ const ROOT = process.cwd();
 
 // Path segments that are routes/sections, never a content slug to match.
 const STOP = new Set([
-  "", "en", "es", "nl", "donate", "doneer", "donar", "document",
-  "wp-content", "uploads", "news", "actueel", "noticias", "search",
-  "page", "category", "tag", "author", "feed",
+  "",
+  "en",
+  "es",
+  "nl",
+  "donate",
+  "doneer",
+  "donar",
+  "document",
+  "wp-content",
+  "uploads",
+  "news",
+  "actueel",
+  "noticias",
+  "search",
+  "page",
+  "category",
+  "tag",
+  "author",
+  "feed",
 ]);
 
 function pdfUrls(file) {
@@ -44,7 +60,9 @@ function pdfUrls(file) {
 
 // Collect candidate slugs from every internal quinacare.org URL.
 const candidates = new Set();
-const pdfFiles = execSync(`find ${JSON.stringify(path.join(ROOT, "public"))} -iname '*.pdf'`)
+const pdfFiles = execSync(
+  `find ${JSON.stringify(path.join(ROOT, "public"))} -iname '*.pdf'`,
+)
   .toString()
   .split("\n")
   .filter(Boolean);
@@ -67,7 +85,8 @@ for (const f of pdfFiles) {
     if (/\.(pdf|jpe?g|png|webp|gif|svg)$/i.test(p)) continue;
     const segs = p.split("/").filter(Boolean);
     const last = segs[segs.length - 1];
-    if (last && !STOP.has(last.toLowerCase())) candidates.add(last.toLowerCase());
+    if (last && !STOP.has(last.toLowerCase()))
+      candidates.add(last.toLowerCase());
   }
 }
 
@@ -91,8 +110,14 @@ for (const col of COLLECTIONS) {
 
 function consider(fp) {
   const text = fs.readFileSync(fp, "utf8");
-  const id = path.basename(fp).replace(/\.(mdoc|md)$/, "").toLowerCase();
-  const slug = text.match(/^slug:\s*"?([^"\n]+)"?\s*$/m)?.[1]?.trim().toLowerCase();
+  const id = path
+    .basename(fp)
+    .replace(/\.(mdoc|md)$/, "")
+    .toLowerCase();
+  const slug = text
+    .match(/^slug:\s*"?([^"\n]+)"?\s*$/m)?.[1]
+    ?.trim()
+    .toLowerCase();
   const ref = candidates.has(id) || (slug && candidates.has(slug));
   if (!ref) return;
 
@@ -103,7 +128,8 @@ function consider(fp) {
     return;
   }
   let next = text;
-  if (isDraftStatus) next = next.replace(/^status:\s*"?draft"?\s*$/m, "status: publish");
+  if (isDraftStatus)
+    next = next.replace(/^status:\s*"?draft"?\s*$/m, "status: publish");
   if (isDraftFlag) next = next.replace(/^draft:\s*true\s*$/m, "draft: false");
   fs.writeFileSync(fp, next);
   published.push(path.relative(ROOT, fp));

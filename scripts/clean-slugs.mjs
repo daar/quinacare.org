@@ -12,7 +12,8 @@ const ROOT = process.cwd();
 const SUFFIX = /-\d{1,2}$/;
 // Generated newsletter/report slugs end in a month/year (e.g.
 // nieuwsbrief-2024-06) — never a dup counter. Skip them.
-const GENERATED = /^(nieuwsbrief|newsletter|boletin|jaarverslag|annual-report|informe-anual)-/;
+const GENERATED =
+  /^(nieuwsbrief|newsletter|boletin|jaarverslag|annual-report|informe-anual)-/;
 
 let cleaned = [];
 let kept = [];
@@ -55,7 +56,10 @@ for (const lang of ["nl", "en", "es"]) {
       continue;
     }
     const t = fs.readFileSync(e.fp, "utf8");
-    fs.writeFileSync(e.fp, t.replace(/^slug:\s*"?[^"\n]+"?\s*$/m, `slug: "${c}"`));
+    fs.writeFileSync(
+      e.fp,
+      t.replace(/^slug:\s*"?[^"\n]+"?\s*$/m, `slug: "${c}"`),
+    );
     cleaned.push(`${e.slug} -> ${c}`);
   }
 }

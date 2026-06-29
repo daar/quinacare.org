@@ -16,7 +16,10 @@ import path from "path";
 const canonicalSlug = process.argv[2];
 
 function firstSentences(text, min = 110, max = 240) {
-  const parts = text.replace(/\s+/g, " ").trim().split(/(?<=[.!?…])\s+/);
+  const parts = text
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(/(?<=[.!?…])\s+/);
   let out = "";
   for (const s of parts) {
     if (out && out.length >= min) break;
@@ -39,7 +42,8 @@ for (const fp of process.argv.slice(3)) {
   const title = (front.match(/^title:\s*"?(.+?)"?\s*$/m) || [])[1] || "";
   const baseSlug = canonicalSlug;
 
-  if (/^status:/m.test(front)) front = front.replace(/^status:.*$/m, "status: publish");
+  if (/^status:/m.test(front))
+    front = front.replace(/^status:.*$/m, "status: publish");
   front = front.replace(/^slug:\s*.*$/m, `slug: "${baseSlug}"`);
 
   // --- body ---
@@ -47,7 +51,11 @@ for (const fp of process.argv.slice(3)) {
   while (lines.length && lines[0].trim() === "") lines.shift();
   let quote = null;
   if (lines.length && /^\*"/.test(lines[0].trim())) {
-    quote = lines[0].trim().replace(/^\*"\s*/, "").split("*")[0].trim();
+    quote = lines[0]
+      .trim()
+      .replace(/^\*"\s*/, "")
+      .split("*")[0]
+      .trim();
     lines.shift();
     if (lines.length && /^\*\*.*\*\*\s*$/.test(lines[0].trim())) lines.shift();
     while (lines.length && lines[0].trim() === "") lines.shift();
@@ -62,10 +70,17 @@ for (const fp of process.argv.slice(3)) {
   // trailing name signature onto its own line
   if (title && /[A-Za-z]/.test(title)) {
     const tEsc = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    body = body.replace(new RegExp(`([.!?…])[ \\t]+(${tEsc})\\s*$`), `$1\n\n$2`);
+    body = body.replace(
+      new RegExp(`([.!?…])[ \\t]+(${tEsc})\\s*$`),
+      `$1\n\n$2`,
+    );
   }
 
-  body = body.replace(/\n{3,}/g, "\n\n").replace(/^\n+/, "").trimEnd() + "\n";
+  body =
+    body
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/^\n+/, "")
+      .trimEnd() + "\n";
 
   let newBody = quote ? `> "${quote}"\n\n${body}` : body;
 
@@ -74,7 +89,9 @@ for (const fp of process.argv.slice(3)) {
       const t = p.trim();
       return t && !t.startsWith(">") && !t.startsWith("{%");
     }) || "";
-  const excerpt = firstSentences(firstPara).replace(/\\/g, "").replace(/"/g, '\\"');
+  const excerpt = firstSentences(firstPara)
+    .replace(/\\/g, "")
+    .replace(/"/g, '\\"');
   if (excerpt && /^excerpt:/m.test(front))
     front = front.replace(/^excerpt:\s*.*$/m, `excerpt: "${excerpt}"`);
 
@@ -82,5 +99,7 @@ for (const fp of process.argv.slice(3)) {
   fs.writeFileSync(fp, out);
   const target = path.join(path.dirname(fp), `${baseSlug}.mdoc`);
   if (target !== fp) fs.renameSync(fp, target);
-  console.log(`${target !== fp ? "RENAMED" : "updated"}  ${path.relative(process.cwd(), target)}${quote ? "  [blockquote]" : ""}`);
+  console.log(
+    `${target !== fp ? "RENAMED" : "updated"}  ${path.relative(process.cwd(), target)}${quote ? "  [blockquote]" : ""}`,
+  );
 }

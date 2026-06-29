@@ -19,7 +19,9 @@ export const POST: APIRoute = async ({ request }) => {
     // bot believes it succeeded and doesn't retry/adapt — we just never send.
     const isSpam =
       (typeof company === "string" && company.trim() !== "") ||
-      (typeof elapsedMs === "number" && elapsedMs >= 0 && elapsedMs < MIN_FILL_MS);
+      (typeof elapsedMs === "number" &&
+        elapsedMs >= 0 &&
+        elapsedMs < MIN_FILL_MS);
     if (isSpam) {
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     }

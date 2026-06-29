@@ -43,7 +43,8 @@ const CURATED = {
   "/en/maria-priscila-chacon-de-la-portilla-3": "/en/staff",
 };
 
-const JUNK = /(wp-admin|wp-login|wp-content|xmlrpc|cgi-bin|phpmyadmin|\.php|\.env|\.git|\?url=)/i;
+const JUNK =
+  /(wp-admin|wp-login|wp-content|xmlrpc|cgi-bin|phpmyadmin|\.php|\.env|\.git|\?url=)/i;
 const ASSET = /\.(pdf|jpe?g|png|webp|gif|svg|css|js|ico|xml|txt)$/i;
 const norm = (p) => {
   let s = p.split("?")[0].split("#")[0];
@@ -66,8 +67,11 @@ for (const collection of ["news", "pages", "projects", "fundraisers"]) {
         else if (e.name.endsWith(".mdoc") || e.name.endsWith(".md")) {
           const t = fs.readFileSync(fp, "utf8");
           const id = e.name.replace(/\.(mdoc|md)$/, "");
-          const slug = t.match(/^slug:\s*"?([^"\n]+)"?\s*$/m)?.[1]?.trim() || id;
-          const isDraft = /^status:\s*"?draft"?\s*$/m.test(t) || /^draft:\s*true\s*$/m.test(t);
+          const slug =
+            t.match(/^slug:\s*"?([^"\n]+)"?\s*$/m)?.[1]?.trim() || id;
+          const isDraft =
+            /^status:\s*"?draft"?\s*$/m.test(t) ||
+            /^draft:\s*true\s*$/m.test(t);
           let url;
           if (collection === "pages") url = `${pfx(lang)}/${slug}`;
           else url = `${pfx(lang)}/${SEG[collection][lang]}/${slug}`;
@@ -84,19 +88,28 @@ for (const collection of ["news", "pages", "projects", "fundraisers"]) {
 const resolved = new Set();
 for (const it of index) if (!it.isDraft) resolved.add(it.url);
 for (const c of ["news", "projects", "fundraisers"])
-  for (const lang of ["nl", "en", "es"]) resolved.add(`${pfx(lang)}/${SEG[c][lang]}`);
+  for (const lang of ["nl", "en", "es"])
+    resolved.add(`${pfx(lang)}/${SEG[c][lang]}`);
 for (const home of ["/", "/en", "/es"]) resolved.add(home);
 for (const k of [
-  "/blogs-vlogs", "/doneer/anbi", "/doneer/quina-yura", "/vrijwilligers",
-  "/doneer/putumayo-loop-2025", "/fietsen-voor-hospital-san-miguel-2",
-  "/doneer/andrea-halve-marathon", "/doneer/demi-en-thomas",
-  "/doneer/esmee-en-diana", "/doneer/karin-martens-maakt-operaties-mogelijk",
-]) resolved.add(k);
+  "/blogs-vlogs",
+  "/doneer/anbi",
+  "/doneer/quina-yura",
+  "/vrijwilligers",
+  "/doneer/putumayo-loop-2025",
+  "/fietsen-voor-hospital-san-miguel-2",
+  "/doneer/andrea-halve-marathon",
+  "/doneer/demi-en-thomas",
+  "/doneer/esmee-en-diana",
+  "/doneer/karin-martens-maakt-operaties-mogelijk",
+])
+  resolved.add(k);
 // routeRedirects.mjs was removed — redirects now come only from this 404
 // log. Nothing to pre-treat as covered by dynamic route redirects.
 const wildPrefixes = [];
 
-const langOf = (p) => (p.startsWith("/en/") ? "en" : p.startsWith("/es/") ? "es" : "nl");
+const langOf = (p) =>
+  p.startsWith("/en/") ? "en" : p.startsWith("/es/") ? "es" : "nl";
 const lastSeg = (p) => p.split("/").filter(Boolean).pop() || "";
 
 const db = createClient({
@@ -104,7 +117,11 @@ const db = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 const SNAP = "/tmp/404-snapshot.json";
-let rows = (await db.execute("SELECT path, referrer, user_agent, is_bot, created_at FROM page_misses")).rows;
+let rows = (
+  await db.execute(
+    "SELECT path, referrer, user_agent, is_bot, created_at FROM page_misses",
+  )
+).rows;
 if (rows.length === 0 && fs.existsSync(SNAP)) {
   rows = JSON.parse(fs.readFileSync(SNAP, "utf8"));
   console.log("(table empty — reading from snapshot)");
@@ -115,10 +132,14 @@ if (rows.length === 0 && fs.existsSync(SNAP)) {
 // Ignore dev/local misses: 404.astro logs document.referrer, so misses hit
 // while running locally carry a localhost / 127.0.0.1 referrer.
 const isLocal = (r) =>
-  /(localhost|127\.0\.0\.1|0\.0\.0\.0|\.local(:|\/|$))/i.test(String(r.referrer || ""));
+  /(localhost|127\.0\.0\.1|0\.0\.0\.0|\.local(:|\/|$))/i.test(
+    String(r.referrer || ""),
+  );
 const localCount = rows.filter((r) => !r.is_bot && isLocal(r)).length;
 const paths = [
-  ...new Set(rows.filter((r) => !r.is_bot && !isLocal(r)).map((r) => String(r.path))),
+  ...new Set(
+    rows.filter((r) => !r.is_bot && !isLocal(r)).map((r) => String(r.path)),
+  ),
 ];
 
 // Cumulative: seed from the redirects already on disk so a re-run — or a
@@ -128,17 +149,25 @@ const redirectsPath = path.join(ROOT, "src/data/missesRedirects.mjs");
 const redirects = fs.existsSync(redirectsPath)
   ? { ...(await import(pathToFileURL(redirectsPath).href)).default }
   : {};
-const seededCount = Object.keys(redirects).length;
 const published = [];
 const skipped = [];
 
 for (const raw of paths) {
   const p = norm(raw);
-  if (p === "/" || JUNK.test(p) || ASSET.test(p)) { skipped.push([p, "junk/asset"]); continue; }
-  if (resolved.has(p) || wildPrefixes.some((pre) => p.startsWith(pre))) { skipped.push([p, "already resolved"]); continue; }
+  if (p === "/" || JUNK.test(p) || ASSET.test(p)) {
+    skipped.push([p, "junk/asset"]);
+    continue;
+  }
+  if (resolved.has(p) || wildPrefixes.some((pre) => p.startsWith(pre))) {
+    skipped.push([p, "already resolved"]);
+    continue;
+  }
 
   // Curated section redirects win over incidental content matches.
-  if (CURATED[p]) { redirects[p] = CURATED[p]; continue; }
+  if (CURATED[p]) {
+    redirects[p] = CURATED[p];
+    continue;
+  }
 
   const lang = langOf(p);
   const cand = lastSeg(p).toLowerCase();
@@ -156,8 +185,13 @@ for (const raw of paths) {
   if (hit) {
     if (hit.isDraft) {
       const t = fs.readFileSync(hit.file, "utf8");
-      let next = t.replace(/^status:\s*"?draft"?\s*$/m, "status: publish").replace(/^draft:\s*true\s*$/m, "draft: false");
-      if (next !== t) { fs.writeFileSync(hit.file, next); published.push(path.relative(ROOT, hit.file)); }
+      let next = t
+        .replace(/^status:\s*"?draft"?\s*$/m, "status: publish")
+        .replace(/^draft:\s*true\s*$/m, "draft: false");
+      if (next !== t) {
+        fs.writeFileSync(hit.file, next);
+        published.push(path.relative(ROOT, hit.file));
+      }
     }
     if (p !== norm(hit.url)) redirects[p] = hit.url;
     continue;
@@ -168,18 +202,26 @@ for (const raw of paths) {
 const out =
   "// AUTO-GENERATED by scripts/resolve-404s.mjs from the Turso 404 log.\n" +
   "// Old/missed URLs -> native targets.\n" +
-  "export default " + JSON.stringify(redirects, null, 2) + ";\n";
+  "export default " +
+  JSON.stringify(redirects, null, 2) +
+  ";\n";
 fs.writeFileSync(path.join(ROOT, "src/data/missesRedirects.mjs"), out);
 
-console.log(`404 paths (human, non-local): ${paths.length}  ·  ignored local/dev: ${localCount}`);
-console.log(`Published ${published.length} drafts:`); for (const x of published.sort()) console.log("  +", x);
-console.log(`Redirects ${Object.keys(redirects).length}:`); for (const [k, v] of Object.entries(redirects)) console.log(`  ${k} -> ${v}`);
+console.log(
+  `404 paths (human, non-local): ${paths.length}  ·  ignored local/dev: ${localCount}`,
+);
+console.log(`Published ${published.length} drafts:`);
+for (const x of published.sort()) console.log("  +", x);
+console.log(`Redirects ${Object.keys(redirects).length}:`);
+for (const [k, v] of Object.entries(redirects)) console.log(`  ${k} -> ${v}`);
 console.log(`Skipped ${skipped.length} (already-resolved/junk/no-match).`);
 
 if (CLEAR) {
   const n = (await db.execute("SELECT COUNT(*) c FROM page_misses")).rows[0].c;
   await db.execute("DELETE FROM page_misses");
-  console.log(`Cleared page_misses (${n} rows). Snapshot at /tmp/404-snapshot.json`);
+  console.log(
+    `Cleared page_misses (${n} rows). Snapshot at /tmp/404-snapshot.json`,
+  );
 } else {
   console.log("Dry run (no --clear): table left intact.");
 }

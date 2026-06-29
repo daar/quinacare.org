@@ -1413,7 +1413,12 @@ export function switchPath(
       canonical === "projects") &&
     segs[1]
   ) {
-    const translated = translatePostSlug?.(segs[1], fromLang, toLang, canonical);
+    const translated = translatePostSlug?.(
+      segs[1],
+      fromLang,
+      toLang,
+      canonical,
+    );
     if (translated) segs[1] = translated;
     else segs.length = 1; // no translation → land on the collection index
   }

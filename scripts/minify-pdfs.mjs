@@ -23,7 +23,14 @@
 // Env: ROOT (default public) — folder scanned when no files are given.
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, statSync, copyFileSync, rmSync, mkdtempSync } from "node:fs";
+import {
+  existsSync,
+  readdirSync,
+  statSync,
+  copyFileSync,
+  rmSync,
+  mkdtempSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
 
@@ -80,7 +87,12 @@ function walk(dir) {
 
 function nPages(file) {
   try {
-    return parseInt(execFileSync("qpdf", ["--show-npages", file], { encoding: "utf8" }).trim(), 10);
+    return parseInt(
+      execFileSync("qpdf", ["--show-npages", file], {
+        encoding: "utf8",
+      }).trim(),
+      10,
+    );
   } catch {
     return NaN;
   }
@@ -148,7 +160,9 @@ function gsCompress(src, dst) {
 const compress = LOSSY ? gsCompress : qpdfMinify;
 const modeLabel = LOSSY ? `lossy ${DPI}dpi/q${QUALITY}` : "lossless";
 
-const targets = HOOK ? fileArgs.filter((f) => /\.pdf$/i.test(f) && existsSync(f)) : walk(ROOT);
+const targets = HOOK
+  ? fileArgs.filter((f) => /\.pdf$/i.test(f) && existsSync(f))
+  : walk(ROOT);
 const apply = HOOK || WRITE;
 const tmp = mkdtempSync(join(tmpdir(), "pdfmin-"));
 
@@ -161,11 +175,13 @@ for (const file of targets) {
   const sizeBefore = statSync(file).size;
   before += sizeBefore;
   const dst = join(tmp, basename(file));
-  let ok = false;
+  let ok;
   try {
     ok = compress(file, dst);
   } catch (err) {
-    console.warn(`skip (${LOSSY ? "gs" : "qpdf"} failed): ${file} — ${err.message.split("\n")[0]}`);
+    console.warn(
+      `skip (${LOSSY ? "gs" : "qpdf"} failed): ${file} — ${err.message.split("\n")[0]}`,
+    );
     after += sizeBefore;
     skipped++;
     continue;

@@ -27,7 +27,8 @@ const resolvedSrc = await resolveAsset(src);
 const resolvedPoster = await resolveAsset(poster);
 
 const ext = (src.split(".").pop() || "mp4").toLowerCase();
-const mimeType = ext === "webm" ? "video/webm" : ext === "ogg" ? "video/ogg" : "video/mp4";
+const mimeType =
+  ext === "webm" ? "video/webm" : ext === "ogg" ? "video/ogg" : "video/mp4";
 ---
 
 <div class="relative rounded-xl overflow-hidden my-8">

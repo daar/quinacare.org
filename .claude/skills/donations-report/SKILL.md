@@ -63,7 +63,7 @@ google-chrome --headless=new --disable-gpu --no-sandbox --no-pdf-header-footer \
 
 Then:
 
-1. **Send the generated file(s) to the user** with SendUserFile (the HTML, and the PDF if rendered) — the dashboard *is* the deliverable.
+1. **Send the generated file(s) to the user** with SendUserFile (the HTML, and the PDF if rendered) — the dashboard _is_ the deliverable.
 2. Add **2–4 sentences of synthesis** of the most striking findings (top fault path, lowest-converting method, currency/geo split, trend spikes). For a quick in-chat funnel table, also run `--format text` and paste that. Match the analytical depth of the existing donation analyses in this codebase.
 
 ### Flags

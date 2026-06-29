@@ -226,9 +226,14 @@ const t = {
     data-msg-from={t.messageFrom}
     data-from={t.from}
   >
-    {/* Honeypot — hidden from people and assistive tech; spam bots fill it
-        and get silently dropped server-side. Not a real field. */}
-    <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+    {
+      /* Honeypot — hidden from people and assistive tech; spam bots fill it
+        and get silently dropped server-side. Not a real field. */
+    }
+    <div
+      class="absolute -left-[9999px] h-px w-px overflow-hidden"
+      aria-hidden="true"
+    >
       <label for="company">Company</label>
       <input
         type="text"

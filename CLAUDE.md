@@ -9,7 +9,7 @@ explicit flags (e.g. `--clear` for destructive steps). Scripts are
 reproducible, reviewable in a diff, and free of model variability.
 
 A **skill** (`.claude/skills/<name>/SKILL.md`) is the thin layer on top: it
-decides *when* to run, exercises *judgment* (curating a wrong redirect,
+decides _when_ to run, exercises _judgment_ (curating a wrong redirect,
 publish-vs-redirect on an ambiguous path), and handles orchestration (branch →
 commit → PR → summary). The skill never re-implements the mechanistic core —
 it calls the script.

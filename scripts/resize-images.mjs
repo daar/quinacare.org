@@ -113,7 +113,8 @@ for (const file of targets) {
 }
 
 if (HOOK) {
-  if (changed) console.log(`Resized ${changed} staged image(s) to <=${MAX_EDGE}px.`);
+  if (changed)
+    console.log(`Resized ${changed} staged image(s) to <=${MAX_EDGE}px.`);
 } else {
   console.log(
     `\n${apply ? "Rewrote" : "Would rewrite"} ${changed} image(s) over ${MAX_EDGE}px. Saved ~${(saved / 1048576).toFixed(0)} MB.`,

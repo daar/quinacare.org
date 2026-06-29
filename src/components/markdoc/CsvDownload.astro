@@ -10,12 +10,18 @@ const { href, label = "Download CSV" } = Astro.props;
 
 <div class="qc-csv-row not-prose">
   <a href={href} download class="qc-csv-btn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
       <path
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"></path>
+        d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"
+      ></path>
     </svg>
     <span>{label}</span>
   </a>

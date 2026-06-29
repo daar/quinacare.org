@@ -3,22 +3,26 @@
 export default {
   "/donate": "/en/donate",
   "/hospital-san-miguel": "/ziekenhuis",
-  "/een-ziekenhuis-in-het-amazonegebied-van-ecuador": "/actueel/een-ziekenhuis-in-het-amazonegebied-van-ecuador",
+  "/een-ziekenhuis-in-het-amazonegebied-van-ecuador":
+    "/actueel/een-ziekenhuis-in-het-amazonegebied-van-ecuador",
   "/en/about-us": "/en/about",
   "/en/word-vrijwilliger": "/en/become-volunteer",
   "/news/nieuwe-website": "/actueel/nieuwe-website",
   "/news/putumayo-loop-2026-launch": "/actueel/putumayo-loop-2026-launch",
   "/fundraisers/demi-en-thomas": "/acties/demi-en-thomas",
   "/actueel/looking-for-equipment": "/actueel/we-zoeken-apparatuur",
-  "/doneer/matthijs-altena-running-4-running-costs": "/acties/matthijs-altena-running-4-running-costs",
+  "/doneer/matthijs-altena-running-4-running-costs":
+    "/acties/matthijs-altena-running-4-running-costs",
   "/fundraisers/karin-martens": "/acties/karin-martens",
   "/en/en-ecuador/ecuador": "/en/news/ecuador",
   "/en/about-us/organization": "/en/organization",
-  "/en/en-blogs-vlogs/there-is-always-a-different-way": "/en/news/there-is-always-a-different-way",
+  "/en/en-blogs-vlogs/there-is-always-a-different-way":
+    "/en/news/there-is-always-a-different-way",
   "/en/en-ecuador/putumayo": "/en/news/putumayo",
   "/en/en-blogs-vlogs/toilets-or-sockets": "/en/news/toilets-or-sockets",
   "/ecuador/putumayo": "/actueel/putumayo",
-  "/en/en-blogs-vlogs/build-in-times-of-crisis": "/en/news/build-in-times-of-crisis",
+  "/en/en-blogs-vlogs/build-in-times-of-crisis":
+    "/en/news/build-in-times-of-crisis",
   "/en/maria-priscila-chacon-de-la-portilla-3": "/en/staff",
-  "/projecten/hospital-equipment": "/projecten/ziekenhuisapparatuur"
+  "/projecten/hospital-equipment": "/projecten/ziekenhuisapparatuur",
 };
