@@ -6,10 +6,23 @@ import { reportError } from "../../../lib/errors";
 
 const SOURCE = "api/contact/send";
 const CONTACT_TO_EMAIL = "care@quinacare.org";
+// Minimum time a human plausibly takes to fill the form. Submissions faster
+// than this are bots auto-posting the rendered form.
+const MIN_FILL_MS = 3000;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { name, email, subject, message } = await request.json();
+    const { name, email, subject, message, company, elapsedMs } =
+      await request.json();
+
+    // Invisible anti-spam (honeypot + time-trap). Return a 200 "ok" so the
+    // bot believes it succeeded and doesn't retry/adapt — we just never send.
+    const isSpam =
+      (typeof company === "string" && company.trim() !== "") ||
+      (typeof elapsedMs === "number" && elapsedMs >= 0 && elapsedMs < MIN_FILL_MS);
+    if (isSpam) {
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    }
 
     if (!name || !email || !subject || !message) {
       return new Response(JSON.stringify({ error: "Missing fields" }), {

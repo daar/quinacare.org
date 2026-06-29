@@ -226,6 +226,19 @@ const t = {
     data-msg-from={t.messageFrom}
     data-from={t.from}
   >
+    {/* Honeypot — hidden from people and assistive tech; spam bots fill it
+        and get silently dropped server-side. Not a real field. */}
+    <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+      <label for="company">Company</label>
+      <input
+        type="text"
+        id="company"
+        name="company"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
     <div class="grid sm:grid-cols-2 gap-6">
       <div>
         <label for="name" class="block text-sm font-semibold text-qcBlack mb-2"
@@ -322,6 +335,9 @@ const t = {
 </div>
 
 <script>
+  // Time-trap: when the form was rendered. Real users take seconds to fill
+  // it in; bots that auto-submit do so near-instantly and get dropped.
+  const loadedAt = Date.now();
   const form = document.getElementById("contact-form") as HTMLFormElement;
   if (form) {
     const btn = form.querySelector<HTMLButtonElement>(".contact-btn")!;
@@ -349,6 +365,8 @@ const t = {
             email: data.get("email"),
             subject: data.get("subject"),
             message: data.get("message"),
+            company: data.get("company"), // honeypot (should be empty)
+            elapsedMs: Date.now() - loadedAt, // time-trap
           }),
         });
 
