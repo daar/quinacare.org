@@ -75,6 +75,12 @@
           "labelKey": "submenu.bequest",
           "path": "/nalatenschap",
           "icon": "fa-solid fa-hand-holding-dollar"
+        },
+        {
+          "labelKey": "submenu.sponsorBooklet",
+          "path": "/donate/sponsor-booklet",
+          "icon": "fa-solid fa-book-open",
+          "descriptionKey": "submenu.sponsorBookletDesc"
         }
       ],
       "submenu_disabled": [
@@ -82,13 +88,6 @@
           "labelKey": "submenu.becomePartner",
           "path": "/become-partner",
           "icon": "fa-solid fa-handshake"
-        },
-        {
-          "labelKey": "submenu.sponsorBooklet",
-          "path": "/donate/sponsor-booklet",
-          "icon": "fa-solid fa-book-open",
-          "image": "/images/sponsor-booklet/sponsorboekje-nl.jpg",
-          "descriptionKey": "submenu.sponsorBookletDesc"
         }
       ],
       "cta_disabled": {
