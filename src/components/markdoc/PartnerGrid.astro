@@ -17,11 +17,21 @@ const items = type === "partners" ? partners : sponsors;
     items.map((item) => {
       const inner = (
         <div class="group flex items-center justify-center aspect-[3/2] transition-all duration-300">
-          <OptimizedImage
-            src={item.logo}
-            alt={item.name}
-            class="max-h-32 w-auto max-w-full object-contain group-hover:scale-110 transition-transform duration-500 ease-out !rounded-none !m-0"
-          />
+          {item.logo ? (
+            <OptimizedImage
+              src={item.logo}
+              alt={item.name}
+              class="max-h-32 w-auto max-w-full object-contain group-hover:scale-110 transition-transform duration-500 ease-out !rounded-none !m-0"
+            />
+          ) : (
+            /* No logo on file — show the name in the Effra display font. */
+            <span
+              class="px-2 text-center text-xl md:text-2xl font-bold leading-tight tracking-tight text-qcBlack group-hover:scale-110 transition-transform duration-500 ease-out"
+              style="font-family: var(--font-effra)"
+            >
+              {item.name}
+            </span>
+          )}
         </div>
       );
 

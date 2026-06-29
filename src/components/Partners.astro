@@ -7,6 +7,7 @@ import {
 } from "../i18n";
 import { premiumPartners } from "../data/partners";
 import OptimizedImage from "./OptimizedImage.astro";
+import Icon from "./Icon.astro";
 
 interface Props {
   lang?: Lang;
@@ -41,28 +42,38 @@ const t = useTranslations(lang);
                 rel="noopener noreferrer"
                 class="group relative flex items-center justify-center transition-all duration-300"
               >
-                <OptimizedImage
-                  src={partner.logo}
-                  alt={partner.name}
-                  class="h-20 w-auto max-w-[140px] object-contain lg:grayscale lg:opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-                />
+                {partner.logo ? (
+                  <OptimizedImage
+                    src={partner.logo}
+                    alt={partner.name}
+                    class="h-20 w-auto max-w-[140px] object-contain lg:grayscale lg:opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
+                  />
+                ) : (
+                  /* No logo on file — fall back to the partner name set in
+                     the brand's Effra display font. */
+                  <span
+                    class="flex h-20 max-w-[180px] items-center text-center text-xl md:text-2xl font-bold leading-tight tracking-tight text-qcBlack group-hover:scale-110 transition-transform duration-500 ease-out"
+                    style="font-family: var(--font-effra)"
+                  >
+                    {partner.name}
+                  </span>
+                )}
               </a>
             ))
           }
         </div>
 
         <div class="flex items-center gap-6 pt-4 border-t border-gray-100">
-          {
-            /* TODO: re-enable view-all-partners button.
           <a
             href={getLocalizedPath("/become-partner", lang)}
             class="qc-btn qc-btn--secondary group flex items-center gap-3 px-6 py-3"
           >
             <span>{t("partners.viewAll")}</span>
-            <Icon name="arrow-right-long" class="transition-transform group-hover:translate-x-1" />
+            <Icon
+              name="arrow-right-long"
+              class="transition-transform group-hover:translate-x-1"
+            />
           </a>
-          */
-          }
           <span class="qc-meta">
             {t("partners.interested")}
             <a

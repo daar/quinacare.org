@@ -77,16 +77,16 @@ export const partners: Partner[] = [
 
 export const sponsors: Partner[] = [
   {
-    name: "Zilveren Rozenkrans",
-    logo: "/media/2022/10/zilveren-rozenkrans.png",
+    name: 'Stichting "De Zilveren Rozenkrans"',
+    logo: "",
   },
   {
-    name: "De Hoop",
+    name: "W.M. De Hoop Stichting",
     logo: "/media/2019/10/logo-de-hoop.png",
   },
   {
-    name: "Imelda Nolet",
-    logo: "/media/2019/10/name-entry-imelda-nolet.png",
+    name: "Stichting Imelda Nolet",
+    logo: "",
   },
   {
     name: "Bloeddrukmeter Shop",
@@ -97,20 +97,20 @@ export const sponsors: Partner[] = [
     logo: "/media/2019/10/logo-stichting-paulien.jpg",
   },
   {
-    name: "P.J. Rogaar",
-    logo: "/media/2019/10/name-entry-pj-rogaar.png",
+    name: "P.J. Rogaar Stichting",
+    logo: "",
   },
   {
-    name: "Jong",
+    name: "Stichting Jong",
     logo: "/media/2020/07/logo-jong.png",
   },
   {
-    name: "Filadelfia",
-    logo: "/media/2020/09/filadelfia.png",
+    name: "Stichting Filadelfia",
+    logo: "",
   },
   {
     name: "Hendrik van Dijk Fonds",
-    logo: "/media/2025/11/Hendrik-van-Dijk-Fonds.png",
+    logo: "",
   },
   {
     name: "Emmaüs Bilthoven",
@@ -125,19 +125,19 @@ export const sponsors: Partner[] = [
     logo: "/media/2022/10/Casterenshoeve_logo_FC_pano.png",
   },
   {
-    name: "GNAP",
+    name: "Stichting GNAP",
     logo: "/media/2023/08/GNAP-logo-e1692731023698.png",
   },
   {
-    name: "De Kastanje",
-    logo: "/media/2021/01/de-kastanje.png",
+    name: "Stichting De Kastanje",
+    logo: "",
   },
   {
-    name: "Hofstede Stichting",
+    name: "Hofstee Stichting",
     logo: "/media/2020/07/hofsteeststichting.png",
   },
   {
-    name: "Salem",
+    name: "Stichting Salem",
     logo: "/media/2023/10/logo-Salem.jpg",
   },
   {
@@ -150,7 +150,7 @@ export const sponsors: Partner[] = [
   },
   {
     name: "PJP Stichting",
-    logo: "/media/2025/11/PJP-Stichting.png",
+    logo: "",
   },
   {
     name: "Groningen Groen",
