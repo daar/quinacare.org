@@ -37,6 +37,10 @@ const CURATED = {
   "/donate": "/en/donate",
   "/en/word-vrijwilliger": "/en/become-volunteer",
   "/actueel/looking-for-equipment": "/actueel/we-zoeken-apparatuur",
+  // Old EN-slug-on-NL-path project URL → the real NL equipment project.
+  "/projecten/hospital-equipment": "/projecten/ziekenhuisapparatuur",
+  // Stale WordPress person page (-N cruft) → the EN staff overview.
+  "/en/maria-priscila-chacon-de-la-portilla-3": "/en/staff",
 };
 
 const JUNK = /(wp-admin|wp-login|wp-content|xmlrpc|cgi-bin|phpmyadmin|\.php|\.env|\.git|\?url=)/i;

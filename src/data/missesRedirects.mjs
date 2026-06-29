@@ -18,5 +18,7 @@ export default {
   "/en/en-ecuador/putumayo": "/en/news/putumayo",
   "/en/en-blogs-vlogs/toilets-or-sockets": "/en/news/toilets-or-sockets",
   "/ecuador/putumayo": "/actueel/putumayo",
-  "/en/en-blogs-vlogs/build-in-times-of-crisis": "/en/news/build-in-times-of-crisis"
+  "/en/en-blogs-vlogs/build-in-times-of-crisis": "/en/news/build-in-times-of-crisis",
+  "/en/maria-priscila-chacon-de-la-portilla-3": "/en/staff",
+  "/projecten/hospital-equipment": "/projecten/ziekenhuisapparatuur"
 };
