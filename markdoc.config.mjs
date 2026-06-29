@@ -142,7 +142,9 @@ export default defineMarkdocConfig({
     },
     "team-grid": {
       render: component("./src/components/markdoc/TeamGrid.astro"),
-      attributes: {},
+      attributes: {
+        cols: { type: Number },
+      },
     },
     "team-member": {
       render: component("./src/components/markdoc/TeamMember.astro"),

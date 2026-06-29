@@ -1,9 +1,21 @@
 ---
+interface Props {
+  /** Cards per row at the widest breakpoint: 2, 3 or 4 (default 4). Fewer
+   *  columns = wider cards (more room for descriptions). */
+  cols?: number;
+}
+const { cols = 4 } = Astro.props;
 
+// Per-column-count child widths (gap-x is 2rem). Literal strings so Tailwind
+// can see and generate them.
+const COLS: Record<number, string> = {
+  2: "[&>*]:w-full sm:[&>*]:w-[calc((100%_-_2rem)/2_-_1px)]",
+  3: "[&>*]:w-full sm:[&>*]:w-[calc((100%_-_2rem)/2_-_1px)] lg:[&>*]:w-[calc((100%_-_4rem)/3_-_1px)]",
+  4: "[&>*]:w-full sm:[&>*]:w-[calc((100%_-_2rem)/2_-_1px)] md:[&>*]:w-[calc((100%_-_4rem)/3_-_1px)] lg:[&>*]:w-[calc((100%_-_6rem)/4_-_1px)]",
+};
+const widths = COLS[cols] ?? COLS[4];
 ---
 
-<div
-  class="flex flex-wrap justify-center gap-x-8 gap-y-12 [&>*]:w-full sm:[&>*]:w-[calc((100%_-_2rem)/2_-_1px)] md:[&>*]:w-[calc((100%_-_4rem)/3_-_1px)] lg:[&>*]:w-[calc((100%_-_6rem)/4_-_1px)]"
->
+<div class:list={["flex flex-wrap justify-center gap-x-8 gap-y-12", widths]}>
   <slot />
 </div>

@@ -31,7 +31,10 @@ const pageSchema = ({ image }: SchemaContext) =>
     subtitle: z.string().optional(),
     category_label: z.string().optional(),
     slug: z.string(),
-    layout: z.enum(["article", "landing"]).default("article"),
+    // "article" = narrow prose column; "wide" = same header/prose but a
+    // wider container (for card grids etc.); "landing" = bring-your-own
+    // full-bleed sections.
+    layout: z.enum(["article", "wide", "landing"]).default("article"),
     // Draft pages are excluded from the production build, so they are
     // unreachable publicly and never reach the Pagefind search index.
     // They remain previewable with `npm run dev`.

@@ -12,6 +12,9 @@ interface Props {
 const { page } = Astro.props;
 const { Content } = await render(page);
 const isLanding = page.data.layout === "landing";
+// "wide" keeps the article header + prose but gives the body a roomier
+// container (e.g. for the staff card grid). Default stays a narrow column.
+const articleMax = page.data.layout === "wide" ? "max-w-5xl" : "max-w-3xl";
 ---
 
 {
@@ -66,7 +69,7 @@ const isLanding = page.data.layout === "landing";
         </header>
       )}
 
-      <article class="max-w-3xl mx-auto px-6 mb-16">
+      <article class:list={[articleMax, "mx-auto px-6 mb-16"]}>
         <div class="prose-article max-w-none space-y-6">
           <Content />
         </div>
