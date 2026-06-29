@@ -15,6 +15,15 @@ export interface AnnualReport {
 // Newest first.
 export const annualReports: AnnualReport[] = [
   {
+    year: 2025,
+    files: {
+      nl: "/nl/jaarverslagen/Jaarverslag-Quina-Care-2025.pdf",
+    },
+    covers: {
+      nl: "/media/2026/06/Jaarverslag-Quina-Care-2025-pdf.jpg",
+    },
+  },
+  {
     year: 2024,
     files: {
       nl: "/nl/jaarverslagen/Jaarverslag-Quina-Care-2024.pdf",
