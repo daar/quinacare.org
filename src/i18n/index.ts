@@ -1121,10 +1121,10 @@ export const ui = {
     "404.backHome": "Volver al inicio",
     // Submenu - ¿Qué puedes hacer?
     "submenu.fundraise": "Campañas de recaudación",
-    "submenu.putumayoLoop": "Putumayo Run",
-    // Putumayo Run landing page
+    "submenu.putumayoLoop": "Putumayo Carrera",
+    // Putumayo Carrera landing page
     "putumayoLoop.heroLabel": "Una carrera mundial por",
-    "putumayoLoop.heroTitle": "Putumayo Run 2026",
+    "putumayoLoop.heroTitle": "Putumayo Carrera 2026",
     "putumayoLoop.heroSubtitle":
       "El domingo 18 de octubre corremos juntos en todo el mundo para apoyar al Hospital San Miguel. El hospital se encuentra en la provincia de Putumayo, en plena Amazonía ecuatoriana. Junto con los habitantes locales corremos para financiar los gastos operativos del hospital.",
     "putumayoLoop.signUpCta": "Corre con nosotros",
@@ -1139,7 +1139,7 @@ export const ui = {
     "putumayoLoop.whyTitle": "Por qué corremos",
     "putumayoLoop.whyHeading": "Correr por los gastos operativos",
     "putumayoLoop.whyBody":
-      "El Hospital San Miguel está en el corazón de la Amazonía ecuatoriana y es para miles de personas el único acceso a atención médica adecuada. Los gastos operativos — medicamentos, salarios, combustible para los generadores, transporte fluvial — son un desafío cada mes. Con el Putumayo Run recaudamos fondos en todo el mundo, en un solo día, para mantener esa atención en marcha.",
+      "El Hospital San Miguel está en el corazón de la Amazonía ecuatoriana y es para miles de personas el único acceso a atención médica adecuada. Los gastos operativos — medicamentos, salarios, combustible para los generadores, transporte fluvial — son un desafío cada mes. Con la Putumayo Carrera recaudamos fondos en todo el mundo, en un solo día, para mantener esa atención en marcha.",
     "putumayoLoop.whyExtra":
       "Cada corredor cuenta. Ya sea que corras individualmente o te unas a uno de nuestros hubs — juntos marcamos la diferencia.",
     "putumayoLoop.statsRaised": "recaudado",
@@ -1156,7 +1156,7 @@ export const ui = {
     "putumayoLoop.organizeHubCta": "Ponte en contacto",
     "putumayoLoop.hubContactTitle": "Organizar un hub",
     "putumayoLoop.hubContactSubtitle":
-      "Cuéntanos dónde te gustaría organizar un hub del Putumayo Run. Te contactaremos pronto.",
+      "Cuéntanos dónde te gustaría organizar un hub de la Putumayo Carrera. Te contactaremos pronto.",
     "putumayoLoop.hubContactName": "Nombre",
     "putumayoLoop.hubContactMessage": "Cuéntanos tu plan",
     "putumayoLoop.hubContactMessagePlaceholder":
@@ -1175,7 +1175,7 @@ export const ui = {
     "putumayoLoop.qrTitle": "Comparte el código QR",
     "putumayoLoop.qrDownload": "Descargar código QR",
     // Signup modal
-    "putumayoLoop.modalTitle": "Inscríbete al Putumayo Run",
+    "putumayoLoop.modalTitle": "Inscríbete a la Putumayo Carrera",
     "putumayoLoop.modalSubtitle":
       "Completa tus datos y elige cómo quieres correr.",
     "putumayoLoop.firstName": "Nombre",
@@ -1208,10 +1208,10 @@ export const ui = {
     "putumayoLoop.successMessage":
       "Te enviaremos más información por correo electrónico. ¡Gracias por participar!",
     "putumayoLoop.successClose": "Cerrar",
-    "putumayoLoop.emailSubject": "[Putumayo Run {year}] ¡Estás inscrito!",
+    "putumayoLoop.emailSubject": "[Putumayo Carrera {year}] ¡Estás inscrito!",
     "putumayoLoop.emailHubWhere": "Desde el hub {hub} en {city}",
     "putumayoLoop.emailBody":
-      "Hola {name},\n\n¡Gracias por inscribirte en el Putumayo Run {year}! Ya estás dentro oficialmente.\n\nEsto es lo que tenemos registrado:\n• Distancia: {distance}\n• Fecha: {date}\n• Dónde: {where}\n\nTe enviaremos más información práctica y novedades cuando se acerque la carrera. ¿Tienes alguna pregunta? Escribe a {contactEmail}.\n\n¡Nos vemos en la salida!\nEl equipo de Quina Care",
+      "Hola {name},\n\n¡Gracias por inscribirte en la Putumayo Carrera {year}! Ya estás dentro oficialmente.\n\nEsto es lo que tenemos registrado:\n• Distancia: {distance}\n• Fecha: {date}\n• Dónde: {where}\n\nTe enviaremos más información práctica y novedades cuando se acerque la carrera. ¿Tienes alguna pregunta? Escribe a {contactEmail}.\n\n¡Nos vemos en la salida!\nEl equipo de Quina Care",
     "putumayoLoop.editionsLabel": "Ediciones",
     "putumayoLoop.pastEditionLabel": "Edición pasada",
     "putumayoLoop.finalRaised": "Total recaudado",
@@ -1230,7 +1230,7 @@ export const ui = {
     "putumayoLoop.participantsMapLabel": "Participantes",
     "putumayoLoop.participantsMapTitle": "Dónde se corrió",
     "putumayoLoop.story2025":
-      "En 2025 celebramos el quinto aniversario del Putumayo Run. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 170 participantes en total. Un día para recordar.",
+      "En 2025 celebramos el quinto aniversario de la Putumayo Carrera. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 170 participantes en total. Un día para recordar.",
     "submenu.joinTeam": "Únete al equipo",
     "submenu.bequest": "Legado",
     "submenu.becomePartner": "Sé socio",

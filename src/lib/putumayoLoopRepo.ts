@@ -117,6 +117,7 @@ async function hydrate(config: EditionConfig): Promise<Edition> {
     slug: config.slug,
     fundraiserSlug: config.fundraiserSlug,
     title: config.title,
+    titles: config.titles,
     runDate: config.runDate,
     status: config.status,
     hubs: config.hubs,

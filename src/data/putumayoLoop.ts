@@ -87,6 +87,8 @@ export interface Edition {
   slug: string;
   fundraiserSlug: string;
   title: string;
+  /** Per-language title override (EN/ES see the localized name). */
+  titles?: Partial<Record<"nl" | "en" | "es", string>>;
   runDate: string;
   status: EditionStatus;
   hubs: Hub[];
@@ -164,7 +166,7 @@ export const editions: EditionConfig[] = [
     title: "Putumayo Loop 2025",
     titles: {
       en: "Putumayo Run 2025",
-      es: "Putumayo Run 2025",
+      es: "Putumayo Carrera 2025",
     },
     runDate: "2025-10-26",
     status: "past",
@@ -247,7 +249,7 @@ export const editions: EditionConfig[] = [
     story: {
       nl: "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen met in totaal meer dan 170 deelnemers. Een dag om nooit te vergeten.",
       en: "In 2025 we celebrated the fifth anniversary of the Putumayo Run. For the first time runners gathered in multiple cities at once with more than 170 participants in total. A day to remember.",
-      es: "En 2025 celebramos el quinto aniversario del Putumayo Run. Por primera vez se corrió simultáneamente en varias ciudades con más de 170 participantes en total. Un día para recordar.",
+      es: "En 2025 celebramos el quinto aniversario de la Putumayo Carrera. Por primera vez se corrió simultáneamente en varias ciudades con más de 170 participantes en total. Un día para recordar.",
     },
     youtubeId: "Fc6XaeLGLdw",
   },
@@ -258,7 +260,7 @@ export const editions: EditionConfig[] = [
     title: "Putumayo Loop 2026",
     titles: {
       en: "Putumayo Run 2026",
-      es: "Putumayo Run 2026",
+      es: "Putumayo Carrera 2026",
     },
     runDate: "2026-10-18",
     status: "active",
