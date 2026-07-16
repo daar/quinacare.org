@@ -68,6 +68,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
         </h2>
         <p class="qc-body mb-6">{t("putumayoLoop.modalSubtitle")}</p>
         <form class="space-y-4" id="putumayo-signup-form" autocomplete="off">
+          <div class="form-main space-y-4">
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="qc-label block mb-1">
@@ -237,10 +238,14 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           <button
             type="submit"
             class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
+            data-label-submit={t("putumayoLoop.submitSignup")}
+            data-label-continue={t("putumayoLoop.continue")}
           >
             <span class="signup-btn-text inline-flex items-center gap-2">
               <Icon name="heart" />
-              {t("putumayoLoop.submitSignup")}
+              <span class="signup-btn-label">
+                {t("putumayoLoop.submitSignup")}
+              </span>
             </span>
             <span
               class="signup-btn-sending !hidden inline-flex items-center gap-2"
@@ -255,6 +260,73 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           <p class="qc-meta text-center">
             {t("putumayoLoop.modalDisclaimer")}
           </p>
+          </div>
+
+          <div class="emergency-step hidden space-y-4">
+            <h3 class="text-lg font-bold tracking-tighter uppercase">
+              {t("putumayoLoop.emergencyTitle")}
+            </h3>
+            <p class="qc-meta">{t("putumayoLoop.emergencyIntro")}</p>
+            <label
+              class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
+            >
+              <input
+                type="checkbox"
+                name="emergencyOptIn"
+                class="emergency-optin mt-1 accent-qcRed"
+              />
+              <span class="font-bold">{t("putumayoLoop.emergencyOptIn")}</span>
+            </label>
+            <div class="emergency-fields hidden space-y-3">
+              <div>
+                <label class="qc-label block mb-1">
+                  {t("putumayoLoop.emergencyName")}
+                </label>
+                <input
+                  type="text"
+                  name="emergencyName"
+                  class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label class="qc-label block mb-1">
+                  {t("putumayoLoop.emergencyPhone")}
+                </label>
+                <input
+                  type="tel"
+                  name="emergencyPhone"
+                  autocomplete="tel"
+                  class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+                />
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button
+                type="button"
+                class="emergency-back qc-btn px-6 py-3 border border-gray-200 rounded-md"
+              >
+                {t("putumayoLoop.back")}
+              </button>
+              <button
+                type="submit"
+                class="qc-btn qc-btn--primary flex-1 py-3 flex items-center justify-center gap-2"
+              >
+                <span class="signup-btn-text inline-flex items-center gap-2">
+                  <Icon name="heart" />
+                  {t("putumayoLoop.submitSignup")}
+                </span>
+                <span
+                  class="signup-btn-sending !hidden inline-flex items-center gap-2"
+                >
+                  <Icon name="spinner" class="animate-spin" />
+                  {t("putumayoLoop.hubContactSending")}
+                </span>
+              </button>
+            </div>
+            <p class="signup-error hidden text-sm text-qcRed text-center">
+              {t("putumayoLoop.hubContactError")}
+            </p>
+          </div>
         </form>
       </div>
 
@@ -308,6 +380,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             ?.classList.add("hidden");
           // Re-sync the dependent fields (incl. re-enabling every distance)
           // so a fresh open never inherits the previous session's state.
+          resetEmergency();
           syncMode();
           dialog.showModal();
           document.body.style.overflow = "hidden";
@@ -356,6 +429,39 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           );
         const radios =
           dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
+
+        // Second step (hub signups only): optional emergency contact.
+        const formMain = dialog.querySelector<HTMLDivElement>(".form-main");
+        const emergencyStep =
+          dialog.querySelector<HTMLDivElement>(".emergency-step");
+        const emergencyOptIn = dialog.querySelector<HTMLInputElement>(
+          'input[name="emergencyOptIn"]',
+        );
+        const emergencyFields =
+          dialog.querySelector<HTMLDivElement>(".emergency-fields");
+        const emergencyName = dialog.querySelector<HTMLInputElement>(
+          'input[name="emergencyName"]',
+        );
+        const emergencyPhone = dialog.querySelector<HTMLInputElement>(
+          'input[name="emergencyPhone"]',
+        );
+        const backBtn =
+          dialog.querySelector<HTMLButtonElement>(".emergency-back");
+        const primaryBtn = formMain?.querySelector<HTMLButtonElement>(
+          'button[type="submit"]',
+        );
+        const primaryLabel =
+          primaryBtn?.querySelector<HTMLElement>(".signup-btn-label");
+
+        // Fresh open: collapse the emergency step + reset its opt-in.
+        const resetEmergency = () => {
+          emergencyStep?.classList.add("hidden");
+          formMain?.classList.remove("hidden");
+          if (emergencyOptIn) emergencyOptIn.checked = false;
+          emergencyFields?.classList.add("hidden");
+          if (emergencyName) emergencyName.required = false;
+          if (emergencyPhone) emergencyPhone.required = false;
+        };
 
         // hubId -> the distances that hub offers. Individual runners (no
         // hub) and any hub missing from the map get every distance.
@@ -406,6 +512,14 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           if (hubInput) hubInput.required = selected === "hub";
           if (cityInput) cityInput.required = selected === "individual";
           if (countryInput) countryInput.required = selected === "individual";
+          // Hub signups get a second step, so the main button "continues"
+          // rather than submitting.
+          if (primaryBtn && primaryLabel) {
+            primaryLabel.textContent =
+              selected === "hub"
+                ? primaryBtn.dataset.labelContinue || ""
+                : primaryBtn.dataset.labelSubmit || "";
+          }
           syncDistances();
         };
         radios.forEach((r) => r.addEventListener("change", syncMode));
@@ -413,33 +527,58 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
         hubInput?.addEventListener("change", syncDistances);
         syncMode();
 
-        const btnText = form?.querySelector<HTMLElement>(".signup-btn-text");
-        const btnSending = form?.querySelector<HTMLElement>(
-          ".signup-btn-sending",
-        );
-        const errorEl = form?.querySelector<HTMLElement>(".signup-error");
-        const submitBtn = form?.querySelector<HTMLButtonElement>(
+        // Both the main and the emergency-step buttons carry these spans,
+        // so toggle all of them for the busy/error state.
+        const btnTexts =
+          form?.querySelectorAll<HTMLElement>(".signup-btn-text");
+        const btnSendings =
+          form?.querySelectorAll<HTMLElement>(".signup-btn-sending");
+        const errorEls = form?.querySelectorAll<HTMLElement>(".signup-error");
+        const submitBtns = form?.querySelectorAll<HTMLButtonElement>(
           'button[type="submit"]',
         );
         const editionYear = Number(dialog.dataset.year || "0");
         const lang = dialog.dataset.lang || "nl";
 
+        // Opt-in reveals the emergency name/phone and makes them required.
+        emergencyOptIn?.addEventListener("change", () => {
+          const on = emergencyOptIn.checked;
+          emergencyFields?.classList.toggle("hidden", !on);
+          if (emergencyName) emergencyName.required = on;
+          if (emergencyPhone) emergencyPhone.required = on;
+        });
+        // "Back" returns from the emergency step to the main form.
+        backBtn?.addEventListener("click", () => {
+          emergencyStep?.classList.add("hidden");
+          formMain?.classList.remove("hidden");
+        });
+
         form?.addEventListener("submit", async (e) => {
           e.preventDefault();
-          errorEl?.classList.add("hidden");
-          btnText?.classList.add("!hidden");
-          btnSending?.classList.remove("!hidden");
-          if (submitBtn) submitBtn.disabled = true;
-
           const data = new FormData(form);
           const mode = String(data.get("mode") ?? "");
-          // For individual runners the modal collects city + country in
-          // two separate fields so each can be validated on its own.
-          // The API still receives a single `location` string — that's
-          // what the feed renders and the geocoder probes — so join here.
+          const onEmergency =
+            !!emergencyStep && !emergencyStep.classList.contains("hidden");
+          // Hub signups get a second step for the optional emergency contact.
+          // The submit event only fires when the main form is valid, so it's
+          // safe to advance without re-validating.
+          if (mode === "hub" && !onEmergency) {
+            formMain?.classList.add("hidden");
+            emergencyStep?.classList.remove("hidden");
+            return;
+          }
+
+          errorEls?.forEach((el) => el.classList.add("hidden"));
+          btnTexts?.forEach((el) => el.classList.add("!hidden"));
+          btnSendings?.forEach((el) => el.classList.remove("!hidden"));
+          submitBtns?.forEach((b) => (b.disabled = true));
+
+          // For individual runners the modal collects city + country in two
+          // fields; the API takes a single `location` string, so join here.
           const city = String(data.get("city") ?? "").trim();
           const country = String(data.get("country") ?? "").trim();
           const location = mode === "individual" ? `${city}, ${country}` : null;
+          const optIn = data.get("emergencyOptIn") === "on";
           try {
             const res = await fetch("/api/putumayo-loop/signup", {
               method: "POST",
@@ -454,6 +593,10 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                 hubId: mode === "hub" ? data.get("hub") : null,
                 location,
                 distance: data.get("distance"),
+                emergencyName:
+                  mode === "hub" && optIn ? data.get("emergencyName") : null,
+                emergencyPhone:
+                  mode === "hub" && optIn ? data.get("emergencyPhone") : null,
               }),
             });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -461,11 +604,11 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             formView?.classList.add("hidden");
             successView?.classList.remove("hidden");
           } catch {
-            errorEl?.classList.remove("hidden");
+            errorEls?.forEach((el) => el.classList.remove("hidden"));
           } finally {
-            if (submitBtn) submitBtn.disabled = false;
-            btnText?.classList.remove("!hidden");
-            btnSending?.classList.add("!hidden");
+            submitBtns?.forEach((b) => (b.disabled = false));
+            btnTexts?.forEach((el) => el.classList.remove("!hidden"));
+            btnSendings?.forEach((el) => el.classList.add("!hidden"));
           }
         });
       });

@@ -50,6 +50,8 @@ const SUBSCRIBERS_SCHEMA = `
     location      TEXT,
     count         INTEGER NOT NULL DEFAULT 1,
     distance      TEXT,
+    emergency_contact_name  TEXT,
+    emergency_contact_phone TEXT,
     signed_up_at  TEXT NOT NULL,
     created_at    TEXT NOT NULL DEFAULT (datetime('now'))
   )
@@ -121,6 +123,13 @@ async function ensureSchema() {
   // Idempotent column additions for pre-existing tables.
   await tryAlter(
     `ALTER TABLE putumayo_loop_subscribers ADD COLUMN distance TEXT`,
+  );
+  // Optional emergency contact captured on hub signups (step 2 of the modal).
+  await tryAlter(
+    `ALTER TABLE putumayo_loop_subscribers ADD COLUMN emergency_contact_name TEXT`,
+  );
+  await tryAlter(
+    `ALTER TABLE putumayo_loop_subscribers ADD COLUMN emergency_contact_phone TEXT`,
   );
 }
 

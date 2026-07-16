@@ -366,6 +366,14 @@ export const ui = {
     "putumayoLoop.runLocationHelp":
       "Vul de plaats in waar je gaat lopen, zodat we je op de wereldkaart kunnen plaatsen.",
     "putumayoLoop.submitSignup": "Bevestig aanmelding",
+    "putumayoLoop.continue": "Verder",
+    "putumayoLoop.back": "Terug",
+    "putumayoLoop.emergencyTitle": "Noodcontact (optioneel)",
+    "putumayoLoop.emergencyIntro":
+      "Voor je eigen veiligheid vragen we je een noodnummer op te geven, zodat de medische diensten in geval van nood direct kunnen handelen.",
+    "putumayoLoop.emergencyOptIn": "Een noodcontact toevoegen",
+    "putumayoLoop.emergencyName": "Naam noodcontact",
+    "putumayoLoop.emergencyPhone": "Telefoonnummer noodcontact",
     "putumayoLoop.modalDisclaimer":
       "Door je aan te melden ga je akkoord met onze privacyverklaring.",
     "putumayoLoop.successTitle": "Je bent ingeschreven!",
@@ -784,6 +792,14 @@ export const ui = {
     "putumayoLoop.runLocationHelp":
       "Tell us where you will run so we can place you on the world map.",
     "putumayoLoop.submitSignup": "Confirm signup",
+    "putumayoLoop.continue": "Continue",
+    "putumayoLoop.back": "Back",
+    "putumayoLoop.emergencyTitle": "Emergency contact (optional)",
+    "putumayoLoop.emergencyIntro":
+      "For your own safety we ask for an emergency number, so that the medical services can act immediately in case of an emergency.",
+    "putumayoLoop.emergencyOptIn": "Add an emergency contact",
+    "putumayoLoop.emergencyName": "Emergency contact name",
+    "putumayoLoop.emergencyPhone": "Emergency contact phone",
     "putumayoLoop.modalDisclaimer":
       "By signing up you agree to our privacy policy.",
     "putumayoLoop.successTitle": "You're in!",
@@ -1202,6 +1218,14 @@ export const ui = {
     "putumayoLoop.runLocationHelp":
       "Cuéntanos dónde correrás para ubicarte en el mapa mundial.",
     "putumayoLoop.submitSignup": "Confirmar inscripción",
+    "putumayoLoop.continue": "Continuar",
+    "putumayoLoop.back": "Atrás",
+    "putumayoLoop.emergencyTitle": "Contacto de emergencia (opcional)",
+    "putumayoLoop.emergencyIntro":
+      "Por tu propia seguridad te pedimos un número de emergencia, para que los servicios médicos puedan actuar de inmediato en caso de emergencia.",
+    "putumayoLoop.emergencyOptIn": "Añadir un contacto de emergencia",
+    "putumayoLoop.emergencyName": "Nombre del contacto de emergencia",
+    "putumayoLoop.emergencyPhone": "Teléfono del contacto de emergencia",
     "putumayoLoop.modalDisclaimer":
       "Al inscribirte aceptas nuestra política de privacidad.",
     "putumayoLoop.successTitle": "¡Estás dentro!",

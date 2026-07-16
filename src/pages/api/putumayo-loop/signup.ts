@@ -54,6 +54,13 @@ export const POST: APIRoute = async ({ request }) => {
   const hubId = body.hubId ? String(body.hubId).trim() : null;
   let location = body.location ? String(body.location).trim() : null;
   const distance = String(body.distance ?? "");
+  // Optional emergency contact captured on the hub signup's second step.
+  const emergencyName = body.emergencyName
+    ? String(body.emergencyName).trim()
+    : null;
+  const emergencyPhone = body.emergencyPhone
+    ? String(body.emergencyPhone).trim()
+    : null;
   const editionYear = Number(body.editionYear);
   const rawLang = String(body.lang ?? "nl").toLowerCase() as Lang;
   const lang: Lang = ALLOWED_LANGS.has(rawLang) ? rawLang : "nl";
@@ -126,8 +133,9 @@ export const POST: APIRoute = async ({ request }) => {
       sql: `
         INSERT INTO putumayo_loop_subscribers
           (external_id, edition_year, first_name, last_name, email,
-           hub_id, lat, lng, location, count, distance, signed_up_at)
-        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, datetime('now'))
+           hub_id, lat, lng, location, count, distance,
+           emergency_contact_name, emergency_contact_phone, signed_up_at)
+        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, datetime('now'))
       `,
       args: [
         editionYear,
@@ -139,6 +147,8 @@ export const POST: APIRoute = async ({ request }) => {
         lng,
         location,
         distance,
+        emergencyName,
+        emergencyPhone,
       ],
     });
   } catch (err) {
@@ -188,6 +198,11 @@ export const POST: APIRoute = async ({ request }) => {
     `Distance: ${distanceLabelEn}`,
     `Where: ${whereLabelEn}`,
     `Mode: ${mode === "hub" ? "Hub" : "Individual"}`,
+    ...(emergencyName || emergencyPhone
+      ? [
+          `Emergency contact: ${emergencyName || "—"} (${emergencyPhone || "—"})`,
+        ]
+      : []),
     `Signup language: ${lang}`,
   ].join("\n");
 
