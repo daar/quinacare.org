@@ -5,7 +5,6 @@
 // a live "most popular" list (fetched from /api/news/popular, backed by
 // the Turso view counter). Grid filtering and "load more" are client-side.
 import { Image } from "astro:assets";
-import type { CollectionEntry } from "astro:content";
 import Icon from "./Icon.astro";
 import {
   useTranslations,
@@ -13,16 +12,10 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../i18n";
-
-// The three language news collections share one schema; the roll accepts
-// entries from any of them.
-type NewsEntry =
-  | CollectionEntry<"news-nl">
-  | CollectionEntry<"news-en">
-  | CollectionEntry<"news-es">;
+import { resolveNewsSlug } from "../lib/newsSlug";
 
 interface Props {
-  posts: NewsEntry[];
+  posts: any[];
   lang: Lang;
 }
 
@@ -42,15 +35,15 @@ function formatDate(date: Date): string {
 function isoDate(date: Date): string {
   return new Date(date).toISOString().slice(0, 10);
 }
-function newsPath(post: NewsEntry): string {
-  return getLocalizedPath(`/news/${post.data.slug || post.id}`, lang);
+function newsPath(post: any): string {
+  return getLocalizedPath(`/news/${resolveNewsSlug(post)}`, lang);
 }
-function slugOf(post: NewsEntry): string {
-  return post.data.slug || post.id;
+function slugOf(post: any): string {
+  return resolveNewsSlug(post);
 }
 
 type PostType = "article" | "vlog" | "newsletter" | "report";
-function postType(post: NewsEntry): PostType {
+function postType(post: any): PostType {
   const slug = slugOf(post).toLowerCase();
   if (
     slug.startsWith("jaarverslag-") ||

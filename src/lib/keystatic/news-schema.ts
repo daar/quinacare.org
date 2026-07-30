@@ -1,9 +1,36 @@
 import { fields } from "@keystatic/core";
+import { kebabCase } from "lodash-es";
 import { contentComponents } from "./content-components";
 
+const currentYear = () => new Date().getFullYear();
+
+const generateYearScopedSlug = (value: string) => {
+  const slug = kebabCase(value);
+  return `${currentYear()}/${slug}`;
+};
+
 export const newsSchema = {
-  title: fields.text({ label: "Titel" }),
-  slug: fields.text({ label: "Slug" }),
+  title: fields.slug({
+    name: {
+      label: "Titel",
+      validation: {
+        isRequired: true,
+      },
+    },
+    slug: {
+      label: "Map (jaar/slug)",
+      generate: generateYearScopedSlug,
+      validation: {
+        pattern: {
+          regex: /^\d{4}\/.+$/,
+          message: "Gebruik formaat YYYY/slug.",
+        },
+      },
+    },
+  }),
+  slug: fields.text({
+    label: "URL slug (optioneel, legacy)",
+  }),
   date: fields.date({ label: "Datum" }),
   status: fields.select({
     label: "Status",

@@ -11,6 +11,7 @@ import {
   type Lang,
 } from "../i18n";
 import { selectNews } from "../lib/news";
+import { resolveNewsSlug } from "../lib/newsSlug";
 
 interface Props {
   lang?: Lang;
@@ -60,10 +61,7 @@ function formatDate(date: Date): string {
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {posts.map((post) => (
             <a
-              href={getLocalizedPath(
-                `/news/${post.data.slug || post.id}`,
-                lang,
-              )}
+              href={getLocalizedPath(`/news/${resolveNewsSlug(post)}`, lang)}
               class="group"
             >
               <div class="aspect-[4/3] mb-6 overflow-hidden bg-gray-100 rounded-xl">

@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import type { Lang } from "../i18n";
+import { resolveNewsSlug } from "./newsSlug";
 
 // Build-time index linking the language variants of a post or fundraiser.
 // Entries that share a `translationKey` are linked explicitly; entries
@@ -49,7 +50,10 @@ async function build(): Promise<void> {
                 import.meta.env.DEV || !(p.data as { draft?: boolean }).draft,
             );
           for (const p of entries) {
-            const slug = p.data.slug || p.id;
+            const slug =
+              kind === "news"
+                ? resolveNewsSlug(p as { id: string; data: { slug?: string } })
+                : p.data.slug || p.id;
             idx.allSlugs[lang].add(slug);
             const key = (p.data as { translationKey?: string }).translationKey;
             if (!key) continue;

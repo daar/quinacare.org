@@ -12,7 +12,7 @@ export default config({
   collections: {
     newsNl: collection({
       label: "Nieuws (NL)",
-      slugField: "slug",
+      slugField: "title",
       columns: ["title", "date"],
       parseSlugForSort: (slug) =>
         String(
@@ -25,7 +25,7 @@ export default config({
     }),
     newsEn: collection({
       label: "News (EN)",
-      slugField: "slug",
+      slugField: "title",
       columns: ["title", "date"],
       parseSlugForSort: (slug) =>
         String(
@@ -38,7 +38,7 @@ export default config({
     }),
     newsEs: collection({
       label: "Noticias (ES)",
-      slugField: "slug",
+      slugField: "title",
       columns: ["title", "date"],
       parseSlugForSort: (slug) =>
         String(
