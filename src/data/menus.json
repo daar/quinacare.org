@@ -90,7 +90,7 @@
           "icon": "fa-solid fa-handshake"
         }
       ],
-      "cta_disabled": {
+      "cta": {
         "labelKey": "nav.donate",
         "path": "/donate",
         "icon": "fa-solid fa-heart"
