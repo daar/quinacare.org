@@ -32,8 +32,8 @@ export const GET: APIRoute = async () => {
   const json = (await upstream.json()) as { data?: Record<string, number> };
   const stats = (json.data ?? json) as Record<string, number>;
 
-  // EMR undercounts births by 20 versus the actual figure.
-  if (typeof stats.births === "number") stats.births += 21;
+  // EMR undercounts births by 11 versus the actual figure.
+  if (typeof stats.births === "number") stats.births += 12;
 
   return new Response(JSON.stringify(stats), {
     status: 200,
