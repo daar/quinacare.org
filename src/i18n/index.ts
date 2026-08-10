@@ -202,6 +202,8 @@ export const ui = {
     "donate.thankYouNewsletter": "Ik wil ook de nieuwsbrief ontvangen",
     "donate.thankYouSubmit": "Versturen",
     "donate.thankYouSubmitted": "Bedankt, we nemen contact met je op!",
+    "donate.qrTitle": "Deel deze code",
+    "donate.qrDownload": "Download QR-code",
     // Donate page - Counter
     "donate.counterValue": "4.200+",
     "donate.counterLabel": "patiënten geholpen, en het telt door",
@@ -626,6 +628,8 @@ export const ui = {
     "donate.thankYouNewsletter": "I'd also like to receive the newsletter",
     "donate.thankYouSubmit": "Submit",
     "donate.thankYouSubmitted": "Thank you, we'll be in touch!",
+    "donate.qrTitle": "Share this code",
+    "donate.qrDownload": "Download QR code",
     // Donate page - Counter
     "donate.counterValue": "4,200+",
     "donate.counterLabel": "patients helped, and counting",
@@ -1054,6 +1058,8 @@ export const ui = {
       "También quiero recibir el boletín informativo",
     "donate.thankYouSubmit": "Enviar",
     "donate.thankYouSubmitted": "¡Gracias, nos pondremos en contacto!",
+    "donate.qrTitle": "Comparte este código",
+    "donate.qrDownload": "Descargar código QR",
     // Donate page - Counter
     "donate.counterValue": "4.200+",
     "donate.counterLabel": "pacientes atendidos, y contando",
