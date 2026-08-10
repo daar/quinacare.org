@@ -13,24 +13,7 @@ const qrDataUri = await generateQrDataUri("https://quinacare.org/doneer");
 <Layout title="Doneer - Quina Care">
   <Nav />
   <div data-pagefind-body>
-    <DonationForm />
-
-    <div class="max-w-[1600px] mx-auto px-6 py-12">
-      <a
-        href={qrDataUri}
-        download="quinacare-donate-qr.png"
-        class="inline-block transition-transform hover:scale-110 active:scale-95"
-        aria-label="Download QR code"
-      >
-        <img
-          src={qrDataUri}
-          alt="QR code"
-          width="120"
-          height="120"
-          class="w-24 md:w-32 h-24 md:h-32 rounded-lg shadow-lg"
-        />
-      </a>
-    </div>
+    <DonationForm qrDataUri={qrDataUri} />
   </div>
 
   <AchievedStats />
