@@ -268,7 +268,7 @@ export const editions: EditionConfig[] = [
       {
         id: "putumayo",
         name: "Putumayo",
-        city: "Puerto el Carmen",
+        city: "Puerto El Carmen",
         country: "EC",
         coords: [0.118, -75.91],
         captain: "Jacob van der Ende",
