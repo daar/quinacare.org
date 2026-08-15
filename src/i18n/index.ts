@@ -288,7 +288,8 @@ export const ui = {
     // Submenu - Wat kun jij doen?
     "submenu.fundraise": "Sponsor acties",
     "submenu.putumayoLoop": "Putumayo Loop",
-    "submenu.putumayoLoopDesc": "Loop mee op zondag 18 oktober voor de lopende kosten van ons ziekenhuis",
+    "submenu.putumayoLoopDesc":
+      "Loop mee op zondag 18 oktober voor de lopende kosten van ons ziekenhuis",
     // Putumayo Loop landing page
     "putumayoLoop.heroLabel": "Wereldwijd hardlopen voor",
     "putumayoLoop.heroTitle": "Putumayo Loop 2026",
@@ -717,7 +718,8 @@ export const ui = {
     // Submenu - What can you do?
     "submenu.fundraise": "Fundraising campaigns",
     "submenu.putumayoLoop": "Putumayo Run",
-    "submenu.putumayoLoopDesc": "Run with us on October 18 to support our hospital's operating costs",
+    "submenu.putumayoLoopDesc":
+      "Run with us on October 18 to support our hospital's operating costs",
     // Putumayo Run landing page
     "putumayoLoop.heroLabel": "A worldwide run for",
     "putumayoLoop.heroTitle": "Putumayo Run 2026",
@@ -1146,7 +1148,8 @@ export const ui = {
     // Submenu - ¿Qué puedes hacer?
     "submenu.fundraise": "Campañas de recaudación",
     "submenu.putumayoLoop": "Putumayo Carrera",
-    "submenu.putumayoLoopDesc": "Corre con nosotros el 18 de octubre para apoyar los gastos operativos de nuestro hospital",
+    "submenu.putumayoLoopDesc":
+      "Corre con nosotros el 18 de octubre para apoyar los gastos operativos de nuestro hospital",
     // Putumayo Carrera landing page
     "putumayoLoop.heroLabel": "Una carrera mundial por",
     "putumayoLoop.heroTitle": "Putumayo Carrera 2026",
@@ -1345,8 +1348,8 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
   },
   nalatenschap: {
     nl: "nalatenschap",
-    en: "bequest",
-    es: "legado",
+    en: "legacy",
+    es: "herencia",
   },
   "voor-de-renovatie": {
     nl: "voor-de-renovatie",
