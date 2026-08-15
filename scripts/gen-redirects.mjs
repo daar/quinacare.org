@@ -92,11 +92,11 @@ for (const lang of ["en", "es"]) {
 // D. Moved download PDFs
 Object.assign(R, {
   "/downloads/sponsor-booklet/251110_Sponsorboekje.pdf":
-    "/nl/sponsorboekje/251110_Sponsorboekje.pdf",
+    "/nl/sponsor-een-medewerker/260801 Sponsor een medewerker.pdf",
   "/downloads/sponsor-booklet/251125_Sponsor-booklet.pdf":
-    "/en/sponsor-booklet/251125_Sponsor-booklet.pdf",
+    "/en/sponsor-a-staff-member/260801 Sponsor a staff member.pdf",
   "/downloads/sponsor-booklet/251125_Cuaderno-de-patrocinio.pdf":
-    "/es/cuaderno-de-patrocinio/251125_Cuaderno-de-patrocinio.pdf",
+    "/es/patrocinar-personal/260801 Patrocinar un miembro del equipo.pdf",
   "/downloads/Quina-Care-Introductieboekje-Vrijwilligers.pdf":
     "/nl/vrijwilligersboekje/Quina-Care-Introductieboekje-Vrijwilligers.pdf",
 });
