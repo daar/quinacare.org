@@ -28,18 +28,18 @@
     "yaml": "^2.9.0"
   },
   "dependencies": {
-    "@astrojs/markdoc": "^1.0.6",
-    "@astrojs/netlify": "^7.0.13",
+    "@astrojs/markdoc": "^2.0.6",
+    "@astrojs/netlify": "^8.2.1",
     "@astrojs/sitemap": "^3.7.3",
     "@libsql/client": "^0.17.3",
     "@mollie/api-client": "^4.5.0",
     "@tailwindcss/vite": "^4.3.1",
     "@types/leaflet": "^1.9.21",
-    "astro": "^6.4.6",
+    "astro": "^7.2.2",
     "leaflet": "^1.9.4",
     "nodemailer": "^9.0.1",
     "qrcode": "^1.5.4",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.3",
     "swiper": "^12.2.0",
     "tailwindcss": "^4.2.1"
   },
