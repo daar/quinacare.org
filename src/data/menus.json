@@ -57,14 +57,14 @@
         {
           "labelKey": "submenu.putumayoLoop",
           "path": "/putumayo-loop",
-          "icon": "fa-solid fa-person-running"
+          "icon": "fa-solid fa-person-running",
+          "image": "/images/putumayo-loop/featured.webp",
+          "descriptionKey": "submenu.putumayoLoopDesc"
         },
         {
           "labelKey": "submenu.yuraBoom",
           "path": "/yura-boom",
-          "icon": "fa-solid fa-tree",
-          "image": "/images/yura-boom/featured.webp",
-          "descriptionKey": "submenu.yuraBoomDesc"
+          "icon": "fa-solid fa-tree"
         },
         {
           "labelKey": "submenu.joinTeam",
