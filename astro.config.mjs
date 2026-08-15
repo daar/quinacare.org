@@ -88,9 +88,13 @@ export default defineConfig({
     "/doneer/karin-martens-maakt-operaties-mogelijk": "/acties/karin-martens",
     "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
     "/doneer/quina-yura": "/yura-boom",
+    "/doneer/sponsor-booklet": "/sponsor-medewerker",
     "/fietsen-voor-hospital-san-miguel-2":
       "/acties/fietsen-voor-hospital-san-miguel",
     "/vrijwilligers": "/word-vrijwilliger",
+    // Sponsor booklet moved from donate subroutes to standalone pages
+    "/en/donate/sponsor-booklet": "/en/sponsor-a-staff-member",
+    "/es/donar/sponsor-booklet": "/es/patrocinar-personal",
   },
   fonts: [
     {
