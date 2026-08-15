@@ -96,7 +96,7 @@ Object.assign(R, {
   "/downloads/sponsor-booklet/251125_Sponsor-booklet.pdf":
     "/en/sponsor-a-staff-member/260801 Sponsor a staff member.pdf",
   "/downloads/sponsor-booklet/251125_Cuaderno-de-patrocinio.pdf":
-    "/es/patrocinar-personal/260801 Patrocinar un miembro del equipo.pdf",
+    "/es/cuaderno-de-patrocinio/260801 Patrocinar un miembro del equipo.pdf",
   "/downloads/Quina-Care-Introductieboekje-Vrijwilligers.pdf":
     "/nl/vrijwilligersboekje/Quina-Care-Introductieboekje-Vrijwilligers.pdf",
 });
