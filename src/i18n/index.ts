@@ -411,7 +411,7 @@ export const ui = {
     "submenu.becomePartner": "Word partner",
     "submenu.yuraBoom": "De Yura Boom",
     "submenu.yuraBoomDesc": "Koop een item aan onze symbolische yura-boom",
-    "submenu.sponsorBooklet": "Sponsorboekje",
+    "submenu.sponsorBooklet": "Sponsor een medewerker",
     "submenu.sponsorBookletDesc":
       "Sponsor een personeelslid en maak direct impact op de zorg.",
     // Submenu - Wat doen wij?
@@ -840,7 +840,7 @@ export const ui = {
     "submenu.becomePartner": "Become a Partner",
     "submenu.yuraBoom": "The Yura Tree",
     "submenu.yuraBoomDesc": "Buy an item on our symbolic Yura tree",
-    "submenu.sponsorBooklet": "Sponsor Booklet",
+    "submenu.sponsorBooklet": "Sponsor a staff member",
     "submenu.sponsorBookletDesc":
       "Sponsor a staff member and make a direct impact on care.",
     // Submenu - What do we do?
@@ -1372,6 +1372,11 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
   },
   privacy: { nl: "privacy", en: "privacy", es: "privacidad" },
   "yura-boom": { nl: "yura-boom", en: "yura-boom", es: "yura-boom" },
+  "sponsor-a-staff-member": {
+    nl: "sponsor-medewerker",
+    en: "sponsor-a-staff-member",
+    es: "patrocinar-personal",
+  },
 };
 
 /** Find the canonical key whose native segment for `lang` equals `segment`. */

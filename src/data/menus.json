@@ -78,7 +78,7 @@
         },
         {
           "labelKey": "submenu.sponsorBooklet",
-          "path": "/donate/sponsor-booklet",
+          "path": "/sponsor-a-staff-member",
           "icon": "fa-solid fa-book-open",
           "descriptionKey": "submenu.sponsorBookletDesc"
         }
