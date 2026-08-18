@@ -39,6 +39,24 @@ const t = useTranslations(lang);
 const tk = (key: string) => t(key as TranslationKey);
 
 const searchPath = getLocalizedPath("/search", lang);
+
+// Determine donate button behavior based on current page
+const currentPath = new URL(Astro.url).pathname;
+const putumayoRoutes: Record<string, string> = {
+  nl: "/putumayo-loop",
+  en: "/en/putumayo-run",
+  es: "/es/putumayo-carrera",
+};
+const isPutumayoPage = Object.values(putumayoRoutes).some(
+  (route) => currentPath === route,
+);
+const putumayoModalIds: Record<string, string> = {
+  "/putumayo-loop": "putumayo-loop-donate-modal",
+  "/en/putumayo-run": "putumayo-run-donate-modal",
+  "/es/putumayo-carrera": "putumayo-carrera-donate-modal",
+};
+const donateModalId = isPutumayoPage ? putumayoModalIds[currentPath] : null;
+const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
 ---
 
 <nav
@@ -265,15 +283,29 @@ const searchPath = getLocalizedPath("/search", lang);
       </div>
 
       {/* Donate button */}
-      <a
-        id="nav-donate-btn"
-        href={getLocalizedPath("/donate", lang)}
-        class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
-      >
-        <Icon name="heart" class="qc-heartbeat" />
-        <span class="hidden lg:inline">{t("nav.donate")}</span>
-        <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
-      </a>
+      {
+        isPutumayoPage ? (
+          <button
+            id="nav-donate-btn"
+            data-open-modal={donateModalId}
+            class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
+          >
+            <Icon name="heart" class="qc-heartbeat" />
+            <span class="hidden lg:inline">{t("nav.donate")}</span>
+            <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
+          </button>
+        ) : (
+          <a
+            id="nav-donate-btn"
+            href={donateLink}
+            class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
+          >
+            <Icon name="heart" class="qc-heartbeat" />
+            <span class="hidden lg:inline">{t("nav.donate")}</span>
+            <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
+          </a>
+        )
+      }
 
       {/* Hamburger button (mobile only) */}
       <button
