@@ -33,7 +33,7 @@ const lang: Lang = "en";
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 const edition = await getCurrentEdition();
-const { hubs, subscribers, donations } = edition;
+const { hubs, subscribers, donations, donationItems } = edition;
 const title = editionTitle(edition, lang);
 
 function formatCurrency(amount: number): string {
