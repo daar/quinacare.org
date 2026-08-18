@@ -76,7 +76,12 @@ function relTime(iso: string): string {
           );
         } else {
           const d = activity.data;
-          const name = d.firstName ?? "Anonymous";
+          const name = d.firstName ?? "Iemand";
+          const amount = `€${Math.round(d.amount_cents / 100)}`;
+          const donatedText = t("putumayoLoop.donated")
+            .replace("{name}", name)
+            .replace("{amount}", amount);
+          const thankYouText = t("putumayoLoop.donatedThankYou");
           return (
             <li class="flex items-start gap-3 px-4 py-3">
               <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
@@ -84,7 +89,7 @@ function relTime(iso: string): string {
               </span>
               <div class="min-w-0 flex-1">
                 <p class="qc-body text-sm leading-snug">
-                  <strong>{name}</strong> donated
+                  {donatedText}. {thankYouText}
                 </p>
                 <p class="qc-meta mt-0.5">{relTime(d.donatedAt)}</p>
               </div>

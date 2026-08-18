@@ -305,6 +305,8 @@ export const ui = {
     "putumayoLoop.latestSignups": "Laatste aanmeldingen",
     "putumayoLoop.activityTimeline": "Activiteit",
     "putumayoLoop.signedUp": "{name} loopt mee in {place}",
+    "putumayoLoop.donated": "{name} heeft {amount} gedoneerd",
+    "putumayoLoop.donatedThankYou": "Bedankt!",
     "putumayoLoop.whyTitle": "Waarom we lopen",
     "putumayoLoop.whyHeading": "Lopen voor lopende kosten",
     "putumayoLoop.whyBody":
@@ -736,6 +738,8 @@ export const ui = {
     "putumayoLoop.latestSignups": "Latest signups",
     "putumayoLoop.activityTimeline": "Activity",
     "putumayoLoop.signedUp": "{name} is running in {place}",
+    "putumayoLoop.donated": "{name} donated {amount}",
+    "putumayoLoop.donatedThankYou": "Thank you!",
     "putumayoLoop.whyTitle": "Why we run",
     "putumayoLoop.whyHeading": "Running for running costs",
     "putumayoLoop.whyBody":
@@ -1167,6 +1171,8 @@ export const ui = {
     "putumayoLoop.latestSignups": "Últimas inscripciones",
     "putumayoLoop.activityTimeline": "Actividad",
     "putumayoLoop.signedUp": "{name} corre en {place}",
+    "putumayoLoop.donated": "{name} donó {amount}",
+    "putumayoLoop.donatedThankYou": "¡Gracias!",
     "putumayoLoop.whyTitle": "Por qué corremos",
     "putumayoLoop.whyHeading": "Correr por los gastos operativos",
     "putumayoLoop.whyBody":
