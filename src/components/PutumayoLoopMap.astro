@@ -169,13 +169,11 @@ const mapData = JSON.stringify({
     }
 
     for (const hub of hubs) {
-      // TODO: Re-enable per-hub count display on map markers
-      // L.marker(hub.coords, { icon: badge(hubCounts[hub.id] || 0) })
-      L.marker(hub.coords).addTo(map).bindPopup(
-        `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}`,
-        // TODO: Re-enable per-hub count in popup
-        // `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}<br><span style="color:#ee172c;font-weight:700;">${hubCounts[hub.id] || 0}</span> ${runnersLabel(hubCounts[hub.id] || 0)}`,
-      );
+      L.marker(hub.coords, { icon: dot })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}`,
+        );
     }
 
     for (const sub of subscribers) {
