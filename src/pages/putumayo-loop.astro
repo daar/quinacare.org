@@ -232,7 +232,12 @@ const excerpt = t("putumayoLoop.heroSubtitle");
         <PutumayoLoopMap lang={lang} hubs={hubs} subscribers={subscribers} />
       </div>
       <div class="lg:col-span-1">
-        <PutumayoLoopFeed lang={lang} hubs={hubs} subscribers={subscribers} />
+        <PutumayoLoopFeed
+          lang={lang}
+          hubs={hubs}
+          subscribers={subscribers}
+          donations={donations.items}
+        />
       </div>
     </div>
   </section>

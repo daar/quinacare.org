@@ -8,15 +8,25 @@ interface Props {
   lang: Lang;
   hubs: Hub[];
   subscribers: Subscriber[];
+  donations?: { amount: number; firstName?: string; donatedAt: string }[];
 }
-const { lang, hubs, subscribers } = Astro.props;
+const { lang, hubs, subscribers, donations = [] } = Astro.props;
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
 const hubsById = new Map(hubs.map((h) => [h.id, h]));
-const sorted = [...subscribers].sort(
-  (a, b) => new Date(b.signedUpAt).getTime() - new Date(a.signedUpAt).getTime(),
-);
+
+// Merge signups and donations into activity timeline
+const activities = [
+  ...subscribers.map((s) => ({ type: "signup" as const, data: s })),
+  ...donations.map((d) => ({ type: "donation" as const, data: d })),
+]
+  .sort(
+    (a, b) =>
+      new Date(b.data.signedUpAt ?? b.data.donatedAt).getTime() -
+      new Date(a.data.signedUpAt ?? a.data.donatedAt).getTime(),
+  )
+  .slice(0, 50);
 
 function relTime(iso: string): string {
   const then = new Date(iso).getTime();
@@ -42,30 +52,45 @@ function relTime(iso: string): string {
     style="max-height: 360px;"
   >
     {
-      sorted.map((s) => {
-        const hub = s.hubId ? hubsById.get(s.hubId) : null;
-        const name = s.firstName ?? "";
-        // Both hub and individual signups go through the same template
-        // (`signedUp`) so the phrasing stays identical. For hubs the
-        // place is derived from the hub config; for individuals it's
-        // the free-text City, country they typed on the modal.
-        const place = hub
-          ? `${hub.city}, ${countryName(hub.country, lang)}`
-          : (s.location ?? "—");
-        const text = t("putumayoLoop.signedUp")
-          .replace("{name}", name)
-          .replace("{place}", place);
-        return (
-          <li class="flex items-start gap-3 px-4 py-3">
-            <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
-              <Icon name="heart" class="text-xs" />
-            </span>
-            <div class="min-w-0 flex-1">
-              <p class="qc-body text-sm leading-snug">{text}</p>
-              <p class="qc-meta mt-0.5">{relTime(s.signedUpAt)}</p>
-            </div>
-          </li>
-        );
+      activities.map((activity) => {
+        if (activity.type === "signup") {
+          const s = activity.data;
+          const hub = s.hubId ? hubsById.get(s.hubId) : null;
+          const name = s.firstName ?? "";
+          const place = hub
+            ? `${hub.city}, ${countryName(hub.country, lang)}`
+            : (s.location ?? "—");
+          const text = t("putumayoLoop.signedUp")
+            .replace("{name}", name)
+            .replace("{place}", place);
+          return (
+            <li class="flex items-start gap-3 px-4 py-3">
+              <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
+                <Icon name="heart" class="text-xs" />
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="qc-body text-sm leading-snug">{text}</p>
+                <p class="qc-meta mt-0.5">{relTime(s.signedUpAt)}</p>
+              </div>
+            </li>
+          );
+        } else {
+          const d = activity.data;
+          const name = d.firstName ?? "Anonymous";
+          return (
+            <li class="flex items-start gap-3 px-4 py-3">
+              <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
+                <Icon name="gift" class="text-xs" />
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="qc-body text-sm leading-snug">
+                  <strong>{name}</strong> donated
+                </p>
+                <p class="qc-meta mt-0.5">{relTime(d.donatedAt)}</p>
+              </div>
+            </li>
+          );
+        }
       })
     }
   </ul>
