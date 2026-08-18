@@ -126,6 +126,13 @@ const mapData = JSON.stringify({
         iconAnchor: [20, 20],
       });
 
+    const hubMarker = L.divIcon({
+      className: "pl-hub-marker",
+      html: '<div style="background:#ee172c;border-radius:9999px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(238,23,44,.35);border:3px solid #fff;"></div>',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
+    });
+
     const dot = L.divIcon({
       className: "pl-runner-marker",
       html: '<div style="width:10px;height:10px;border-radius:50%;background:#ee172c;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.2);"></div>',
@@ -171,7 +178,7 @@ const mapData = JSON.stringify({
     for (const hub of hubs) {
       // TODO: Re-enable hub badges with counts
       // L.marker(hub.coords, { icon: badge(hubCounts[hub.id] || 0) })
-      L.marker(hub.coords, { icon: dot }).addTo(map).bindPopup(
+      L.marker(hub.coords, { icon: hubMarker }).addTo(map).bindPopup(
         `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}`,
         // TODO: Re-enable hub name and count in popup
         // `<strong>${hub.name}</strong><br>${hub.city}, ${hub.country}<br><span style="color:#ee172c;font-weight:700;">${hubCounts[hub.id] || 0}</span> ${runnersLabel(hubCounts[hub.id] || 0)}`,
