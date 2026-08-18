@@ -102,6 +102,40 @@ export async function getFundraiserStats(
   };
 }
 
+/** Get individual donations for a fundraiser (for activity timeline). */
+export async function getDonationsByFundraiser(
+  slug: string,
+  limit: number = 50,
+): Promise<
+  Array<{
+    amount_cents: number;
+    firstName?: string;
+    donatedAt: string;
+  }>
+> {
+  await ensureSchema();
+  const db = getDb();
+  const result = await db.execute({
+    sql: `SELECT amount_cents, metadata, created_at
+          FROM donations
+          WHERE context = 'fundraiser'
+            AND status = 'paid'
+            AND json_extract(metadata, '$.fundraiser_slug') = ?
+          ORDER BY created_at DESC
+          LIMIT ?`,
+    args: [slug, limit],
+  });
+
+  return result.rows.map((row: any) => {
+    const metadata = typeof row.metadata === "string" ? JSON.parse(row.metadata) : row.metadata;
+    return {
+      amount_cents: Number(row.amount_cents),
+      firstName: metadata.first_name || metadata.firstName,
+      donatedAt: row.created_at || new Date().toISOString(),
+    };
+  });
+}
+
 /** Get a donation by Mollie payment ID. */
 export async function getDonationByMollieId(
   mollieId: string,

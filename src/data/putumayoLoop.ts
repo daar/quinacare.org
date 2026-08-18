@@ -94,6 +94,7 @@ export interface Edition {
   hubs: Hub[];
   subscribers: Subscriber[];
   donations: DonationStats;
+  donationItems?: Array<{ amount_cents: number; firstName?: string; donatedAt: string }>;
   totalRunners?: number;
   story?: Partial<Record<"nl" | "en" | "es", string>>;
   youtubeId?: string;

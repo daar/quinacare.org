@@ -15,7 +15,7 @@ import type {
 } from "../data/putumayoLoop";
 import { editions } from "../data/putumayoLoop";
 import { getTurso } from "./turso";
-import { getFundraiserStats } from "./donations";
+import { getFundraiserStats, getDonationsByFundraiser } from "./donations";
 
 type SubscriberRow = {
   external_id: string | null;
@@ -103,13 +103,14 @@ async function hydrate(config: EditionConfig): Promise<Edition> {
   const skipSubscribers = config.subscribers !== undefined;
   const skipStats = config.raised !== undefined && config.donors !== undefined;
 
-  const [subscribers, stats] = await Promise.all([
+  const [subscribers, stats, donationItems] = await Promise.all([
     skipSubscribers
       ? Promise.resolve(config.subscribers as Subscriber[])
       : fetchSubscribers(config.year, config.hubs),
     skipStats
       ? Promise.resolve({ raised_cents: 0, donor_count: 0 })
       : getFundraiserStats(config.fundraiserSlug),
+    getDonationsByFundraiser(config.fundraiserSlug, 50),
   ]);
 
   return {
@@ -130,6 +131,7 @@ async function hydrate(config: EditionConfig): Promise<Edition> {
       donors: skipStats ? (config.donors as number) : stats.donor_count,
       currency: "EUR",
     },
+    donationItems,
     totalRunners: config.totalRunners,
     story: config.story,
     youtubeId: config.youtubeId,
