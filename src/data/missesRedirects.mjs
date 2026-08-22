@@ -3,33 +3,27 @@
 export default {
   "/donate": "/en/donate",
   "/hospital-san-miguel": "/ziekenhuis",
-  "/een-ziekenhuis-in-het-amazonegebied-van-ecuador":
-    "/actueel/een-ziekenhuis-in-het-amazonegebied-van-ecuador",
+  "/een-ziekenhuis-in-het-amazonegebied-van-ecuador": "/actueel/een-ziekenhuis-in-het-amazonegebied-van-ecuador",
   "/en/about-us": "/en/about",
   "/en/word-vrijwilliger": "/en/become-volunteer",
   "/news/nieuwe-website": "/actueel/nieuwe-website",
   "/news/putumayo-loop-2026-launch": "/actueel/putumayo-loop-2026-launch",
   "/fundraisers/demi-en-thomas": "/acties/demi-en-thomas",
   "/actueel/looking-for-equipment": "/actueel/we-zoeken-apparatuur",
-  "/doneer/matthijs-altena-running-4-running-costs":
-    "/acties/matthijs-altena-running-4-running-costs",
+  "/doneer/matthijs-altena-running-4-running-costs": "/acties/matthijs-altena-running-4-running-costs",
   "/fundraisers/karin-martens": "/acties/karin-martens",
   "/en/en-ecuador/ecuador": "/en/news/ecuador",
   "/en/about-us/organization": "/en/organization",
-  "/en/en-blogs-vlogs/there-is-always-a-different-way":
-    "/en/news/there-is-always-a-different-way",
+  "/en/en-blogs-vlogs/there-is-always-a-different-way": "/en/news/there-is-always-a-different-way",
   "/en/en-ecuador/putumayo": "/en/news/putumayo",
   "/en/en-blogs-vlogs/toilets-or-sockets": "/en/news/toilets-or-sockets",
   "/ecuador/putumayo": "/actueel/putumayo",
-  "/en/en-blogs-vlogs/build-in-times-of-crisis":
-    "/en/news/build-in-times-of-crisis",
+  "/en/en-blogs-vlogs/build-in-times-of-crisis": "/en/news/build-in-times-of-crisis",
   "/en/maria-priscila-chacon-de-la-portilla-3": "/en/staff",
   "/projecten/hospital-equipment": "/projecten/ziekenhuisapparatuur",
-  "/en/whats-happening-in-puerto-el-carmen":
-    "/en/news/whats-happening-in-puerto-el-carmen",
+  "/en/whats-happening-in-puerto-el-carmen": "/en/news/whats-happening-in-puerto-el-carmen",
   "/en/hpv-screening": "/en/projects/hpv-screening",
-  "/en/en-blogs-vlogs/clearing-boarding-school":
-    "/en/news/clearing-boarding-school",
+  "/en/en-blogs-vlogs/clearing-boarding-school": "/en/news/clearing-boarding-school",
   "/en/quina-care-is-growing": "/en/news/quina-care-is-growing",
   "/es/es-ecuador/ecuador": "/es/noticias/ecuador",
   "/en/en-blogs-vlogs/guayaquil": "/en/news/guayaquil",
@@ -37,10 +31,21 @@ export default {
   "/en/hospital-san-miguel-2/staff": "/en/staff",
   "/news/nootdorp4life-sponsorrit": "/actueel/nootdorp4life-sponsorrit",
   "/rotterdam-marathon": "/acties/rotterdam-marathon",
-  "/es/news/floortje-naar-het-einde-van-de-wereld":
-    "/es/noticias/floortje-naar-het-einde-van-de-wereld",
+  "/es/news/floortje-naar-het-einde-van-de-wereld": "/es/noticias/floortje-naar-het-einde-van-de-wereld",
   "/over-ons/organisatie": "/organisatie",
   "/steun-hospital-san-miguel-en-doe-een-donatie": "/doneer",
   "/en/clinical-wards-are-open": "/en/news/clinical-wards-are-open",
   "/es/acerca-de-nosotros/organizacion": "/es/organizacion",
+  "/anbi": "/actueel/anbi",
+  "/en/about-us/policy-plan": "/en/news/policy-plan",
+  "/en/hospital-san-miguel-has-become-reality": "/en/news/hospital-san-miguel-has-become-reality",
+  "/en/en-blogs-vlogs/well-functiong-laboratory-vital": "/en/news/well-functiong-laboratory-vital",
+  "/es/es-blogs-vlogs/construir-en-tiempos-de-crisis": "/es/noticias/construir-en-tiempos-de-crisis",
+  "/es/es-ecuador/putumayo": "/es/noticias/putumayo",
+  "/blogs-vlogs/hospital-san-miguel-is-realiteit-geworden": "/actueel/hospital-san-miguel-is-realiteit-geworden",
+  "/es/news/nootdorp4life-sponsorrit": "/es/noticias/nootdorp4life-sponsorrit",
+  "/news/floortje-naar-het-einde-van-de-wereld": "/actueel/floortje-naar-het-einde-van-de-wereld",
+  "/miel-bartels": "/actueel/miel-bartels",
+  "/marilu-isabel-calderon-hidalgo": "/actueel/marilu-isabel-calderon-hidalgo",
+  "/patricia-coromoto-picon-nadales": "/actueel/patricia-coromoto-picon-nadales"
 };
