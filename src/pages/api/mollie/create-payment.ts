@@ -131,8 +131,7 @@ export const POST: APIRoute = async ({ request }) => {
   //     both the webhook AND the return URL through the public tunnel,
   //     so end-to-end recurring testing actually works locally.
   const publicOrigin = import.meta.env.PUBLIC_WEBHOOK_ORIGIN as
-    | string
-    | undefined;
+    string | undefined;
   const origin = publicOrigin?.trim() || requestOrigin;
   const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1");
   const webhookUrl = isLocal ? undefined : `${origin}/api/mollie/webhook`;

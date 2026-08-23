@@ -29,22 +29,19 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.6",
-    "@astrojs/netlify": "^8.2.3",
-    "@astrojs/sitemap": "^3.7.3",
     "@libsql/client": "^0.17.3",
     "@mollie/api-client": "^4.5.0",
-    "@tailwindcss/vite": "^4.3.1",
-    "@types/leaflet": "^1.9.21",
     "astro": "^7.2.2",
-    "impeccable": "github:pbakaus/impeccable",
     "leaflet": "^1.9.4",
     "nodemailer": "^9.0.1",
-    "qrcode": "^1.5.4",
-    "sharp": "^0.35.3",
-    "tailwindcss": "^4.2.1"
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@astrojs/netlify": "^8.2.3",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/leaflet": "^1.9.21",
     "@cspell/dict-es-es": "^3.0.8",
     "@cspell/dict-nl-nl": "^2.4.2",
     "@eslint/js": "^10.0.1",
@@ -62,7 +59,10 @@
     "svgo": "^4.0.1",
     "swiper": "^14.1.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.0"
+    "typescript-eslint": "^8.61.0",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.2.1",
+    "impeccable": "github:pbakaus/impeccable"
   },
   "lint-staged": {
     "*.{js,ts,mjs,cjs,json,css,md}": "prettier --write",

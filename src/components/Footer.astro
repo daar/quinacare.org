@@ -206,8 +206,19 @@ const policyPlanUrl = policyPlanLinks[lang] || policyPlanLinks.en;
     >
       <div class="flex gap-8">
         <p>&copy; 2026 Quina Care</p>
-        <a href={policyPlanUrl} target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">
-          {lang === 'nl' ? 'Beleidsplan' : lang === 'es' ? 'Plan de Política' : 'Policy Plan'}
+        <a
+          href={policyPlanUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-white transition-colors"
+        >
+          {
+            lang === "nl"
+              ? "Beleidsplan"
+              : lang === "es"
+                ? "Plan de Política"
+                : "Policy Plan"
+          }
         </a>
         {
           /* TODO: re-enable privacy policy link once the page is written

@@ -3,7 +3,7 @@ WordPress to Astro Migration Plan (Python)
 Overview
 
 Migrate WordPress content to Astro Markdoc using Python, based on parser.py (wpparser  
- approach).
+approach).
 
 Requirements Summary
 
@@ -18,19 +18,19 @@ Requirements Summary
 Script Structure
 
 temp/  
- ├── migrate.py # Main migration script  
- ├── parser.py # Reference (wpparser usage)  
- └── quinacare.WordPress.2024-04-14.xml
+├── migrate.py # Main migration script  
+├── parser.py # Reference (wpparser usage)  
+└── quinacare.WordPress.2024-04-14.xml
 
 src/  
- ├── assets/  
- │ └── images/  
- │ └── raw/ # Downloaded original images  
- ├── content/  
- │ └── blog/  
- │ └── \*.mdoc # Generated Markdoc files  
- └── components/  
- └── WpImage.astro # Custom image component
+├── assets/  
+│ └── images/  
+│ └── raw/ # Downloaded original images  
+├── content/  
+│ └── blog/  
+│ └── \*.mdoc # Generated Markdoc files  
+└── components/  
+└── WpImage.astro # Custom image component
 
 ---
 
@@ -65,14 +65,14 @@ Migration Script Modules
 ---
 
 title: "Post Title"  
- date: 2024-01-15  
- status: draft|publish|private  
- slug: post-slug  
- author: "Author Name"  
- excerpt: "Post excerpt..."  
- categories: ["Category1", "Category2"]  
- language: "en"|"nl"|"es"  
- featured_image: "/media/2024/01/image.jpg"
+date: 2024-01-15  
+status: draft|publish|private  
+slug: post-slug  
+author: "Author Name"  
+excerpt: "Post excerpt..."  
+categories: ["Category1", "Category2"]  
+language: "en"|"nl"|"es"  
+featured_image: "/media/2024/01/image.jpg"
 
 ---
 
@@ -84,47 +84,47 @@ title: "Post Title"
 ---
 
 Key Libraries (Python)  
- ┌────────────────┬────────────────────────────┐  
- │ Library │ Purpose │  
- ├────────────────┼────────────────────────────┤  
- │ wpparser │ Parse WordPress XML export │  
- ├────────────────┼────────────────────────────┤  
- │ markdownify │ Convert HTML to Markdown │  
- ├────────────────┼────────────────────────────┤  
- │ requests │ Download images │  
- ├────────────────┼────────────────────────────┤  
- │ re │ Shortcode stripping regex │  
- ├────────────────┼────────────────────────────┤  
- │ pathlib │ File/directory handling │  
- ├────────────────┼────────────────────────────┤  
- │ PIL (optional) │ Image dimension extraction │  
- └────────────────┴────────────────────────────┘
+┌────────────────┬────────────────────────────┐  
+│ Library │ Purpose │  
+├────────────────┼────────────────────────────┤  
+│ wpparser │ Parse WordPress XML export │  
+├────────────────┼────────────────────────────┤  
+│ markdownify │ Convert HTML to Markdown │  
+├────────────────┼────────────────────────────┤  
+│ requests │ Download images │  
+├────────────────┼────────────────────────────┤  
+│ re │ Shortcode stripping regex │  
+├────────────────┼────────────────────────────┤  
+│ pathlib │ File/directory handling │  
+├────────────────┼────────────────────────────┤  
+│ PIL (optional) │ Image dimension extraction │  
+└────────────────┴────────────────────────────┘
 
 ---
 
 Shortcodes to Strip/Convert  
- ┌───────────────────────────────────┬───────────────────────────────────────┐  
- │ Shortcode │ Action │  
- ├───────────────────────────────────┼───────────────────────────────────────┤  
- │ [gallery ids="..." columns="..."] │ Convert to multiple {% image %} tags │  
- ├───────────────────────────────────┼───────────────────────────────────────┤  
- │ [caption]...[/caption] │ Extract image + caption → {% image %} │  
- ├───────────────────────────────────┼───────────────────────────────────────┤  
- │ [vc_*]...[/vc_*] │ Strip (Visual Composer) │  
- ├───────────────────────────────────┼───────────────────────────────────────┤  
- │ [et_*]...[/et_*] │ Strip (Divi) │  
- ├───────────────────────────────────┼───────────────────────────────────────┤  
- │ [tbdonations_*] │ Strip │  
- ├───────────────────────────────────┼───────────────────────────────────────┤  
- │ Other shortcodes │ Strip brackets, keep inner text │  
- └───────────────────────────────────┴───────────────────────────────────────┘
+┌───────────────────────────────────┬───────────────────────────────────────┐  
+│ Shortcode │ Action │  
+├───────────────────────────────────┼───────────────────────────────────────┤  
+│ [gallery ids="..." columns="..."] │ Convert to multiple {% image %} tags │  
+├───────────────────────────────────┼───────────────────────────────────────┤  
+│ [caption]...[/caption] │ Extract image + caption → {% image %} │  
+├───────────────────────────────────┼───────────────────────────────────────┤  
+│ [vc__]...[/vc__] │ Strip (Visual Composer) │  
+├───────────────────────────────────┼───────────────────────────────────────┤  
+│ [et__]...[/et__] │ Strip (Divi) │  
+├───────────────────────────────────┼───────────────────────────────────────┤  
+│ [tbdonations_*] │ Strip │  
+├───────────────────────────────────┼───────────────────────────────────────┤  
+│ Other shortcodes │ Strip brackets, keep inner text │  
+└───────────────────────────────────┴───────────────────────────────────────┘
 
 ---
 
 WpImage.astro Component (for reference)
 
 The Python script will output tags like:  
- {% image src="/media/2024/01/photo.jpg" width=800 height=600 caption="A beautiful
+{% image src="/media/2024/01/photo.jpg" width=800 height=600 caption="A beautiful
   scene" align="center" %}
 
 The Astro component will:

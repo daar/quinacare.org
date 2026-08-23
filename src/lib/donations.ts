@@ -126,12 +126,19 @@ export async function getDonationsByFundraiser(
     args: [slug, limit],
   });
 
-  return result.rows.map((row: any) => {
-    const metadata = typeof row.metadata === "string" ? JSON.parse(row.metadata) : row.metadata;
+  return result.rows.map((row) => {
+    const metadata =
+      typeof row.metadata === "string"
+        ? JSON.parse(row.metadata)
+        : row.metadata;
+    const firstName =
+      ((metadata as Record<string, unknown>).first_name as
+        string | undefined) ||
+      ((metadata as Record<string, unknown>).firstName as string | undefined);
     return {
       amount_cents: Number(row.amount_cents),
-      firstName: metadata.first_name || metadata.firstName,
-      donatedAt: row.created_at || new Date().toISOString(),
+      firstName,
+      donatedAt: (row.created_at as string) || new Date().toISOString(),
     };
   });
 }
