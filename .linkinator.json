@@ -1,0 +1,5 @@
+{
+  "skip": [".netlify/images", "localhost", "putumayo-loop"],
+  "statusCodes": [200, 201, 202, 204, 301, 302, 304, 307, 308, 429],
+  "concurrency": 1
+}
