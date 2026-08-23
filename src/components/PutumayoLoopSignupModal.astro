@@ -524,9 +524,9 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
         // (and can't be submitted); if the previously-checked distance
         // is no longer offered, clear it so the runner re-picks.
         const syncDistances = () => {
-          const selected = Array.from(radios).find((r) => r.checked)?.value;
+          const mode = Array.from(radios).find((r) => r.checked)?.value;
           const allowed =
-            selected === "hub" && hubInput?.value
+            mode === "hub" && hubInput?.value
               ? hubDistanceMap[hubInput.value]
               : null; // null = all distances
           let kidsIsSelected = false;
@@ -539,13 +539,13 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             if (input) {
               input.disabled = !ok;
               if (!ok) input.checked = false;
-              // Check if kids distance is selected
-              if (input.checked && input.value === "kids") {
+              // Check if kids distance is selected AND mode is hub
+              if (input.checked && input.value === "kids" && mode === "hub") {
                 kidsIsSelected = true;
               }
             }
           });
-          // Show/hide age field based on kids selection
+          // Show/hide age field only for hub mode with kids run
           kidsAgeField?.classList.toggle("hidden", !kidsIsSelected);
           if (kidsAgeInput) {
             kidsAgeInput.required = kidsIsSelected;
