@@ -505,6 +505,12 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           emergencyFields?.classList.add("hidden");
           if (emergencyName) emergencyName.required = false;
           if (emergencyPhone) emergencyPhone.required = false;
+          // Reset age field
+          kidsAgeField?.classList.add("hidden");
+          if (kidsAgeInput) {
+            kidsAgeInput.required = false;
+            kidsAgeInput.value = "";
+          }
         };
 
         // hubId -> the distances that hub offers. Individual runners (no
@@ -545,9 +551,14 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             }
           });
           // Show/hide age field only for hub mode with kids run
-          kidsAgeField?.classList.toggle("hidden", !kidsIsSelected);
+          const isHidden = !kidsIsSelected;
+          kidsAgeField?.classList.toggle("hidden", isHidden);
           if (kidsAgeInput) {
+            // Only required when visible, and clear value when hidden
             kidsAgeInput.required = kidsIsSelected;
+            if (isHidden) {
+              kidsAgeInput.value = "";
+            }
           }
         };
 
