@@ -654,20 +654,28 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           e.preventDefault();
           const data = new FormData(form);
           const mode = String(data.get("mode") ?? "");
+          const distance = String(data.get("distance") ?? "");
           const onEmergency =
             !!emergencyStep && !emergencyStep.classList.contains("hidden");
+
+          // Custom validation: check required fields based on current form state
+          if (!mode || !distance) {
+            return; // Basic validation failed
+          }
+
           // Hub signups get a second step for the optional emergency contact.
-          // The submit event only fires when the main form is valid, so it's
-          // safe to advance without re-validating.
           if (mode === "hub" && !onEmergency) {
             formMain?.classList.add("hidden");
             emergencyStep?.classList.remove("hidden");
             // Show age field if kids distance was selected
-            const distance = String(data.get("distance") ?? "");
             const showAge = distance === "kids";
             kidsAgeField?.classList.toggle("hidden", !showAge);
             if (kidsAgeInput) {
-              kidsAgeInput.required = showAge;
+              if (showAge) {
+                kidsAgeInput.setAttribute("required", "");
+              } else {
+                kidsAgeInput.removeAttribute("required");
+              }
             }
             return;
           }
