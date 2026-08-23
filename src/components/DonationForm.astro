@@ -94,22 +94,24 @@ const numberLocale = localeMap[lang];
         </div>
       </div>
 
-      {qrDataUri && (
-        <a
-          href={qrDataUri}
-          download="quinacare-donate-qr.png"
-          class="inline-block mt-8 transition-transform hover:scale-110 active:scale-95"
-          aria-label="Download QR code"
-        >
-          <img
-            src={qrDataUri}
-            alt="QR code"
-            width="120"
-            height="120"
-            class="w-24 md:w-32 h-24 md:h-32 rounded-lg shadow-lg"
-          />
-        </a>
-      )}
+      {
+        qrDataUri && (
+          <a
+            href={qrDataUri}
+            download="quinacare-donate-qr.png"
+            class="inline-block mt-8 transition-transform hover:scale-110 active:scale-95"
+            aria-label="Download QR code"
+          >
+            <img
+              src={qrDataUri}
+              alt="QR code"
+              width="120"
+              height="120"
+              class="w-24 md:w-32 h-24 md:h-32 rounded-lg shadow-lg"
+            />
+          </a>
+        )
+      }
     </div>
 
     <!-- Right: Floating donation form card -->
