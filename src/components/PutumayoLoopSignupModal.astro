@@ -564,9 +564,11 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             // Only required when visible, and clear value when hidden
             if (kidsIsSelected) {
               kidsAgeInput.setAttribute("required", "");
+              kidsAgeInput.setCustomValidity("");
             } else {
               kidsAgeInput.removeAttribute("required");
               kidsAgeInput.value = "";
+              kidsAgeInput.setCustomValidity("");
             }
           }
         };
@@ -630,6 +632,18 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           if (emergencyName) emergencyName.required = on;
           if (emergencyPhone) emergencyPhone.required = on;
         });
+
+        // Add custom validity to age field to bypass HTML5 validation when hidden
+        if (kidsAgeInput) {
+          kidsAgeInput.addEventListener("invalid", (e) => {
+            e.preventDefault();
+            // Check if field should be required
+            const isHidden = kidsAgeField?.classList.contains("hidden");
+            if (isHidden) {
+              kidsAgeInput.setCustomValidity("");
+            }
+          });
+        }
         // "Back" returns from the emergency step to the main form.
         backBtn?.addEventListener("click", () => {
           emergencyStep?.classList.add("hidden");
