@@ -507,13 +507,18 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           // deliberate pick. Both detail blocks stay hidden until one of
           // the two radios is chosen.
           const selected = Array.from(radios).find((r) => r.checked)?.value;
-          const modeSelected = selected === "hub" || selected === "individual";
           hubSelect?.classList.toggle("hidden", selected !== "hub");
           individualLocation?.classList.toggle(
             "hidden",
             selected !== "individual",
           );
-          distanceFieldset?.classList.toggle("hidden", !modeSelected);
+          // Show distances only when:
+          // - Individual mode is selected (show all distances immediately)
+          // - Hub mode is selected AND a hub is chosen (show hub-specific distances)
+          const showDistances =
+            (selected === "individual") ||
+            (selected === "hub" && !!hubInput?.value);
+          distanceFieldset?.classList.toggle("hidden", !showDistances);
           // Toggle `required` so the browser doesn't validate a hidden
           // field belonging to the other mode (or no mode at all).
           if (hubInput) hubInput.required = selected === "hub";
@@ -530,8 +535,9 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           syncDistances();
         };
         radios.forEach((r) => r.addEventListener("change", syncMode));
-        // Switching hubs can change which distances are on offer.
-        hubInput?.addEventListener("change", syncDistances);
+        // Switching hubs can change which distances are on offer, and also
+        // determines whether to show the distance fieldset at all.
+        hubInput?.addEventListener("change", syncMode);
         syncMode();
 
         // Both the main and the emergency-step buttons carry these spans,
