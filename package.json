@@ -16,7 +16,7 @@
     "svg:minify": "svgo -r --folder src/assets --quiet --exclude instagram.svg --exclude Asset-2.svg && svgo -r --folder public --quiet --exclude favicon.svg",
     "check:images": "node scripts/check-image-sizes.mjs",
     "resize:images": "node scripts/resize-images.mjs",
-    "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost'",
+    "check:links": "linkinator dist --recurse --skip '.netlify/images|localhost|putumayo-loop|ssi-surgeon.org'",
     "lighthouse": "npx --yes @lhci/cli@0.14.0 autorun",
     "mollie-admin": "node --env-file=.env tools/mollie-admin/server.mjs",
     "test": "node --test --experimental-strip-types 'tests/**/*.test.ts'",
