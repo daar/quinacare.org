@@ -237,20 +237,6 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
               </div>
             </fieldset>
 
-            <div class="kids-age-field hidden">
-              <label class="qc-label block mb-1">
-                {t("putumayoLoop.kidsAge")}
-              </label>
-              <input
-                type="number"
-                name="kidsAge"
-                min="1"
-                max="18"
-                placeholder="Leeftijd"
-                class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
-              />
-            </div>
-
             <button
               type="submit"
               class="qc-btn qc-btn--primary w-full py-4 flex items-center justify-center gap-2"
@@ -279,6 +265,19 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           </div>
 
           <div class="emergency-step hidden space-y-4">
+            <div class="kids-age-field hidden">
+              <label class="qc-label block mb-1">
+                {t("putumayoLoop.kidsAge")}
+              </label>
+              <input
+                type="number"
+                name="kidsAge"
+                min="1"
+                max="18"
+                placeholder="Leeftijd"
+                class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+              />
+            </div>
             <h3 class="text-lg font-bold tracking-tighter uppercase">
               {t("putumayoLoop.emergencyTitle")}
             </h3>
@@ -629,6 +628,13 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           if (mode === "hub" && !onEmergency) {
             formMain?.classList.add("hidden");
             emergencyStep?.classList.remove("hidden");
+            // Show age field if kids distance was selected
+            const distance = String(data.get("distance") ?? "");
+            const showAge = distance === "kids";
+            kidsAgeField?.classList.toggle("hidden", !showAge);
+            if (kidsAgeInput) {
+              kidsAgeInput.required = showAge;
+            }
             return;
           }
 
