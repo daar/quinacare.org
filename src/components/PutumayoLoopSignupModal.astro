@@ -360,6 +360,8 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
       .forEach((dialog) => {
         const open = (e: Event) => {
           e.preventDefault();
+          const target = e.target as HTMLElement;
+          const hubToSelect = target.getAttribute("data-hub-select");
           // Browsers restore form state (radios, inputs) across reloads
           // unless we explicitly clear it. The "How will you run?" radio
           // has no default — both options must start unchecked every time
@@ -379,6 +381,17 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           dialog
             .querySelector<HTMLDivElement>(".individual-location")
             ?.classList.add("hidden");
+          // If a hub was pre-selected (from clicking a hub card),
+          // set the mode to "hub" and select that hub.
+          if (hubToSelect && hubInput) {
+            const hubRadio = Array.from(radios).find(
+              (r) => r.value === "hub",
+            ) as HTMLInputElement;
+            if (hubRadio) {
+              hubRadio.checked = true;
+              hubInput.value = hubToSelect;
+            }
+          }
           // Re-sync the dependent fields (incl. re-enabling every distance)
           // so a fresh open never inherits the previous session's state.
           resetEmergency();
