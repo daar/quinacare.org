@@ -358,6 +358,54 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
     document
       .querySelectorAll<HTMLDialogElement>(".pl-signup-modal")
       .forEach((dialog) => {
+        // Declare all DOM elements first so they're available to event handlers
+        const form = dialog.querySelector<HTMLFormElement>(
+          "#putumayo-signup-form",
+        );
+        const formView = dialog.querySelector<HTMLDivElement>(".form-view");
+        const successView =
+          dialog.querySelector<HTMLDivElement>(".success-view");
+        const hubSelect = dialog.querySelector<HTMLDivElement>(".hub-select");
+        const individualLocation = dialog.querySelector<HTMLDivElement>(
+          ".individual-location",
+        );
+        const hubInput =
+          hubSelect?.querySelector<HTMLSelectElement>('select[name="hub"]');
+        const cityInput =
+          individualLocation?.querySelector<HTMLInputElement>(
+            'input[name="city"]',
+          );
+        const countryInput =
+          individualLocation?.querySelector<HTMLInputElement>(
+            'input[name="country"]',
+          );
+        const radios =
+          dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
+        const formMain = dialog.querySelector<HTMLDivElement>(".form-main");
+        const emergencyStep =
+          dialog.querySelector<HTMLDivElement>(".emergency-step");
+        const emergencyOptIn = dialog.querySelector<HTMLInputElement>(
+          'input[name="emergencyOptIn"]',
+        );
+        const emergencyFields =
+          dialog.querySelector<HTMLDivElement>(".emergency-fields");
+        const emergencyName = dialog.querySelector<HTMLInputElement>(
+          'input[name="emergencyName"]',
+        );
+        const emergencyPhone = dialog.querySelector<HTMLInputElement>(
+          'input[name="emergencyPhone"]',
+        );
+        const backBtn =
+          dialog.querySelector<HTMLButtonElement>(".emergency-back");
+        const primaryBtn = formMain?.querySelector<HTMLButtonElement>(
+          'button[type="submit"]',
+        );
+        const primaryLabel =
+          primaryBtn?.querySelector<HTMLElement>(".signup-btn-label");
+        const distanceFieldset = dialog.querySelector<HTMLFieldSetElement>(
+          ".distance-fieldset",
+        );
+
         const open = (e: Event) => {
           e.preventDefault();
           const target = e.target as HTMLElement;
@@ -421,52 +469,6 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           if (didSubmit) window.location.reload();
         });
 
-        const form = dialog.querySelector<HTMLFormElement>(
-          "#putumayo-signup-form",
-        );
-        const formView = dialog.querySelector<HTMLDivElement>(".form-view");
-        const successView =
-          dialog.querySelector<HTMLDivElement>(".success-view");
-        const hubSelect = dialog.querySelector<HTMLDivElement>(".hub-select");
-        const individualLocation = dialog.querySelector<HTMLDivElement>(
-          ".individual-location",
-        );
-        const hubInput =
-          hubSelect?.querySelector<HTMLSelectElement>('select[name="hub"]');
-        const cityInput =
-          individualLocation?.querySelector<HTMLInputElement>(
-            'input[name="city"]',
-          );
-        const countryInput =
-          individualLocation?.querySelector<HTMLInputElement>(
-            'input[name="country"]',
-          );
-        const radios =
-          dialog.querySelectorAll<HTMLInputElement>('input[name="mode"]');
-
-        // Second step (hub signups only): optional emergency contact.
-        const formMain = dialog.querySelector<HTMLDivElement>(".form-main");
-        const emergencyStep =
-          dialog.querySelector<HTMLDivElement>(".emergency-step");
-        const emergencyOptIn = dialog.querySelector<HTMLInputElement>(
-          'input[name="emergencyOptIn"]',
-        );
-        const emergencyFields =
-          dialog.querySelector<HTMLDivElement>(".emergency-fields");
-        const emergencyName = dialog.querySelector<HTMLInputElement>(
-          'input[name="emergencyName"]',
-        );
-        const emergencyPhone = dialog.querySelector<HTMLInputElement>(
-          'input[name="emergencyPhone"]',
-        );
-        const backBtn =
-          dialog.querySelector<HTMLButtonElement>(".emergency-back");
-        const primaryBtn = formMain?.querySelector<HTMLButtonElement>(
-          'button[type="submit"]',
-        );
-        const primaryLabel =
-          primaryBtn?.querySelector<HTMLElement>(".signup-btn-label");
-
         // Fresh open: collapse the emergency step + reset its opt-in.
         const resetEmergency = () => {
           emergencyStep?.classList.add("hidden");
@@ -510,10 +512,6 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             }
           });
         };
-
-        const distanceFieldset = dialog.querySelector<HTMLFieldSetElement>(
-          ".distance-fieldset",
-        );
 
         const syncMode = () => {
           // The radio is no longer pre-selected — the user has to make a
