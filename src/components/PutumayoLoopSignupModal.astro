@@ -408,8 +408,12 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
 
         const open = (e: Event) => {
           e.preventDefault();
-          const target = e.target as HTMLElement;
-          const hubToSelect = target.getAttribute("data-hub-select");
+          let target = e.target as HTMLElement;
+          // Walk up the DOM tree to find the button with data-hub-select
+          while (target && !target.getAttribute("data-hub-select")) {
+            target = target.parentElement as HTMLElement;
+          }
+          const hubToSelect = target?.getAttribute("data-hub-select");
           // Browsers restore form state (radios, inputs) across reloads
           // unless we explicitly clear it. The "How will you run?" radio
           // has no default — both options must start unchecked every time
