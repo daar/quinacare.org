@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.6",
-    "@astrojs/netlify": "^8.2.1",
+    "@astrojs/netlify": "^8.2.3",
     "@astrojs/sitemap": "^3.7.3",
     "@libsql/client": "^0.17.3",
     "@mollie/api-client": "^4.5.0",
