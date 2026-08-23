@@ -503,13 +503,20 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           formMain?.classList.remove("hidden");
           if (emergencyOptIn) emergencyOptIn.checked = false;
           emergencyFields?.classList.add("hidden");
-          if (emergencyName) emergencyName.required = false;
-          if (emergencyPhone) emergencyPhone.required = false;
-          // Reset age field
+          if (emergencyName) {
+            emergencyName.required = false;
+            emergencyName.value = "";
+          }
+          if (emergencyPhone) {
+            emergencyPhone.required = false;
+            emergencyPhone.value = "";
+          }
+          // Reset age field completely
           kidsAgeField?.classList.add("hidden");
           if (kidsAgeInput) {
             kidsAgeInput.required = false;
             kidsAgeInput.value = "";
+            kidsAgeInput.removeAttribute("required");
           }
         };
 
@@ -555,8 +562,10 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           kidsAgeField?.classList.toggle("hidden", isHidden);
           if (kidsAgeInput) {
             // Only required when visible, and clear value when hidden
-            kidsAgeInput.required = kidsIsSelected;
-            if (isHidden) {
+            if (kidsIsSelected) {
+              kidsAgeInput.setAttribute("required", "");
+            } else {
+              kidsAgeInput.removeAttribute("required");
               kidsAgeInput.value = "";
             }
           }
