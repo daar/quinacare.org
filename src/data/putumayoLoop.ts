@@ -7,13 +7,14 @@
 // `src/lib/putumayoLoopRepo.ts` joins the three sources.
 
 /** A distance a runner can pick at signup. */
-export type Distance = "10k" | "half" | "full";
+export type Distance = "kids" | "10k" | "half" | "full";
 
 /**
  * All distances the run offers, in display order, with their km labels.
  * A hub may offer a subset of these (see `Hub.distances`).
  */
 export const ALL_DISTANCES: { value: Distance; label: string }[] = [
+  { value: "kids", label: "1 km" },
   { value: "10k", label: "10 km" },
   { value: "half", label: "21 km" },
   { value: "full", label: "42 km" },
@@ -274,6 +275,8 @@ export const editions: EditionConfig[] = [
         coords: [0.118, -75.91],
         captain: "Jacob van der Ende",
         captainEmail: "hospitalsanmiguel@quinacare.org",
+        // Putumayo runs kids (1 km), 10 km, 21 km, and full marathon.
+        distances: ["kids", "10k", "half", "full"],
       },
       {
         id: "den-haag",
@@ -283,6 +286,8 @@ export const editions: EditionConfig[] = [
         coords: [52.0705, 4.3007],
         captain: "Sarah Blaszyk",
         captainEmail: "smmblaszyk@gmail.com",
+        // Den Haag runs kids (1 km), 10 km, 21 km, and full marathon.
+        distances: ["kids", "10k", "half", "full"],
       },
       {
         id: "hulst",
@@ -292,8 +297,8 @@ export const editions: EditionConfig[] = [
         coords: [51.28039231477035, 4.0526885572096605],
         captain: "Cindy Martens",
         captainEmail: "cindymartens@live.nl",
-        // Hulst only runs the 10 km and 21 km — no full marathon.
-        distances: ["10k", "half"],
+        // Hulst runs kids (1 km), 10 km, and 21 km — no full marathon.
+        distances: ["kids", "10k", "half"],
       },
     ],
     target: 25000,
