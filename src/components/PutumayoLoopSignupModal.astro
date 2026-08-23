@@ -437,7 +437,13 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             ) as HTMLInputElement;
             if (hubRadio) {
               hubRadio.checked = true;
-              hubInput.value = hubToSelect;
+              // Verify the option exists before setting value
+              const option = Array.from(hubInput.options).find(
+                (opt) => opt.value === hubToSelect,
+              );
+              if (option) {
+                hubInput.value = hubToSelect;
+              }
             }
           }
           // Re-sync the dependent fields (incl. re-enabling every distance)
