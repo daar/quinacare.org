@@ -347,8 +347,7 @@ export const ui = {
     "putumayoLoop.qrDownload": "Download QR-code",
     // Signup modal
     "putumayoLoop.modalTitle": "Meld je aan voor de Putumayo Loop",
-    "putumayoLoop.modalSubtitle":
-      "Nog even wat laatste gegevens van je",
+    "putumayoLoop.modalSubtitle": "Nog even wat laatste gegevens van je",
     "putumayoLoop.kidsAge": "Leeftijd kind",
     "putumayoLoop.firstName": "Voornaam",
     "putumayoLoop.lastName": "Achternaam",
@@ -391,8 +390,9 @@ export const ui = {
     "putumayoLoop.successClose": "Sluiten",
     "putumayoLoop.emailSubject": "[Putumayo Loop {year}] Je bent ingeschreven!",
     "putumayoLoop.emailHubWhere": "Bij hub {hub} in {city}",
+    "putumayoLoop.emailKidsAge": "• Leeftijd kind: {age}",
     "putumayoLoop.emailBody":
-      "Hoi {name},\n\nBedankt voor je aanmelding voor de Putumayo Loop {year}! Je doet officieel mee.\n\nWat we van je hebben:\n• Afstand: {distance}\n• Datum: {date}\n• Waar: {where}\n\nIn de aanloop naar de loop sturen we je meer praktische informatie en updates. Heb je tussendoor vragen? Mail dan naar {contactEmail}.\n\nTot snel aan de start!\nHet Quina Care-team",
+      "Hoi {name},\n\nBedankt voor je aanmelding voor de Putumayo Loop {year}! Je doet officieel mee.\n\nWat we van je hebben:\n• Afstand: {distance}\n• Datum: {date}\n• Waar: {where}{kidsAge}\n\nIn de aanloop naar de loop sturen we je meer praktische informatie en updates. Heb je tussendoor vragen? Mail dan naar {contactEmail}.\n\nTot snel aan de start!\nHet Quina Care-team",
     "putumayoLoop.editionsLabel": "Edities",
     "putumayoLoop.pastEditionLabel": "Afgelopen editie",
     "putumayoLoop.finalRaised": "Totaal opgehaald",
@@ -782,8 +782,7 @@ export const ui = {
     "putumayoLoop.qrDownload": "Download QR code",
     // Signup modal
     "putumayoLoop.modalTitle": "Sign up for the Putumayo Run",
-    "putumayoLoop.modalSubtitle":
-      "Just a few more details",
+    "putumayoLoop.modalSubtitle": "Just a few more details",
     "putumayoLoop.kidsAge": "Child's age",
     "putumayoLoop.firstName": "First name",
     "putumayoLoop.lastName": "Last name",
@@ -826,8 +825,9 @@ export const ui = {
     "putumayoLoop.successClose": "Close",
     "putumayoLoop.emailSubject": "[Putumayo Run {year}] You're signed up!",
     "putumayoLoop.emailHubWhere": "From hub {hub} in {city}",
+    "putumayoLoop.emailKidsAge": "• Child's age: {age}",
     "putumayoLoop.emailBody":
-      "Hi {name},\n\nThanks for signing up for the Putumayo Run {year} — you're officially in.\n\nHere's what we have on file:\n• Distance: {distance}\n• Date: {date}\n• Where: {where}\n\nWe'll send you more practical information and updates as the run gets closer. Got a question in the meantime? Write to {contactEmail}.\n\nSee you at the start line,\nThe Quina Care team",
+      "Hi {name},\n\nThanks for signing up for the Putumayo Run {year} — you're officially in.\n\nHere's what we have on file:\n• Distance: {distance}\n• Date: {date}\n• Where: {where}{kidsAge}\n\nWe'll send you more practical information and updates as the run gets closer. Got a question in the meantime? Write to {contactEmail}.\n\nSee you at the start line,\nThe Quina Care team",
     "putumayoLoop.editionsLabel": "Editions",
     "putumayoLoop.pastEditionLabel": "Past edition",
     "putumayoLoop.finalRaised": "Total raised",
@@ -1217,8 +1217,7 @@ export const ui = {
     "putumayoLoop.qrDownload": "Descargar código QR",
     // Signup modal
     "putumayoLoop.modalTitle": "Inscríbete a la Putumayo Carrera",
-    "putumayoLoop.modalSubtitle":
-      "Solo unos últimos datos",
+    "putumayoLoop.modalSubtitle": "Solo unos últimos datos",
     "putumayoLoop.kidsAge": "Edad del niño",
     "putumayoLoop.firstName": "Nombre",
     "putumayoLoop.lastName": "Apellido",
@@ -1261,8 +1260,9 @@ export const ui = {
     "putumayoLoop.successClose": "Cerrar",
     "putumayoLoop.emailSubject": "[Putumayo Carrera {year}] ¡Estás inscrito!",
     "putumayoLoop.emailHubWhere": "Desde el hub {hub} en {city}",
+    "putumayoLoop.emailKidsAge": "• Edad del niño: {age}",
     "putumayoLoop.emailBody":
-      "Hola {name},\n\n¡Gracias por inscribirte en la Putumayo Carrera {year}! Ya estás dentro oficialmente.\n\nEsto es lo que tenemos registrado:\n• Distancia: {distance}\n• Fecha: {date}\n• Dónde: {where}\n\nTe enviaremos más información práctica y novedades cuando se acerque la carrera. ¿Tienes alguna pregunta? Escribe a {contactEmail}.\n\n¡Nos vemos en la salida!\nEl equipo de Quina Care",
+      "Hola {name},\n\n¡Gracias por inscribirte en la Putumayo Carrera {year}! Ya estás dentro oficialmente.\n\nEsto es lo que tenemos registrado:\n• Distancia: {distance}\n• Fecha: {date}\n• Dónde: {where}{kidsAge}\n\nTe enviaremos más información práctica y novedades cuando se acerque la carrera. ¿Tienes alguna pregunta? Escribe a {contactEmail}.\n\n¡Nos vemos en la salida!\nEl equipo de Quina Care",
     "putumayoLoop.editionsLabel": "Ediciones",
     "putumayoLoop.pastEditionLabel": "Edición pasada",
     "putumayoLoop.finalRaised": "Total recaudado",

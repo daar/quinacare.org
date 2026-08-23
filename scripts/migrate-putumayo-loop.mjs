@@ -131,6 +131,10 @@ async function ensureSchema() {
   await tryAlter(
     `ALTER TABLE putumayo_loop_subscribers ADD COLUMN emergency_contact_phone TEXT`,
   );
+  // Optional kids age for kids run signups.
+  await tryAlter(
+    `ALTER TABLE putumayo_loop_subscribers ADD COLUMN kids_age INTEGER`,
+  );
 }
 
 async function main() {

@@ -61,6 +61,8 @@ export const POST: APIRoute = async ({ request }) => {
   const emergencyPhone = body.emergencyPhone
     ? String(body.emergencyPhone).trim()
     : null;
+  // Optional kids age for kids run signups.
+  const kidsAge = body.kidsAge ? Number(body.kidsAge) : null;
   const editionYear = Number(body.editionYear);
   const rawLang = String(body.lang ?? "nl").toLowerCase() as Lang;
   const lang: Lang = ALLOWED_LANGS.has(rawLang) ? rawLang : "nl";
@@ -134,8 +136,8 @@ export const POST: APIRoute = async ({ request }) => {
         INSERT INTO putumayo_loop_subscribers
           (external_id, edition_year, first_name, last_name, email,
            hub_id, lat, lng, location, count, distance,
-           emergency_contact_name, emergency_contact_phone, signed_up_at)
-        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, datetime('now'))
+           emergency_contact_name, emergency_contact_phone, kids_age, signed_up_at)
+        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, datetime('now'))
       `,
       args: [
         editionYear,
@@ -149,6 +151,7 @@ export const POST: APIRoute = async ({ request }) => {
         distance,
         emergencyName,
         emergencyPhone,
+        kidsAge,
       ],
     });
   } catch (err) {
@@ -198,6 +201,7 @@ export const POST: APIRoute = async ({ request }) => {
     `Edition: Putumayo Loop ${editionYear}`,
     `Date: ${dateLabelEn}`,
     `Distance: ${distanceLabelEn}`,
+    ...(distance === "kids" && kidsAge ? [`Child's age: ${kidsAge}`] : []),
     `Where: ${whereLabelEn}`,
     `Mode: ${mode === "hub" ? "Hub" : "Individual"}`,
     ...(emergencyName || emergencyPhone
@@ -256,6 +260,11 @@ export const POST: APIRoute = async ({ request }) => {
           .replace("{hub}", hub.name)
           .replace("{city}", hub.city)
       : (location ?? "—");
+    const kidsAgeLabel =
+      distance === "kids" && kidsAge
+        ? "\n" +
+          tk("putumayoLoop.emailKidsAge").replace("{age}", String(kidsAge))
+        : "";
     const subject = tk("putumayoLoop.emailSubject").replace(
       "{year}",
       String(editionYear),
@@ -266,6 +275,7 @@ export const POST: APIRoute = async ({ request }) => {
       .replace("{date}", dateLabel)
       .replace("{distance}", distanceLabel)
       .replace("{where}", whereLabel)
+      .replace("{kidsAge}", kidsAgeLabel)
       .replace("{contactEmail}", runManager.email);
 
     await sendMail({
