@@ -416,13 +416,13 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
         );
         const primaryLabel =
           primaryBtn?.querySelector<HTMLElement>(".signup-btn-label");
-        const distanceFieldset = dialog.querySelector<HTMLFieldSetElement>(
-          ".distance-fieldset",
-        );
+        const distanceFieldset =
+          dialog.querySelector<HTMLFieldSetElement>(".distance-fieldset");
         const kidsAgeField =
           dialog.querySelector<HTMLDivElement>(".kids-age-field");
-        const kidsAgeInput =
-          dialog.querySelector<HTMLInputElement>('input[name="kidsAge"]');
+        const kidsAgeInput = dialog.querySelector<HTMLInputElement>(
+          'input[name="kidsAge"]',
+        );
 
         const open = (e: Event) => {
           e.preventDefault();
@@ -514,9 +514,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           // Reset age field completely
           kidsAgeField?.classList.add("hidden");
           if (kidsAgeInput) {
-            kidsAgeInput.required = false;
             kidsAgeInput.value = "";
-            kidsAgeInput.removeAttribute("required");
           }
         };
 
@@ -560,16 +558,8 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           // Show/hide age field only for hub mode with kids run
           const isHidden = !kidsIsSelected;
           kidsAgeField?.classList.toggle("hidden", isHidden);
-          if (kidsAgeInput) {
-            // Only required when visible, and clear value when hidden
-            if (kidsIsSelected) {
-              kidsAgeInput.setAttribute("required", "");
-              kidsAgeInput.setCustomValidity("");
-            } else {
-              kidsAgeInput.removeAttribute("required");
-              kidsAgeInput.value = "";
-              kidsAgeInput.setCustomValidity("");
-            }
+          if (!isHidden && kidsAgeInput) {
+            kidsAgeInput.value = "";
           }
         };
 
@@ -587,7 +577,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           // - Individual mode is selected (show all distances immediately)
           // - Hub mode is selected AND a hub is chosen (show hub-specific distances)
           const showDistances =
-            (selected === "individual") ||
+            selected === "individual" ||
             (selected === "hub" && !!hubInput?.value);
           distanceFieldset?.classList.toggle("hidden", !showDistances);
           // Toggle `required` so the browser doesn't validate a hidden
@@ -632,18 +622,6 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           if (emergencyName) emergencyName.required = on;
           if (emergencyPhone) emergencyPhone.required = on;
         });
-
-        // Add custom validity to age field to bypass HTML5 validation when hidden
-        if (kidsAgeInput) {
-          kidsAgeInput.addEventListener("invalid", (e) => {
-            e.preventDefault();
-            // Check if field should be required
-            const isHidden = kidsAgeField?.classList.contains("hidden");
-            if (isHidden) {
-              kidsAgeInput.setCustomValidity("");
-            }
-          });
-        }
         // "Back" returns from the emergency step to the main form.
         backBtn?.addEventListener("click", () => {
           emergencyStep?.classList.add("hidden");
@@ -671,13 +649,19 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             const showAge = distance === "kids";
             kidsAgeField?.classList.toggle("hidden", !showAge);
             if (kidsAgeInput) {
-              if (showAge) {
-                kidsAgeInput.setAttribute("required", "");
-              } else {
-                kidsAgeInput.removeAttribute("required");
-              }
+              // Never mark as required - we'll validate manually
+              kidsAgeInput.removeAttribute("required");
             }
             return;
+          }
+
+          // Manual validation for emergency step
+          if (mode === "hub" && onEmergency) {
+            // Check age if kids distance was selected
+            if (distance === "kids" && !kidsAgeInput?.value) {
+              kidsAgeInput?.focus();
+              return; // Age is required for kids run
+            }
           }
 
           errorEls?.forEach((el) => el.classList.add("hidden"));
@@ -705,7 +689,8 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                 hubId: mode === "hub" ? data.get("hub") : null,
                 location,
                 distance: data.get("distance"),
-                kidsAge: data.get("distance") === "kids" ? data.get("kidsAge") : null,
+                kidsAge:
+                  data.get("distance") === "kids" ? data.get("kidsAge") : null,
                 emergencyName:
                   mode === "hub" && optIn ? data.get("emergencyName") : null,
                 emergencyPhone:
