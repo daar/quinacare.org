@@ -267,6 +267,19 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             <h3 class="text-lg font-bold tracking-tighter uppercase">
               {t("putumayoLoop.emergencyTitle")}
             </h3>
+            <div class="kids-age-field hidden">
+              <label class="qc-label block mb-1">
+                {t("putumayoLoop.kidsAge")}
+              </label>
+              <input
+                type="number"
+                name="kidsAge"
+                min="1"
+                max="18"
+                placeholder="Leeftijd"
+                class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
+              />
+            </div>
             <p class="qc-meta">{t("putumayoLoop.emergencyIntro")}</p>
             <label
               class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
@@ -405,6 +418,10 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
         const distanceFieldset = dialog.querySelector<HTMLFieldSetElement>(
           ".distance-fieldset",
         );
+        const kidsAgeField =
+          dialog.querySelector<HTMLDivElement>(".kids-age-field");
+        const kidsAgeInput =
+          dialog.querySelector<HTMLInputElement>('input[name="kidsAge"]');
 
         const open = (e: Event) => {
           e.preventDefault();
@@ -510,6 +527,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             selected === "hub" && hubInput?.value
               ? hubDistanceMap[hubInput.value]
               : null; // null = all distances
+          let kidsIsSelected = false;
           distanceOptions.forEach((label) => {
             const input = label.querySelector<HTMLInputElement>(
               'input[name="distance"]',
@@ -519,8 +537,17 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
             if (input) {
               input.disabled = !ok;
               if (!ok) input.checked = false;
+              // Check if kids distance is selected
+              if (input.checked && input.value === "kids") {
+                kidsIsSelected = true;
+              }
             }
           });
+          // Show/hide age field based on kids selection
+          kidsAgeField?.classList.toggle("hidden", !kidsIsSelected);
+          if (kidsAgeInput) {
+            kidsAgeInput.required = kidsIsSelected;
+          }
         };
 
         const syncMode = () => {
@@ -628,6 +655,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                 hubId: mode === "hub" ? data.get("hub") : null,
                 location,
                 distance: data.get("distance"),
+                kidsAge: data.get("distance") === "kids" ? data.get("kidsAge") : null,
                 emergencyName:
                   mode === "hub" && optIn ? data.get("emergencyName") : null,
                 emergencyPhone:

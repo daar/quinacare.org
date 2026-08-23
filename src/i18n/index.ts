@@ -348,7 +348,8 @@ export const ui = {
     // Signup modal
     "putumayoLoop.modalTitle": "Meld je aan voor de Putumayo Loop",
     "putumayoLoop.modalSubtitle":
-      "Vul je gegevens in en kies hoe je mee wilt lopen.",
+      "Nog even wat laatste gegevens van je",
+    "putumayoLoop.kidsAge": "Leeftijd kind",
     "putumayoLoop.firstName": "Voornaam",
     "putumayoLoop.lastName": "Achternaam",
     "putumayoLoop.email": "E-mailadres",
@@ -782,7 +783,8 @@ export const ui = {
     // Signup modal
     "putumayoLoop.modalTitle": "Sign up for the Putumayo Run",
     "putumayoLoop.modalSubtitle":
-      "Fill in your details and pick how you want to run.",
+      "Just a few more details",
+    "putumayoLoop.kidsAge": "Child's age",
     "putumayoLoop.firstName": "First name",
     "putumayoLoop.lastName": "Last name",
     "putumayoLoop.email": "Email address",
@@ -1216,7 +1218,8 @@ export const ui = {
     // Signup modal
     "putumayoLoop.modalTitle": "Inscríbete a la Putumayo Carrera",
     "putumayoLoop.modalSubtitle":
-      "Completa tus datos y elige cómo quieres correr.",
+      "Solo unos últimos datos",
+    "putumayoLoop.kidsAge": "Edad del niño",
     "putumayoLoop.firstName": "Nombre",
     "putumayoLoop.lastName": "Apellido",
     "putumayoLoop.email": "Correo electrónico",
