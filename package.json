@@ -55,7 +55,7 @@
     "eslint": "^10.5.0",
     "eslint-plugin-astro": "^1.7.0",
     "husky": "^9.1.7",
-    "linkinator": "^7.6.1",
+    "linkinator": "^8.0.4",
     "lint-staged": "^17.0.7",
     "pagefind": "^1.5.2",
     "prettier": "^3.8.4",
