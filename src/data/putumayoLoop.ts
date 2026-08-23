@@ -286,8 +286,8 @@ export const editions: EditionConfig[] = [
         coords: [52.0705, 4.3007],
         captain: "Sarah Blaszyk",
         captainEmail: "smmblaszyk@gmail.com",
-        // Den Haag runs kids (1 km), 10 km, 21 km, and full marathon.
-        distances: ["kids", "10k", "half", "full"],
+        // Den Haag runs 10 km, 21 km, and full marathon (no kids run).
+        distances: ["10k", "half", "full"],
       },
       {
         id: "hulst",

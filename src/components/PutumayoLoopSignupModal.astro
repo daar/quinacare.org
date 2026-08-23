@@ -212,7 +212,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
               </p>
             </div>
 
-            <fieldset>
+            <fieldset class="distance-fieldset hidden">
               <legend class="qc-label mb-2">
                 {t("putumayoLoop.distanceLabel")}
               </legend>
@@ -498,16 +498,22 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
           });
         };
 
+        const distanceFieldset = dialog.querySelector<HTMLFieldSetElement>(
+          ".distance-fieldset",
+        );
+
         const syncMode = () => {
           // The radio is no longer pre-selected — the user has to make a
           // deliberate pick. Both detail blocks stay hidden until one of
           // the two radios is chosen.
           const selected = Array.from(radios).find((r) => r.checked)?.value;
+          const modeSelected = selected === "hub" || selected === "individual";
           hubSelect?.classList.toggle("hidden", selected !== "hub");
           individualLocation?.classList.toggle(
             "hidden",
             selected !== "individual",
           );
+          distanceFieldset?.classList.toggle("hidden", !modeSelected);
           // Toggle `required` so the browser doesn't validate a hidden
           // field belonging to the other mode (or no mode at all).
           if (hubInput) hubInput.required = selected === "hub";
