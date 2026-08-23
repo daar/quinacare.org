@@ -8,7 +8,11 @@ interface Props {
   lang: Lang;
   hubs: Hub[];
   subscribers: Subscriber[];
-  donationItems?: Array<{ amount_cents: number; firstName?: string; donatedAt: string }>;
+  donationItems?: Array<{
+    amount_cents: number;
+    firstName?: string;
+    donatedAt: string;
+  }>;
 }
 const { lang, hubs, subscribers, donationItems = [] } = Astro.props;
 const t = useTranslations(lang);
@@ -18,13 +22,19 @@ const hubsById = new Map(hubs.map((h) => [h.id, h]));
 
 // Merge signups and donations into activity timeline
 const activities = [
-  ...subscribers.map((s) => ({ type: "signup" as const, data: s })),
-  ...donationItems.map((d) => ({ type: "donation" as const, data: d })),
+  ...subscribers.map((s) => ({
+    type: "signup" as const,
+    data: s,
+    timestamp: s.signedUpAt,
+  })),
+  ...donationItems.map((d) => ({
+    type: "donation" as const,
+    data: d,
+    timestamp: d.donatedAt,
+  })),
 ]
   .sort(
-    (a, b) =>
-      new Date(b.data.signedUpAt ?? b.data.donatedAt).getTime() -
-      new Date(a.data.signedUpAt ?? a.data.donatedAt).getTime(),
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
   )
   .slice(0, 50);
 

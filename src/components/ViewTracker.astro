@@ -9,7 +9,7 @@ interface Props {
 const { slug, lang } = Astro.props;
 ---
 
-<script define:vars={{ slug, lang }}>
+<script is:inline define:vars={{ slug, lang }}>
   try {
     const payload = JSON.stringify({ slug, lang });
     if (navigator.sendBeacon) {
