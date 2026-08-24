@@ -7,7 +7,7 @@
 // `src/lib/putumayoLoopRepo.ts` joins the three sources.
 
 /** A distance a runner can pick at signup. */
-export type Distance = "kids" | "10k" | "half" | "full";
+export type Distance = "kids" | "5k" | "10k" | "half" | "full";
 
 /**
  * All distances the run offers, in display order, with their km labels.
@@ -15,6 +15,7 @@ export type Distance = "kids" | "10k" | "half" | "full";
  */
 export const ALL_DISTANCES: { value: Distance; label: string }[] = [
   { value: "kids", label: "1 km" },
+  { value: "5k", label: "5 km" },
   { value: "10k", label: "10 km" },
   { value: "half", label: "21 km" },
   { value: "full", label: "42 km" },
@@ -301,8 +302,8 @@ export const editions: EditionConfig[] = [
         coords: [51.28039231477035, 4.0526885572096605],
         captain: "Cindy Martens",
         captainEmail: "cindymartens@live.nl",
-        // Hulst runs kids (1 km), 10 km, and 21 km — no full marathon.
-        distances: ["kids", "10k", "half"],
+        // Hulst runs kids (1 km), 5 km, 10 km, and 21 km — no full marathon.
+        distances: ["kids", "5k", "10k", "half"],
       },
     ],
     target: 25000,

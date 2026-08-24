@@ -34,7 +34,7 @@ import { reportError } from "../../../lib/errors";
 const SOURCE = "api/putumayo-loop/signup";
 
 const ALLOWED_MODES = new Set(["individual", "hub"]);
-const ALLOWED_DISTANCES = new Set(["kids", "10k", "half", "full"]);
+const ALLOWED_DISTANCES = new Set(["kids", "5k", "10k", "half", "full"]);
 const ALLOWED_LANGS = new Set<Lang>(["nl", "en", "es"]);
 
 export const POST: APIRoute = async ({ request }) => {
@@ -185,11 +185,13 @@ export const POST: APIRoute = async ({ request }) => {
     const distanceKey: TranslationKey =
       distance === "kids"
         ? "putumayoLoop.distanceKids"
-        : distance === "10k"
-          ? "putumayoLoop.distance10k"
-          : distance === "half"
-            ? "putumayoLoop.distanceHalf"
-            : "putumayoLoop.distanceFull";
+        : distance === "5k"
+          ? "putumayoLoop.distance5k"
+          : distance === "10k"
+            ? "putumayoLoop.distance10k"
+            : distance === "half"
+              ? "putumayoLoop.distanceHalf"
+              : "putumayoLoop.distanceFull";
     const distanceLabelEn = tEn(distanceKey);
     const dateLabelEn = edition
       ? new Date(edition.runDate).toLocaleDateString("en-GB", {
