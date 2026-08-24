@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.6",
+    "@astrojs/netlify": "^8.2.3",
+    "@astrojs/sitemap": "^3.7.3",
     "@libsql/client": "^0.17.3",
     "@mollie/api-client": "^4.5.0",
     "astro": "^7.2.4",
@@ -38,8 +40,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@astrojs/netlify": "^8.2.3",
-    "@astrojs/sitemap": "^3.7.3",
     "@cspell/dict-es-es": "^3.0.8",
     "@cspell/dict-nl-nl": "^2.4.2",
     "@eslint/js": "^10.0.1",
