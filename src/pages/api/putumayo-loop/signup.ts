@@ -106,10 +106,12 @@ export const POST: APIRoute = async ({ request }) => {
         );
       }
     }
-    if (mode === "individual" && !location) {
-      return new Response(JSON.stringify({ error: "Location required" }), {
-        status: 400,
-      });
+    if (mode === "individual") {
+      if (!location || location.trim().length < 3) {
+        return new Response(JSON.stringify({ error: "Location required" }), {
+          status: 400,
+        });
+      }
     }
 
     // Best-effort geocoding for individual signups so they appear as a pin
