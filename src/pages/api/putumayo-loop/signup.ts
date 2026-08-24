@@ -38,6 +38,7 @@ const ALLOWED_DISTANCES = new Set(["kids", "10k", "half", "full"]);
 const ALLOWED_LANGS = new Set<Lang>(["nl", "en", "es"]);
 
 export const POST: APIRoute = async ({ request }) => {
+  console.log("[putumayo-signup] POST request received");
   try {
     let body: Record<string, unknown>;
     try {
@@ -297,6 +298,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (err) {
+    console.error("[putumayo-signup] Unhandled error:", err);
     reportError(SOURCE, "Unhandled error in signup handler", err);
     return new Response(JSON.stringify({ error: "Could not process signup" }), {
       status: 500,
