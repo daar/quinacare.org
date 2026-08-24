@@ -91,10 +91,14 @@ export const POST: APIRoute = async ({ request }) => {
   // marathon). Reject a distance the chosen hub doesn't run, so a tampered
   // request can't bypass the UI's per-hub filtering.
   if (mode === "hub" && hubId) {
-    const hub = editions
-      .find((e) => e.year === editionYear)
-      ?.hubs.find((h) => h.id === hubId);
-    if (hub && !hubDistances(hub).includes(distance as Distance)) {
+    const edition = editions.find((e) => e.year === editionYear);
+    const hub = edition?.hubs.find((h) => h.id === hubId);
+    if (!hub) {
+      return new Response(JSON.stringify({ error: "Hub not found" }), {
+        status: 400,
+      });
+    }
+    if (!hubDistances(hub).includes(distance as Distance)) {
       return new Response(
         JSON.stringify({ error: "Distance not available for this hub" }),
         { status: 400 },
