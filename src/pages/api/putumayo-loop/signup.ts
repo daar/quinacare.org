@@ -144,7 +144,7 @@ export const POST: APIRoute = async ({ request }) => {
         INSERT INTO putumayo_loop_subscribers
           (external_id, edition_year, first_name, last_name, email,
            hub_id, lat, lng, location, count, distance,
-           emergency_contact_name, emergency_contact_phone, kids_age, signed_up_at)
+           emergency_contact_name, emergency_contact_phone, age, signed_up_at)
         VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, datetime('now'))
       `,
         args: [
