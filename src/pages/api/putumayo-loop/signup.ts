@@ -38,259 +38,266 @@ const ALLOWED_DISTANCES = new Set(["kids", "10k", "half", "full"]);
 const ALLOWED_LANGS = new Set<Lang>(["nl", "en", "es"]);
 
 export const POST: APIRoute = async ({ request }) => {
-  let body: Record<string, unknown>;
   try {
-    body = await request.json();
-  } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON" }), {
-      status: 400,
-    });
-  }
-
-  const firstName = String(body.firstName ?? "").trim();
-  const lastName = String(body.lastName ?? "").trim();
-  const email = String(body.email ?? "").trim();
-  const mode = String(body.mode ?? "");
-  const hubId = body.hubId ? String(body.hubId).trim() : null;
-  let location = body.location ? String(body.location).trim() : null;
-  const distance = String(body.distance ?? "");
-  // Optional emergency contact captured on the hub signup's second step.
-  const emergencyName = body.emergencyName
-    ? String(body.emergencyName).trim()
-    : null;
-  const emergencyPhone = body.emergencyPhone
-    ? String(body.emergencyPhone).trim()
-    : null;
-  // Optional kids age for kids run signups.
-  const kidsAge = body.kidsAge ? Number(body.kidsAge) : null;
-  const editionYear = Number(body.editionYear);
-  const rawLang = String(body.lang ?? "nl").toLowerCase() as Lang;
-  const lang: Lang = ALLOWED_LANGS.has(rawLang) ? rawLang : "nl";
-
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !ALLOWED_MODES.has(mode) ||
-    !ALLOWED_DISTANCES.has(distance) ||
-    !Number.isFinite(editionYear)
-  ) {
-    return new Response(
-      JSON.stringify({ error: "Missing or invalid fields" }),
-      {
-        status: 400,
-      },
-    );
-  }
-  if (mode === "hub" && !hubId) {
-    return new Response(JSON.stringify({ error: "Hub id required" }), {
-      status: 400,
-    });
-  }
-  // A hub only offers a subset of distances (e.g. Hulst skips the full
-  // marathon). Reject a distance the chosen hub doesn't run, so a tampered
-  // request can't bypass the UI's per-hub filtering.
-  if (mode === "hub" && hubId) {
-    const edition = editions.find((e) => e.year === editionYear);
-    const hub = edition?.hubs.find((h) => h.id === hubId);
-    if (!hub) {
-      return new Response(JSON.stringify({ error: "Hub not found" }), {
+    let body: Record<string, unknown>;
+    try {
+      body = await request.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Invalid JSON" }), {
         status: 400,
       });
     }
-    if (!hubDistances(hub).includes(distance as Distance)) {
+
+    const firstName = String(body.firstName ?? "").trim();
+    const lastName = String(body.lastName ?? "").trim();
+    const email = String(body.email ?? "").trim();
+    const mode = String(body.mode ?? "");
+    const hubId = body.hubId ? String(body.hubId).trim() : null;
+    let location = body.location ? String(body.location).trim() : null;
+    const distance = String(body.distance ?? "");
+    // Optional emergency contact captured on the hub signup's second step.
+    const emergencyName = body.emergencyName
+      ? String(body.emergencyName).trim()
+      : null;
+    const emergencyPhone = body.emergencyPhone
+      ? String(body.emergencyPhone).trim()
+      : null;
+    // Optional kids age for kids run signups.
+    const kidsAge = body.kidsAge ? Number(body.kidsAge) : null;
+    const editionYear = Number(body.editionYear);
+    const rawLang = String(body.lang ?? "nl").toLowerCase() as Lang;
+    const lang: Lang = ALLOWED_LANGS.has(rawLang) ? rawLang : "nl";
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !ALLOWED_MODES.has(mode) ||
+      !ALLOWED_DISTANCES.has(distance) ||
+      !Number.isFinite(editionYear)
+    ) {
       return new Response(
-        JSON.stringify({ error: "Distance not available for this hub" }),
-        { status: 400 },
+        JSON.stringify({ error: "Missing or invalid fields" }),
+        {
+          status: 400,
+        },
       );
     }
-  }
-  if (mode === "individual" && !location) {
-    return new Response(JSON.stringify({ error: "Location required" }), {
-      status: 400,
-    });
-  }
-
-  // Best-effort geocoding for individual signups so they appear as a pin
-  // on the map. Hub signups already use the hub's coords as a fallback
-  // (see putumayoLoopRepo.rowToSubscriber), so we don't geocode for them.
-  // Also backfill the country: when the runner types just "Amsterdam"
-  // we append ", Nederland" / ", Netherlands" / ", Países Bajos" so the
-  // feed shows a proper "City, country" matching the page locale.
-  let lat: number | null = null;
-  let lng: number | null = null;
-  if (mode === "individual" && location) {
-    const geo = await geocode(location);
-    if (geo) {
-      lat = geo.lat;
-      lng = geo.lng;
-      if (geo.countryCode && !location.includes(",")) {
-        location = `${location}, ${countryName(geo.countryCode, lang)}`;
+    if (mode === "hub" && !hubId) {
+      return new Response(JSON.stringify({ error: "Hub id required" }), {
+        status: 400,
+      });
+    }
+    // A hub only offers a subset of distances (e.g. Hulst skips the full
+    // marathon). Reject a distance the chosen hub doesn't run, so a tampered
+    // request can't bypass the UI's per-hub filtering.
+    if (mode === "hub" && hubId) {
+      const edition = editions.find((e) => e.year === editionYear);
+      const hub = edition?.hubs.find((h) => h.id === hubId);
+      if (!hub) {
+        return new Response(JSON.stringify({ error: "Hub not found" }), {
+          status: 400,
+        });
+      }
+      if (!hubDistances(hub).includes(distance as Distance)) {
+        return new Response(
+          JSON.stringify({ error: "Distance not available for this hub" }),
+          { status: 400 },
+        );
       }
     }
-  }
+    if (mode === "individual" && !location) {
+      return new Response(JSON.stringify({ error: "Location required" }), {
+        status: 400,
+      });
+    }
 
-  try {
-    const db = getTurso();
-    // Insert directly — the table is created by the migration script. If
-    // it's missing we want a loud 500 rather than a silent CREATE in the
-    // hot path.
-    await db.execute({
-      sql: `
+    // Best-effort geocoding for individual signups so they appear as a pin
+    // on the map. Hub signups already use the hub's coords as a fallback
+    // (see putumayoLoopRepo.rowToSubscriber), so we don't geocode for them.
+    // Also backfill the country: when the runner types just "Amsterdam"
+    // we append ", Nederland" / ", Netherlands" / ", Países Bajos" so the
+    // feed shows a proper "City, country" matching the page locale.
+    let lat: number | null = null;
+    let lng: number | null = null;
+    if (mode === "individual" && location) {
+      const geo = await geocode(location);
+      if (geo) {
+        lat = geo.lat;
+        lng = geo.lng;
+        if (geo.countryCode && !location.includes(",")) {
+          location = `${location}, ${countryName(geo.countryCode, lang)}`;
+        }
+      }
+    }
+
+    try {
+      const db = getTurso();
+      // Insert directly — the table is created by the migration script. If
+      // it's missing we want a loud 500 rather than a silent CREATE in the
+      // hot path.
+      await db.execute({
+        sql: `
         INSERT INTO putumayo_loop_subscribers
           (external_id, edition_year, first_name, last_name, email,
            hub_id, lat, lng, location, count, distance,
            emergency_contact_name, emergency_contact_phone, kids_age, signed_up_at)
         VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, datetime('now'))
       `,
-      args: [
-        editionYear,
-        firstName,
-        lastName,
-        email,
-        hubId,
-        lat,
-        lng,
-        location,
-        distance,
-        emergencyName,
-        emergencyPhone,
-        kidsAge,
-      ],
-    });
-  } catch (err) {
-    reportError(SOURCE, "Turso insert failed", err, { email, editionYear });
-    return new Response(
-      JSON.stringify({ error: "Could not save your signup" }),
-      { status: 500 },
-    );
-  }
-
-  // Resolve everything the three notification mails need once: the
-  // edition (so we can format the run date), the hub (if any) and the
-  // human-readable distance + date + where labels. The operational
-  // mails (run manager, hub captain) get the English labels; the
-  // runner confirmation gets the locale they signed up from.
-  const edition = editions.find((e) => e.year === editionYear);
-  const hub =
-    mode === "hub" && hubId
-      ? edition?.hubs.find((h) => h.id === hubId)
-      : undefined;
-
-  const tEn = useTranslations("en");
-  const distanceKey: TranslationKey =
-    distance === "kids"
-      ? "putumayoLoop.distanceKids"
-      : distance === "10k"
-        ? "putumayoLoop.distance10k"
-        : distance === "half"
-          ? "putumayoLoop.distanceHalf"
-          : "putumayoLoop.distanceFull";
-  const distanceLabelEn = tEn(distanceKey);
-  const dateLabelEn = edition
-    ? new Date(edition.runDate).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    : String(editionYear);
-  const whereLabelEn = hub
-    ? `Hub ${hub.name} in ${hub.city}`
-    : (location ?? "—");
-
-  // Operational detail block reused in both the run manager and hub
-  // captain mails. Plain text bullets keep it scannable in any client.
-  const detailsEn = [
-    `Runner: ${firstName} ${lastName} <${email}>`,
-    `Edition: Putumayo Loop ${editionYear}`,
-    `Date: ${dateLabelEn}`,
-    `Distance: ${distanceLabelEn}`,
-    ...(distance === "kids" && kidsAge ? [`Child's age: ${kidsAge}`] : []),
-    `Where: ${whereLabelEn}`,
-    `Mode: ${mode === "hub" ? "Hub" : "Individual"}`,
-    ...(emergencyName || emergencyPhone
-      ? [
-          `Emergency contact: ${emergencyName || "—"} (${emergencyPhone || "—"})`,
-        ]
-      : []),
-    `Signup language: ${lang}`,
-  ].join("\n");
-
-  // Best-effort: notify the run manager. We don't block the success
-  // response on the mail; if it fails, the signup is still recorded.
-  try {
-    await sendMail({
-      to: runManager.email,
-      subject: `[Putumayo Loop ${editionYear}] New signup — ${firstName} ${lastName}`,
-      text: `${firstName} ${lastName} just signed up for the Putumayo Loop ${editionYear}.\n\n${detailsEn}`,
-      replyTo: `${firstName} ${lastName} <${email}>`,
-    });
-  } catch (err) {
-    reportError(SOURCE, "run-manager notification mail failed", err);
-  }
-
-  // Hub signups only: also notify the hub captain if their email is on
-  // record. This is independent of the runManager mail above — either
-  // can fail without affecting the other.
-  if (hub?.captainEmail) {
-    try {
-      await sendMail({
-        to: hub.captainEmail,
-        subject: `[Putumayo Loop ${editionYear} — ${hub.name}] New runner joined your hub`,
-        text: `${firstName} ${lastName} just signed up for the Putumayo Loop ${editionYear} via your hub (${hub.name}, ${hub.city}).\n\n${detailsEn}`,
-        replyTo: `${firstName} ${lastName} <${email}>`,
+        args: [
+          editionYear,
+          firstName,
+          lastName,
+          email,
+          hubId,
+          lat,
+          lng,
+          location,
+          distance,
+          emergencyName,
+          emergencyPhone,
+          kidsAge,
+        ],
       });
     } catch (err) {
-      reportError(SOURCE, "hub-captain mail failed", err, { hubId });
+      reportError(SOURCE, "Turso insert failed", err, { email, editionYear });
+      return new Response(
+        JSON.stringify({ error: "Could not save your signup" }),
+        { status: 500 },
+      );
     }
-  }
 
-  // Confirmation mail to the runner, localised to the page they signed up
-  // from. Pulls the human distance label + run date + "where" (hub or
-  // free-text location) so they get a tidy receipt of what we recorded.
-  try {
-    const t = useTranslations(lang);
-    const tk = (key: string) => t(key as TranslationKey);
-    const distanceLabel = tk(distanceKey);
-    const dateLabel = edition
-      ? new Date(edition.runDate).toLocaleDateString(getDateLocale(lang), {
+    // Resolve everything the three notification mails need once: the
+    // edition (so we can format the run date), the hub (if any) and the
+    // human-readable distance + date + where labels. The operational
+    // mails (run manager, hub captain) get the English labels; the
+    // runner confirmation gets the locale they signed up from.
+    const edition = editions.find((e) => e.year === editionYear);
+    const hub =
+      mode === "hub" && hubId
+        ? edition?.hubs.find((h) => h.id === hubId)
+        : undefined;
+
+    const tEn = useTranslations("en");
+    const distanceKey: TranslationKey =
+      distance === "kids"
+        ? "putumayoLoop.distanceKids"
+        : distance === "10k"
+          ? "putumayoLoop.distance10k"
+          : distance === "half"
+            ? "putumayoLoop.distanceHalf"
+            : "putumayoLoop.distanceFull";
+    const distanceLabelEn = tEn(distanceKey);
+    const dateLabelEn = edition
+      ? new Date(edition.runDate).toLocaleDateString("en-GB", {
           day: "numeric",
           month: "long",
           year: "numeric",
         })
       : String(editionYear);
-    const whereLabel = hub
-      ? tk("putumayoLoop.emailHubWhere")
-          .replace("{hub}", hub.name)
-          .replace("{city}", hub.city)
+    const whereLabelEn = hub
+      ? `Hub ${hub.name} in ${hub.city}`
       : (location ?? "—");
-    const kidsAgeLabel =
-      distance === "kids" && kidsAge
-        ? "\n" +
-          tk("putumayoLoop.emailKidsAge").replace("{age}", String(kidsAge))
-        : "";
-    const subject = tk("putumayoLoop.emailSubject").replace(
-      "{year}",
-      String(editionYear),
-    );
-    const text = tk("putumayoLoop.emailBody")
-      .replace("{name}", firstName)
-      .replace("{year}", String(editionYear))
-      .replace("{date}", dateLabel)
-      .replace("{distance}", distanceLabel)
-      .replace("{where}", whereLabel)
-      .replace("{kidsAge}", kidsAgeLabel)
-      .replace("{contactEmail}", runManager.email);
 
-    await sendMail({
-      to: email,
-      subject,
-      text,
-      replyTo: runManager.email,
-    });
+    // Operational detail block reused in both the run manager and hub
+    // captain mails. Plain text bullets keep it scannable in any client.
+    const detailsEn = [
+      `Runner: ${firstName} ${lastName} <${email}>`,
+      `Edition: Putumayo Loop ${editionYear}`,
+      `Date: ${dateLabelEn}`,
+      `Distance: ${distanceLabelEn}`,
+      ...(distance === "kids" && kidsAge ? [`Child's age: ${kidsAge}`] : []),
+      `Where: ${whereLabelEn}`,
+      `Mode: ${mode === "hub" ? "Hub" : "Individual"}`,
+      ...(emergencyName || emergencyPhone
+        ? [
+            `Emergency contact: ${emergencyName || "—"} (${emergencyPhone || "—"})`,
+          ]
+        : []),
+      `Signup language: ${lang}`,
+    ].join("\n");
+
+    // Best-effort: notify the run manager. We don't block the success
+    // response on the mail; if it fails, the signup is still recorded.
+    try {
+      await sendMail({
+        to: runManager.email,
+        subject: `[Putumayo Loop ${editionYear}] New signup — ${firstName} ${lastName}`,
+        text: `${firstName} ${lastName} just signed up for the Putumayo Loop ${editionYear}.\n\n${detailsEn}`,
+        replyTo: `${firstName} ${lastName} <${email}>`,
+      });
+    } catch (err) {
+      reportError(SOURCE, "run-manager notification mail failed", err);
+    }
+
+    // Hub signups only: also notify the hub captain if their email is on
+    // record. This is independent of the runManager mail above — either
+    // can fail without affecting the other.
+    if (hub?.captainEmail) {
+      try {
+        await sendMail({
+          to: hub.captainEmail,
+          subject: `[Putumayo Loop ${editionYear} — ${hub.name}] New runner joined your hub`,
+          text: `${firstName} ${lastName} just signed up for the Putumayo Loop ${editionYear} via your hub (${hub.name}, ${hub.city}).\n\n${detailsEn}`,
+          replyTo: `${firstName} ${lastName} <${email}>`,
+        });
+      } catch (err) {
+        reportError(SOURCE, "hub-captain mail failed", err, { hubId });
+      }
+    }
+
+    // Confirmation mail to the runner, localised to the page they signed up
+    // from. Pulls the human distance label + run date + "where" (hub or
+    // free-text location) so they get a tidy receipt of what we recorded.
+    try {
+      const t = useTranslations(lang);
+      const tk = (key: string) => t(key as TranslationKey);
+      const distanceLabel = tk(distanceKey);
+      const dateLabel = edition
+        ? new Date(edition.runDate).toLocaleDateString(getDateLocale(lang), {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        : String(editionYear);
+      const whereLabel = hub
+        ? tk("putumayoLoop.emailHubWhere")
+            .replace("{hub}", hub.name)
+            .replace("{city}", hub.city)
+        : (location ?? "—");
+      const kidsAgeLabel =
+        distance === "kids" && kidsAge
+          ? "\n" +
+            tk("putumayoLoop.emailKidsAge").replace("{age}", String(kidsAge))
+          : "";
+      const subject = tk("putumayoLoop.emailSubject").replace(
+        "{year}",
+        String(editionYear),
+      );
+      const text = tk("putumayoLoop.emailBody")
+        .replace("{name}", firstName)
+        .replace("{year}", String(editionYear))
+        .replace("{date}", dateLabel)
+        .replace("{distance}", distanceLabel)
+        .replace("{where}", whereLabel)
+        .replace("{kidsAge}", kidsAgeLabel)
+        .replace("{contactEmail}", runManager.email);
+
+      await sendMail({
+        to: email,
+        subject,
+        text,
+        replyTo: runManager.email,
+      });
+    } catch (err) {
+      reportError(SOURCE, "runner-confirmation mail failed", err, { email });
+    }
+
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (err) {
-    reportError(SOURCE, "runner-confirmation mail failed", err, { email });
+    reportError(SOURCE, "Unhandled error in signup handler", err);
+    return new Response(JSON.stringify({ error: "Could not process signup" }), {
+      status: 500,
+    });
   }
-
-  return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };
