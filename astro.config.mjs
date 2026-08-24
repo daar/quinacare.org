@@ -20,7 +20,7 @@ sharp.cache(false);
 // https://astro.build/config
 export default defineConfig({
   site: "https://quinacare.org",
-  output: "hybrid",
+  output: "server",
   adapter: netlify({ imageCDN: false }),
   // Astro's default checkOrigin guard rejects every POST without a
   // matching Origin header. Mollie's webhook calls don't send one,
