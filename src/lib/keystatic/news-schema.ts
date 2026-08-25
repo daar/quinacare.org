@@ -28,9 +28,7 @@ export const newsSchema = {
       },
     },
   }),
-  slug: fields.text({
-    label: "URL slug (optioneel, legacy)",
-  }),
+
   date: fields.date({
     label: "Publicatie datum",
     defaultValue: { kind: "today" },
@@ -53,11 +51,7 @@ export const newsSchema = {
     label: "Categorieën",
     itemLabel: (props) => props.fields.value.value ?? "Categorie",
   }),
-  translationKey: fields.text({
-    label: "Vertaalsleutel (NL slug)",
-    description:
-      "Optioneel. Zonder waarde worden taalversies automatisch gekoppeld via een gelijke slug. Vul dit alleen in als de slug per taal verschilt.",
-  }),
+
   language: fields.text({ label: "Taal" }),
   featured_image: fields.image({
     label: "Uitgelichte afbeelding",
@@ -66,6 +60,16 @@ export const newsSchema = {
   }),
   featured_image_caption: fields.text({ label: "Bijschrift afbeelding" }),
   featured_image_copyright: fields.text({ label: "Copyright afbeelding" }),
+  slug: fields.text({
+    label: "URL slug (override)",
+    description:
+      "Optioneel. Volgt automatisch de slug. Vul dit alleen in om de URL daarvan te laten afwijken.",
+  }),
+  translationKey: fields.text({
+    label: "Vertaalsleutel (NL slug)",
+    description:
+      "Optioneel. Zonder waarde worden taalversies automatisch gekoppeld via een gelijke slug. Vul dit alleen in als de slug per taal verschilt.",
+  }),
   content: fields.markdoc({
     label: "Inhoud",
     // image: false prevents the built-in ProseMirror image node from
