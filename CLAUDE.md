@@ -26,6 +26,20 @@ Examples of this pattern already in the repo:
 - `scripts/donations-report.py` + skill `donations-report` — donations funnel
   report from the Turso production DB (read-only).
 
+## Code conventions
+
+- All code and code comments must be written in English.
+
+## Patch policy
+
+- Prefer configuration, upstream fixes, or local wrapper code over patching
+  dependencies.
+- Use `patch-package` only when there is no practical alternative.
+- Every dependency patch must be documented with:
+  - a short in-code comment near the local override/usage,
+  - an entry in `KESTATIC_UPSTREAM.md` (or equivalent tracking doc) with
+    reason, scope, and removal condition.
+
 ## Content conventions
 
 - Posts/pages/fundraisers are NL/EN/ES. When you change one language’s copy,

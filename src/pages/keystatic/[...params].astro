@@ -22,6 +22,30 @@ export const prerender = false;
     <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Keystatic</title>
+    <style>
+      /*
+       Patch note: we intentionally hide the standalone image toolbar action.
+       Images must be inserted via the insert-block dropdown to avoid the
+       flaky direct-upload toolbar/menu flow in this Keystatic version.
+       See patches/@keystatic+core+0.6.3.patch and KESTATIC_UPSTREAM.md.
+      */
+      button[aria-label="Image"] {
+        display: none !important;
+      }
+
+      /*
+       Keystatic renders a compact 3-icon image popover in this build.
+       Hide this popover entirely so only the inline "Edit" button remains.
+      */
+      div[role="dialog"]
+        > div:has(> div > button + button):has(> [role="separator"]),
+      div[role="dialog"]
+        > div:has(> div > button:only-child):has(
+          > div > button:not([aria-label])
+        ) {
+        display: none !important;
+      }
+    </style>
   </head>
   <body class="notranslate">
     <Keystatic client:only="react" />

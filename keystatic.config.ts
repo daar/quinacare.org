@@ -1,6 +1,9 @@
 import { config, collection } from "@keystatic/core";
 import { createNewsSchema } from "./src/lib/keystatic/news-schema";
 
+const newsDir = (lang: "nl" | "en" | "es") =>
+  `src/content/news/${lang}/**` as const;
+
 // Upstream tracking for list sorting/formatting gaps: see KESTATIC_UPSTREAM.md.
 export default config({
   locale: "nl-NL",
@@ -20,7 +23,7 @@ export default config({
         String(
           Number.MAX_SAFE_INTEGER - new Date(slug.split("/")[0]).getTime(),
         ),
-      path: "src/content/news/nl/**",
+      path: newsDir("nl"),
       entryLayout: "content",
       format: { extension: "mdoc", contentField: "content" },
       schema: createNewsSchema("nl"),
@@ -33,7 +36,7 @@ export default config({
         String(
           Number.MAX_SAFE_INTEGER - new Date(slug.split("/")[0]).getTime(),
         ),
-      path: "src/content/news/en/**",
+      path: newsDir("en"),
       entryLayout: "content",
       format: { extension: "mdoc", contentField: "content" },
       schema: createNewsSchema("en"),
@@ -46,7 +49,7 @@ export default config({
         String(
           Number.MAX_SAFE_INTEGER - new Date(slug.split("/")[0]).getTime(),
         ),
-      path: "src/content/news/es/**",
+      path: newsDir("es"),
       entryLayout: "content",
       format: { extension: "mdoc", contentField: "content" },
       schema: createNewsSchema("es"),

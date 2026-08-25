@@ -21,7 +21,11 @@ export const contentComponents = {
   image: block({
     label: "Afbeelding",
     schema: {
-      src: opt("Bron"),
+      src: fields.image({
+        label: "Afbeelding",
+        directory: "src/assets/media",
+        publicPath: "/media/",
+      }),
       alt: opt("Alt-tekst"),
       align: opt("Uitlijning (left / center / right)"),
       caption: opt("Bijschrift"),
@@ -42,7 +46,11 @@ export const contentComponents = {
   "gallery-image": block({
     label: "Galerij-afbeelding",
     schema: {
-      src: opt("Bron"),
+      src: fields.image({
+        label: "Afbeelding",
+        directory: "src/assets/media",
+        publicPath: "/media/",
+      }),
       alt: opt("Alt-tekst"),
     },
   }),

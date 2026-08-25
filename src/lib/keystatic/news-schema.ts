@@ -9,6 +9,9 @@ const generateYearScopedSlug = (value: string) => {
   return `${currentYear()}/${slug}`;
 };
 
+// publicPath is relative to the .mdoc file's own directory
+const featuredImagePublicPath = "../../../../assets/media/";
+
 export const createNewsSchema = (language: "nl" | "en" | "es") => ({
   title: fields.slug({
     name: {
@@ -49,12 +52,12 @@ export const createNewsSchema = (language: "nl" | "en" | "es") => ({
   excerpt: fields.text({ label: "Samenvatting", multiline: true }),
   categories: fields.array(fields.text({ label: "Categorie" }), {
     label: "Categorieën",
-    itemLabel: (props) => props.fields.value.value ?? "Categorie",
+    itemLabel: (props) => props.value ?? "Categorie",
   }),
   featured_image: fields.image({
     label: "Uitgelichte afbeelding",
-    directory: "src/assets/media/cms",
-    publicPath: "../../../../assets/media/cms/",
+    directory: "src/assets/media",
+    publicPath: featuredImagePublicPath,
   }),
   featured_image_caption: fields.text({ label: "Bijschrift afbeelding" }),
   featured_image_copyright: fields.text({ label: "Copyright afbeelding" }),
