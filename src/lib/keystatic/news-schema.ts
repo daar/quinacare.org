@@ -31,7 +31,10 @@ export const newsSchema = {
   slug: fields.text({
     label: "URL slug (optioneel, legacy)",
   }),
-  date: fields.date({ label: "Datum" }),
+  date: fields.date({
+    label: "Publicatie datum",
+    defaultValue: { kind: "today" },
+  }),
   status: fields.select({
     label: "Status",
     options: [
@@ -50,7 +53,11 @@ export const newsSchema = {
     label: "Categorieën",
     itemLabel: (props) => props.fields.value.value ?? "Categorie",
   }),
-  translationKey: fields.text({ label: "Vertaalsleutel (NL slug)" }),
+  translationKey: fields.text({
+    label: "Vertaalsleutel (NL slug)",
+    description:
+      "Optioneel. Zonder waarde worden taalversies automatisch gekoppeld via een gelijke slug. Vul dit alleen in als de slug per taal verschilt.",
+  }),
   language: fields.text({ label: "Taal" }),
   featured_image: fields.image({
     label: "Uitgelichte afbeelding",
