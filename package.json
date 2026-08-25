@@ -28,8 +28,8 @@
     "yaml": "^2.9.0"
   },
   "dependencies": {
-    "@astrojs/markdoc": "^1.0.6",
-    "@astrojs/netlify": "^7.0.13",
+    "@astrojs/markdoc": "^2.0.8",
+    "@astrojs/netlify": "^8.2.4",
     "@astrojs/react": "^6.0.2",
     "@astrojs/sitemap": "^3.7.3",
     "@keystatic/astro": "^5.2.0",
@@ -40,14 +40,14 @@
     "@types/leaflet": "^1.9.21",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "astro": "^6.4.6",
+    "astro": "^7.2.6",
     "leaflet": "^1.9.4",
     "lodash-es": "^4.18.1",
     "nodemailer": "^9.0.1",
     "qrcode": "^1.5.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.3",
     "swiper": "^12.2.0",
     "tailwindcss": "^4.2.1"
   },
