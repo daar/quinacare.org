@@ -9,7 +9,7 @@ const generateYearScopedSlug = (value: string) => {
   return `${currentYear()}/${slug}`;
 };
 
-export const newsSchema = {
+export const createNewsSchema = (language: "nl" | "en" | "es") => ({
   title: fields.slug({
     name: {
       label: "Titel",
@@ -51,8 +51,6 @@ export const newsSchema = {
     label: "Categorieën",
     itemLabel: (props) => props.fields.value.value ?? "Categorie",
   }),
-
-  language: fields.text({ label: "Taal" }),
   featured_image: fields.image({
     label: "Uitgelichte afbeelding",
     directory: "src/assets/media/cms",
@@ -60,6 +58,7 @@ export const newsSchema = {
   }),
   featured_image_caption: fields.text({ label: "Bijschrift afbeelding" }),
   featured_image_copyright: fields.text({ label: "Copyright afbeelding" }),
+  language: fields.text({ label: "Taal", defaultValue: language }),
   slug: fields.text({
     label: "URL slug (override)",
     description:
@@ -77,4 +76,4 @@ export const newsSchema = {
     options: { image: false },
     components: contentComponents,
   }),
-};
+});

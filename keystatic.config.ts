@@ -1,5 +1,5 @@
 import { config, collection } from "@keystatic/core";
-import { newsSchema } from "./src/lib/keystatic/news-schema";
+import { createNewsSchema } from "./src/lib/keystatic/news-schema";
 
 // Upstream tracking for list sorting/formatting gaps: see KESTATIC_UPSTREAM.md.
 export default config({
@@ -23,7 +23,7 @@ export default config({
       path: "src/content/news/nl/**",
       entryLayout: "content",
       format: { extension: "mdoc", contentField: "content" },
-      schema: newsSchema,
+      schema: createNewsSchema("nl"),
     }),
     newsEn: collection({
       label: "News (EN)",
@@ -36,7 +36,7 @@ export default config({
       path: "src/content/news/en/**",
       entryLayout: "content",
       format: { extension: "mdoc", contentField: "content" },
-      schema: newsSchema,
+      schema: createNewsSchema("en"),
     }),
     newsEs: collection({
       label: "Noticias (ES)",
@@ -49,7 +49,7 @@ export default config({
       path: "src/content/news/es/**",
       entryLayout: "content",
       format: { extension: "mdoc", contentField: "content" },
-      schema: newsSchema,
+      schema: createNewsSchema("es"),
     }),
   },
 });
