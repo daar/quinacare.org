@@ -10,7 +10,7 @@
  * and Astro. You don't need to maintain it in two places.
  */
 import { fields } from "@keystatic/core";
-import { block, wrapper } from "@keystatic/core/content-components";
+import { block, repeating, wrapper } from "@keystatic/core/content-components";
 
 // Handy: an optional text field with an empty default value so that existing
 // files that omit an attribute don't produce a validation error.
@@ -37,11 +37,13 @@ export const contentComponents = {
       cols: opt("Kolommen"),
     },
   }),
-  gallery: wrapper({
+  gallery: repeating({
     label: "Galerij",
     schema: {
       ariaLabel: opt("Aria-label"),
     },
+    children: ["gallery-image"],
+    validation: { children: { min: 1 } },
   }),
   "gallery-image": block({
     label: "Galerij-afbeelding",
