@@ -1,7 +1,9 @@
 import { config, collection } from "@keystatic/core";
 import { newsSchema } from "./src/lib/keystatic/news-schema";
 
+// Upstream tracking for list sorting/formatting gaps: see KESTATIC_UPSTREAM.md.
 export default config({
+  locale: "nl-NL",
   storage:
     process.env.NODE_ENV === "production"
       ? { kind: "github", repo: "daar/quinacare.org" }
