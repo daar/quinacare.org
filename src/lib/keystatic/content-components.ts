@@ -1,23 +1,23 @@
 /**
- * Gedeelde definities van Markdoc content-componenten voor Keystatic en Astro.
+ * Shared Markdoc content-component definitions for Keystatic and Astro.
  *
- * - keystatic.config.ts importeert deze (via src/lib/keystatic/news-schema.ts)
- *   om het CMS-editorschema op te bouwen.
- * - markdoc.config.mjs importeert deze via fields.markdoc.createMarkdocConfig,
- *   waarna de Astro render-componenten worden toegevoegd.
+ * - keystatic.config.ts imports these (via src/lib/keystatic/news-schema.ts)
+ *   to build the CMS editor schema.
+ * - markdoc.config.mjs imports these via fields.markdoc.createMarkdocConfig,
+ *   after which the Astro render components are added.
  *
- * Voeg hier een component toe als je zowel in de editor als in Astro iets nieuws
- * wilt ondersteunen. Je hoeft niets op twee plaatsen bij te houden.
+ * Add a component here if you want to support something new in both the editor
+ * and Astro. You don't need to maintain it in two places.
  */
 import { fields } from "@keystatic/core";
 import { block, wrapper } from "@keystatic/core/content-components";
 
-// Handig: een optioneel tekstveld met lege defaultwaarde zodat bestaande
-// bestanden die een attribuut weglaten geen validatiefout geven.
+// Handy: an optional text field with an empty default value so that existing
+// files that omit an attribute don't produce a validation error.
 const opt = (label: string) => fields.text({ label, defaultValue: "" });
 
 export const contentComponents = {
-  // ─── Afbeeldingen ──────────────────────────────────────────────────────────
+  // ─── Images ────────────────────────────────────────────────────────────────
   image: block({
     label: "Afbeelding",
     schema: {
@@ -102,7 +102,7 @@ export const contentComponents = {
     },
   }),
 
-  // ─── Layout / secties ──────────────────────────────────────────────────────
+  // ─── Layout / sections ─────────────────────────────────────────────────────
   section: wrapper({
     label: "Sectie",
     schema: {
@@ -139,7 +139,7 @@ export const contentComponents = {
     },
   }),
 
-  // ─── Citaten / quotes ──────────────────────────────────────────────────────
+  // ─── Quotes ────────────────────────────────────────────────────────────────
   "quote-block": block({
     label: "Citaat",
     schema: {
@@ -150,7 +150,7 @@ export const contentComponents = {
     },
   }),
 
-  // ─── Team & profiel ────────────────────────────────────────────────────────
+  // ─── Team & profile ────────────────────────────────────────────────────────
   "profile-section": wrapper({
     label: "Profielsectie",
     schema: {
@@ -174,7 +174,7 @@ export const contentComponents = {
     },
   }),
 
-  // ─── Partners / donaties ───────────────────────────────────────────────────
+  // ─── Partners / donations ──────────────────────────────────────────────────
   "partner-grid": block({
     label: "Partnergrid",
     schema: {
@@ -203,7 +203,7 @@ export const contentComponents = {
     schema: {},
   }),
 
-  // ─── Contact / organisatie ─────────────────────────────────────────────────
+  // ─── Contact / organization ────────────────────────────────────────────────
   "contact-cards": block({
     label: "Contactkaarten",
     schema: {
@@ -219,7 +219,7 @@ export const contentComponents = {
     schema: {},
   }),
 
-  // ─── Overig ────────────────────────────────────────────────────────────────
+  // ─── Other ─────────────────────────────────────────────────────────────────
   comment: wrapper({
     label: "Commentaar (verborgen op site)",
     schema: {},
