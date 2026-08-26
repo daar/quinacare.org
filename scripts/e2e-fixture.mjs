@@ -137,14 +137,10 @@ function assertCompleteness() {
   }
 }
 
-// Tags that are only ever inserted as children of another tag above (so an
-// empty TAG_MARKDOC entry is intentional, not a gap).
-const CHILD_ONLY_TAGS = new Set(["gallery-image", "team-member", "yura-tiers"]);
-
 function buildBody() {
-  const blocks = Object.entries(TAG_MARKDOC)
-    .filter(([tag, markdoc]) => markdoc || !CHILD_ONLY_TAGS.has(tag))
-    .map(([, markdoc]) => markdoc);
+  // Tags that are only ever inserted as children of another tag above have
+  // an empty TAG_MARKDOC entry (intentional, not a gap) and are skipped here.
+  const blocks = Object.values(TAG_MARKDOC).filter((markdoc) => markdoc !== "");
   return `E2E fixture root paragraph.\n\n${blocks.join("\n\n")}\n`;
 }
 

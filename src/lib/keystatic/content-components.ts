@@ -34,7 +34,7 @@ export const contentComponents = {
   "image-row": wrapper({
     label: "Afbeeldingenrij",
     schema: {
-      cols: opt("Kolommen"),
+      cols: fields.number({ label: "Kolommen", defaultValue: 2 }),
     },
   }),
   gallery: repeating({
@@ -101,7 +101,7 @@ export const contentComponents = {
   "report-card": block({
     label: "Jaarverslagkaart",
     schema: {
-      year: opt("Jaar"),
+      year: fields.number({ label: "Jaar" }),
       lang: opt("Taal (nl / en / es)"),
     },
   }),
@@ -172,7 +172,9 @@ export const contentComponents = {
   }),
   "team-grid": wrapper({
     label: "Teamgrid",
-    schema: {},
+    schema: {
+      cols: fields.number({ label: "Kolommen" }),
+    },
   }),
   "team-member": wrapper({
     label: "Teamlid",

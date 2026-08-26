@@ -3,12 +3,12 @@ import { fields } from "@keystatic/core";
 import { contentComponents } from "./src/lib/keystatic/content-components";
 
 /**
- * Brug tussen Keystatic en Astro Markdoc:
- * - createMarkdocConfig genereert de Markdoc attribute-schema's uit de
- *   Keystatic field-definities in src/lib/keystatic-content-components.ts.
- * - De `render` optie koppelt elke tag aan het juiste Astro component.
- * - De `comment` tag blijft apart omdat die een custom transform nodig heeft
- *   (inhoud weggooien) die Keystatic niet kan uitdrukken.
+ * Bridge between Keystatic and Astro Markdoc:
+ * - createMarkdocConfig generates the Markdoc attribute schemas from the
+ *   Keystatic field definitions in src/lib/keystatic/content-components.ts.
+ * - The `render` option maps each tag to its Astro component.
+ * - The `comment` tag stays separate because it needs a custom transform
+ *   (dropping its content) that Keystatic can't express.
  */
 const ksConfig = fields.markdoc.createMarkdocConfig({
   components: contentComponents,
@@ -57,9 +57,9 @@ export default defineMarkdocConfig({
   ...ksConfig,
   tags: {
     ...ksConfig.tags,
-    // {% comment %}…{% /comment %} — gooit de inhoud weg bij transform zodat
-    // redacteurs TODO/parked-content blokken in .mdoc kunnen bewaren zonder
-    // dat ze op de site verschijnen.
+    // {% comment %}…{% /comment %} — drops its content at transform time so
+    // editors can keep TODO/parked-content blocks in .mdoc files without
+    // them appearing on the site.
     comment: {
       ...ksConfig.tags?.comment,
       attributes: {},

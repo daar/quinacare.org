@@ -48,7 +48,9 @@ donations-report-*.pdf
 .claude/settings.local.json
 .claude/**/.env
 
-src/assets
+# Local-mode Keystatic writes new uploads straight to disk here; real
+# media reaches git via the CMS's own commit flow, not manual `git add`.
+src/assets/media
 
 # Playwright traces
 trace.zip

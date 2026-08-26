@@ -22,9 +22,6 @@ const mediaRoot = path.resolve("src/assets/media");
 
 // One representative per editor "kind", chosen to also exercise the
 // trickiest interactions (a real file upload, and a wrapper with its own
-// attributes dialog).
-// One representative per editor "kind", chosen to also exercise the
-// trickiest interactions (a real file upload, and a wrapper with its own
 // attributes dialog). Deliberately avoids components with a genuinely empty
 // schema (contact-form, foundation-details, tier-grid, yura-tiers, comment)
 // — inserting one of those and saving without ever opening an attributes
