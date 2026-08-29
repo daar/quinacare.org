@@ -1,0 +1,1530 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuinaCare · Blog Editor</title>
+    <style>
+      :root {
+        --red: #e6172c;
+        --ink: #111111;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --bg: #f7f7f8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+      }
+
+      /* ── Header ─────────────────────────────── */
+      header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-right: auto;
+      }
+      .brand b {
+        color: var(--red);
+      }
+      .btn {
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 13px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .btn.primary {
+        background: var(--red);
+        border-color: var(--red);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        background: #c5121f;
+        color: #fff;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .file {
+        font-size: 13px;
+        color: var(--muted);
+        max-width: 240px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .dot {
+        color: var(--red);
+        font-size: 16px;
+        width: 12px;
+        display: inline-block;
+      }
+
+      /* ── Action bar ─────────────────────────── */
+      #actionbar {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 16px;
+        background: #fff8e6;
+        border-bottom: 1px solid #f0d9a0;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      #actionbar[hidden] {
+        display: none;
+      }
+      #ab-label {
+        color: #8a6400;
+        font-weight: 600;
+        white-space: nowrap;
+        padding-top: 5px;
+      }
+      #ab-content {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex: 1;
+        flex-wrap: wrap;
+      }
+      .ablog {
+        flex: 1;
+        margin: 0;
+        max-height: 130px;
+        overflow: auto;
+        white-space: pre-wrap;
+        font:
+          12px ui-monospace,
+          Menlo,
+          Consolas,
+          monospace;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 6px 8px;
+      }
+
+      #ab-content input,
+      #ab-content select {
+        font: inherit;
+        font-size: 13px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        background: #fff;
+        color: var(--ink);
+      }
+      #ab-content input {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      /* ── Layout ─────────────────────────────── */
+      main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 270px 1fr 1fr 320px;
+        min-height: 0;
+      }
+      main.fm-collapsed {
+        grid-template-columns: 270px 1fr 1fr 42px;
+      }
+      .pane {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        min-width: 0;
+        border-left: 1px solid var(--line);
+      }
+      .pane:first-child {
+        border-left: 0;
+      }
+      .panehead {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        padding: 10px 12px 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .panehead .count {
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      /* ── Posts index ────────────────────────── */
+      .filters {
+        display: flex;
+        gap: 6px;
+        margin: 0 12px 6px;
+        flex-shrink: 0;
+      }
+      .filters input,
+      .filters select {
+        font: inherit;
+        font-size: 13px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        background: #fff;
+        color: var(--ink);
+      }
+      .filters input {
+        flex: 1;
+        min-width: 0;
+      }
+      .filters input:focus,
+      .filters select:focus {
+        outline: none;
+        border-color: var(--red);
+      }
+      .legend {
+        font-size: 10px;
+        color: var(--muted);
+        padding: 0 12px 8px;
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .legend i {
+        font-style: normal;
+      }
+      #postlist {
+        flex: 1;
+        overflow: auto;
+      }
+      .post {
+        border-bottom: 1px solid var(--line);
+        padding: 8px 12px;
+        background: #fff;
+      }
+      .post .t {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .post .langs {
+        display: flex;
+        gap: 4px;
+        margin-top: 5px;
+        align-items: center;
+      }
+      .post .pdate {
+        margin-left: auto;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .lang {
+        font: inherit;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 2px 6px;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .lang.l-ok {
+        background: #dcfce7;
+        color: #15803d;
+      }
+      .lang.l-warn {
+        background: #fef3c7;
+        color: #b45309;
+      }
+      .lang.l-none {
+        background: #e8eaf0;
+        color: var(--muted);
+      }
+      .lang.l-missing {
+        background: transparent;
+        color: #cbd0d6;
+        border: 1px dashed var(--line);
+        cursor: default;
+      }
+      .lang.active {
+        outline: 2px solid var(--red);
+        outline-offset: 1px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 13px;
+        padding: 12px;
+        line-height: 1.6;
+      }
+
+      /* ── Content editor ─────────────────────── */
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 0 12px 8px;
+        background: #fff;
+        flex-shrink: 0;
+      }
+      .toolbar .btn {
+        padding: 4px 9px;
+        font-size: 12px;
+      }
+      #body {
+        flex: 1;
+        min-height: 120px;
+        font:
+          13px/1.6 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
+        border: 0;
+        outline: none;
+        resize: none;
+        padding: 2px 14px 14px;
+        width: 100%;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      /* ── Preview ────────────────────────────── */
+      #preview {
+        flex: 1;
+        overflow: auto;
+        padding: 4px 22px 60px;
+        background: #fff;
+      }
+      .ptitle {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--red);
+        margin-bottom: 2px;
+      }
+      .pmeta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      #preview h1,
+      #preview h2,
+      #preview h3,
+      #preview h4 {
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+      #preview h1 {
+        font-size: 28px;
+      }
+      #preview h2 {
+        font-size: 22px;
+        margin-top: 1.4em;
+      }
+      #preview h3 {
+        font-size: 17px;
+      }
+      #preview p,
+      #preview li {
+        line-height: 1.7;
+      }
+      #preview img {
+        max-width: 100%;
+        border-radius: 8px;
+      }
+      #preview a {
+        color: var(--red);
+      }
+      #preview blockquote {
+        margin: 1em 0;
+        padding: 0.2em 1em;
+        border-left: 3px solid var(--red);
+        color: var(--muted);
+      }
+      #preview pre {
+        background: var(--bg);
+        padding: 12px 14px;
+        border-radius: 8px;
+        overflow: auto;
+      }
+      #preview code {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.9em;
+      }
+      #preview :not(pre) > code {
+        background: var(--bg);
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+      #preview hr {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 1.6em 0;
+      }
+      .empty {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* ── Frontmatter (collapsible) ──────────── */
+      .fmhead {
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        background: #fff;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 10px 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .fmhead:hover {
+        color: var(--red);
+      }
+      .fmhead .chev {
+        font-size: 14px;
+      }
+      main.fm-collapsed .fmhead {
+        writing-mode: vertical-rl;
+        height: 100%;
+        border-bottom: 0;
+        justify-content: center;
+        gap: 12px;
+      }
+      #fmform {
+        flex: 1;
+        overflow: auto;
+        padding: 10px 14px 30px;
+        background: #fcfcfd;
+      }
+      main.fm-collapsed #fmform {
+        display: none;
+      }
+      .field {
+        margin-bottom: 9px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 3px;
+      }
+      .field label .req {
+        color: var(--red);
+      }
+      .field label .tag {
+        color: var(--red);
+        font-weight: 700;
+        font-size: 9px;
+        letter-spacing: 0.08em;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        font: inherit;
+        font-size: 13px;
+        width: 100%;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        background: #fff;
+        color: var(--ink);
+      }
+      .field textarea {
+        resize: vertical;
+        min-height: 56px;
+      }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        outline: none;
+        border-color: var(--red);
+      }
+      .fm-empty {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* ── Status bar ─────────────────────────── */
+      footer {
+        flex-shrink: 0;
+        padding: 6px 16px;
+        background: #fff;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        gap: 18px;
+      }
+      .toast {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--ink);
+        color: #fff;
+        font-size: 13px;
+        padding: 9px 18px;
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+        max-width: 80vw;
+        text-align: center;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+
+      @media (max-width: 900px) {
+        main,
+        main.fm-collapsed {
+          grid-template-columns: 1fr;
+          grid-auto-rows: minmax(200px, auto);
+          overflow: auto;
+        }
+        .pane {
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="brand">Quina<b>Care</b> · Blog Editor</span>
+      <button class="btn" id="btn-new">New post</button>
+      <button class="btn" id="btn-save">Save</button>
+      <button class="btn primary" id="btn-commit">Save &amp; push</button>
+      <button class="btn" id="btn-translate">Translate</button>
+      <button class="btn" id="btn-delete">Delete</button>
+      <span class="dot" id="dot"></span>
+      <span class="file" id="filename">no file open</span>
+    </header>
+
+    <div id="actionbar" hidden>
+      <span id="ab-label"></span>
+      <span id="ab-content"></span>
+      <button class="btn" id="ab-dismiss">✕</button>
+    </div>
+
+    <main>
+      <!-- Posts index ------------------------------------------ -->
+      <section class="pane">
+        <div class="panehead">
+          Posts <span class="count" id="postcount"></span>
+        </div>
+        <div class="filters">
+          <input id="filter" type="text" placeholder="Filter by title…" />
+          <select id="yearfilter">
+            <option value="">All years</option>
+          </select>
+        </div>
+        <div class="legend">
+          <i>🟢 publish</i><i>🟡 draft</i><i>⬚ missing</i>
+        </div>
+        <div id="postlist">
+          <p class="hint">Loading posts…</p>
+        </div>
+      </section>
+
+      <!-- Content ---------------------------------------------- -->
+      <section class="pane">
+        <div class="panehead">Content (Markdown)</div>
+        <div class="toolbar" id="toolbar">
+          <button class="btn" data-wrap="**">Bold</button>
+          <button class="btn" data-wrap="*">Italic</button>
+          <button class="btn" data-wrap="`">Code</button>
+          <button class="btn" data-prefix="## ">H2</button>
+          <button class="btn" data-prefix="### ">H3</button>
+          <button class="btn" data-prefix="- ">List</button>
+          <button class="btn" data-prefix="> ">Quote</button>
+          <button class="btn" data-link="1">Link</button>
+        </div>
+        <textarea
+          id="body"
+          spellcheck="false"
+          placeholder="Pick a post from the index to start editing…"
+        ></textarea>
+      </section>
+
+      <!-- Preview ---------------------------------------------- -->
+      <section class="pane">
+        <div class="panehead">Preview</div>
+        <div id="preview">
+          <p class="empty">Pick a post from the index.</p>
+        </div>
+      </section>
+
+      <!-- Frontmatter (collapsible) ---------------------------- -->
+      <section class="pane">
+        <button class="fmhead" id="fm-toggle">
+          <span class="chev" id="fm-chev">›</span>
+          <span>Frontmatter</span>
+        </button>
+        <div id="fmform">
+          <p class="fm-empty">Pick a post to edit its frontmatter.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span id="count-words">0 words</span>
+      <span id="count-chars">0 characters</span>
+      <span style="margin-left: auto">⌘/Ctrl+S to save</span>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      "use strict";
+      const $ = (id) => document.getElementById(id);
+      const $$ = (sel, root) => [...(root || document).querySelectorAll(sel)];
+      const LANGS = ["nl", "en", "es"];
+      const JSON_HEADERS = { "content-type": "application/json" };
+
+      /*
+       * Frontmatter fields — mirror the `news` collection schema in
+       * src/content.config.ts (newsSchema). Keep in sync with that file.
+       * Only `title` and `date` are required there; the rest are optional.
+       */
+      const NEWS_FIELDS = [
+        { key: "title", label: "Title", type: "text", required: true },
+        { key: "date", label: "Date", type: "date", required: true },
+        { key: "status", label: "Status", type: "select", options: ["publish", "draft"] },
+        { key: "slug", label: "Slug", type: "text" },
+        { key: "author", label: "Author", type: "text" },
+        { key: "excerpt", label: "Excerpt", type: "textarea" },
+        { key: "categories", label: "Categories", type: "list" },
+        { key: "language", label: "Language", type: "select", options: LANGS },
+        { key: "featured_image", label: "Featured image", type: "text" },
+        { key: "featured_image_caption", label: "Image caption", type: "text" },
+        { key: "featured_image_copyright", label: "Image copyright", type: "text" },
+      ];
+      const FIELD_KEYS = NEWS_FIELDS.map((f) => f.key);
+
+      const mainEl = document.querySelector("main");
+      const bodyEl = $("body");
+      const previewEl = $("preview");
+      const formEl = $("fmform");
+
+      let posts = []; // flat records from the server
+      let slugs = []; // grouped by slug for the index
+      let active = { lang: null, name: null, slug: null };
+      let fileName = "";
+      let dirty = false;
+      let loaded = false;
+
+      /* ── Server API ───────────────────────────── */
+      async function api(path, opts) {
+        const r = await fetch(path, opts);
+        let data = {};
+        try {
+          data = await r.json();
+        } catch (e) {
+          /* no body */
+        }
+        if (!r.ok) throw new Error(data.error || "HTTP " + r.status);
+        return data;
+      }
+
+      /* ── YAML frontmatter: parse ──────────────── */
+      function unquote(s) {
+        if (
+          s.length >= 2 &&
+          ((s[0] === '"' && s[s.length - 1] === '"') ||
+            (s[0] === "'" && s[s.length - 1] === "'"))
+        ) {
+          const inner = s.slice(1, -1);
+          return s[0] === '"'
+            ? inner.replace(/\\"/g, '"').replace(/\\\\/g, "\\")
+            : inner.replace(/''/g, "'");
+        }
+        return s;
+      }
+      function parseFrontmatter(text) {
+        const data = {};
+        let curKey = null;
+        for (const raw of text.split(/\r?\n/)) {
+          if (!raw.trim()) continue;
+          const listM = raw.match(/^\s+-\s+(.*)$/);
+          if (listM && curKey) {
+            if (!Array.isArray(data[curKey])) data[curKey] = [];
+            data[curKey].push(unquote(listM[1].trim()));
+            continue;
+          }
+          const m = raw.match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
+          if (!m) continue;
+          const key = m[1];
+          const val = m[2].trim();
+          curKey = key;
+          if (val === "") {
+            data[key] = "";
+          } else if (/^\[.*\]$/.test(val)) {
+            data[key] = val
+              .slice(1, -1)
+              .split(",")
+              .map((s) => unquote(s.trim()))
+              .filter((s) => s !== "");
+          } else {
+            data[key] = unquote(val);
+          }
+        }
+        return data;
+      }
+
+      /* ── YAML frontmatter: serialize ──────────── */
+      function quote(s) {
+        return '"' + String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+      }
+      function serializeValue(key, val) {
+        if (Array.isArray(val)) return "[" + val.map(quote).join(", ") + "]";
+        // `date` and `status` are written bare, matching the existing posts.
+        if (key === "date" || key === "status") return String(val);
+        return quote(val);
+      }
+      function serializeFrontmatter(data) {
+        const extra = Object.keys(data).filter((k) => !FIELD_KEYS.includes(k));
+        const keys = [...FIELD_KEYS.filter((k) => k in data), ...extra];
+        const out = [];
+        for (const k of keys) {
+          const v = data[k];
+          const field = NEWS_FIELDS.find((f) => f.key === k);
+          const empty =
+            v == null || v === "" || (Array.isArray(v) && v.length === 0);
+          if (empty && !(field && field.required)) continue;
+          out.push(k + ": " + serializeValue(k, empty ? "" : v));
+        }
+        return out.join("\n");
+      }
+
+      /* ── Document model ───────────────────────── */
+      function splitDoc(text) {
+        const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+        if (m) return { fm: m[1], body: m[2].replace(/^\r?\n/, "") };
+        return { fm: "", body: text };
+      }
+      function assembleDoc() {
+        const fm = serializeFrontmatter(collectFrontmatter());
+        const body = bodyEl.value.replace(/^\n+/, "");
+        return fm ? "---\n" + fm + "\n---\n\n" + body + "\n" : body + "\n";
+      }
+      function loadText(text, name) {
+        const { fm, body } = splitDoc(text);
+        buildForm(parseFrontmatter(fm));
+        bodyEl.value = body;
+        fileName = name || "";
+        $("filename").textContent = active.name
+          ? active.lang + "/" + active.name
+          : (active.lang ? active.lang + " · " : "") + "new post (unsaved)";
+        loaded = true;
+        setDirty(false);
+        refresh();
+      }
+      function setDirty(d) {
+        dirty = d;
+        $("dot").textContent = d ? "●" : "";
+      }
+      function langOf(name) {
+        name = (name || "").toLowerCase();
+        return LANGS.includes(name) ? name : "";
+      }
+      function slugify(s) {
+        return (s || "")
+          .toLowerCase()
+          .normalize("NFKD")
+          .replace(/[̀-ͯ]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+
+      /* ── Frontmatter form ─────────────────────── */
+      function buildForm(data) {
+        formEl.innerHTML = "";
+        const seen = new Set();
+        const add = (field, value, custom) => {
+          seen.add(field.key);
+          const wrap = document.createElement("div");
+          wrap.className = "field";
+          const lab = document.createElement("label");
+          lab.textContent = field.label + " ";
+          if (field.required) {
+            const r = document.createElement("span");
+            r.className = "req";
+            r.textContent = "*";
+            lab.appendChild(r);
+          }
+          if (custom) {
+            const t = document.createElement("span");
+            t.className = "tag";
+            t.textContent = "· not in schema";
+            lab.appendChild(t);
+          }
+          let input;
+          if (field.type === "textarea") {
+            input = document.createElement("textarea");
+            input.value = value || "";
+          } else if (field.type === "select") {
+            input = document.createElement("select");
+            const opts = field.options.slice();
+            if (value && !opts.includes(value)) opts.unshift(value);
+            if (!field.required) opts.unshift("");
+            for (const o of opts) {
+              const op = document.createElement("option");
+              op.value = o;
+              op.textContent = o || "—";
+              input.appendChild(op);
+            }
+            input.value = value || "";
+          } else {
+            input = document.createElement("input");
+            input.type = field.type === "date" ? "date" : "text";
+            input.value = Array.isArray(value) ? value.join(", ") : value || "";
+          }
+          input.dataset.key = field.key;
+          input.dataset.type = field.type;
+          wrap.appendChild(lab);
+          wrap.appendChild(input);
+          formEl.appendChild(wrap);
+        };
+
+        for (const field of NEWS_FIELDS) add(field, data[field.key]);
+        for (const key of Object.keys(data)) {
+          if (seen.has(key)) continue;
+          add({ key, label: key, type: "text" }, data[key], true);
+        }
+      }
+      function collectFrontmatter() {
+        const data = {};
+        for (const el of $$("[data-key]", formEl)) {
+          let v = el.value;
+          if (el.dataset.type === "list") {
+            v = v
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean);
+          }
+          data[el.dataset.key] = v;
+        }
+        return data;
+      }
+      function fieldValue(key) {
+        const el = formEl.querySelector('[data-key="' + key + '"]');
+        return el ? el.value.trim() : "";
+      }
+
+      /* ── Posts index ──────────────────────────── */
+      async function loadPosts() {
+        let data;
+        try {
+          data = await api("/api/posts");
+        } catch (e) {
+          $("postlist").innerHTML =
+            '<p class="hint">Can’t reach the editor server.<br>' +
+            "Start it with <code>node editor/server.mjs</code> " +
+            "(or the start script) and open the URL it prints.</p>";
+          $("postcount").textContent = "";
+          return;
+        }
+        posts = data.posts || [];
+        const map = new Map();
+        for (const r of posts) {
+          if (!map.has(r.slug)) map.set(r.slug, { slug: r.slug, langs: {} });
+          map.get(r.slug).langs[r.lang] = r;
+        }
+        slugs = [...map.values()].map((g) => {
+          const recs = Object.values(g.langs);
+          // Title shown in the index: prefer Dutch, then English, then Spanish.
+          const pick = g.langs.nl || g.langs.en || g.langs.es || recs[0];
+          g.displayTitle = pick ? pick.title : g.slug;
+          g.sortDate =
+            recs
+              .map((r) => r.date || "")
+              .sort()
+              .slice(-1)[0] || "";
+          g.year = g.sortDate.slice(0, 4);
+          return g;
+        });
+        slugs.sort(
+          (a, b) =>
+            b.sortDate.localeCompare(a.sortDate) ||
+            a.displayTitle.localeCompare(b.displayTitle),
+        );
+        populateYearFilter();
+        renderPostList();
+      }
+      let yearFilterReady = false;
+      function populateYearFilter() {
+        const sel = $("yearfilter");
+        const current = sel.value;
+        const years = [...new Set(slugs.map((s) => s.year).filter(Boolean))]
+          .sort()
+          .reverse();
+        sel.innerHTML = '<option value="">All years</option>';
+        for (const y of years) {
+          const o = document.createElement("option");
+          o.value = y;
+          o.textContent = y;
+          sel.appendChild(o);
+        }
+        // First load defaults to the current year; later reloads keep
+        // whatever the user has selected.
+        if (!yearFilterReady) {
+          yearFilterReady = true;
+          const thisYear = String(new Date().getFullYear());
+          sel.value = years.includes(thisYear) ? thisYear : "";
+        } else {
+          sel.value = years.includes(current) ? current : "";
+        }
+      }
+      function statusKey(status) {
+        const s = (status || "").toLowerCase();
+        return s === "publish" ? "ok" : s === "draft" ? "warn" : "none";
+      }
+      function renderPostList() {
+        const list = $("postlist");
+        list.innerHTML = "";
+        if (!slugs.length) {
+          list.innerHTML = '<p class="hint">No posts found.</p>';
+          $("postcount").textContent = "";
+          return;
+        }
+        const q = $("filter").value.trim().toLowerCase();
+        const year = $("yearfilter").value;
+        const shown = slugs.filter(
+          (s) =>
+            (!year || s.year === year) &&
+            (!q ||
+              s.displayTitle.toLowerCase().includes(q) ||
+              s.slug.toLowerCase().includes(q)),
+        );
+        $("postcount").textContent =
+          q || year ? shown.length + " / " + slugs.length : slugs.length;
+        for (const s of shown) {
+          const row = document.createElement("div");
+          row.className = "post";
+          const t = document.createElement("span");
+          t.className = "t";
+          t.textContent = s.displayTitle;
+          t.title = s.slug;
+          const langs = document.createElement("span");
+          langs.className = "langs";
+          for (const lang of LANGS) {
+            const rec = s.langs[lang];
+            const chip = document.createElement("button");
+            chip.className =
+              "lang " + (rec ? "l-" + statusKey(rec.status) : "l-missing");
+            chip.textContent = lang.toUpperCase();
+            if (rec) {
+              chip.title =
+                lang.toUpperCase() + " · " + (rec.status || "no status");
+              if (active.slug === s.slug && active.lang === lang)
+                chip.classList.add("active");
+              chip.addEventListener("click", () => openPost(rec));
+            } else {
+              chip.disabled = true;
+              chip.title = lang.toUpperCase() + " · missing";
+            }
+            langs.appendChild(chip);
+          }
+          if (s.sortDate) {
+            const d = document.createElement("span");
+            d.className = "pdate";
+            d.textContent = s.sortDate;
+            langs.appendChild(d);
+          }
+          row.appendChild(t);
+          row.appendChild(langs);
+          list.appendChild(row);
+        }
+      }
+      async function openPost(rec) {
+        if (dirty && !confirm("Discard unsaved changes?")) return;
+        let data;
+        try {
+          data = await api(
+            "/api/file?lang=" +
+              rec.lang +
+              "&name=" +
+              encodeURIComponent(rec.name),
+          );
+        } catch (e) {
+          toast("Could not open: " + e.message);
+          return;
+        }
+        active = { lang: rec.lang, name: rec.name, slug: rec.slug };
+        loadText(data.content, rec.name);
+        renderPostList();
+      }
+
+      /* ── Save / commit / translate ────────────── */
+      function startNewPost() {
+        $("ab-label").textContent = "New post —";
+        const c = $("ab-content");
+        c.innerHTML = "";
+        const title = document.createElement("input");
+        title.type = "text";
+        title.placeholder = "post title…";
+        const lang = document.createElement("select");
+        for (const l of LANGS) {
+          const o = document.createElement("option");
+          o.value = l;
+          o.textContent = l.toUpperCase();
+          lang.appendChild(o);
+        }
+        const create = document.createElement("button");
+        create.className = "btn";
+        create.textContent = "Create";
+        const go = () => createPost(title.value, lang.value);
+        create.addEventListener("click", go);
+        title.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") go();
+        });
+        c.appendChild(title);
+        c.appendChild(lang);
+        c.appendChild(create);
+        $("actionbar").hidden = false;
+        title.focus();
+      }
+      function createPost(title, lang) {
+        title = title.trim();
+        if (!title) {
+          toast("Enter a title for the new post");
+          return;
+        }
+        if (dirty && !confirm("Discard unsaved changes?")) return;
+        $("actionbar").hidden = true;
+        const today = new Date().toISOString().slice(0, 10);
+        // name/slug stay null — they are derived from the title on first Save.
+        active = { lang, name: null, slug: null };
+        loadText(
+          "---\ntitle: " +
+            JSON.stringify(title) +
+            "\ndate: " +
+            today +
+            '\nstatus: draft\nlanguage: "' +
+            lang +
+            '"\n---\n\n',
+          null,
+        );
+        setDirty(true);
+        renderPostList();
+        toast(
+          "New " +
+            lang.toUpperCase() +
+            " post — the slug is created from the title on Save",
+        );
+      }
+
+      async function saveFile() {
+        if (!loaded) return false;
+        if (!active.lang) {
+          toast("No save target — open a post first");
+          return false;
+        }
+        // New post: derive the slug + filename from the title on first save.
+        if (!active.name) {
+          const slug =
+            slugify(fieldValue("slug")) || slugify(fieldValue("title"));
+          if (!slug) {
+            toast("Add a title before saving — the slug is made from it");
+            return false;
+          }
+          if (
+            posts.some(
+              (p) =>
+                p.lang === active.lang &&
+                (p.slug === slug || p.name === slug + ".mdoc"),
+            )
+          ) {
+            if (
+              !confirm(
+                "A " +
+                  active.lang.toUpperCase() +
+                  ' post "' +
+                  slug +
+                  '" already exists. Overwrite it?',
+              )
+            )
+              return false;
+          }
+          active.name = slug + ".mdoc";
+          active.slug = slug;
+          const slugEl = formEl.querySelector('[data-key="slug"]');
+          if (slugEl) slugEl.value = slug;
+        }
+        try {
+          await api("/api/save", {
+            method: "POST",
+            headers: JSON_HEADERS,
+            body: JSON.stringify({
+              lang: active.lang,
+              name: active.name,
+              content: assembleDoc(),
+            }),
+          });
+        } catch (e) {
+          toast("Save failed: " + e.message);
+          return false;
+        }
+        setDirty(false);
+        fileName = active.name;
+        $("filename").textContent = active.lang + "/" + active.name;
+        toast("Saved " + active.lang + "/" + active.name);
+        await loadPosts();
+        return true;
+      }
+
+      async function saveAndPush() {
+        if (!(await saveFile())) return;
+        const btn = $("btn-commit");
+        const label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Pushing…";
+        try {
+          const res = await api("/api/commit", {
+            method: "POST",
+            headers: JSON_HEADERS,
+            body: JSON.stringify({
+              lang: active.lang,
+              name: active.name,
+              message:
+                "Update blog post: " + (fieldValue("slug") || active.name),
+            }),
+          });
+          showLog(
+            res.ok ? "Committed & pushed:" : "Git stopped — see output:",
+            res.log || "(no output)",
+          );
+          toast(res.ok ? "Committed & pushed" : "Git did not finish — see panel");
+        } catch (e) {
+          toast("Commit failed: " + e.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = label;
+        }
+      }
+
+      async function deletePost() {
+        if (!loaded || !active.lang || !active.name) {
+          toast("Open the post you want to delete first");
+          return;
+        }
+        if (
+          !confirm(
+            "Delete " +
+              active.lang +
+              "/" +
+              active.name +
+              " ?\nThis permanently removes the file from disk.",
+          )
+        )
+          return;
+        try {
+          await api("/api/delete", {
+            method: "POST",
+            headers: JSON_HEADERS,
+            body: JSON.stringify({ lang: active.lang, name: active.name }),
+          });
+        } catch (e) {
+          toast("Delete failed: " + e.message);
+          return;
+        }
+        toast("Deleted " + active.lang + "/" + active.name);
+        loaded = false;
+        setDirty(false);
+        active = { lang: null, name: null, slug: null };
+        fileName = "";
+        $("filename").textContent = "no file open";
+        bodyEl.value = "";
+        formEl.innerHTML =
+          '<p class="fm-empty">Pick a post to edit its frontmatter.</p>';
+        refresh();
+        await loadPosts();
+      }
+
+      function startTranslate() {
+        if (!loaded) {
+          toast("Open a post first");
+          return;
+        }
+        const src = active.lang || langOf(fieldValue("language"));
+        const targets = LANGS.filter((l) => l !== src);
+        showChooser(
+          "Translate this " + (src ? src.toUpperCase() + " " : "") + "post to:",
+          targets.map((tgt) => ({
+            label: "→ " + tgt.toUpperCase(),
+            onClick: () => doTranslate(src, tgt),
+          })),
+        );
+      }
+      async function doTranslate(src, tgt) {
+        $("actionbar").hidden = true;
+        const btn = $("btn-translate");
+        const label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Translating…";
+        toast(
+          "Translating → " +
+            tgt.toUpperCase() +
+            " via Google Translate — one moment…",
+        );
+        try {
+          const res = await api("/api/translate", {
+            method: "POST",
+            headers: JSON_HEADERS,
+            body: JSON.stringify({
+              content: assembleDoc(),
+              source: src || "the source language",
+              target: tgt,
+              name: active.name,
+            }),
+          });
+          active = { lang: tgt, name: active.name, slug: active.slug };
+          loadText(res.content, active.name);
+          setDirty(true);
+          renderPostList();
+          toast("Translated → " + tgt.toUpperCase() + " — review it, then Save");
+        } catch (e) {
+          toast("Translation failed: " + e.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = label;
+        }
+      }
+
+      /* ── Action bar ───────────────────────────── */
+      function showLog(label, text) {
+        $("ab-label").textContent = label;
+        const c = $("ab-content");
+        c.innerHTML = "";
+        const pre = document.createElement("pre");
+        pre.className = "ablog";
+        pre.textContent = text;
+        c.appendChild(pre);
+        $("actionbar").hidden = false;
+      }
+      function showChooser(label, items) {
+        $("ab-label").textContent = label;
+        const c = $("ab-content");
+        c.innerHTML = "";
+        for (const it of items) {
+          const b = document.createElement("button");
+          b.className = "btn";
+          b.textContent = it.label;
+          b.addEventListener("click", it.onClick);
+          c.appendChild(b);
+        }
+        $("actionbar").hidden = false;
+      }
+
+      /* ── Markdown rendering ───────────────────── */
+      function esc(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+      function inline(text) {
+        text = esc(text);
+        const codes = [];
+        text = text.replace(/`([^`]+)`/g, (_, c) => {
+          codes.push(c);
+          return "\x01" + (codes.length - 1) + "\x01";
+        });
+        text = text.replace(
+          /!\[([^\]]*)\]\(([^)\s]+)\)/g,
+          '<img alt="$1" src="$2">',
+        );
+        text = text.replace(
+          /\[([^\]]+)\]\(([^)\s]+)\)/g,
+          '<a href="$2" target="_blank" rel="noopener">$1</a>',
+        );
+        text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+        text = text.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+        text = text.replace(
+          /\x01(\d+)\x01/g,
+          (_, n) => "<code>" + codes[n] + "</code>",
+        );
+        return text;
+      }
+      function renderMarkdown(src) {
+        const blocks = [];
+        src = src.replace(/```[^\n]*\n([\s\S]*?)```/g, (_, code) => {
+          blocks.push(
+            "<pre><code>" + esc(code.replace(/\n$/, "")) + "</code></pre>",
+          );
+          return "\x02" + (blocks.length - 1) + "\x02";
+        });
+        const lines = src.split(/\r?\n/);
+        let html = "";
+        let i = 0;
+        const isBreak = (l) =>
+          /^\s*$/.test(l) ||
+          /^#{1,6}\s/.test(l) ||
+          /^\s*>/.test(l) ||
+          /^\s*[-*+]\s+/.test(l) ||
+          /^\s*\d+[.)]\s+/.test(l) ||
+          /^\x02\d+\x02$/.test(l.trim());
+
+        while (i < lines.length) {
+          const line = lines[i];
+          if (/^\s*$/.test(line)) {
+            i++;
+            continue;
+          }
+          let m;
+          if (/^\x02\d+\x02$/.test(line.trim())) {
+            html += blocks[+line.trim().replace(/\x02/g, "")];
+            i++;
+            continue;
+          }
+          if ((m = line.match(/^(#{1,6})\s+(.*)$/))) {
+            const lvl = m[1].length;
+            html += "<h" + lvl + ">" + inline(m[2].trim()) + "</h" + lvl + ">";
+            i++;
+            continue;
+          }
+          if (/^\s*([-*_])\1\1+\s*$/.test(line)) {
+            html += "<hr>";
+            i++;
+            continue;
+          }
+          if (/^\s*>/.test(line)) {
+            const buf = [];
+            while (i < lines.length && /^\s*>/.test(lines[i])) {
+              buf.push(lines[i].replace(/^\s*>\s?/, ""));
+              i++;
+            }
+            html +=
+              "<blockquote>" + renderMarkdown(buf.join("\n")) + "</blockquote>";
+            continue;
+          }
+          if (/^\s*[-*+]\s+/.test(line)) {
+            const items = [];
+            while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+              items.push(lines[i].replace(/^\s*[-*+]\s+/, ""));
+              i++;
+            }
+            html +=
+              "<ul>" +
+              items.map((t) => "<li>" + inline(t) + "</li>").join("") +
+              "</ul>";
+            continue;
+          }
+          if (/^\s*\d+[.)]\s+/.test(line)) {
+            const items = [];
+            while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
+              items.push(lines[i].replace(/^\s*\d+[.)]\s+/, ""));
+              i++;
+            }
+            html +=
+              "<ol>" +
+              items.map((t) => "<li>" + inline(t) + "</li>").join("") +
+              "</ol>";
+            continue;
+          }
+          const buf = [];
+          while (i < lines.length && !isBreak(lines[i])) {
+            buf.push(lines[i]);
+            i++;
+          }
+          html += "<p>" + inline(buf.join("\n")).replace(/\n/g, "<br>") + "</p>";
+        }
+        return html.replace(/\x02(\d+)\x02/g, (_, n) => blocks[n]);
+      }
+
+      /* ── Preview + counts ─────────────────────── */
+      function refresh() {
+        const body = bodyEl.value;
+        let head = "";
+        const title = fieldValue("title");
+        const meta = [fieldValue("date"), fieldValue("author")]
+          .filter(Boolean)
+          .join(" · ");
+        if (title) head += '<div class="ptitle">' + esc(title) + "</div>";
+        if (meta) head += '<div class="pmeta">' + esc(meta) + "</div>";
+
+        if (!loaded) {
+          previewEl.innerHTML =
+            '<p class="empty">Pick a post from the index.</p>';
+        } else if (!body.trim() && !head) {
+          previewEl.innerHTML = '<p class="empty">Nothing to preview yet.</p>';
+        } else {
+          previewEl.innerHTML = head + renderMarkdown(body);
+        }
+        const words = body.trim() ? body.trim().split(/\s+/).length : 0;
+        $("count-words").textContent =
+          words + (words === 1 ? " word" : " words");
+        $("count-chars").textContent = body.length + " characters";
+      }
+      function onEdit() {
+        if (loaded) setDirty(true);
+        refresh();
+      }
+
+      /* ── Content toolbar ──────────────────────── */
+      function wrap(token) {
+        const s = bodyEl.selectionStart;
+        const e = bodyEl.selectionEnd;
+        const sel = bodyEl.value.slice(s, e) || "text";
+        bodyEl.setRangeText(token + sel + token, s, e, "select");
+        bodyEl.focus();
+        onEdit();
+      }
+      function prefixLines(prefix) {
+        const v = bodyEl.value;
+        const s = bodyEl.selectionStart;
+        const e = bodyEl.selectionEnd;
+        const ls = v.lastIndexOf("\n", s - 1) + 1;
+        const out = v
+          .slice(ls, e)
+          .split("\n")
+          .map((l) => prefix + l)
+          .join("\n");
+        bodyEl.setRangeText(out, ls, e, "select");
+        bodyEl.focus();
+        onEdit();
+      }
+      function insertLink() {
+        const s = bodyEl.selectionStart;
+        const e = bodyEl.selectionEnd;
+        const sel = bodyEl.value.slice(s, e) || "link text";
+        bodyEl.setRangeText("[" + sel + "](https://)", s, e, "end");
+        bodyEl.focus();
+        onEdit();
+      }
+
+      /* ── Toast ────────────────────────────────── */
+      let toastTimer;
+      function toast(msg) {
+        const t = $("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+      }
+
+      /* ── Collapsible frontmatter ──────────────── */
+      function applyCollapse() {
+        $("fm-chev").textContent = mainEl.classList.contains("fm-collapsed")
+          ? "‹"
+          : "›";
+      }
+      function toggleFm() {
+        mainEl.classList.toggle("fm-collapsed");
+        localStorage.setItem(
+          "qc-fm-collapsed",
+          mainEl.classList.contains("fm-collapsed") ? "1" : "0",
+        );
+        applyCollapse();
+      }
+      if (localStorage.getItem("qc-fm-collapsed") === "1") {
+        mainEl.classList.add("fm-collapsed");
+      }
+      applyCollapse();
+
+      /* ── Wiring ───────────────────────────────── */
+      $("btn-new").addEventListener("click", startNewPost);
+      $("btn-save").addEventListener("click", saveFile);
+      $("btn-commit").addEventListener("click", saveAndPush);
+      $("btn-translate").addEventListener("click", startTranslate);
+      $("btn-delete").addEventListener("click", deletePost);
+      $("fm-toggle").addEventListener("click", toggleFm);
+      $("filter").addEventListener("input", renderPostList);
+      $("yearfilter").addEventListener("change", renderPostList);
+      $("ab-dismiss").addEventListener("click", () => {
+        $("actionbar").hidden = true;
+      });
+
+      $("toolbar").addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        if (b.dataset.wrap) wrap(b.dataset.wrap);
+        else if (b.dataset.prefix) prefixLines(b.dataset.prefix);
+        else if (b.dataset.link) insertLink();
+      });
+
+      formEl.addEventListener("input", onEdit);
+      bodyEl.addEventListener("input", onEdit);
+
+      bodyEl.addEventListener("keydown", (e) => {
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const k = e.key.toLowerCase();
+        if (k === "b") {
+          e.preventDefault();
+          wrap("**");
+        } else if (k === "i") {
+          e.preventDefault();
+          wrap("*");
+        }
+      });
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+          e.preventDefault();
+          saveFile();
+        } else if (e.key === "Escape") {
+          $("actionbar").hidden = true;
+        }
+      });
+
+      window.addEventListener("beforeunload", (e) => {
+        if (dirty) {
+          e.preventDefault();
+          e.returnValue = "";
+        }
+      });
+
+      loadPosts();
+    </script>
+  </body>
+</html>
