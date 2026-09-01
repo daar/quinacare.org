@@ -108,14 +108,15 @@ const mapData = JSON.stringify({
       zoomControl: true,
     }).setView([25, 0], 2);
 
-    // CARTO stopped serving their basemaps keyless: without a key every
-    // tile comes back as an "API KEY REQUIRED" watermark. The key is
-    // public by design — it is inlined into this client bundle, so it is
-    // restricted to our domains in the CARTO dashboard rather than kept
-    // secret. Left unset (e.g. a fresh checkout with no .env) the layer
-    // still loads, watermark and all.
+    // CARTO stopped serving their raster basemaps keyless: without a key
+    // every tile comes back as an "API KEY REQUIRED" watermark. The
+    // parameter is `key` — `api_key` is silently ignored and still
+    // watermarks. The key is public by design (it is inlined into this
+    // client bundle), so it is domain-restricted in the CARTO dashboard
+    // rather than kept secret. Left unset (e.g. a fresh checkout with no
+    // .env) the layer still loads, watermark and all.
     const cartoKey = import.meta.env.PUBLIC_CARTO_API_KEY;
-    const cartoQuery = cartoKey ? `?api_key=${cartoKey}` : "";
+    const cartoQuery = cartoKey ? `?key=${cartoKey}` : "";
 
     L.tileLayer(
       `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${cartoQuery}`,
