@@ -305,6 +305,17 @@ export const editions: EditionConfig[] = [
         // Hulst runs kids (1 km), 5 km, 10 km, and 21 km — no full marathon.
         distances: ["kids", "5k", "10k", "half"],
       },
+      {
+        id: "amsterdam",
+        name: "Amsterdam",
+        city: "Amsterdam",
+        country: "NL",
+        coords: [52.3676, 4.9041],
+        captain: "Miel Bartels",
+        captainEmail: "mielbartels@gmail.com",
+        // Amsterdam runs the 10 km only.
+        distances: ["10k"],
+      },
     ],
     target: 25000,
   },
