@@ -14,6 +14,10 @@ npm run spellcheck # Spellingcontrole van alle .mdoc bestanden
 npm run format:check # Prettier formatting controle
 ```
 
+De Keystatic-editor staat tijdens ontwikkeling op
+`http://localhost:4321/keystatic`. Zie [KEYSTATIC_PRODUCTION.md](KEYSTATIC_PRODUCTION.md)
+voor de eenmalige GitHub App- en Netlify-configuratie voor productie.
+
 ## Projectstructuur
 
 ```

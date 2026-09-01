@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "npm run svg:minify && astro dev",
+    "prebuild": "node scripts/check-keystatic-env.mjs",
     "build": "npm run svg:minify && astro build && npx pagefind --site dist",
     "check": "astro check",
     "lint": "eslint .",

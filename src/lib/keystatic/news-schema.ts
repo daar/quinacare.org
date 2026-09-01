@@ -74,6 +74,7 @@ export const createNewsSchema = (language: "nl" | "en" | "es") => ({
   }),
   content: fields.markdoc({
     label: "Inhoud",
+    extension: "mdoc",
     // image: false prevents the built-in ProseMirror image node from
     // overwriting our custom image component in the editor schema.
     options: { image: false },

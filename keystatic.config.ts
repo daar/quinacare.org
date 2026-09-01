@@ -17,7 +17,7 @@ const newsCollection = (lang: NewsLang, label: string) =>
     parseSlugForSort,
     path: newsDir(lang),
     entryLayout: "content",
-    format: { extension: "mdoc", contentField: "content" },
+    format: { contentField: "content" },
     schema: createNewsSchema(lang),
   });
 
