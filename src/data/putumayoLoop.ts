@@ -313,7 +313,8 @@ export const editions: EditionConfig[] = [
         coords: [52.3676, 4.9041],
         captain: "Miel Bartels",
         captainEmail: "mielbartels@gmail.com",
-        // No `distances` set: Amsterdam offers every distance.
+        // Amsterdam runs the 10 km only.
+        distances: ["10k"],
       },
     ],
     target: 25000,
