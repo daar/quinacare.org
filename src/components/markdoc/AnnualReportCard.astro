@@ -11,7 +11,9 @@ interface Props {
 
 const { year, lang } = Astro.props;
 const key = (["nl", "en", "es"].includes(lang) ? lang : "nl") as
-  "nl" | "en" | "es";
+  | "nl"
+  | "en"
+  | "es";
 
 const labels: Record<"nl" | "en" | "es", { report: string; download: string }> =
   {
