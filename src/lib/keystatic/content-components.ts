@@ -12,9 +12,11 @@
 import { fields } from "@keystatic/core";
 import { block, repeating, wrapper } from "@keystatic/core/content-components";
 
-// Handy: an optional text field with an empty default value so that existing
-// files that omit an attribute don't produce a validation error.
+// Optional text fields default to an empty string so existing files can omit
+// the attribute without producing a validation error.
 const opt = (label: string) => fields.text({ label, defaultValue: "" });
+const requiredText = (label: string) =>
+  fields.text({ label, validation: { isRequired: true } });
 
 export const contentComponents = {
   // ─── Images ────────────────────────────────────────────────────────────────
@@ -25,6 +27,7 @@ export const contentComponents = {
         label: "Afbeelding",
         directory: "src/assets/media",
         publicPath: "/media/",
+        validation: { isRequired: true },
       }),
       alt: opt("Alt-tekst"),
       align: opt("Uitlijning (left / center / right)"),
@@ -61,7 +64,7 @@ export const contentComponents = {
   video: block({
     label: "Video",
     schema: {
-      src: opt("Bron"),
+      src: requiredText("Bron"),
       poster: opt("Poster-afbeelding"),
     },
   }),
@@ -91,9 +94,9 @@ export const contentComponents = {
   "download-card": block({
     label: "Downloadkaart",
     schema: {
-      href: opt("Link"),
-      label: opt("Label"),
-      title: opt("Titel"),
+      href: requiredText("Link"),
+      label: requiredText("Label"),
+      title: requiredText("Titel"),
       lang: opt("Taal (nl / en / es)"),
       cover: opt("Cover-afbeelding"),
     },
@@ -101,7 +104,10 @@ export const contentComponents = {
   "report-card": block({
     label: "Jaarverslagkaart",
     schema: {
-      year: fields.number({ label: "Jaar" }),
+      year: fields.number({
+        label: "Jaar",
+        validation: { isRequired: true },
+      }),
       lang: opt("Taal (nl / en / es)"),
     },
   }),
@@ -236,4 +242,15 @@ export const contentComponents = {
     label: "Commentaar (verborgen op site)",
     schema: {},
   }),
+};
+
+// News only exposes components already used by existing articles. Page-level
+// and empty-schema components stay available to Markdoc without appearing in
+// the news editor.
+export const newsContentComponents = {
+  image: contentComponents.image,
+  "image-row": contentComponents["image-row"],
+  video: contentComponents.video,
+  "download-card": contentComponents["download-card"],
+  "report-card": contentComponents["report-card"],
 };

@@ -157,9 +157,7 @@ test("every Markdoc content component renders on the public page", async ({
     expect(response?.status()).toBe(200);
   }).toPass({ timeout: 10000 });
 
-  // The fixture's own hero-banner component renders a second <h1> further
-  // down the article — real (if debatable) component behavior, not a test
-  // bug — so scope to the page's own title heading.
+  // The fixture includes page-level components, so select the page title.
   await expect(page.getByRole("heading", { level: 1 }).first()).toContainText(
     "E2E components fixture",
   );

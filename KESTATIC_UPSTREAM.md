@@ -20,10 +20,9 @@ Upstream issues:
 Local implementation in this repo:
 
 - `patch-package` patch at `patches/@keystatic+core+0.6.3.patch`
-- `patch-package` patch at `patches/@keystatic+astro+5.2.0.patch`
-  to inject editor UI guardrails in the active Keystatic page wrapper.
 - Route-level Keystatic override at `src/pages/keystatic/[...params].astro`
-  to hide the standalone image toolbar button (`button[aria-label="Image"]`).
+  to inject editor UI guardrails and hide the standalone image toolbar button
+  (`button[aria-label="Image"]`).
 
 Plan:
 

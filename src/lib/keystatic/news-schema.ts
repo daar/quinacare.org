@@ -1,6 +1,6 @@
 import { fields } from "@keystatic/core";
 import { kebabCase } from "lodash-es";
-import { contentComponents } from "./content-components";
+import { newsContentComponents } from "./content-components";
 
 const currentYear = () => new Date().getFullYear();
 
@@ -78,6 +78,6 @@ export const createNewsSchema = (language: "nl" | "en" | "es") => ({
     // image: false prevents the built-in ProseMirror image node from
     // overwriting our custom image component in the editor schema.
     options: { image: false },
-    components: contentComponents,
+    components: newsContentComponents,
   }),
 });

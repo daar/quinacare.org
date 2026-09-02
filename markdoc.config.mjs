@@ -48,7 +48,7 @@ const ksConfig = fields.markdoc.createMarkdocConfig({
         "./src/components/markdoc/FoundationDetails.astro",
       ),
       "contact-form": component("./src/components/markdoc/ContactForm.astro"),
-      // comment heeft geen render-component; inhoud valt weg via de transform hieronder
+      // Comment has no render component; the transform below drops its content.
     },
   },
 });
@@ -57,7 +57,7 @@ export default defineMarkdocConfig({
   ...ksConfig,
   tags: {
     ...ksConfig.tags,
-    // {% comment %}…{% /comment %} — drops its content at transform time so
+    // {% comment %}…{% /comment %} drops its content at transform time so
     // editors can keep TODO/parked-content blocks in .mdoc files without
     // them appearing on the site.
     comment: {
