@@ -1,0 +1,45 @@
+diff --git a/node_modules/@keystatic/astro/internal/keystatic-astro-page.astro b/node_modules/@keystatic/astro/internal/keystatic-astro-page.astro
+index 75945d1..eac2175 100644
+--- a/node_modules/@keystatic/astro/internal/keystatic-astro-page.astro
++++ b/node_modules/@keystatic/astro/internal/keystatic-astro-page.astro
+@@ -4,4 +4,39 @@ import { Keystatic } from './keystatic-page.js';
+ export const prerender = false;
+ ---
+ 
+-<Keystatic client:only="react" />
++<!doctype html>
++<html lang="en" translate="no">
++  <head>
++    <meta charset="utf-8" />
++    <meta name="google" content="notranslate" />
++    <meta name="viewport" content="width=device-width, initial-scale=1" />
++    <title>Keystatic</title>
++    <style>
++      /*
++        Hide the standalone image toolbar action.
++       Images must be inserted via the insert-block dropdown to avoid the
++       flaky direct-upload toolbar/menu flow in this Keystatic version.
++        See KESTATIC_UPSTREAM.md.
++      */
++      button[aria-label="Image"] {
++        display: none !important;
++      }
++
++      /*
++       Keystatic renders a compact 3-icon image popover in this build.
++       Hide this popover entirely so only the inline "Edit" button remains.
++      */
++      div[role="dialog"]
++        > div:has(> div > button + button):has(> [role="separator"]),
++      div[role="dialog"]
++        > div:has(> div > button:only-child):has(
++          > div > button:not([aria-label])
++        ) {
++        display: none !important;
++      }
++    </style>
++  </head>
++  <body class="notranslate">
++    <Keystatic client:only="react" />
++  </body>
++</html>
