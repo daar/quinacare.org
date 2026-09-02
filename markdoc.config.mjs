@@ -1,206 +1,70 @@
 import { defineMarkdocConfig, component } from "@astrojs/markdoc/config";
+import { fields } from "@keystatic/core";
+import { contentComponents } from "./src/lib/keystatic/content-components";
+
+/**
+ * Bridge between Keystatic and Astro Markdoc:
+ * - createMarkdocConfig generates the Markdoc attribute schemas from the
+ *   Keystatic field definitions in src/lib/keystatic/content-components.ts.
+ * - The `render` option maps each tag to its Astro component.
+ * - The `comment` tag stays separate because it needs a custom transform
+ *   (dropping its content) that Keystatic can't express.
+ */
+const ksConfig = fields.markdoc.createMarkdocConfig({
+  components: contentComponents,
+  render: {
+    tags: {
+      image: component("./src/components/markdoc/Image.astro"),
+      "image-row": component("./src/components/markdoc/Row.astro"),
+      gallery: component("./src/components/markdoc/Gallery.astro"),
+      "gallery-image": component("./src/components/markdoc/GalleryImage.astro"),
+      video: component("./src/components/markdoc/Video.astro"),
+      streetview: component("./src/components/markdoc/StreetView.astro"),
+      download: component("./src/components/markdoc/Download.astro"),
+      "csv-download": component("./src/components/markdoc/CsvDownload.astro"),
+      "download-card": component("./src/components/markdoc/DownloadCard.astro"),
+      "report-card": component(
+        "./src/components/markdoc/AnnualReportCard.astro",
+      ),
+      "annual-reports": component(
+        "./src/components/markdoc/AnnualReports.astro",
+      ),
+      section: component("./src/components/markdoc/Section.astro"),
+      "hero-banner": component("./src/components/markdoc/HeroBanner.astro"),
+      "cta-banner": component("./src/components/markdoc/CtaBanner.astro"),
+      "feature-card": component("./src/components/markdoc/FeatureCard.astro"),
+      "quote-block": component("./src/components/markdoc/QuoteBlock.astro"),
+      "profile-section": component(
+        "./src/components/markdoc/ProfileSection.astro",
+      ),
+      "team-grid": component("./src/components/markdoc/TeamGrid.astro"),
+      "team-member": component("./src/components/markdoc/TeamMember.astro"),
+      "partner-grid": component("./src/components/markdoc/PartnerGrid.astro"),
+      "tier-grid": component("./src/components/markdoc/TierGrid.astro"),
+      "tier-card": component("./src/components/markdoc/TierCard.astro"),
+      "yura-tiers": component("./src/components/markdoc/YuraTiers.astro"),
+      "contact-cards": component("./src/components/markdoc/ContactCards.astro"),
+      "foundation-details": component(
+        "./src/components/markdoc/FoundationDetails.astro",
+      ),
+      "contact-form": component("./src/components/markdoc/ContactForm.astro"),
+      // Comment has no render component; the transform below drops its content.
+    },
+  },
+});
 
 export default defineMarkdocConfig({
+  ...ksConfig,
   tags: {
-    // {% comment %}…{% /comment %} — Markdoc has no built-in block
-    // comment; this tag drops its entire subtree at transform time
-    // so editors can keep TODO / parked-content blocks in .mdoc
-    // files without them appearing on the page.
+    ...ksConfig.tags,
+    // {% comment %}…{% /comment %} drops its content at transform time so
+    // editors can keep TODO/parked-content blocks in .mdoc files without
+    // them appearing on the site.
     comment: {
+      ...ksConfig.tags?.comment,
       attributes: {},
       transform() {
         return null;
-      },
-    },
-    image: {
-      render: component("./src/components/markdoc/Image.astro"),
-      attributes: {
-        src: { type: String, required: true },
-        alt: { type: String },
-        width: { type: Number },
-        height: { type: Number },
-        align: { type: String },
-        caption: { type: String },
-      },
-    },
-    gallery: {
-      render: component("./src/components/markdoc/Gallery.astro"),
-      attributes: {
-        ariaLabel: { type: String },
-      },
-    },
-    "image-row": {
-      render: component("./src/components/markdoc/Row.astro"),
-      attributes: {
-        // Columns from the sm breakpoint up (default 2; use 3 for a trio).
-        cols: { type: Number, default: 2 },
-      },
-    },
-    "csv-download": {
-      render: component("./src/components/markdoc/CsvDownload.astro"),
-      attributes: {
-        href: { type: String, required: true },
-        label: { type: String },
-      },
-    },
-    streetview: {
-      render: component("./src/components/markdoc/StreetView.astro"),
-      attributes: {
-        src: { type: String, required: true },
-        label: { type: String },
-      },
-    },
-    "gallery-image": {
-      render: component("./src/components/markdoc/GalleryImage.astro"),
-      attributes: {
-        src: { type: String, required: true },
-        alt: { type: String },
-      },
-    },
-    download: {
-      render: component("./src/components/markdoc/Download.astro"),
-      attributes: {
-        href: { type: String, required: true },
-        label: { type: String, required: true },
-      },
-    },
-    "hero-banner": {
-      render: component("./src/components/markdoc/HeroBanner.astro"),
-      attributes: {
-        background: { type: String, required: true },
-        label: { type: String },
-        title: { type: String, required: true },
-        subtitle: { type: String },
-      },
-    },
-    section: {
-      render: component("./src/components/markdoc/Section.astro"),
-      attributes: {
-        label: { type: String },
-        title: { type: String },
-        subtitle: { type: String },
-        background: { type: String },
-      },
-    },
-    "tier-grid": {
-      render: component("./src/components/markdoc/TierGrid.astro"),
-      attributes: {},
-    },
-    "tier-card": {
-      render: component("./src/components/markdoc/TierCard.astro"),
-      attributes: {
-        image: { type: String, required: true },
-        title: { type: String, required: true },
-        price: { type: String, required: true },
-        frequency: { type: String, required: true },
-        impact: { type: String, required: true },
-        yearly: { type: String, required: true },
-        href: { type: String, required: true },
-        featured: { type: Boolean },
-      },
-    },
-    "yura-tiers": {
-      render: component("./src/components/markdoc/YuraTiers.astro"),
-      attributes: {},
-    },
-    "profile-section": {
-      render: component("./src/components/markdoc/ProfileSection.astro"),
-      attributes: {
-        image: { type: String, required: true },
-        name: { type: String, required: true },
-        role: { type: String, required: true },
-        quote: { type: String },
-      },
-    },
-    "quote-block": {
-      render: component("./src/components/markdoc/QuoteBlock.astro"),
-      attributes: {
-        quote: { type: String, required: true },
-        name: { type: String, required: true },
-        role: { type: String, required: true },
-        image: { type: String },
-      },
-    },
-    "partner-grid": {
-      render: component("./src/components/markdoc/PartnerGrid.astro"),
-      attributes: {
-        type: { type: String, required: true },
-      },
-    },
-    video: {
-      render: component("./src/components/markdoc/Video.astro"),
-      attributes: {
-        src: { type: String, required: true },
-        poster: { type: String },
-      },
-    },
-    "contact-cards": {
-      render: component("./src/components/markdoc/ContactCards.astro"),
-      attributes: {
-        variant: { type: String, required: true },
-      },
-    },
-    "team-grid": {
-      render: component("./src/components/markdoc/TeamGrid.astro"),
-      attributes: {
-        cols: { type: Number },
-      },
-    },
-    "team-member": {
-      render: component("./src/components/markdoc/TeamMember.astro"),
-      attributes: {
-        image: { type: String, required: true },
-        name: { type: String, required: true },
-        role: { type: String, required: true },
-        email: { type: String },
-      },
-    },
-    "foundation-details": {
-      render: component("./src/components/markdoc/FoundationDetails.astro"),
-      attributes: {},
-    },
-    "contact-form": {
-      render: component("./src/components/markdoc/ContactForm.astro"),
-      attributes: {},
-    },
-    "feature-card": {
-      render: component("./src/components/markdoc/FeatureCard.astro"),
-      attributes: {
-        title: { type: String, required: true },
-        icon: { type: String, required: true },
-        href: { type: String },
-      },
-    },
-    "cta-banner": {
-      render: component("./src/components/markdoc/CtaBanner.astro"),
-      attributes: {
-        title: { type: String, required: true },
-        subtitle: { type: String },
-        cta: { type: String, required: true },
-        href: { type: String, required: true },
-      },
-    },
-    "annual-reports": {
-      render: component("./src/components/markdoc/AnnualReports.astro"),
-      attributes: {
-        lang: { type: String, required: true },
-      },
-    },
-    "report-card": {
-      render: component("./src/components/markdoc/AnnualReportCard.astro"),
-      attributes: {
-        year: { type: Number, required: true },
-        lang: { type: String, required: true },
-      },
-    },
-    "download-card": {
-      render: component("./src/components/markdoc/DownloadCard.astro"),
-      attributes: {
-        href: { type: String, required: true },
-        label: { type: String, required: true },
-        title: { type: String, required: true },
-        lang: { type: String },
-        cover: { type: String },
       },
     },
   },

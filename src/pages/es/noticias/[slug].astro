@@ -13,6 +13,7 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../../../i18n";
+import { resolveNewsSlug } from "../../../lib/newsSlug";
 
 type NewsEntry = CollectionEntry<"news-es">;
 
@@ -25,7 +26,7 @@ export async function getStaticPaths() {
     (post) => post.data.status === "publish",
   );
   return posts.map((post) => ({
-    params: { slug: post.data.slug || post.id },
+    params: { slug: resolveNewsSlug(post) },
     props: { post, allPosts: posts },
   }));
 }
@@ -41,7 +42,7 @@ const publishedPosts = allPosts
   );
 
 const currentIndex = publishedPosts.findIndex(
-  (p: NewsEntry) => (p.data.slug || p.id) === (post.data.slug || post.id),
+  (p: NewsEntry) => resolveNewsSlug(p) === resolveNewsSlug(post),
 );
 const prevPost =
   currentIndex < publishedPosts.length - 1
@@ -249,7 +250,7 @@ function getNewsPath(slug: string): string {
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
           {nextPost && (
             <a
-              href={getNewsPath(nextPost.data.slug || nextPost.id)}
+              href={getNewsPath(resolveNewsSlug(nextPost))}
               class="flex gap-6 items-center group cursor-pointer"
             >
               <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
@@ -277,7 +278,7 @@ function getNewsPath(slug: string): string {
           )}
           {prevPost && (
             <a
-              href={getNewsPath(prevPost.data.slug || prevPost.id)}
+              href={getNewsPath(resolveNewsSlug(prevPost))}
               class="flex gap-6 items-center group cursor-pointer"
             >
               <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100">
@@ -309,7 +310,7 @@ function getNewsPath(slug: string): string {
   }
 
   <Footer />
-  <ViewTracker slug={post.data.slug || post.id} lang={lang} />
+  <ViewTracker slug={resolveNewsSlug(post)} lang={lang} />
   <script>
     window.onscroll = function () {
       const winScroll =

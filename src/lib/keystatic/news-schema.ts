@@ -1,0 +1,83 @@
+import { fields } from "@keystatic/core";
+import { kebabCase } from "lodash-es";
+import { newsContentComponents } from "./content-components";
+
+const currentYear = () => new Date().getFullYear();
+
+const generateYearScopedSlug = (value: string) => {
+  const slug = kebabCase(value);
+  return `${currentYear()}/${slug}`;
+};
+
+// publicPath is relative to the .mdoc file's own directory
+const featuredImagePublicPath = "../../../../assets/media/";
+
+export const createNewsSchema = (language: "nl" | "en" | "es") => ({
+  title: fields.slug({
+    name: {
+      label: "Titel",
+      validation: {
+        isRequired: true,
+      },
+    },
+    slug: {
+      label: "Map (jaar/slug)",
+      generate: generateYearScopedSlug,
+      validation: {
+        pattern: {
+          regex: /^\d{4}\/.+$/,
+          message: "Gebruik formaat YYYY/slug.",
+        },
+      },
+    },
+  }),
+
+  date: fields.date({
+    label: "Publicatie datum",
+    defaultValue: { kind: "today" },
+  }),
+  status: fields.select({
+    label: "Status",
+    options: [
+      { label: "Gepubliceerd", value: "publish" },
+      { label: "Concept", value: "draft" },
+    ],
+    defaultValue: "publish",
+  }),
+  pinned: fields.checkbox({
+    label: "Vastgepind op homepage",
+    defaultValue: false,
+  }),
+  author: fields.text({ label: "Auteur" }),
+  excerpt: fields.text({ label: "Samenvatting", multiline: true }),
+  categories: fields.array(fields.text({ label: "Categorie" }), {
+    label: "Categorieën",
+    itemLabel: (props) => props.value ?? "Categorie",
+  }),
+  featured_image: fields.image({
+    label: "Uitgelichte afbeelding",
+    directory: "src/assets/media",
+    publicPath: featuredImagePublicPath,
+  }),
+  featured_image_caption: fields.text({ label: "Bijschrift afbeelding" }),
+  featured_image_copyright: fields.text({ label: "Copyright afbeelding" }),
+  language: fields.text({ label: "Taal", defaultValue: language }),
+  slug: fields.text({
+    label: "URL slug (override)",
+    description:
+      "Optioneel. Volgt automatisch de slug. Vul dit alleen in om de URL daarvan te laten afwijken.",
+  }),
+  translationKey: fields.text({
+    label: "Vertaalsleutel (NL slug)",
+    description:
+      "Optioneel. Zonder waarde worden taalversies automatisch gekoppeld via een gelijke slug. Vul dit alleen in als de slug per taal verschilt.",
+  }),
+  content: fields.markdoc({
+    label: "Inhoud",
+    extension: "mdoc",
+    // image: false prevents the built-in ProseMirror image node from
+    // overwriting our custom image component in the editor schema.
+    options: { image: false },
+    components: newsContentComponents,
+  }),
+});

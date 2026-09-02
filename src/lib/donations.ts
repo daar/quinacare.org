@@ -133,7 +133,8 @@ export async function getDonationsByFundraiser(
         : row.metadata;
     const metaRecord = metadata as Record<string, unknown>;
     const firstName = (metaRecord.first_name || metaRecord.firstName) as
-      string | undefined;
+      | string
+      | undefined;
     return {
       amount_cents: Number(row.amount_cents),
       firstName,

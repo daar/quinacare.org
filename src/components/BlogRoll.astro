@@ -13,6 +13,7 @@ import {
   getLocalizedPath,
   type Lang,
 } from "../i18n";
+import { resolveNewsSlug } from "../lib/newsSlug";
 
 // The three language news collections share one schema; the roll accepts
 // entries from any of them.
@@ -43,10 +44,10 @@ function isoDate(date: Date): string {
   return new Date(date).toISOString().slice(0, 10);
 }
 function newsPath(post: NewsEntry): string {
-  return getLocalizedPath(`/news/${post.data.slug || post.id}`, lang);
+  return getLocalizedPath(`/news/${resolveNewsSlug(post)}`, lang);
 }
 function slugOf(post: NewsEntry): string {
-  return post.data.slug || post.id;
+  return resolveNewsSlug(post);
 }
 
 type PostType = "article" | "vlog" | "newsletter" | "report";

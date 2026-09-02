@@ -5,6 +5,8 @@ import markdoc from "@astrojs/markdoc";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
+import react from "@astrojs/react";
+import keystatic from "@keystatic/astro";
 import missesRedirects from "./src/data/missesRedirects.mjs";
 
 // Keep the build-time image-optimization pass within the Netlify
@@ -32,7 +34,7 @@ export default defineConfig({
   // is x-cron-secret-gated), so this guard isn't the right tool
   // here. Disable it globally.
   security: { checkOrigin: false },
-  integrations: [markdoc(), sitemap()],
+  integrations: [markdoc(), sitemap(), react(), keystatic()],
   vite: {
     plugins: [tailwindcss()],
     server: {

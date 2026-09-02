@@ -1,0 +1,127 @@
+diff --git a/node_modules/@keystatic/core/dist/index-bea09e17.js b/node_modules/@keystatic/core/dist/index-bea09e17.js
+index 8114bf5..4fa37b8 100644
+--- a/node_modules/@keystatic/core/dist/index-bea09e17.js
++++ b/node_modules/@keystatic/core/dist/index-bea09e17.js
+@@ -13656,52 +13656,15 @@ const ImageElement = ({
+           children: /*#__PURE__*/jsxs(Flex, {
+             gap: "regular",
+             padding: "regular",
+-            children: [/*#__PURE__*/jsxs(Flex, {
+-              gap: "small",
+-              children: [/*#__PURE__*/jsxs(TooltipTrigger, {
+-                children: [/*#__PURE__*/jsx(ActionButton, {
+-                  prominence: "low",
+-                  onPress: () => setDialogOpen(true),
+-                  children: /*#__PURE__*/jsx(Icon, {
+-                    src: editIcon
+-                  })
+-                }), /*#__PURE__*/jsx(Tooltip, {
+-                  children: stringFormatter.format('edit')
+-                })]
+-              }), /*#__PURE__*/jsxs(TooltipTrigger, {
+-                children: [/*#__PURE__*/jsx(ActionButton, {
+-                  prominence: "low",
+-                  onPress: async () => {
+-                    const src = await getUploadedImage();
+-                    if (src) {
+-                      setNode({
+-                        src
+-                      });
+-                    }
+-                  },
+-                  children: /*#__PURE__*/jsx(Icon, {
+-                    src: fileUpIcon
+-                  })
+-                }), /*#__PURE__*/jsx(Tooltip, {
+-                  children: "Choose file"
+-                })]
+-              })]
+-            }), /*#__PURE__*/jsx(Divider, {
+-              orientation: "vertical"
+-            }), /*#__PURE__*/jsxs(TooltipTrigger, {
++            children: [/*#__PURE__*/jsxs(TooltipTrigger, {
+               children: [/*#__PURE__*/jsx(ActionButton, {
+                 prominence: "low",
+-                onPress: () => {
+-                  Transforms.removeNodes(editor, {
+-                    at: ReactEditor.findPath(editor, __elementForGettingPath)
+-                  });
+-                },
++                onPress: () => setDialogOpen(true),
+                 children: /*#__PURE__*/jsx(Icon, {
+-                  src: trash2Icon
++                  src: editIcon
+                 })
+               }), /*#__PURE__*/jsx(Tooltip, {
+-                tone: "critical",
+-                children: "Remove"
++                children: stringFormatter.format('edit')
+               })]
+             })]
+           })
+@@ -14874,8 +14837,8 @@ function Toolbar$1({
+         }), hasLists && /*#__PURE__*/jsx(ListButtons$1, {
+           lists: documentFeatures.formatting.listTypes
+         })]
+-      }), (documentFeatures.dividers || documentFeatures.links || !!documentFeatures.images || documentFeatures.formatting.blockTypes.blockquote || documentFeatures.tables || !!documentFeatures.layouts.length || documentFeatures.formatting.blockTypes.code || hasComponentBlocksForToolbar) && /*#__PURE__*/jsxs(ToolbarGroup, {
+-        children: [documentFeatures.dividers && dividerButton, documentFeatures.links && linkButton, documentFeatures.images && imageButton, documentFeatures.formatting.blockTypes.blockquote && blockquoteButton, !!documentFeatures.layouts.length && /*#__PURE__*/jsx(LayoutsButton, {
++      }), (documentFeatures.dividers || documentFeatures.links || documentFeatures.formatting.blockTypes.blockquote || documentFeatures.tables || !!documentFeatures.layouts.length || documentFeatures.formatting.blockTypes.code || hasComponentBlocksForToolbar) && /*#__PURE__*/jsxs(ToolbarGroup, {
++        children: [documentFeatures.dividers && dividerButton, documentFeatures.links && linkButton, documentFeatures.formatting.blockTypes.blockquote && blockquoteButton, !!documentFeatures.layouts.length && /*#__PURE__*/jsx(LayoutsButton, {
+           layouts: documentFeatures.layouts
+         }), documentFeatures.formatting.blockTypes.code && codeButton, documentFeatures.tables && tableButton, hasComponentBlocksForInsertMenu && insertBlocksInToolbar]
+       }), /*#__PURE__*/jsx(Box, {
+@@ -24091,7 +24054,7 @@ const Toolbar = /*#__PURE__*/memo(function Toolbar(props) {
+                 children: "Table"
+               })
+             })]
+-          }), nodes.image && /*#__PURE__*/jsx(ImageToolbarButton, {})]
++          })]
+         })]
+       })]
+     }), /*#__PURE__*/jsx(InsertBlockMenu, {})]
+diff --git a/node_modules/@keystatic/core/dist/keystatic-core-ui.js b/node_modules/@keystatic/core/dist/keystatic-core-ui.js
+index a0a8331..5d93e8f 100644
+--- a/node_modules/@keystatic/core/dist/keystatic-core-ui.js
++++ b/node_modules/@keystatic/core/dist/keystatic-core-ui.js
+@@ -1030,13 +1030,19 @@ function CollectionTable(props) {
+   const currentBranch = useCurrentBranch();
+   let isLocalMode = isLocalConfig(props.config);
+   let router = useRouter();
++  const collection = props.config.collections[props.collection];
++  const hasDateColumn = !!(collection.columns !== null && collection.columns !== void 0 && collection.columns.includes('date'));
+   let [sortDescriptor, setSortDescriptor] = useState({
+-    column: SLUG,
+-    direction: 'ascending'
++    column: hasDateColumn ? 'date' : SLUG,
++    direction: hasDateColumn ? 'descending' : 'ascending'
+   });
+   let hideStatusColumn = isLocalMode || currentBranch === (repoInfo === null || repoInfo === void 0 ? void 0 : repoInfo.defaultBranch);
+   const baseCommit = useBaseCommit();
+-  const collection = props.config.collections[props.collection];
++  const dateFormatter = useMemo(() => new Intl.DateTimeFormat((props.config.locale || 'nl-NL') + '', {
++    year: 'numeric',
++    month: '2-digit',
++    day: '2-digit'
++  }), [props.config.locale]);
+   const entriesWithStatus = useMemo(() => {
+     const defaultEntries = new Map(getEntriesInCollectionWithTreeKey(props.config, props.collection, props.trees.default.tree).map(x => [x.slug, x.key]));
+     return getEntriesInCollectionWithTreeKey(props.config, props.collection, props.trees.current.tree).map(entry => {
+@@ -1242,7 +1248,17 @@ function CollectionTable(props) {
+               if (val == null) {
+                 val = undefined;
+               } else {
+-                val = val + '';
++                const stringVal = val + '';
++                if (/^\d{4}-\d{2}-\d{2}$/.test(stringVal)) {
++                  const parsedDate = new Date(`${stringVal}T00:00:00`);
++                  if (!Number.isNaN(parsedDate.getTime())) {
++                    val = dateFormatter.format(parsedDate);
++                  } else {
++                    val = stringVal;
++                  }
++                } else {
++                  val = stringVal;
++                }
+               }
+               return /*#__PURE__*/jsx(Cell, {
+                 textValue: val,
