@@ -116,7 +116,7 @@ function getNewsPath(slug: string): string {
         <span class="w-1 h-1 rounded-full bg-gray-200"></span>
         <span class="flex items-center gap-1.5">
           <Icon name="clock" />
-          {getReadingTime(post.body || "")}
+          {getReadingTime(post.body || "")}{" "}
           {t("post.readingTime")}
         </span>
       </div>

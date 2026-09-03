@@ -216,7 +216,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
               <div class="flex items-end justify-between mb-2">
                 <span class="qc-label">{t("putumayoLoop.statsRaised")}</span>
                 <span class="qc-meta">
-                  {t("putumayoLoop.statsOf")}
+                  {t("putumayoLoop.statsOf")}{" "}
                   {formatCurrency(donations.target)}
                 </span>
               </div>
@@ -234,7 +234,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
                   {formatCurrency(donations.raised)}
                 </div>
                 <div class="qc-meta">
-                  {donations.donors}
+                  {donations.donors}{" "}
                   {t("putumayoLoop.statsDonors")}
                 </div>
               </div>
@@ -395,8 +395,8 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             {formatCurrency(donations.raised)}
           </div>
           <p class="text-white/60 mb-6">
-            {t("putumayoLoop.statsOf")}
-            {formatCurrency(donations.target)} · {donations.donors}
+            {t("putumayoLoop.statsOf")}{" "}
+            {formatCurrency(donations.target)} · {donations.donors}{" "}
             {t("putumayoLoop.statsDonors")}
           </p>
           <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden mb-6">
