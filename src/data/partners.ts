@@ -7,30 +7,10 @@ export interface Partner {
 
 export const partners: Partner[] = [
   {
-    name: "Philips",
-    logo: "/media/2020/04/logo-philips.png",
-    premium: false,
-  },
-  {
-    name: "Schumacher Kramer Stichting",
-    logo: "/media/2021/05/LOGO-schumacher-kramer-stichting.png",
-    premium: false,
-  },
-  {
     name: "Insulin for Life",
     logo: "/media/2019/11/logo-insulin-for-life.png",
     url: "https://www.insulinforlife.org",
     premium: true,
-  },
-  {
-    name: "De Wisselbeker",
-    logo: "/media/2019/09/logo-de-wisselbeker.jpg",
-    premium: false,
-  },
-  {
-    name: "Lions International",
-    logo: "/media/2019/04/lions-international-150px.png",
-    premium: false,
   },
   {
     name: "Partin",
@@ -49,11 +29,6 @@ export const partners: Partner[] = [
     logo: "/media/2020/02/WG_logo_RGB_blauw.png",
     url: "https://www.wildeganzen.nl",
     premium: true,
-  },
-  {
-    name: "CW de Boer",
-    logo: "/media/2022/12/logo-cw-de-boer.jpg",
-    premium: false,
   },
   {
     name: "SSI",
@@ -159,6 +134,26 @@ export const sponsors: Partner[] = [
   {
     name: "DFF",
     logo: "/media/2026/03/DFF--scaled.png",
+  },
+  {
+    name: "Philips",
+    logo: "/media/2020/04/logo-philips.png",
+  },
+  {
+    name: "Schumacher Kramer Stichting",
+    logo: "/media/2021/05/LOGO-schumacher-kramer-stichting.png",
+  },
+  {
+    name: "De Wisselbeker",
+    logo: "/media/2019/09/logo-de-wisselbeker.jpg",
+  },
+  {
+    name: "Lions International",
+    logo: "/media/2019/04/lions-international-150px.png",
+  },
+  {
+    name: "CW de Boer",
+    logo: "/media/2022/12/logo-cw-de-boer.jpg",
   },
   {
     name: "Pelgrimshoeve Snuffelmarkt",
