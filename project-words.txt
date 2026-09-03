@@ -409,7 +409,9 @@ aceroscenter
 ## Partial words from slugs/excerpts
 chacon
 davila
+gerrit
 pazmino
+tuesday
 
 ## compound/creative words
 cootjebouwman
