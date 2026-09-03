@@ -134,7 +134,7 @@ export const ui = {
       "Dankzij onze partners en sponsoren kunnen we de mensen helpen die dit het meest nodig hebben.",
     "partners.subtitle":
       "We zijn heel blij met een toegewijde groep partners en sponsoren die ons ondersteunen met zowel materiële hulp als structurele financiering.",
-    "partners.viewAll": "Bekijk onze partners",
+    "partners.viewAll": "Bekijk onze partners en sponsoren",
     "partners.interested": "Interesse in een samenwerking?",
     "partners.contact": "Neem contact op",
     // Homepage - Call to Action
@@ -569,7 +569,7 @@ export const ui = {
       "Thanks to our partners and sponsors, we can help the people who need it most.",
     "partners.subtitle":
       "We are very happy to have a dedicated group of partners and sponsors who support us with both material aid and structural financing.",
-    "partners.viewAll": "View our partners",
+    "partners.viewAll": "View our partners and sponsors",
     "partners.interested": "Interested in a partnership?",
     "partners.contact": "Get in touch",
     // Homepage - Call to Action
@@ -1007,7 +1007,7 @@ export const ui = {
       "Gracias a nuestros socios y patrocinadores, podemos ayudar a las personas que más lo necesitan.",
     "partners.subtitle":
       "Estamos muy contentos de tener un grupo dedicado de socios y patrocinadores que nos apoyan tanto con ayuda material como con financiamiento estructural.",
-    "partners.viewAll": "Ver nuestros socios",
+    "partners.viewAll": "Ver nuestros socios y patrocinadores",
     "partners.interested": "¿Interesado en una alianza?",
     "partners.contact": "Contáctanos",
     // Homepage - Call to Action
