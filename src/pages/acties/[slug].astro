@@ -109,7 +109,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
         {entry.data.title}
       </h1>
       <p class="text-sm text-gray-400 mt-3">
-        {t("fundraise.campaignBy")}
+        {t("fundraise.campaignBy")}{" "}
         <span class="text-qcBlack font-bold">{entry.data.organizer}</span>
       </p>
     </div>
@@ -182,9 +182,9 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                 {formatCurrency(entry.data.raised_offset)}
               </div>
               <p class="text-sm text-gray-400">
-                {t("fundraise.raised")}
-                {t("fundraise.of")}
-                {formatCurrency(entry.data.goal_amount)}
+                {t("fundraise.raised")}{" "}
+                {t("fundraise.of")}{" "}
+                {formatCurrency(entry.data.goal_amount)}{" "}
                 {t("fundraise.goal")}
               </p>
             </div>
