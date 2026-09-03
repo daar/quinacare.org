@@ -58,6 +58,7 @@ export const partners: Partner[] = [
   {
     name: "SSI",
     logo: "/media/2025/01/Logo-SSI.png",
+    url: "https://www.sustainablesciences.org",
     premium: true,
   },
   {
