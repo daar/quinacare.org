@@ -160,6 +160,11 @@ export const sponsors: Partner[] = [
     name: "DFF",
     logo: "/media/2026/03/DFF--scaled.png",
   },
+  {
+    name: "Pelgrimshoeve Snuffelmarkt",
+    logo: "/media/2026/09/logo-pelgrimshoeve-snuffelmarkt.png",
+    url: "https://pelgrimshoeve.nl",
+  },
 ];
 
 export const premiumPartners = partners.filter((p) => p.premium);
