@@ -131,9 +131,9 @@ export const ui = {
     // Homepage - Partners
     "partners.label": "Gezamenlijke Impact",
     "partners.title":
-      "Dankzij onze partners kunnen we de mensen helpen die dit het meest nodig hebben.",
+      "Dankzij onze partners en sponsoren kunnen we de mensen helpen die dit het meest nodig hebben.",
     "partners.subtitle":
-      "We zijn heel blij met een toegewijde groep partners die ons ondersteunen met zowel materiële hulp als structurele financiering.",
+      "We zijn heel blij met een toegewijde groep partners en sponsoren die ons ondersteunen met zowel materiële hulp als structurele financiering.",
     "partners.viewAll": "Bekijk onze partners",
     "partners.interested": "Interesse in een samenwerking?",
     "partners.contact": "Neem contact op",
@@ -566,9 +566,9 @@ export const ui = {
     // Homepage - Partners
     "partners.label": "Joint Impact",
     "partners.title":
-      "Thanks to our partners, we can help the people who need it most.",
+      "Thanks to our partners and sponsors, we can help the people who need it most.",
     "partners.subtitle":
-      "We are very happy to have a dedicated group of partners who support us with both material aid and structural financing.",
+      "We are very happy to have a dedicated group of partners and sponsors who support us with both material aid and structural financing.",
     "partners.viewAll": "View our partners",
     "partners.interested": "Interested in a partnership?",
     "partners.contact": "Get in touch",
@@ -1004,9 +1004,9 @@ export const ui = {
     // Homepage - Partners
     "partners.label": "Impacto Conjunto",
     "partners.title":
-      "Gracias a nuestros socios, podemos ayudar a las personas que más lo necesitan.",
+      "Gracias a nuestros socios y patrocinadores, podemos ayudar a las personas que más lo necesitan.",
     "partners.subtitle":
-      "Estamos muy contentos de tener un grupo dedicado de socios que nos apoyan tanto con ayuda material como con financiamiento estructural.",
+      "Estamos muy contentos de tener un grupo dedicado de socios y patrocinadores que nos apoyan tanto con ayuda material como con financiamiento estructural.",
     "partners.viewAll": "Ver nuestros socios",
     "partners.interested": "¿Interesado en una alianza?",
     "partners.contact": "Contáctanos",
