@@ -316,6 +316,17 @@ export const editions: EditionConfig[] = [
         // Amsterdam runs the 10 km only.
         distances: ["10k"],
       },
+      {
+        id: "nijmegen",
+        name: "Nijmegen",
+        city: "Nijmegen",
+        country: "NL",
+        coords: [51.8126, 5.8372],
+        captain: "Bregje Doesburg",
+        captainEmail: "bregjedoesburg@gmail.com",
+        // Nijmegen runs 5 km, 10 km, and 21 km — no kids run, no full marathon.
+        distances: ["5k", "10k", "half"],
+      },
     ],
     target: 25000,
   },
