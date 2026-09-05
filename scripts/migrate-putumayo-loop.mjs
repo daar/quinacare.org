@@ -36,8 +36,12 @@ async function tryAlter(sql) {
   }
 }
 
+// The one definition of this table. Both ensureSchema() (fresh database)
+// and dropStaleForeignKey() (rebuild) use it, so the two can never drift
+// apart again — they had, and `age` went missing from both, which is what
+// broke live signups with "no column named age".
 const SUBSCRIBERS_SCHEMA = `
-  CREATE TABLE putumayo_loop_subscribers (
+  CREATE TABLE IF NOT EXISTS putumayo_loop_subscribers (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     external_id   TEXT UNIQUE,
     edition_year  INTEGER NOT NULL,
@@ -52,6 +56,7 @@ const SUBSCRIBERS_SCHEMA = `
     distance      TEXT,
     emergency_contact_name  TEXT,
     emergency_contact_phone TEXT,
+    age           INTEGER,
     signed_up_at  TEXT NOT NULL,
     created_at    TEXT NOT NULL DEFAULT (datetime('now'))
   )
@@ -87,35 +92,30 @@ async function dropStaleForeignKey() {
     `ALTER TABLE putumayo_loop_subscribers RENAME TO putumayo_loop_subscribers_old`,
   );
   await db.execute(SUBSCRIBERS_SCHEMA);
+  // Copy every column the old and new tables share, rather than a fixed
+  // list: the hardcoded one silently dropped emergency contacts and ages
+  // for existing signups, because it was never updated when those columns
+  // were added. Intersecting also keeps this safe for older databases that
+  // predate them.
+  const [oldCols, newCols] = await Promise.all([
+    db.execute(`PRAGMA table_info(putumayo_loop_subscribers_old)`),
+    db.execute(`PRAGMA table_info(putumayo_loop_subscribers)`),
+  ]);
+  const newNames = new Set(newCols.rows.map((r) => r.name));
+  const shared = oldCols.rows
+    .map((r) => r.name)
+    .filter((name) => newNames.has(name));
+  const cols = shared.join(", ");
   await db.execute(`
-    INSERT INTO putumayo_loop_subscribers
-      (id, external_id, edition_year, first_name, last_name, email,
-       hub_id, lat, lng, location, count, distance, signed_up_at, created_at)
-    SELECT id, external_id, edition_year, first_name, last_name, email,
-       hub_id, lat, lng, location, count, distance, signed_up_at, created_at
-    FROM putumayo_loop_subscribers_old
+    INSERT INTO putumayo_loop_subscribers (${cols})
+    SELECT ${cols} FROM putumayo_loop_subscribers_old
   `);
   await db.execute(`DROP TABLE putumayo_loop_subscribers_old`);
   await db.execute(`PRAGMA foreign_keys = ON`);
 }
 
 async function ensureSchema() {
-  await db.execute(`CREATE TABLE IF NOT EXISTS putumayo_loop_subscribers (
-      id            INTEGER PRIMARY KEY AUTOINCREMENT,
-      external_id   TEXT UNIQUE,
-      edition_year  INTEGER NOT NULL,
-      first_name    TEXT,
-      last_name     TEXT,
-      email         TEXT,
-      hub_id        TEXT,
-      lat           REAL,
-      lng           REAL,
-      location      TEXT,
-      count         INTEGER NOT NULL DEFAULT 1,
-      distance      TEXT,
-      signed_up_at  TEXT NOT NULL,
-      created_at    TEXT NOT NULL DEFAULT (datetime('now'))
-    )`);
+  await db.execute(SUBSCRIBERS_SCHEMA);
   await dropStaleForeignKey();
   await db.execute(
     `CREATE INDEX IF NOT EXISTS idx_subscribers_edition ON putumayo_loop_subscribers (edition_year)`,
@@ -130,6 +130,12 @@ async function ensureSchema() {
   );
   await tryAlter(
     `ALTER TABLE putumayo_loop_subscribers ADD COLUMN emergency_contact_phone TEXT`,
+  );
+  // Age of the runner, captured for the kids run. The signup endpoint has
+  // written this since the kids run was added; the migration never created
+  // it, so a database built from this script rejected every signup.
+  await tryAlter(
+    `ALTER TABLE putumayo_loop_subscribers ADD COLUMN age INTEGER`,
   );
 }
 
