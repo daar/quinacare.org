@@ -110,11 +110,16 @@ const whatsappHref = `https://wa.me/?text=${encodeURIComponent(
               href={qrDataUri}
               download="quinacare-donate-qr.png"
               class="inline-block transition-transform hover:scale-110 active:scale-95"
-              aria-label="Download QR code"
+              aria-label={t("donate.qrDownload")}
             >
+              {/*
+                The link above carries the accessible name, so the image
+                itself is decorative. An alt here would be announced
+                twice, and it used to be English on every language.
+              */}
               <img
                 src={qrDataUri}
-                alt="QR code"
+                alt=""
                 width="120"
                 height="120"
                 class="w-24 md:w-32 h-24 md:h-32 rounded-lg shadow-lg"
