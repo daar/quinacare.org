@@ -128,9 +128,19 @@ const structuredData = {
           /WKWebView API client did not respond/,
           /showSearchResults/,
           /operation was aborted|AbortError/,
+          // Microsoft Office / Outlook injects this into pages it opens;
+          // it was the single loudest entry in the log and never came
+          // from a stack of ours.
+          /^Object Not Found Matching Id:/,
+          // Android in-app browsers (Facebook, Instagram, LinkedIn) tear
+          // down their JS bridge on navigation and log the failed call.
+          /Error invoking postMessage/,
+          // iOS Safari, raised when a request is still in flight as the
+          // page goes away. Benign, and not something a fix can reach.
+          /InvalidStateError/,
         ];
         const NOISE_SRC =
-          /cloudflareinsights\.com|extension:\/\/|webkit-masked-url/;
+          /cloudflareinsights\.com|extension:\/\/|webkit-masked-url|iabjs:\/\//;
         function isNoise(message, context) {
           for (let i = 0; i < NOISE_MSG.length; i++) {
             if (NOISE_MSG[i].test(message || "")) return true;
