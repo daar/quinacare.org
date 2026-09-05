@@ -13,7 +13,7 @@ import type {
   Hub,
   Subscriber,
 } from "../data/putumayoLoop";
-import { editions } from "../data/putumayoLoop";
+import { ALL_DISTANCES, editions } from "../data/putumayoLoop";
 import { getTurso } from "./turso";
 import { getFundraiserStats, getDonationsByFundraiser } from "./donations";
 
@@ -43,10 +43,18 @@ function normalizeIsoUtc(s: string): string {
   return s.replace(" ", "T") + "Z";
 }
 
+// Every distance the run offers, taken from the same config the signup
+// modal and the hub cards use. It was a hardcoded ["10k","half","full"]
+// here, which silently dropped the kids run and the 5 km from the
+// counters when those distances were added — they were stored fine, just
+// never counted.
+const KNOWN_DISTANCES = new Set<string>(ALL_DISTANCES.map((d) => d.value));
+
 function rowToSubscriber(r: SubscriberRow, hubs: Hub[]): Subscriber {
-  const distance = (["10k", "half", "full"] as const).find(
-    (d) => d === r.distance,
-  );
+  const distance =
+    r.distance && KNOWN_DISTANCES.has(r.distance)
+      ? (r.distance as Subscriber["distance"])
+      : undefined;
   // Coord resolution order:
   //   1. row's own lat/lng (geocoded)
   //   2. parent hub's coords (so hub signups still get a pin until
