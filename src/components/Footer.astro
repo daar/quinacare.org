@@ -17,6 +17,12 @@ const policyPlanLinks = {
   es: "/policy-plans/Policy%20Plan%20Quina%20Care%202024-2027.pdf",
 };
 const policyPlanUrl = policyPlanLinks[lang] || policyPlanLinks.en;
+const policyPlanLabel =
+  lang === "nl"
+    ? "Beleidsplan"
+    : lang === "es"
+      ? "Plan de Política"
+      : "Policy Plan";
 ---
 
 <footer class="bg-qcBlack pt-20 pb-10 text-white">
@@ -34,6 +40,15 @@ const policyPlanUrl = policyPlanLinks[lang] || policyPlanLinks.en;
         <p class="text-white/50 text-lg leading-relaxed max-w-xs">
           {t("footer.description")}
         </p>
+        <a
+          href={policyPlanUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm uppercase tracking-widest text-white/70 hover:text-white hover:border-white/40 transition-colors"
+        >
+          <Icon name="download" />
+          {policyPlanLabel}
+        </a>
         <div class="flex gap-4 text-white/40">
           <a
             href="https://www.instagram.com/quinacare/"
@@ -206,20 +221,6 @@ const policyPlanUrl = policyPlanLinks[lang] || policyPlanLinks.en;
     >
       <div class="flex gap-8">
         <p>&copy; 2026 Quina Care</p>
-        <a
-          href={policyPlanUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-white transition-colors"
-        >
-          {
-            lang === "nl"
-              ? "Beleidsplan"
-              : lang === "es"
-                ? "Plan de Política"
-                : "Policy Plan"
-          }
-        </a>
         {
           /* TODO: re-enable privacy policy link once the page is written
         <a href="#" class="hover:text-white transition-colors"
