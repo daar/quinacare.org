@@ -75,7 +75,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 <Layout title={`${entry.data.title} | Quina Care`} lang={lang}>
   <Nav />
 
-  <div class="max-w-[1600px] mx-auto px-6 pt-32 pb-6">
+  <div class="max-w-[1600px] mx-auto px-6 pt-32 pb-6" data-pagefind-body>
     <!-- Back link -->
     <a
       href={getLocalizedPath("/fundraisers", lang)}
@@ -263,7 +263,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 
   <!-- Campaign content -->
   <div class="border-t border-gray-100"></div>
-  <main class="max-w-[1600px] mx-auto px-6 py-12">
+  <main class="max-w-[1600px] mx-auto px-6 py-12" data-pagefind-body>
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
       <div class="lg:col-span-3">
         <article class="prose prose-article max-w-none">

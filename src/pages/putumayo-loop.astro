@@ -89,7 +89,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
   <Nav />
 
   <!-- Hero -->
-  <header class="relative pt-40 pb-16 overflow-hidden">
+  <header class="relative pt-40 pb-16 overflow-hidden" data-pagefind-body>
     <div
       class="absolute inset-0 -z-10 bg-gradient-to-b from-red-50/60 via-white to-white"
     >
@@ -263,7 +263,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
   </section>
 
   <!-- Why we run -->
-  <section class="max-w-3xl mx-auto px-6 py-16 text-center">
+  <section class="max-w-3xl mx-auto px-6 py-16 text-center" data-pagefind-body>
     <span class="qc-label text-qcRed mb-4 block">
       {t("putumayoLoop.whyTitle")}
     </span>
@@ -281,7 +281,10 @@ const excerpt = t("putumayoLoop.heroSubtitle");
   </section>
 
   <!-- Hubs grid -->
-  <section class="max-w-[1600px] mx-auto px-6 py-16 border-t border-gray-100">
+  <section
+    class="max-w-[1600px] mx-auto px-6 py-16 border-t border-gray-100"
+    data-pagefind-body
+  >
     <div class="mb-10">
       <span class="qc-label mb-2 block">
         {t("putumayoLoop.hubsTitle")}
