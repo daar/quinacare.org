@@ -19,18 +19,20 @@ export const POST: APIRoute = async ({ request }) => {
   await ensureSchema();
   const db = getDb();
 
-  try {
-    await db.execute({
-      sql: `INSERT INTO subscribers (email, locale) VALUES (?, ?)`,
-      args: [email.toLowerCase().trim(), locale ?? "nl"],
-    });
-  } catch (e: unknown) {
-    if (e instanceof Error && e.message.includes("UNIQUE")) {
-      // Already subscribed — treat as success
-      return new Response(JSON.stringify({ ok: true }), { status: 200 });
-    }
-    throw e;
-  }
+  // Someone already on one language list who signs up on another gets
+  // that language added to their set, rather than the signup being
+  // silently dropped as a duplicate. Re-subscribing to the same list is
+  // a no-op.
+  await db.execute({
+    sql: `INSERT INTO subscribers (email, locale) VALUES (?, ?)
+         ON CONFLICT(email) DO UPDATE SET locale =
+           CASE
+             WHEN ',' || locale || ',' LIKE '%,' || excluded.locale || ',%'
+               THEN locale
+             ELSE locale || ',' || excluded.locale
+           END`,
+    args: [email.toLowerCase().trim(), locale ?? "nl"],
+  });
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };

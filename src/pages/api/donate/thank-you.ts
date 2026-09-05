@@ -21,14 +21,18 @@ export const POST: APIRoute = async ({ request }) => {
   });
 
   if (newsletter) {
-    try {
-      await db.execute({
-        sql: `INSERT INTO subscribers (email, locale) VALUES (?, ?)`,
-        args: [email.toLowerCase().trim(), locale ?? "nl"],
-      });
-    } catch {
-      // already subscribed — ignore
-    }
+    // Adds this language to the set if they were already subscribed in
+    // another one; a repeat of the same language changes nothing.
+    await db.execute({
+      sql: `INSERT INTO subscribers (email, locale) VALUES (?, ?)
+         ON CONFLICT(email) DO UPDATE SET locale =
+           CASE
+             WHEN ',' || locale || ',' LIKE '%,' || excluded.locale || ',%'
+               THEN locale
+             ELSE locale || ',' || excluded.locale
+           END`,
+      args: [email.toLowerCase().trim(), locale ?? "nl"],
+    });
   }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });

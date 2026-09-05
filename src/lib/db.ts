@@ -40,6 +40,11 @@ export async function ensureSchema(): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_donations_mollie_id ON donations(mollie_id)`,
     `CREATE INDEX IF NOT EXISTS idx_donations_context ON donations(context)`,
     `CREATE INDEX IF NOT EXISTS idx_donations_status ON donations(status)`,
+    // One row per person. `locale` is the set of language lists they are
+    // on, comma separated ("nl", "nl,en"): someone can subscribe to the
+    // Dutch and English newsletter without becoming two subscribers.
+    // Membership is what matters, the order is not significant — use the
+    // merging upsert below rather than writing this column blind.
     `CREATE TABLE IF NOT EXISTS subscribers (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
       email      TEXT NOT NULL UNIQUE,
