@@ -10,14 +10,25 @@ interface Props {
   /** Layout direction of the button group. */
   orientation?: "horizontal" | "vertical";
   lang?: Lang;
+  /** Optional QR code data URI. If provided, WhatsApp button shares QR code message only. */
+  qrDataUri?: string;
 }
 
-const { url, title, orientation = "horizontal", lang = "nl" } = Astro.props;
+const {
+  url,
+  title,
+  orientation = "horizontal",
+  lang = "nl",
+  qrDataUri,
+} = Astro.props;
 const t = useTranslations(lang);
 
 // Share-intent URLs — each opens the network's composer with the
 // post/url pre-filled, so a click goes straight to "create a post".
 const shareText = `${title} ${url}`;
+// For WhatsApp with QR code: just the title (no URL)
+const whatsappQRText = title;
+
 const networks = [
   {
     label: t("share.facebook"),
@@ -32,7 +43,10 @@ const networks = [
   {
     label: t("share.whatsapp"),
     icon: "fa-brands fa-whatsapp",
-    href: `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+    href: qrDataUri
+      ? `https://wa.me/?text=${encodeURIComponent(whatsappQRText)}`
+      : `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+    ...(qrDataUri && { "data-qr-share": true }),
   },
   {
     // Instagram has no public share-by-URL endpoint, so this links to
@@ -62,6 +76,7 @@ const btnClass =
   data-social-share
   data-share-url={url}
   data-share-title={title}
+  data-qr-data-uri={qrDataUri}
 >
   <button
     type="button"
@@ -107,6 +122,7 @@ const btnClass =
     .forEach((root) => {
       const url = root.dataset.shareUrl || location.href;
       const title = root.dataset.shareTitle || document.title;
+      const qrDataUri = root.dataset.qrDataUri;
 
       // Web Share API — on supporting devices (mostly mobile) this opens
       // the native share sheet, so the user can post to any installed app.
@@ -122,6 +138,17 @@ const btnClass =
             /* the user dismissed the share sheet */
           }
         });
+      }
+
+      // WhatsApp QR code sharing — if QR code is available, share just the
+      // title (user sees QR on the page) instead of the page URL
+      if (qrDataUri) {
+        const whatsappLink =
+          root.querySelector<HTMLAnchorElement>("[data-qr-share]");
+        if (whatsappLink) {
+          const qrMessage = encodeURIComponent(title);
+          whatsappLink.href = `https://wa.me/?text=${qrMessage}`;
+        }
       }
 
       // Copy link — universal fallback, with a brief checkmark confirmation.

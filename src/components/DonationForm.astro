@@ -10,6 +10,7 @@ import {
 import { getCurrency, formatCurrency } from "../lib/currency";
 import { donationTiers } from "../lib/donationTiers";
 import DonationFormCard from "./DonationFormCard.astro";
+import QRCode from "./QRCode.astro";
 import heroImage from "../assets/images/hospital_exterior.jpg";
 
 interface Props {
@@ -29,14 +30,6 @@ const localeMap: Record<Lang, string> = {
 };
 const numberLocale = localeMap[lang];
 
-// Share target for the WhatsApp button next to the QR code: the same
-// donate page the QR encodes, as an absolute URL, with the page title as
-// the message. Astro.site is set, so this resolves per language without
-// the pages having to pass it in.
-const shareUrl = new URL(Astro.url.pathname, Astro.site).href;
-const whatsappHref = `https://wa.me/?text=${encodeURIComponent(
-  `${t("donate.pageTitle")} ${shareUrl}`,
-)}`;
 ---
 
 <!-- SECTION 1: Hero with floating donation form -->
@@ -105,40 +98,13 @@ const whatsappHref = `https://wa.me/?text=${encodeURIComponent(
 
       {
         qrDataUri && (
-          <div class="mt-8 relative inline-block">
-            <a
-              href={qrDataUri}
-              download="quinacare-donate-qr.png"
-              class="inline-block transition-transform hover:scale-110 active:scale-95"
-              aria-label={t("donate.qrDownload")}
-            >
-              {/*
-                The link above carries the accessible name, so the image
-                itself is decorative. An alt here would be announced
-                twice, and it used to be English on every language.
-              */}
-              <img
-                src={qrDataUri}
-                alt=""
-                width="120"
-                height="120"
-                class="w-24 md:w-32 h-24 md:h-32 rounded-lg shadow-lg"
-              />
-            </a>
-            {/*
-              Share the donate link straight into WhatsApp. Sits on the
-              QR's bottom-right corner — the one corner with no finder
-              pattern, so the code still scans. #65
-            */}
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
-              aria-label={t("share.whatsapp")}
-            >
-              <Icon name="fa-brands fa-whatsapp" class="text-lg" />
-            </a>
+          <div class="mt-8">
+            <QRCode
+              dataUri={qrDataUri}
+              alt="QR code for donation page"
+              size="md"
+              downloadFilename="quinacare-donate-qr.png"
+            />
           </div>
         )
       }

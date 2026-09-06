@@ -5,10 +5,12 @@ import DonationForm from "../../../components/DonationForm.astro";
 import AchievedStats from "../../../components/AchievedStats.astro";
 import FAQs from "../../../components/FAQs.astro";
 import Footer from "../../../components/Footer.astro";
-import { type Lang } from "../../../i18n";
+import SocialShare from "../../../components/SocialShare.astro";
+import { type Lang, useTranslations } from "../../../i18n";
 import { generateQrDataUri } from "../../../lib/qr";
 
 const lang: Lang = "en";
+const t = useTranslations(lang);
 const qrDataUri = await generateQrDataUri("https://quinacare.org/en/donate");
 ---
 
@@ -16,6 +18,16 @@ const qrDataUri = await generateQrDataUri("https://quinacare.org/en/donate");
   <Nav />
   <div data-pagefind-body>
     <DonationForm lang={lang} qrDataUri={qrDataUri} />
+
+    <!-- Share donation page QR code -->
+    <div class="flex justify-center py-8 border-t border-gray-100">
+      <SocialShare
+        url="https://quinacare.org/en/donate"
+        title={t("donate.pageTitle")}
+        lang={lang}
+        qrDataUri={qrDataUri}
+      />
+    </div>
   </div>
 
   <AchievedStats lang={lang} />

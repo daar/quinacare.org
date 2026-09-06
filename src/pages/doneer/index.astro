@@ -5,15 +5,28 @@ import DonationForm from "../../components/DonationForm.astro";
 import AchievedStats from "../../components/AchievedStats.astro";
 import FAQs from "../../components/FAQs.astro";
 import Footer from "../../components/Footer.astro";
+import SocialShare from "../../components/SocialShare.astro";
 import { generateQrDataUri } from "../../lib/qr";
+import { useTranslations } from "../../i18n";
 
 const qrDataUri = await generateQrDataUri("https://quinacare.org/doneer");
+const t = useTranslations("nl");
 ---
 
 <Layout title="Doneer - Quina Care">
   <Nav />
   <div data-pagefind-body>
     <DonationForm qrDataUri={qrDataUri} />
+
+    <!-- Share donation page QR code -->
+    <div class="flex justify-center py-8 border-t border-gray-100">
+      <SocialShare
+        url="https://quinacare.org/doneer"
+        title={t("donate.pageTitle")}
+        lang="nl"
+        qrDataUri={qrDataUri}
+      />
+    </div>
   </div>
 
   <AchievedStats />
