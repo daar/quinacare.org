@@ -46,7 +46,7 @@ const networks = [
     href: qrDataUri
       ? `https://wa.me/?text=${encodeURIComponent(whatsappQRText)}`
       : `https://wa.me/?text=${encodeURIComponent(shareText)}`,
-    ...(qrDataUri && { "data-qr-share": true }),
+    ...(qrDataUri ? { "data-qr-share": true } : {}),
   },
   {
     // Instagram has no public share-by-URL endpoint, so this links to
