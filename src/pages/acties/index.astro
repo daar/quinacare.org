@@ -92,6 +92,10 @@ function formatCurrency(amount: number): string {
               const days = getDaysToGo(fundraiser.data.end_date);
               const isActive = fundraiser.data.end_date.getTime() > Date.now();
               const qr = qrBySlug.get(fundraiser.data.slug)!;
+              const cardPath = getLocalizedPath(
+                `/fundraisers/${fundraiser.data.slug}`,
+                lang,
+              );
               return (
                 <article
                   class="group relative fundraise-card bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
@@ -140,7 +144,7 @@ function formatCurrency(amount: number): string {
                         downloadFilename={`quinacare-${fundraiser.data.slug}-qr.png`}
                       />
                       <a
-                        href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr/fundraisers/${fundraiser.data.slug}`)}`}
+                        href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr${cardPath}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         class="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] shadow-lg ring-2 ring-white transition-transform hover:scale-110 active:scale-95"
@@ -202,13 +206,7 @@ function formatCurrency(amount: number): string {
 
                   {/* Stretched link: covers the card without wrapping the
                         QR/WhatsApp anchors, which would nest <a> elements. */}
-                  <a
-                    href={getLocalizedPath(
-                      `/fundraisers/${fundraiser.data.slug}`,
-                      lang,
-                    )}
-                    class="absolute inset-0 z-10"
-                  >
+                  <a href={cardPath} class="absolute inset-0 z-10">
                     <span class="sr-only">{fundraiser.data.title}</span>
                   </a>
                 </article>

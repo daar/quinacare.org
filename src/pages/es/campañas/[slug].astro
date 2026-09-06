@@ -317,7 +317,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                   downloadFilename={`quinacare-${entry.data.slug}-qr.png`}
                 />
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`${shareTitle}\n\nhttps://quinacare.org/api/qr/fundraisers/${entry.data.slug}`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`${shareTitle}\n\nhttps://quinacare.org/api/qr${getLocalizedPath(`/fundraisers/${entry.data.slug}`, lang)}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
