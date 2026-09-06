@@ -5,7 +5,6 @@ import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
-import QRCode from "../../components/QRCode.astro";
 import { useTranslations, getLocalizedPath, type Lang } from "../../i18n";
 import { generateQrDataUri } from "../../lib/qr";
 
@@ -137,14 +136,24 @@ function formatCurrency(amount: number): string {
                           </span>
                         </div>
                       )}
-                      <div class="absolute bottom-3 right-3">
-                        <QRCode
-                          dataUri={qr}
-                          alt={`QR code for ${fundraiser.data.slug}`}
-                          size="sm"
-                          downloadFilename={`quinacare-${fundraiser.data.slug}-qr.png`}
+                      <button
+                        type="button"
+                        class="fundraise-qr group/qr absolute bottom-3 right-3 rounded-lg bg-white p-1.5 shadow-md transition-shadow hover:shadow-lg"
+                        data-slug={fundraiser.data.slug}
+                        aria-label={t("fundraise.qrDownload")}
+                        title={t("fundraise.qrDownload")}
+                      >
+                        <img
+                          src={qr}
+                          alt=""
+                          width="56"
+                          height="56"
+                          class="block h-14 w-14"
                         />
-                      </div>
+                        <span class="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 text-white opacity-0 transition-opacity group-hover/qr:opacity-100">
+                          <Icon name="download" class="text-sm" />
+                        </span>
+                      </button>
                       <a
                         href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr/fundraisers/${fundraiser.data.slug}`)}`}
                         target="_blank"
@@ -256,6 +265,24 @@ function formatCurrency(amount: number): string {
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll<HTMLElement>(".fundraise-card");
+
+    // QR code download — bypass the card link and save the PNG.
+    document
+      .querySelectorAll<HTMLButtonElement>(".fundraise-qr")
+      .forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const img = btn.querySelector("img");
+          if (!img) return;
+          const link = document.createElement("a");
+          link.href = img.src;
+          link.download = `quinacare-${btn.dataset.slug}-qr.png`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+      });
 
     const paginationNav = document.getElementById("fundraise-pagination");
     const pagesContainer = document.getElementById("pagination-pages");
