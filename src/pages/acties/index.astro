@@ -93,119 +93,125 @@ function formatCurrency(amount: number): string {
               const isActive = fundraiser.data.end_date.getTime() > Date.now();
               const qr = qrBySlug.get(fundraiser.data.slug)!;
               return (
-                <a
-                  href={getLocalizedPath(
-                    `/fundraisers/${fundraiser.data.slug}`,
-                    lang,
-                  )}
-                  class="group cursor-pointer block fundraise-card"
+                <article
+                  class="group relative fundraise-card bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   data-card-index={idx}
                   data-slug={fundraiser.data.slug}
                   data-goal={fundraiser.data.goal_amount}
                   data-initial-raised={fundraiser.data.raised_offset}
                   data-initial-backers={fundraiser.data.backers_offset}
                 >
-                  <article class="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
-                      {fundraiser.data.featured_image ? (
-                        <Image
-                          src={fundraiser.data.featured_image}
-                          alt={
-                            fundraiser.data.featured_image_alt ||
-                            fundraiser.data.title
-                          }
-                          class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                          widths={[300, 600]}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
-                      )}
-                      {isActive && (
-                        <div class="absolute top-4 left-4">
-                          <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-sm">
-                            {t("fundraise.active")}
-                          </span>
-                        </div>
-                      )}
-                      {import.meta.env.DEV && (
-                        <div class="absolute top-4 right-4">
-                          <span
-                            class={`qc-meta !text-white px-3 py-1.5 rounded-sm ${fundraiser.data.draft ? "bg-gray-800" : "bg-emerald-600"}`}
-                          >
-                            {fundraiser.data.draft ? "Draft" : "Published"}
-                          </span>
-                        </div>
-                      )}
-                      <div class="absolute bottom-3 right-3 relative inline-block">
-                        <QRCode
-                          dataUri={qr}
-                          alt={`QR code for ${fundraiser.data.slug}`}
-                          size="sm"
-                          downloadFilename={`quinacare-${fundraiser.data.slug}-qr.png`}
-                        />
-                        <a
-                          href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr/fundraisers/${fundraiser.data.slug}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          class="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
-                          aria-label={t("share.whatsapp")}
-                          title={t("share.whatsapp")}
+                  <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+                    {fundraiser.data.featured_image ? (
+                      <Image
+                        src={fundraiser.data.featured_image}
+                        alt={
+                          fundraiser.data.featured_image_alt ||
+                          fundraiser.data.title
+                        }
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                        widths={[300, 600]}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
+                    )}
+                    {isActive && (
+                      <div class="absolute top-4 left-4">
+                        <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-sm">
+                          {t("fundraise.active")}
+                        </span>
+                      </div>
+                    )}
+                    {import.meta.env.DEV && (
+                      <div class="absolute top-4 right-4">
+                        <span
+                          class={`qc-meta !text-white px-3 py-1.5 rounded-sm ${fundraiser.data.draft ? "bg-gray-800" : "bg-emerald-600"}`}
                         >
-                          <Icon
-                            name="fa-brands fa-whatsapp"
-                            class="text-base text-white"
-                          />
-                        </a>
+                          {fundraiser.data.draft ? "Draft" : "Published"}
+                        </span>
                       </div>
-                    </div>
-
-                    <div class="p-5 md:p-6">
-                      <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
-                        <div
-                          class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
-                          style={`width: ${barPct}%`}
+                    )}
+                    <div class="absolute bottom-3 right-3 z-20 inline-block">
+                      <QRCode
+                        dataUri={qr}
+                        alt={`QR code for ${fundraiser.data.slug}`}
+                        size="sm"
+                        downloadFilename={`quinacare-${fundraiser.data.slug}-qr.png`}
+                      />
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr/fundraisers/${fundraiser.data.slug}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] shadow-lg ring-2 ring-white transition-transform hover:scale-110 active:scale-95"
+                        aria-label={t("share.whatsapp")}
+                        title={t("share.whatsapp")}
+                      >
+                        <Icon
+                          name="fa-brands fa-whatsapp"
+                          class="text-xs text-white"
                         />
-                      </div>
-
-                      <div class="flex items-baseline justify-between mb-1">
-                        <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
-                          {formatCurrency(fundraiser.data.raised_offset)}
-                        </span>
-                        <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
-                          <span class="fc-pct">{pct}</span>%{" "}
-                          {t("fundraise.funded")}
-                        </span>
-                      </div>
-
-                      <p class="text-sm text-gray-400 mb-4">
-                        {t("fundraise.of")}{" "}
-                        {formatCurrency(fundraiser.data.goal_amount)}{" "}
-                        {t("fundraise.goal")}
-                      </p>
-
-                      <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
-                        <span>
-                          <span class="fc-backers">
-                            {fundraiser.data.backers_offset}
-                          </span>{" "}
-                          {t("fundraise.backers")}
-                        </span>
-                        <span class="w-1 h-1 rounded-full bg-gray-200" />
-                        <span>
-                          {days} {t("fundraise.daysToGo")}
-                        </span>
-                      </div>
-
-                      <h3 class="text-base md:text-lg font-bold uppercase tracking-tight leading-tight group-hover:text-qcRed transition">
-                        {fundraiser.data.title}
-                      </h3>
-                      <p class="text-[11px] text-gray-400 mt-1">
-                        {t("fundraise.by")} {fundraiser.data.organizer}
-                      </p>
+                      </a>
                     </div>
-                  </article>
-                </a>
+                  </div>
+
+                  <div class="p-5 md:p-6">
+                    <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+                      <div
+                        class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
+                        style={`width: ${barPct}%`}
+                      />
+                    </div>
+
+                    <div class="flex items-baseline justify-between mb-1">
+                      <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
+                        {formatCurrency(fundraiser.data.raised_offset)}
+                      </span>
+                      <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
+                        <span class="fc-pct">{pct}</span>%{" "}
+                        {t("fundraise.funded")}
+                      </span>
+                    </div>
+
+                    <p class="text-sm text-gray-400 mb-4">
+                      {t("fundraise.of")}{" "}
+                      {formatCurrency(fundraiser.data.goal_amount)}{" "}
+                      {t("fundraise.goal")}
+                    </p>
+
+                    <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
+                      <span>
+                        <span class="fc-backers">
+                          {fundraiser.data.backers_offset}
+                        </span>{" "}
+                        {t("fundraise.backers")}
+                      </span>
+                      <span class="w-1 h-1 rounded-full bg-gray-200" />
+                      <span>
+                        {days} {t("fundraise.daysToGo")}
+                      </span>
+                    </div>
+
+                    <h3 class="text-base md:text-lg font-bold uppercase tracking-tight leading-tight group-hover:text-qcRed transition">
+                      {fundraiser.data.title}
+                    </h3>
+                    <p class="text-[11px] text-gray-400 mt-1">
+                      {t("fundraise.by")} {fundraiser.data.organizer}
+                    </p>
+                  </div>
+
+                  {/* Stretched link: covers the card without wrapping the
+                        QR/WhatsApp anchors, which would nest <a> elements. */}
+                  <a
+                    href={getLocalizedPath(
+                      `/fundraisers/${fundraiser.data.slug}`,
+                      lang,
+                    )}
+                    class="absolute inset-0 z-10"
+                  >
+                    <span class="sr-only">{fundraiser.data.title}</span>
+                  </a>
+                </article>
               );
             })}
           </div>

@@ -15,6 +15,7 @@ import {
 import DonationModal from "../components/DonationModal.astro";
 import DonationFormCard from "../components/DonationFormCard.astro";
 import SocialShare from "../components/SocialShare.astro";
+import QRCode from "../components/QRCode.astro";
 import PutumayoLoopMap from "../components/PutumayoLoopMap.astro";
 import PutumayoLoopFeed from "../components/PutumayoLoopFeed.astro";
 import PutumayoLoopSignupModal from "../components/PutumayoLoopSignupModal.astro";
@@ -435,21 +436,23 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             <span class="qc-label !text-qcBlack block mb-3">
               {t("putumayoLoop.qrTitle")}
             </span>
-            <img
-              src={qrDataUri}
-              alt="QR code"
-              width="220"
-              height="220"
-              class="w-full h-auto rounded-md"
-            />
-            <a
-              href={qrDataUri}
-              download={`${edition.fundraiserSlug}.png`}
-              class="qc-meta !text-qcRed mt-3 inline-flex items-center gap-1 hover:underline"
-            >
-              <Icon name="download" class="text-xs" />
-              {t("putumayoLoop.qrDownload")}
-            </a>
+            <div class="relative inline-block">
+              <QRCode
+                dataUri={qrDataUri}
+                alt="QR code"
+                size="md"
+                downloadFilename={`${edition.fundraiserSlug}.png`}
+              />
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(`${title}\n\nhttps://quinacare.org/api/qr/putumayo-loop`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
+                aria-label={t("share.whatsapp")}
+              >
+                <Icon name="fa-brands fa-whatsapp" class="text-lg" />
+              </a>
+            </div>
           </div>
         </div>
       </div>
