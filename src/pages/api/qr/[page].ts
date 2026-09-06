@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
-import { generateQrDataUri } from "../../lib/qr";
+import { generateQrDataUri } from "../../../lib/qr";
+
+export const prerender = false;
 
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 30;
@@ -30,7 +32,11 @@ function checkRateLimit(clientIp: string): boolean {
   return true;
 }
 
-export const GET: APIRoute = async ({ request, site, url }) => {
+export function getStaticPaths() {
+  return [{ params: { page: "doneer" } }];
+}
+
+export const GET: APIRoute = async ({ request, site, params }) => {
   try {
     const clientIp = getClientIp(request);
 
@@ -41,21 +47,13 @@ export const GET: APIRoute = async ({ request, site, url }) => {
       });
     }
 
-    let pageParam: string | null = null;
-
-    try {
-      const requestUrl = new URL(request.url);
-      pageParam = requestUrl.searchParams.get("page");
-    } catch {
-      // If request.url fails, try context url
-      pageParam = url.searchParams.get("page");
-    }
+    const pageParam = params.page;
 
     if (!pageParam) {
       return new Response(
         JSON.stringify({
           error: "Missing page parameter",
-          hint: "Usage: /api/qr?page=/path/to/page",
+          hint: "Usage: /api/qr/doneer or /api/qr/en/donate",
         }),
         {
           status: 400,
