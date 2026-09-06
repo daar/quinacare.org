@@ -154,19 +154,6 @@ function formatCurrency(amount: number): string {
                           <Icon name="download" class="text-sm" />
                         </span>
                       </button>
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr/fundraisers/${fundraiser.data.slug}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="absolute bottom-3 right-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-md transition-all hover:shadow-lg hover:bg-[#20ba5f]"
-                        aria-label={t("share.whatsapp")}
-                        title={t("share.whatsapp")}
-                      >
-                        <Icon
-                          name="fa-brands fa-whatsapp"
-                          class="text-xl text-white"
-                        />
-                      </a>
                     </div>
 
                     <div class="p-5 md:p-6">
