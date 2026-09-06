@@ -136,24 +136,39 @@ function formatCurrency(amount: number): string {
                           </span>
                         </div>
                       )}
-                      <button
-                        type="button"
-                        class="fundraise-qr group/qr absolute bottom-3 right-3 rounded-lg bg-white p-1.5 shadow-md transition-shadow hover:shadow-lg"
-                        data-slug={fundraiser.data.slug}
-                        aria-label={t("fundraise.qrDownload")}
-                        title={t("fundraise.qrDownload")}
-                      >
-                        <img
-                          src={qr}
-                          alt=""
-                          width="56"
-                          height="56"
-                          class="block h-14 w-14"
-                        />
-                        <span class="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 text-white opacity-0 transition-opacity group-hover/qr:opacity-100">
-                          <Icon name="download" class="text-sm" />
-                        </span>
-                      </button>
+                      <div class="absolute bottom-3 right-3 flex gap-2">
+                        <button
+                          type="button"
+                          class="fundraise-qr group/qr rounded-lg bg-white p-1.5 shadow-md transition-shadow hover:shadow-lg"
+                          data-slug={fundraiser.data.slug}
+                          aria-label={t("fundraise.qrDownload")}
+                          title={t("fundraise.qrDownload")}
+                        >
+                          <img
+                            src={qr}
+                            alt=""
+                            width="56"
+                            height="56"
+                            class="block h-14 w-14"
+                          />
+                          <span class="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 text-white opacity-0 transition-opacity group-hover/qr:opacity-100">
+                            <Icon name="download" class="text-sm" />
+                          </span>
+                        </button>
+                        <a
+                          href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr/fundraisers/${fundraiser.data.slug}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="flex items-center justify-center rounded-lg bg-[#25D366] p-1.5 shadow-md transition-shadow hover:shadow-lg hover:bg-[#20ba5f]"
+                          aria-label={t("share.whatsapp")}
+                          title={t("share.whatsapp")}
+                        >
+                          <Icon
+                            name="fa-brands fa-whatsapp"
+                            class="text-lg text-white"
+                          />
+                        </a>
+                      </div>
                     </div>
 
                     <div class="p-5 md:p-6">
