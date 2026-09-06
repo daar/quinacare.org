@@ -1,21 +1,65 @@
 import type { APIRoute } from "astro";
 import { generateQrDataUri } from "../../lib/qr";
 
-export const GET: APIRoute = async ({ url, site }) => {
-  try {
-    const pageParam = url.searchParams.get("page");
+const requestCounts = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 30;
+const TIME_WINDOW = 60 * 1000; // 1 minute
 
-    if (!pageParam) {
-      return new Response(JSON.stringify({ error: "Missing page parameter" }), {
-        status: 400,
+function getClientIp(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
+function checkRateLimit(clientIp: string): boolean {
+  const now = Date.now();
+  const current = requestCounts.get(clientIp);
+
+  if (!current || now > current.resetTime) {
+    requestCounts.set(clientIp, { count: 1, resetTime: now + TIME_WINDOW });
+    return true;
+  }
+
+  if (current.count >= RATE_LIMIT) {
+    return false;
+  }
+
+  current.count++;
+  return true;
+}
+
+export const GET: APIRoute = async ({ request, site }) => {
+  try {
+    const clientIp = getClientIp(request);
+
+    if (!checkRateLimit(clientIp)) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
+        status: 429,
         headers: { "Content-Type": "application/json" },
       });
+    }
+
+    const requestUrl = new URL(request.url);
+    let pageParam = requestUrl.searchParams.get("page");
+
+    if (!pageParam) {
+      return new Response(
+        JSON.stringify({
+          error: "Missing page parameter",
+          hint: "Usage: /api/qr?page=/path/to/page",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
     const fullUrl = new URL(pageParam, site).href;
     const qrDataUri = await generateQrDataUri(fullUrl);
 
-    // Return HTML page that displays the QR code
     return new Response(
       `<!DOCTYPE html>
 <html lang="en">
