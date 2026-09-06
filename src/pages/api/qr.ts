@@ -30,7 +30,7 @@ function checkRateLimit(clientIp: string): boolean {
   return true;
 }
 
-export const GET: APIRoute = async ({ request, site }) => {
+export const GET: APIRoute = async ({ request, site, url }) => {
   try {
     const clientIp = getClientIp(request);
 
@@ -41,8 +41,15 @@ export const GET: APIRoute = async ({ request, site }) => {
       });
     }
 
-    const requestUrl = new URL(request.url);
-    let pageParam = requestUrl.searchParams.get("page");
+    let pageParam: string | null = null;
+
+    try {
+      const requestUrl = new URL(request.url);
+      pageParam = requestUrl.searchParams.get("page");
+    } catch {
+      // If request.url fails, try context url
+      pageParam = url.searchParams.get("page");
+    }
 
     if (!pageParam) {
       return new Response(
