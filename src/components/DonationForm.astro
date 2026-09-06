@@ -29,7 +29,6 @@ const localeMap: Record<Lang, string> = {
   es: "es-ES",
 };
 const numberLocale = localeMap[lang];
-
 ---
 
 <!-- SECTION 1: Hero with floating donation form -->
@@ -98,13 +97,22 @@ const numberLocale = localeMap[lang];
 
       {
         qrDataUri && (
-          <div class="mt-8">
+          <div class="mt-8 relative inline-block">
             <QRCode
               dataUri={qrDataUri}
               alt="QR code for donation page"
               size="md"
               downloadFilename="quinacare-donate-qr.png"
             />
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`${t("donate.pageTitle")}\n\nhttps://quinacare.org/api/qr?page=${encodeURIComponent(Astro.url.pathname)}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
+              aria-label={t("share.whatsapp")}
+            >
+              <Icon name="fa-brands fa-whatsapp" class="text-lg" />
+            </a>
           </div>
         )
       }
