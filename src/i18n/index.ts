@@ -325,6 +325,7 @@ export const ui = {
     "putumayoLoop.organizeHubBody":
       "Laat het ons weten — we helpen je op weg met tips, materiaal en een vermelding op deze pagina.",
     "putumayoLoop.organizeHubCta": "Neem contact op",
+    "putumayoLoop.organizeHubMore": "Meer informatie",
     "putumayoLoop.hubContactTitle": "Een hub organiseren",
     "putumayoLoop.hubContactSubtitle":
       "Laat ons weten waar je een Putumayo Loop hub wilt opzetten. We nemen snel contact met je op.",
@@ -762,6 +763,7 @@ export const ui = {
     "putumayoLoop.organizeHubBody":
       "Let us know — we will help you get started with tips, materials and visibility on this page.",
     "putumayoLoop.organizeHubCta": "Get in touch",
+    "putumayoLoop.organizeHubMore": "More information",
     "putumayoLoop.hubContactTitle": "Organize a hub",
     "putumayoLoop.hubContactSubtitle":
       "Tell us where you would like to set up a Putumayo Run hub. We will get back to you soon.",
@@ -1199,6 +1201,7 @@ export const ui = {
     "putumayoLoop.organizeHubBody":
       "Cuéntanos — te ayudamos a empezar con consejos, material y visibilidad en esta página.",
     "putumayoLoop.organizeHubCta": "Ponte en contacto",
+    "putumayoLoop.organizeHubMore": "Más información",
     "putumayoLoop.hubContactTitle": "Organizar un hub",
     "putumayoLoop.hubContactSubtitle":
       "Cuéntanos dónde te gustaría organizar un hub de la Putumayo Carrera. Te contactaremos pronto.",
@@ -1400,6 +1403,11 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
     nl: "sponsor-medewerker",
     en: "sponsor-a-staff-member",
     es: "patrocinar-personal",
+  },
+  "organize-a-hub": {
+    nl: "hub-organiseren",
+    en: "organize-a-hub",
+    es: "organizar-un-hub",
   },
 };
 

@@ -342,11 +342,13 @@ const excerpt = t("putumayoLoop.heroSubtitle");
         ))
       }
 
-      <!-- Start-your-own-hub invitation as the 5th tile. -->
-      <button
-        type="button"
-        data-open-modal="putumayo-loop-hub-modal"
-        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col text-left hover:border-qcRed hover:bg-red-50/30 transition group cursor-pointer"
+      <!--
+        Start-your-own-hub invitation as the 5th tile. A div rather than a
+        button: it holds two actions now — the contact form and a link to
+        the guide — and an anchor cannot live inside a button.
+      -->
+      <div
+        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col text-left hover:border-qcRed hover:bg-red-50/30 transition group"
       >
         <div class="flex items-center justify-between mb-4">
           <span
@@ -354,9 +356,13 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           >
             <Icon name="heart" />
           </span>
-          <span class="qc-meta !text-qcRed font-bold group-hover:underline">
+          <button
+            type="button"
+            data-open-modal="putumayo-loop-hub-modal"
+            class="qc-meta !text-qcRed font-bold hover:underline cursor-pointer"
+          >
             {t("putumayoLoop.organizeHubCta")} →
-          </span>
+          </button>
         </div>
         <h3
           class="text-xl font-bold tracking-tighter uppercase mb-2 group-hover:text-qcRed transition"
@@ -366,7 +372,13 @@ const excerpt = t("putumayoLoop.heroSubtitle");
         <p class="qc-body text-sm leading-snug">
           {t("putumayoLoop.organizeHubBody")}
         </p>
-      </button>
+        <a
+          href={getLocalizedPath("/organize-a-hub", lang)}
+          class="mt-4 inline-flex items-center justify-center rounded-full border border-qcRed px-4 py-2 text-center qc-meta !text-qcRed font-bold hover:bg-qcRed hover:!text-white transition-colors"
+        >
+          {t("putumayoLoop.organizeHubMore")} →
+        </a>
+      </div>
     </div>
   </section>
 
