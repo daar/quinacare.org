@@ -59,6 +59,11 @@ export const createNewsSchema = (language: "nl" | "en" | "es") => ({
     directory: "src/assets/media",
     publicPath: featuredImagePublicPath,
   }),
+  // Present in the content schema and used by the article template. It
+  // was missing here, and Keystatic refuses to open any entry whose
+  // frontmatter carries a key the schema does not declare — so the posts
+  // that had alt text could not be edited at all.
+  featured_image_alt: fields.text({ label: "Alt-tekst afbeelding" }),
   featured_image_caption: fields.text({ label: "Bijschrift afbeelding" }),
   featured_image_copyright: fields.text({ label: "Copyright afbeelding" }),
   language: fields.text({ label: "Taal", defaultValue: language }),
