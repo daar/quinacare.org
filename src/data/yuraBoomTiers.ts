@@ -52,7 +52,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€10",
         frequency: "per maand",
         impact:
-          "Met uw donatie ondersteund u bijvoorbeeld 3 kinderconsulten inclusief medicatie en labonderzoeken.",
+          "Met uw donatie ondersteunt u bijvoorbeeld 3 kinderconsulten inclusief medicatie en labonderzoeken.",
         yearly: "€120 per jaar",
       },
       en: {
@@ -84,7 +84,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€17,50",
         frequency: "per maand",
         impact:
-          "Met uw donatie ondersteund u bijvoorbeeld de begeleiding van een zwangere tijdens haar zwangerschap",
+          "Met uw donatie ondersteunt u bijvoorbeeld de begeleiding van een zwangere tijdens haar zwangerschap",
         yearly: "€210 per jaar",
       },
       en: {
@@ -115,7 +115,7 @@ export const yuraBoomTiers: YuraBoomTier[] = [
         price: "€25",
         frequency: "per maand",
         impact:
-          "Met uw donatie ondersteund u bijvoorbeeld een ziekenhuisovernachting voor een patient",
+          "Met uw donatie ondersteunt u bijvoorbeeld een ziekenhuisovernachting voor een patient",
         yearly: "€300 per jaar",
       },
       en: {
