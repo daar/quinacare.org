@@ -87,4 +87,6 @@ export default {
     "/actueel/jessica-rodriguez-valencia",
   "/blogs-vlogs/ricardo-salazar": "/actueel/ricardo-salazar",
   "/news/robin-maas": "/actueel/robin-maas",
+  "/es/word-vrijwilliger": "/es/hazte-voluntario",
+  "/putumayolool": "/putumayo-loop",
 };
