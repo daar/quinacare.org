@@ -10,6 +10,7 @@
 //
 // Usage:  node --env-file=.env scripts/resolve-404s.mjs [--clear]
 import fs from "fs";
+import { execFileSync } from "child_process";
 import path from "path";
 import { pathToFileURL } from "url";
 import { createClient } from "@libsql/client";
@@ -146,6 +147,25 @@ const paths = [
 // now-smaller/cleared page_misses log — never drops previously-resolved
 // entries. New resolutions below override on key conflict.
 const redirectsPath = path.join(ROOT, "src/data/missesRedirects.mjs");
+
+// Paths the live site already serves. A row in page_misses only says a
+// path failed once, in the past; plenty get fixed afterwards and the
+// stale rows remain. Redirecting those is worse than doing nothing — it
+// shadows a working route, which is how /api/qr/<page> (a live endpoint)
+// nearly ended up redirecting to a fundraiser page.
+//
+// scripts/verify-404s.py probes every logged path and reports which ones
+// still fail. Pass its JSON with --verified <file> and anything it found
+// working is left alone.
+const verifiedArg = process.argv.indexOf("--verified");
+const stillWorking = new Set();
+if (verifiedArg !== -1 && process.argv[verifiedArg + 1]) {
+  const report = JSON.parse(fs.readFileSync(process.argv[verifiedArg + 1], "utf8"));
+  for (const entry of report.working ?? []) stillWorking.add(norm(entry.path));
+  console.log(
+    `Verifier report: ignoring ${stillWorking.size} path(s) the live site already serves.`,
+  );
+}
 const redirects = fs.existsSync(redirectsPath)
   ? { ...(await import(pathToFileURL(redirectsPath).href)).default }
   : {};
@@ -156,6 +176,10 @@ for (const raw of paths) {
   const p = norm(raw);
   if (p === "/" || JUNK.test(p) || ASSET.test(p)) {
     skipped.push([p, "junk/asset"]);
+    continue;
+  }
+  if (stillWorking.has(p)) {
+    skipped.push([p, "live site already serves it"]);
     continue;
   }
   if (resolved.has(p) || wildPrefixes.some((pre) => p.startsWith(pre))) {
@@ -205,7 +229,22 @@ const out =
   "export default " +
   JSON.stringify(redirects, null, 2) +
   ";\n";
-fs.writeFileSync(path.join(ROOT, "src/data/missesRedirects.mjs"), out);
+fs.writeFileSync(redirectsPath, out);
+
+// Format the generated file the way the repo formats everything else.
+// JSON.stringify puts every entry on one line; Prettier wraps the long
+// ones across two. Without this the committed file and a fresh run
+// disagree on wrapping alone, and every diff is full of formatting
+// churn that hides the handful of real key changes.
+try {
+  execFileSync("npx", ["prettier", "--write", redirectsPath], {
+    cwd: ROOT,
+    stdio: "ignore",
+  });
+} catch {
+  // Prettier missing or failing is not worth aborting the run for — the
+  // file is still valid, just unformatted.
+}
 
 console.log(
   `404 paths (human, non-local): ${paths.length}  ·  ignored local/dev: ${localCount}`,
