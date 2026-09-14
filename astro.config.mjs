@@ -23,7 +23,22 @@ sharp.cache(false);
 export default defineConfig({
   site: "https://quinacare.org",
   output: "static",
-  adapter: netlify({ imageCDN: false }),
+  adapter: netlify({
+    imageCDN: false,
+    // The adapter emulates Netlify Edge Functions during `astro dev`,
+    // which needs a local Deno runtime. This project has no edge
+    // functions — no netlify/edge-functions directory and no edge
+    // middleware — so the emulator has nothing to serve, and on a
+    // machine without Deno it only produces an unhandled rejection:
+    // "Could not establish a connection to the Netlify Edge Functions
+    // local development server". Turn it off; re-enable it (and install
+    // Deno) if edge functions are ever added.
+    devFeatures: {
+      edgeFunctions: false,
+      images: true,
+      environmentVariables: false,
+    },
+  }),
   // Astro's default checkOrigin guard rejects every POST without a
   // matching Origin header. Mollie's webhook calls don't send one,
   // so every payment webhook was being silently 403'd — leaving
