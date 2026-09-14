@@ -145,8 +145,9 @@ export const sponsors: Partner[] = [
     url: "https://stichting.moment.online/stichting-pjp",
   },
   {
-    name: "Groningen Groen",
-    logo: "/media/2021/04/groningen-groen.png",
+    name: "Books 4 Life Groningen",
+    logo: "/media/2021/04/books-4-life-groningen.png",
+    url: "https://books4lifegroningen.nl",
   },
   {
     name: "DFF",
@@ -182,6 +183,21 @@ export const sponsors: Partner[] = [
     name: "Pelgrimshoeve Snuffelmarkt",
     logo: "/media/2026/09/logo-pelgrimshoeve-snuffelmarkt.png",
     url: "https://pelgrimshoeve.nl",
+  },
+  {
+    name: "Otto per Mille",
+    logo: "/media/2026/09/logo-otto-per-mille.jpg",
+    url: "https://www.ottopermillevaldese.org",
+  },
+  {
+    // No website known, so the logo is shown without a link.
+    name: "Associazione Tininiska Italia Aps",
+    logo: "/media/2026/09/logo-tininiska-italia-aps.jpg",
+  },
+  {
+    name: "Van der Lely Foundation",
+    logo: "/media/2026/09/logo-van-der-lely-foundation.png",
+    url: "https://vanderlelyfoundation.com",
   },
 ];
 
