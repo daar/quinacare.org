@@ -1,0 +1,161 @@
+name: Image quality
+
+# Reports content images that are too small to render sharply.
+#
+# The measuring is done by scripts/check-image-sizes.mjs; this workflow
+# only decides when to run it and keeps a single GitHub issue in sync
+# with the result.
+#
+# Two modes, because they answer different questions:
+#
+#   push      -> only the images the commit actually touched. Fast, and
+#                it tells you about what you just added. It does not
+#                write to the issue: a commit sees a partial picture, and
+#                writing that would overwrite the full list with it.
+#   schedule  -> the whole library, and the issue is created, updated or
+#   dispatch     closed from that complete result.
+#
+# Neither mode fails the build. A small image is a content problem for an
+# editor to fix, not a reason to block a merge.
+on:
+  schedule:
+    # Monday 07:00 UTC — a fresh list at the start of the week.
+    - cron: "0 7 * * 1"
+  push:
+    branches: [main]
+    paths:
+      - "src/content/**"
+      - "src/assets/media/**"
+      - "scripts/check-image-sizes.mjs"
+      - ".github/workflows/image-quality.yml"
+  workflow_dispatch:
+    inputs:
+      min_width:
+        description: "Minimum acceptable width in pixels"
+        required: false
+        default: "1200"
+      limit:
+        description: "How many of the worst images to list in the issue (0 = all)"
+        required: false
+        default: "10"
+
+# The issue is keyed off this label, so the workflow updates the open
+# one instead of opening a new issue on every run.
+env:
+  LABEL: image-quality
+  ASSIGNEE: yvanderende
+  TITLE: "Afbeeldingen die vervangen moeten worden (te lage resolutie)"
+  MIN_WIDTH: ${{ github.event.inputs.min_width || '1200' }}
+  # Ratchet: hand over a batch that can be finished rather than the whole
+  # backlog. When these are replaced the next run promotes the next ten.
+  LIMIT: ${{ github.event.inputs.limit || '10' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need the previous commit to diff against on push.
+          fetch-depth: ${{ github.event_name == 'push' && 2 || 1 }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      # sharp is needed to read the image dimensions.
+      - run: npm ci
+
+      # --- push: just this commit -------------------------------------
+      - name: Check the images this commit touched
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          before="${{ github.event.before }}"
+          # First push to a new branch, or a force push with no usable
+          # parent: fall back to this commit's own diff.
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "$before^{commit}" 2>/dev/null; then
+            before="${{ github.sha }}^"
+          fi
+          git diff --name-only "$before" "${{ github.sha }}" > changed.txt
+          echo "Files in this push:"; sed 's/^/  /' changed.txt
+
+          node scripts/check-image-sizes.mjs --scope content --changed changed.txt | tee out.txt
+
+          # Surface undersized images as a warning on the commit without
+          # failing it, so the push still lands.
+          small=$(node scripts/check-image-sizes.mjs --scope content --changed changed.txt --json | jq '.small | length')
+          if [ "$small" -gt 0 ]; then
+            echo "::warning::$small image(s) in this commit are below ${MIN_WIDTH}px. The weekly run will add them to the tracking issue."
+          fi
+          {
+            echo "### Image quality"
+            echo
+            echo "Checked only the files in this push."
+            echo
+            echo '```'
+            cat out.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # --- schedule / manual: the whole library, and the issue --------
+      - name: Measure every referenced image
+        id: measure
+        if: github.event_name != 'push'
+        run: |
+          set -euo pipefail
+          # The JSON keeps the full list — the issue is only closed when
+          # nothing is left, not when the current batch is done.
+          node scripts/check-image-sizes.mjs --scope content --json > report.json
+          node scripts/check-image-sizes.mjs --scope content --markdown --limit "$LIMIT" > body.md
+          {
+            echo "small=$(jq '.small | length' report.json)"
+            echo "missing=$(jq '.missing | length' report.json)"
+          } >> "$GITHUB_OUTPUT"
+          node scripts/check-image-sizes.mjs --scope content
+
+      - name: Create or update the issue
+        if: github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMALL: ${{ steps.measure.outputs.small }}
+          MISSING: ${{ steps.measure.outputs.missing }}
+        run: |
+          set -euo pipefail
+
+          # The label must exist before it can be used to find or file the issue.
+          gh label create "$LABEL" \
+            --description "Content images below the minimum resolution" \
+            --color FBCA04 2>/dev/null || true
+
+          existing=$(gh issue list --label "$LABEL" --state open \
+            --json number --jq '.[0].number // empty')
+
+          if [ "$SMALL" -eq 0 ] && [ "$MISSING" -eq 0 ]; then
+            if [ -n "$existing" ]; then
+              gh issue comment "$existing" \
+                --body "Alle afbeeldingen voldoen inmiddels aan de minimale resolutie. Deze issue wordt gesloten."
+              gh issue close "$existing"
+              echo "Closed #$existing — nothing left to replace."
+            else
+              echo "No undersized images, no open issue. Nothing to do."
+            fi
+            exit 0
+          fi
+
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file body.md
+            echo "Updated #$existing ($SMALL undersized, $MISSING missing)."
+          else
+            url=$(gh issue create \
+              --title "$TITLE" \
+              --body-file body.md \
+              --label "$LABEL" \
+              --assignee "$ASSIGNEE")
+            echo "Opened $url ($SMALL undersized, $MISSING missing)."
+          fi
