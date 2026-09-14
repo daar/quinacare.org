@@ -20,6 +20,7 @@
  *   node scripts/check-image-sizes.mjs --markdown       # GitHub issue body
  *   node scripts/check-image-sizes.mjs --min-width 1400
  *   node scripts/check-image-sizes.mjs --fail           # exit 1 when any are found
+ *   node scripts/check-image-sizes.mjs --limit 10       # only the worst 10
  */
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join, extname, relative, resolve } from "node:path";
@@ -90,6 +91,9 @@ function parseArgs(argv) {
     fail: has("--fail"),
     includeLogos: has("--include-logos"),
     changed: value("--changed", null),
+    // Ratchet: report only the worst N so the list stays small
+    // enough to act on. 0 means no limit.
+    limit: Number(value("--limit", process.env.LIMIT || 0)),
   };
 }
 
@@ -231,7 +235,59 @@ function table(rows) {
   return lines;
 }
 
-function toMarkdown({ small, missing, skippedLogos, measured, minWidth }) {
+function toMarkdown({
+  small,
+  missing,
+  skippedLogos,
+  measured,
+  minWidth,
+  limit,
+}) {
+  // Ratchet mode: hand over a batch that can actually be finished, and
+  // say plainly how many are waiting behind it. Once these are replaced
+  // the next run promotes the next batch.
+  if (limit > 0 && small.length > limit) {
+    const batch = small.slice(0, limit);
+    const remaining = small.length - limit;
+    const lines = [
+      `Deze afbeeldingen zijn te klein voor de plek waar ze staan: ze worden opgerekt en ogen daardoor onscherp. Hieronder staan de **${limit} smalste**, zodat het behapbaar blijft.`,
+      "",
+      `Er zijn er in totaal **${small.length}** die onder de ${minWidth}px zitten, van de ${measured} gemeten afbeeldingen. Zodra deze ${limit} vervangen zijn, zet de wekelijkse controle automatisch de volgende ${Math.min(remaining, limit)} in deze lijst — zo werken we de achterstand stap voor stap weg.`,
+      "",
+      ...table(batch),
+      "",
+      `<sub>Nog **${remaining}** te gaan na deze lijst.</sub>`,
+      "",
+    ];
+    if (missing.length) {
+      lines.push(
+        `## Kapotte verwijzingen (${missing.length})`,
+        "",
+        "Deze bestanden staan niet meer in de repository, dus op deze pagina's ontbreekt de afbeelding helemaal. Dit is een andere soort fix: hier moet de verwijzing hersteld worden, niet de foto vervangen.",
+        "",
+        "| Ontbrekend bestand | Gebruikt in |",
+        "| --- | --- |",
+        ...missing.map(
+          ({ file, sources }) =>
+            `| \`${file.replace(/^src\/assets\//, "")}\` | ${sources
+              .map((s) => `\`${s.replace(/^src\/content\//, "")}\``)
+              .join("<br>")} |`,
+        ),
+        "",
+      );
+    }
+    lines.push(
+      "## Hoe aan te leveren",
+      "",
+      `- Lever het origineel aan, minimaal ${minWidth}px breed. Groter mag: bij het committen wordt alles automatisch teruggeschaald naar maximaal 2560px (\`scripts/resize-images.mjs\`).`,
+      "- Een kleine afbeelding groter maken in een bewerkingsprogramma helpt niet — daar komt geen detail bij.",
+      "- Staat het origineel nergens meer, laat dat dan weten; dan zoeken we een andere foto.",
+      "",
+      "<sub>Automatisch bijgewerkt door `.github/workflows/image-quality.yml` via `npm run check:images`.</sub>",
+    );
+    return lines.join("\n");
+  }
+
   const urgent = small.filter((i) => i.width < URGENT_WIDTH);
   const rest = small.filter((i) => i.width >= URGENT_WIDTH);
   const lines = [
@@ -374,6 +430,7 @@ async function main() {
     minWidth: args.minWidth,
     scope: args.scope,
     ...(changedPaths ? { changedFiles: changedPaths.length } : {}),
+    limit: args.limit,
   };
 
   if (args.json) console.log(JSON.stringify(report, null, 2));

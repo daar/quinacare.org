@@ -34,6 +34,10 @@ on:
         description: "Minimum acceptable width in pixels"
         required: false
         default: "1200"
+      limit:
+        description: "How many of the worst images to list in the issue (0 = all)"
+        required: false
+        default: "10"
 
 # The issue is keyed off this label, so the workflow updates the open
 # one instead of opening a new issue on every run.
@@ -42,6 +46,9 @@ env:
   ASSIGNEE: yvanderende
   TITLE: "Afbeeldingen die vervangen moeten worden (te lage resolutie)"
   MIN_WIDTH: ${{ github.event.inputs.min_width || '1200' }}
+  # Ratchet: hand over a batch that can be finished rather than the whole
+  # backlog. When these are replaced the next run promotes the next ten.
+  LIMIT: ${{ github.event.inputs.limit || '10' }}
 
 jobs:
   check:
@@ -102,8 +109,10 @@ jobs:
         if: github.event_name != 'push'
         run: |
           set -euo pipefail
+          # The JSON keeps the full list — the issue is only closed when
+          # nothing is left, not when the current batch is done.
           node scripts/check-image-sizes.mjs --scope content --json > report.json
-          node scripts/check-image-sizes.mjs --scope content --markdown > body.md
+          node scripts/check-image-sizes.mjs --scope content --markdown --limit "$LIMIT" > body.md
           {
             echo "small=$(jq '.small | length' report.json)"
             echo "missing=$(jq '.missing | length' report.json)"
