@@ -33,7 +33,9 @@
   "overrides": {
     "@netlify/vite-plugin": "^3.0.1",
     "sharp": "^0.35.3",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.0",
+    "js-yaml": "^4.3.2",
+    "toml": "^5.0.0"
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.9",
@@ -51,7 +53,7 @@
     "astro": "^7.3.2",
     "leaflet": "^1.9.4",
     "lodash-es": "^4.18.1",
-    "nodemailer": "^9.0.1",
+    "nodemailer": "^9.1.1",
     "qrcode": "^1.5.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
