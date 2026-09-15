@@ -19,7 +19,7 @@ Upstream issues:
 
 Local implementation in this repo:
 
-- `patch-package` patch at `patches/@keystatic+core+0.6.3.patch`
+- `patch-package` patch at `patches/@keystatic+core+0.6.9.patch`
 - `patch-package` patch at `patches/@keystatic+astro+5.2.0.patch`, which wraps
   the integration's own `/keystatic/[...params]` page in a document that sets
   `translate="no"` (browsers otherwise auto-translate the English-only CMS
@@ -40,3 +40,14 @@ Plan:
   - default collection sort and column-level rendering/formatting,
   - configurable/disable-able image toolbar actions in the editor.
 - Re-evaluate after each Keystatic upgrade.
+
+Re-evaluated at 0.6.9 (September 2026): still needed. `CollectionTable` continues
+to hard-code `column: SLUG` with `direction: 'ascending'`, and the image toolbar
+button is still rendered unconditionally from `nodes.image`; no configuration
+option for either was found in the package. The patch was regenerated rather than
+dropped.
+
+Note that the patch targets content-hashed bundle filenames, so it cannot survive
+a version bump on its own: `dist/index-bea09e17.js` in 0.6.3 became
+`dist/index-3c244051.js` in 0.6.9. Expect every Keystatic upgrade to fail
+`patch-package` at install time and to need the three edits re-applied by hand.

@@ -67,7 +67,7 @@ function parseCsv(text) {
   let row = [];
   let field = "";
   let quoted = false;
-  const src = text.replace(/^﻿/, "").replace(/\r\n/g, "\n");
+  const src = text.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n");
   for (let i = 0; i < src.length; i++) {
     const c = src[i];
     if (quoted) {
