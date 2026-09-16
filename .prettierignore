@@ -12,3 +12,7 @@ temp
 #             rather than rewrapped lines.
 reports
 src/data/missesRedirects.mjs
+
+# Vendored from github:pbakaus/impeccable. Upstream's formatting, not ours —
+# reformatting it would diverge from the source and churn on every update.
+.claude/skills/impeccable
