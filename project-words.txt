@@ -1,4 +1,5 @@
 ## People (names, surnames)
+diaz
 achuar
 altena
 ambar
