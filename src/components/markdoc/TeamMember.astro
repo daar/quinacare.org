@@ -16,7 +16,13 @@ const hasPhoto = !!image && !image.includes("placeholder");
 ---
 
 <div class="flex flex-col items-center text-center">
-  <div class="w-44 h-44 rounded-full overflow-hidden mb-4 ring-2 ring-gray-100">
+  <!-- Sized from the card, not fixed: these cards run two-up on wide
+       screens and full-width on a phone, and a portrait that stays 176px
+       reads as an afterthought beside a 24px name and ten lines of story.
+       The cap keeps it from dominating once the card grows. -->
+  <div
+    class="w-[58%] max-w-56 aspect-square rounded-full overflow-hidden mb-6 ring-2 ring-gray-100"
+  >
     {
       hasPhoto ? (
         <OptimizedImage
@@ -42,8 +48,12 @@ const hasPhoto = !!image && !image.includes("placeholder");
       )
     }
   </div>
-  <h3 class="text-base font-bold text-qcBlack mb-1">{name}</h3>
-  <p class="text-sm text-gray-500 mb-1">{role}</p>
+  <!-- Global heading and paragraph rules otherwise win here, which left a
+       72px void under the portrait and pushed the role away from the name.
+       Marked important so the card keeps its own rhythm: portrait, then the
+       name and role read as one block, then the story. -->
+  <h3 class="text-base font-bold text-qcBlack !mt-0 !mb-1">{name}</h3>
+  <p class="text-sm text-gray-500 !mb-0">{role}</p>
   {
     email && (
       <a href={`mailto:${email}`} class="text-xs text-qcRed hover:underline">
@@ -51,7 +61,7 @@ const hasPhoto = !!image && !image.includes("placeholder");
       </a>
     )
   }
-  <div class="text-sm text-gray-600 mt-3 leading-relaxed prose-landing">
+  <div class="text-sm text-gray-600 mt-4 leading-relaxed prose-landing">
     <slot />
   </div>
 </div>
