@@ -1,0 +1,204 @@
+---
+// The preference centre behind the "manage your subscription" link in
+// every newsletter. No account and no password: the signed token in the
+// link is the proof of identity, which is why it is keyed on the row id
+// and not the address.
+import Layout from "../layouts/Layout.astro";
+import Nav from "./Nav.astro";
+import Footer from "./Footer.astro";
+import { useTranslations } from "../i18n";
+import {
+  getSubscriber,
+  verifySubscriberToken,
+  LOCALES_ORDER,
+  type Locale,
+} from "../lib/subscribers";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const params = Astro.url.searchParams;
+const status = params.get("status");
+const id = Number(params.get("u"));
+const token = params.get("t") ?? "";
+
+// An unsubscribe always lands here, so the confirmation is shown even
+// when the link itself is no longer usable.
+let subscriber = null;
+if (Number.isInteger(id) && id > 0) {
+  let linkValid: boolean;
+  try {
+    linkValid = verifySubscriberToken(id, token);
+  } catch {
+    linkValid = false;
+  }
+  if (linkValid) subscriber = await getSubscriber(id);
+}
+
+const NOTICE: Record<string, string> = {
+  saved: t("prefs.saved"),
+  "check-email": t("prefs.checkEmail"),
+  "email-changed": t("prefs.emailChanged"),
+  "email-failed": t("prefs.emailFailed"),
+  unsubscribed: t("prefs.unsubscribed"),
+  error: t("prefs.linkInvalid"),
+};
+const notice = status ? NOTICE[status] : null;
+const isGood = status !== "error" && status !== "email-failed";
+
+const LANG_LABEL: Record<Locale, string> = {
+  nl: t("prefs.langNl"),
+  en: t("prefs.langEn"),
+  es: t("prefs.langEs"),
+};
+---
+
+<Layout title={`${t("prefs.title")} - Quina Care`} lang={lang}>
+  <Nav />
+
+  <section class="bg-white pt-28 pb-24">
+    <div class="max-w-2xl mx-auto px-6 w-full">
+      <h1
+        class="text-3xl md:text-4xl font-bold tracking-tighter uppercase mb-4"
+      >
+        {t("prefs.title")}
+      </h1>
+
+      {
+        notice && (
+          <p
+            class:list={[
+              "rounded-md px-4 py-3 mb-8 text-sm",
+              isGood
+                ? "bg-green-50 text-green-900"
+                : "bg-amber-50 text-amber-900",
+            ]}
+          >
+            {notice}
+          </p>
+        )
+      }
+
+      {
+        subscriber && subscriber.status !== "unsubscribed" && (
+          <>
+            <p class="text-gray-600 mb-8">{t("prefs.intro")}</p>
+
+            <form
+              method="POST"
+              action="/api/newsletter/preferences"
+              class="space-y-6"
+            >
+              <input type="hidden" name="u" value={String(id)} />
+              <input type="hidden" name="t" value={token} />
+              <input type="hidden" name="lang" value={lang} />
+
+              <div>
+                <label
+                  for="prefs-name"
+                  class="block text-sm font-bold text-qcBlack mb-1"
+                >
+                  {t("prefs.name")}
+                </label>
+                <input
+                  id="prefs-name"
+                  type="text"
+                  name="name"
+                  maxlength="100"
+                  value={subscriber.name}
+                  class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-qcRed focus:border-qcRed"
+                />
+              </div>
+
+              <div>
+                <label
+                  for="prefs-email"
+                  class="block text-sm font-bold text-qcBlack mb-1"
+                >
+                  {t("prefs.email")}
+                </label>
+                <input
+                  id="prefs-email"
+                  type="email"
+                  name="email"
+                  maxlength="254"
+                  value={subscriber.email}
+                  class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-qcRed focus:border-qcRed"
+                />
+                <p class="text-xs text-gray-500 mt-1">{t("prefs.emailHint")}</p>
+              </div>
+
+              <fieldset>
+                <legend class="block text-sm font-bold text-qcBlack mb-2">
+                  {t("prefs.languages")}
+                </legend>
+                {LOCALES_ORDER.map((code) => (
+                  <label class="flex items-center gap-3 py-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="locale"
+                      value={code}
+                      checked={subscriber.locales.includes(code)}
+                      class="w-5 h-5 rounded border-gray-300 text-qcRed focus:ring-qcRed"
+                    />
+                    <span class="text-sm text-gray-700">
+                      {LANG_LABEL[code]}
+                    </span>
+                  </label>
+                ))}
+                <p class="text-xs text-gray-500 mt-2">
+                  {t("prefs.unsubscribeHint")}
+                </p>
+              </fieldset>
+
+              <div class="flex flex-wrap items-center gap-4 pt-2">
+                <button
+                  type="submit"
+                  class="bg-qcRed text-white font-bold uppercase tracking-wider text-sm px-6 py-3 rounded-md hover:opacity-90"
+                >
+                  {t("prefs.save")}
+                </button>
+                <a
+                  href={`/api/newsletter/unsubscribe?u=${id}&t=${encodeURIComponent(token)}&lang=${lang}`}
+                  class="text-sm text-gray-500 underline hover:text-qcRed"
+                >
+                  {t("prefs.unsubscribe")}
+                </a>
+              </div>
+            </form>
+          </>
+        )
+      }
+
+      {
+        subscriber && subscriber.status === "unsubscribed" && (
+          <form method="POST" action="/api/newsletter/preferences">
+            <input type="hidden" name="u" value={String(id)} />
+            <input type="hidden" name="t" value={token} />
+            <input type="hidden" name="lang" value={lang} />
+            <input type="hidden" name="locale" value={lang} />
+            <input type="hidden" name="name" value={subscriber.name} />
+            <button
+              type="submit"
+              class="bg-qcRed text-white font-bold uppercase tracking-wider text-sm px-6 py-3 rounded-md hover:opacity-90"
+            >
+              {t("prefs.resubscribe")}
+            </button>
+          </form>
+        )
+      }
+
+      {
+        !subscriber && !notice && (
+          <p class="text-gray-600">{t("prefs.linkInvalid")}</p>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

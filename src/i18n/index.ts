@@ -159,6 +159,33 @@ export const ui = {
     "newsletter.success": "Bedankt, je bent succesvol ingeschreven!",
     "newsletter.invalidEmail": "Vul een geldig e-mailadres in.",
     "newsletter.error": "Er ging iets mis. Probeer het opnieuw.",
+    "newsletter.namePlaceholder": "Je naam (optioneel)",
+    "prefs.title": "Je nieuwsbriefvoorkeuren",
+    "prefs.intro":
+      "Hier pas je aan wat je van ons ontvangt. Je kunt je ook in één klik uitschrijven.",
+    "prefs.name": "Naam",
+    "prefs.email": "E-mailadres",
+    "prefs.emailHint":
+      "Verander je je adres? Dan sturen we een bevestigingsmail naar het nieuwe adres.",
+    "prefs.languages": "In welke talen wil je de nieuwsbrief ontvangen?",
+    "prefs.langNl": "Nederlands",
+    "prefs.langEn": "Engels",
+    "prefs.langEs": "Spaans",
+    "prefs.save": "Opslaan",
+    "prefs.unsubscribe": "Uitschrijven voor alle nieuwsbrieven",
+    "prefs.unsubscribeHint":
+      "Vink alle talen uit en sla op om je helemaal uit te schrijven.",
+    "prefs.saved": "Je voorkeuren zijn opgeslagen.",
+    "prefs.checkEmail":
+      "Bijna klaar: klik op de link in de mail naar je nieuwe adres om de wijziging te bevestigen.",
+    "prefs.emailChanged": "Je e-mailadres is gewijzigd.",
+    "prefs.emailFailed":
+      "Dat is niet gelukt. Mogelijk is de link verlopen of staat het adres al op de lijst.",
+    "prefs.unsubscribed":
+      "Je bent uitgeschreven. Je ontvangt geen nieuwsbrieven meer van ons.",
+    "prefs.resubscribe": "Toch weer aanmelden",
+    "prefs.linkInvalid":
+      "Deze link werkt niet (meer). Stuur een mail naar care@quinacare.org, dan regelen we het voor je.",
     // Footer
     "footer.description":
       "Quina Care is een stichting die zich inzet voor het verbeteren van de gezondheidszorg in het Amazonewoud in Ecuador.",
@@ -594,6 +621,33 @@ export const ui = {
     "newsletter.success": "Thank you, you have successfully subscribed!",
     "newsletter.invalidEmail": "Please enter a valid email address.",
     "newsletter.error": "Something went wrong. Please try again.",
+    "newsletter.namePlaceholder": "Your name (optional)",
+    "prefs.title": "Your newsletter preferences",
+    "prefs.intro":
+      "Change what you receive from us here. You can also unsubscribe in one click.",
+    "prefs.name": "Name",
+    "prefs.email": "Email address",
+    "prefs.emailHint":
+      "Changing your address? We will send a confirmation mail to the new one.",
+    "prefs.languages": "Which languages would you like the newsletter in?",
+    "prefs.langNl": "Dutch",
+    "prefs.langEn": "English",
+    "prefs.langEs": "Spanish",
+    "prefs.save": "Save",
+    "prefs.unsubscribe": "Unsubscribe from all newsletters",
+    "prefs.unsubscribeHint":
+      "Untick every language and save to unsubscribe completely.",
+    "prefs.saved": "Your preferences have been saved.",
+    "prefs.checkEmail":
+      "Almost done: click the link in the mail sent to your new address to confirm the change.",
+    "prefs.emailChanged": "Your email address has been changed.",
+    "prefs.emailFailed":
+      "That did not work. The link may have expired, or the address is already on the list.",
+    "prefs.unsubscribed":
+      "You have been unsubscribed. You will not receive any more newsletters from us.",
+    "prefs.resubscribe": "Subscribe again after all",
+    "prefs.linkInvalid":
+      "This link no longer works. Email care@quinacare.org and we will sort it out for you.",
     // Footer
     "footer.description":
       "Quina Care is a foundation dedicated to improving healthcare in the Amazon rainforest of Ecuador.",
@@ -1033,6 +1087,33 @@ export const ui = {
     "newsletter.success": "¡Gracias, te has suscrito exitosamente!",
     "newsletter.invalidEmail": "Introduce una dirección de correo válida.",
     "newsletter.error": "Algo salió mal. Inténtalo de nuevo.",
+    "newsletter.namePlaceholder": "Tu nombre (opcional)",
+    "prefs.title": "Tus preferencias del boletín",
+    "prefs.intro":
+      "Aquí puedes cambiar lo que recibes de nosotros. También puedes darte de baja en un clic.",
+    "prefs.name": "Nombre",
+    "prefs.email": "Correo electrónico",
+    "prefs.emailHint":
+      "¿Cambias de dirección? Enviaremos un correo de confirmación a la nueva.",
+    "prefs.languages": "¿En qué idiomas quieres recibir el boletín?",
+    "prefs.langNl": "Neerlandés",
+    "prefs.langEn": "Inglés",
+    "prefs.langEs": "Español",
+    "prefs.save": "Guardar",
+    "prefs.unsubscribe": "Darme de baja de todos los boletines",
+    "prefs.unsubscribeHint":
+      "Desmarca todos los idiomas y guarda para darte de baja por completo.",
+    "prefs.saved": "Tus preferencias se han guardado.",
+    "prefs.checkEmail":
+      "Ya casi: haz clic en el enlace del correo enviado a tu nueva dirección para confirmar el cambio.",
+    "prefs.emailChanged": "Tu dirección de correo ha cambiado.",
+    "prefs.emailFailed":
+      "No ha funcionado. Puede que el enlace haya caducado o que la dirección ya esté en la lista.",
+    "prefs.unsubscribed":
+      "Te has dado de baja. No recibirás más boletines nuestros.",
+    "prefs.resubscribe": "Volver a suscribirme",
+    "prefs.linkInvalid":
+      "Este enlace ya no funciona. Escribe a care@quinacare.org y lo resolvemos contigo.",
     // Footer
     "footer.description":
       "Quina Care es una fundación dedicada a mejorar la atención sanitaria en la selva amazónica de Ecuador.",

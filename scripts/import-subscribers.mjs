@@ -26,6 +26,7 @@
 // Without --apply nothing is written: it reports what would change.
 
 import { createClient } from "@libsql/client";
+import { UPSERT_SUBSCRIBER_IMPORT } from "../src/lib/subscribersSql.mjs";
 import { readFileSync } from "node:fs";
 
 const APPLY = process.argv.includes("--apply");
@@ -166,15 +167,30 @@ for (const { locale, path } of inputs) {
 // Which of them does the database already know, and on which lists?
 const existing = new Map(
   (
-    await db.execute("SELECT lower(email) AS email, locale FROM subscribers")
-  ).rows.map((r) => [r.email, new Set(String(r.locale).split(","))]),
+    await db.execute(
+      "SELECT lower(email) AS email, locale, status FROM subscribers",
+    )
+  ).rows.map((r) => [
+    r.email,
+    { locales: new Set(String(r.locale).split(",")), status: String(r.status) },
+  ]),
 );
 // New people, and people already here who are missing a language.
 const toInsert = [...candidates.values()].filter((c) => !existing.has(c.email));
+// Someone who has opted out is deliberately left alone. Adding a language
+// to their row would be a quiet way of putting them back on a list they
+// asked to leave — the CSV is a record of an old signup, not a new one.
 const toExtend = [...candidates.values()].filter((c) => {
   const have = existing.get(c.email);
-  return have && [...c.locales].some((l) => !have.has(l));
+  return (
+    have &&
+    have.status === "active" &&
+    [...c.locales].some((l) => !have.locales.has(l))
+  );
 });
+const optedOut = [...candidates.values()].filter(
+  (c) => existing.get(c.email)?.status === "unsubscribed",
+).length;
 const already = candidates.size - toInsert.length;
 
 console.log(`
@@ -188,6 +204,7 @@ unique subscribers     ${candidates.size}
   new, would be inserted     ${toInsert.length}
     of those, no usable date ${undated} (created_at falls back to now)
   existing, would gain a list ${toExtend.length}
+  skipped, have unsubscribed  ${optedOut}
 ${INCLUDE_BLANK ? `  imported with blank status ${blankStatus} (--include-blank-status)` : ""}
 database has ${existing.size} subscribers before this run`);
 
@@ -211,25 +228,19 @@ if (!APPLY) {
 // One statement per language per person: it inserts the person if they
 // are new, and otherwise adds the language to the set they already have.
 // Re-running changes nothing, which is what makes this safe to repeat.
-const MERGE = `
-  INSERT INTO subscribers (email, locale, created_at) VALUES (?, ?, ?)
-  ON CONFLICT(email) DO UPDATE SET locale =
-    CASE
-      WHEN ',' || locale || ',' LIKE '%,' || excluded.locale || ',%'
-        THEN locale
-      ELSE locale || ',' || excluded.locale
-    END`;
-
+//
+// The IMPORT variant, never the consent one. This is a bulk load of an
+// old export, not someone opting in today, so it must not touch status,
+// unsubscribed_at or subscribed_at — using the consent upsert here would
+// silently resubscribe everyone who had left.
 let written = 0;
 for (const c of [...toInsert, ...toExtend]) {
+  const when =
+    c.created_at ?? new Date().toISOString().slice(0, 19).replace("T", " ");
   for (const locale of c.locales) {
     const res = await db.execute({
-      sql: MERGE,
-      args: [
-        c.email,
-        locale,
-        c.created_at ?? new Date().toISOString().slice(0, 19).replace("T", " "),
-      ],
+      sql: UPSERT_SUBSCRIBER_IMPORT,
+      args: [c.email, "", locale, "wordpress", when, when],
     });
     written += res.rowsAffected;
   }

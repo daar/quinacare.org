@@ -9,6 +9,12 @@ export interface MailPayload {
   subject: string;
   text: string;
   replyTo?: string;
+  /**
+   * Extra headers. Bulk mail needs List-Unsubscribe so a mail client can
+   * offer its own unsubscribe button — see listUnsubscribeHeaders() in
+   * subscribers.ts.
+   */
+  headers?: Record<string, string>;
 }
 
 export async function sendMail(payload: MailPayload): Promise<void> {
