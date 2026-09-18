@@ -298,6 +298,107 @@ export const ui = {
     "fundraise.qrTitle": "Deel deze actie",
     "fundraise.qrDownload": "Download QR-code",
     "fundraise.impactLabel": "Met deze donatie steun je de sponsoractie van",
+    // Fundraiser intake form
+    "intake.heading": "Start je eigen actie",
+    "intake.intro":
+      "Ga je iets doen om geld op te halen voor Quina Care? Vul hieronder in wat je van plan bent. Je ziet meteen hoe je actiepagina eruit komt te zien. Wij maken de pagina voor je aan.",
+    "intake.helpLink": "Lees eerst hoe het werkt",
+    "intake.formHeading": "Jouw actie",
+    "intake.previewHeading": "Voorbeeld",
+    "intake.previewNote":
+      "Dit verandert mee terwijl je typt. Het is een indicatie: de definitieve pagina maken wij, en die kan er op onderdelen anders uitzien. De bedragen en het aantal donateurs beginnen op nul.",
+    "intake.title": "Titel van je actie",
+    "intake.titleHint": "Kort en concreet. Dit staat bovenaan de pagina.",
+    "intake.titlePlaceholder": "Ik loop de marathon van Rotterdam",
+    "intake.organizer": "Jouw naam",
+    "intake.organizerHint": "Zoals die op de pagina komt te staan.",
+    "intake.organizerPlaceholder": "Anne de Vries",
+    "intake.excerpt": "Korte samenvatting",
+    "intake.excerptHint":
+      "Een of twee zinnen. Dit is wat mensen zien in het overzicht van alle acties.",
+    "intake.excerptPlaceholder":
+      "Op 12 april loop ik de marathon van Rotterdam om geld op te halen voor het ziekenhuis in San Miguel.",
+    "intake.goal": "Doelbedrag",
+    "intake.goalHint": "Het bedrag dat je wilt ophalen, in hele euro's.",
+    "intake.endDate": "Einddatum",
+    "intake.endDateHint":
+      "Tot wanneer loopt je actie? Daarna blijft de pagina staan, maar telt hij niet meer mee als actief.",
+    "intake.story": "Je verhaal",
+    "intake.storyHint":
+      "Vertel wat je gaat doen en waarom. Waarom raakt dit je? Wat hoop je te bereiken? Dit mag zo lang zijn als je wilt.",
+    "intake.storyPlaceholder":
+      "Vorig jaar was ik in Putumayo en zag ik wat het ziekenhuis daar betekent voor de mensen in de omgeving...",
+    "intake.photo": "Foto",
+    "intake.photoHint":
+      "Een liggende foto werkt het beste. Minimaal 1200 pixels breed, maximaal 8 MB. JPG, PNG of WebP.",
+    "intake.photoChoose": "Kies een foto",
+    "intake.photoChange": "Andere foto kiezen",
+    "intake.photoAlt": "Wat is er op de foto te zien?",
+    "intake.photoAltHint":
+      "Een korte omschrijving, voor mensen die de foto niet kunnen zien.",
+    "intake.photoAltPlaceholder": "Anne tijdens een trainingsloop in het park",
+    "intake.email": "Je e-mailadres",
+    "intake.emailHint":
+      "Alleen om contact met je op te nemen. Dit komt niet op de website.",
+    "intake.emailPlaceholder": "jij@email.nl",
+    "intake.language": "In welke taal heb je dit geschreven?",
+    "intake.languageHint":
+      "Wij zorgen voor de vertalingen naar de andere talen.",
+    "intake.required": "verplicht",
+    "intake.optional": "optioneel",
+    "intake.submit": "Actie indienen",
+    "intake.submitting": "Bezig met versturen...",
+    "intake.successHeading": "Gelukt, we hebben je actie ontvangen",
+    "intake.successBody":
+      "Je krijgt een bevestiging per e-mail. We lezen je actie door en zetten de pagina voor je klaar. Meestal hoor je binnen een week van ons.",
+    "intake.error":
+      "Er ging iets mis bij het versturen. Probeer het opnieuw, of mail ons op care@quinacare.org.",
+    "intake.fixErrors": "Er ontbreekt nog iets. Kijk de gemarkeerde velden na.",
+    "intake.errRequired": "Dit veld is nog leeg.",
+    "intake.errEmail": "Dit lijkt geen geldig e-mailadres.",
+    "intake.errGoal": "Vul een bedrag in dat groter is dan nul.",
+    "intake.errGoalLarge": "Dat bedrag lijkt te hoog. Klopt het aantal nullen?",
+    "intake.errDate": "Kies een datum.",
+    "intake.errDatePast": "Kies een datum in de toekomst.",
+    "intake.errPhotoRequired": "Kies een foto.",
+    "intake.errPhotoType": "Gebruik een JPG, PNG of WebP.",
+    "intake.errPhotoLarge": "Deze foto is groter dan 8 MB.",
+    "intake.errPhotoSmall":
+      "Deze foto is te klein. Hij moet minstens 1200 pixels breed zijn, anders wordt hij onscherp op de pagina.",
+    "intake.errPhotoUnreadable": "We kunnen dit bestand niet lezen.",
+    "intake.publishedNotice":
+      "Je naam, je verhaal en je foto komen op de website te staan. Je e-mailadres niet.",
+    "intake.fundsNotice":
+      "Alle donaties gaan rechtstreeks naar Quina Care. Er wordt niets uitbetaald aan jou als organisator.",
+    "intake.privacyNotice":
+      "We gaan zorgvuldig met je gegevens om — lees hoe in onze",
+    "intake.privacyLink": "privacyverklaring",
+    "intake.previewTitle": "Titel van je actie",
+    "intake.previewOrganizer": "Jouw naam",
+    "intake.previewExcerpt": "Hier komt je korte samenvatting te staan.",
+    "intake.previewStory": "Hier komt je verhaal te staan.",
+    "intake.previewPhoto": "Je foto komt hier",
+    "intake.indexCta": "Wil je zelf geld ophalen voor Quina Care?",
+    "intake.toolbarLabel": "Opmaak",
+    "intake.toolbarHint": "Opmaak",
+    "intake.fmtBold": "Vet (Ctrl+B)",
+    "intake.fmtItalic": "Cursief (Ctrl+I)",
+    "intake.fmtHeading": "Tussenkop",
+    "intake.fmtList": "Opsomming",
+    "intake.fmtLink": "Link",
+    "intake.fmtQuote": "Citaat",
+    "intake.fmtSample": "tekst",
+    "intake.files": "Extra bestanden",
+    "intake.filesHint":
+      "Heb je nog iets anders dat ons helpt? Denk aan een routekaart, een poster, een logo van een sponsor of extra foto's. Maximaal 5 bestanden, samen niet groter dan 25 MB. Afbeeldingen of PDF. Deze komen niet automatisch op je pagina.",
+    "intake.errFilesCount": "Kies maximaal 5 bestanden.",
+    "intake.errFilesType": "Gebruik afbeeldingen of PDF-bestanden.",
+    "intake.errFilesLarge":
+      "Deze bestanden zijn samen te groot (maximaal 25 MB).",
+    "intake.groupTarget": "Doel en looptijd",
+    "intake.groupStory": "Je verhaal",
+    "intake.groupPhoto": "Je foto",
+    "intake.groupContact": "Contact",
     // Projects section
     "projects.title": "PROJECTEN",
     "projects.subtitle": "Onze Projecten",
@@ -762,6 +863,106 @@ export const ui = {
     "fundraise.qrDownload": "Download QR code",
     "fundraise.impactLabel":
       "With this donation you are supporting the fundraiser from",
+    // Fundraiser intake form
+    "intake.heading": "Start your own fundraiser",
+    "intake.intro":
+      "Are you doing something to raise money for Quina Care? Tell us below what you have planned. You will see your fundraiser page take shape as you type, and we build the page for you.",
+    "intake.helpLink": "First, read how it works",
+    "intake.formHeading": "Your fundraiser",
+    "intake.previewHeading": "Preview",
+    "intake.previewNote":
+      "This updates as you type. It is an indication: we build the final page, and it may differ in places. Amounts and backers start at zero.",
+    "intake.title": "Title of your fundraiser",
+    "intake.titleHint": "Short and concrete. This goes at the top of the page.",
+    "intake.titlePlaceholder": "I am running the Rotterdam marathon",
+    "intake.organizer": "Your name",
+    "intake.organizerHint": "As it will appear on the page.",
+    "intake.organizerPlaceholder": "Anne de Vries",
+    "intake.excerpt": "Short summary",
+    "intake.excerptHint":
+      "One or two sentences. This is what people see in the list of all fundraisers.",
+    "intake.excerptPlaceholder":
+      "On 12 April I am running the Rotterdam marathon to raise money for the hospital in San Miguel.",
+    "intake.goal": "Target amount",
+    "intake.goalHint": "The amount you want to raise, in whole euros.",
+    "intake.endDate": "End date",
+    "intake.endDateHint":
+      "When does your fundraiser finish? The page stays up afterwards, but no longer counts as active.",
+    "intake.story": "Your story",
+    "intake.storyHint":
+      "Tell us what you are going to do and why. Why does this matter to you? What do you hope to achieve? Take as much room as you need.",
+    "intake.storyPlaceholder":
+      "Last year I was in Putumayo and saw what the hospital means to the people living around it...",
+    "intake.photo": "Photo",
+    "intake.photoHint":
+      "A landscape photo works best. At least 1200 pixels wide, at most 8 MB. JPG, PNG or WebP.",
+    "intake.photoChoose": "Choose a photo",
+    "intake.photoChange": "Choose a different photo",
+    "intake.photoAlt": "What does the photo show?",
+    "intake.photoAltHint":
+      "A short description, for people who cannot see the photo.",
+    "intake.photoAltPlaceholder": "Anne on a training run in the park",
+    "intake.email": "Your email address",
+    "intake.emailHint":
+      "Only so we can reach you. It does not go on the website.",
+    "intake.emailPlaceholder": "you@email.com",
+    "intake.language": "Which language did you write this in?",
+    "intake.languageHint": "We take care of the translations.",
+    "intake.required": "required",
+    "intake.optional": "optional",
+    "intake.submit": "Submit fundraiser",
+    "intake.submitting": "Sending...",
+    "intake.successHeading": "Done — we have your fundraiser",
+    "intake.successBody":
+      "You will get a confirmation by email. We will read it through and set the page up for you. You will usually hear from us within a week.",
+    "intake.error":
+      "Something went wrong while sending. Please try again, or email us at care@quinacare.org.",
+    "intake.fixErrors": "Something is still missing. Check the marked fields.",
+    "intake.errRequired": "This field is still empty.",
+    "intake.errEmail": "That does not look like a valid email address.",
+    "intake.errGoal": "Enter an amount greater than zero.",
+    "intake.errGoalLarge":
+      "That amount looks too high. Is the number of zeros right?",
+    "intake.errDate": "Choose a date.",
+    "intake.errDatePast": "Choose a date in the future.",
+    "intake.errPhotoRequired": "Choose a photo.",
+    "intake.errPhotoType": "Use a JPG, PNG or WebP.",
+    "intake.errPhotoLarge": "This photo is larger than 8 MB.",
+    "intake.errPhotoSmall":
+      "This photo is too small. It needs to be at least 1200 pixels wide, otherwise it looks blurry on the page.",
+    "intake.errPhotoUnreadable": "We cannot read this file.",
+    "intake.publishedNotice":
+      "Your name, your story and your photo go on the website. Your email address does not.",
+    "intake.fundsNotice":
+      "All donations go straight to Quina Care. Nothing is paid out to you as the organizer.",
+    "intake.privacyNotice": "We handle your data with care — see how in our",
+    "intake.privacyLink": "privacy statement",
+    "intake.previewTitle": "Title of your fundraiser",
+    "intake.previewOrganizer": "Your name",
+    "intake.previewExcerpt": "Your short summary will appear here.",
+    "intake.previewStory": "Your story will appear here.",
+    "intake.previewPhoto": "Your photo goes here",
+    "intake.indexCta": "Want to raise money for Quina Care yourself?",
+    "intake.toolbarLabel": "Formatting",
+    "intake.toolbarHint": "Formatting",
+    "intake.fmtBold": "Bold (Ctrl+B)",
+    "intake.fmtItalic": "Italic (Ctrl+I)",
+    "intake.fmtHeading": "Subheading",
+    "intake.fmtList": "Bullet list",
+    "intake.fmtLink": "Link",
+    "intake.fmtQuote": "Quote",
+    "intake.fmtSample": "text",
+    "intake.files": "Extra files",
+    "intake.filesHint":
+      "Anything else that helps us? A route map, a poster, a sponsor logo, extra photos. Up to 5 files, 25 MB in total. Images or PDF. These do not go on your page automatically.",
+    "intake.errFilesCount": "Choose at most 5 files.",
+    "intake.errFilesType": "Use images or PDF files.",
+    "intake.errFilesLarge":
+      "These files are too large together (25 MB maximum).",
+    "intake.groupTarget": "Target and duration",
+    "intake.groupStory": "Your story",
+    "intake.groupPhoto": "Your photo",
+    "intake.groupContact": "Contact",
     // Projects section
     "projects.title": "PROJECTS",
     "projects.subtitle": "Our Projects",
@@ -1228,6 +1429,107 @@ export const ui = {
     "fundraise.qrTitle": "Comparte esta campaña",
     "fundraise.qrDownload": "Descargar código QR",
     "fundraise.impactLabel": "Con esta donación apoyas la campaña de",
+    // Fundraiser intake form
+    "intake.heading": "Empieza tu propia campaña",
+    "intake.intro":
+      "¿Vas a hacer algo para recaudar fondos para Quina Care? Cuéntanos abajo qué tienes pensado. Verás cómo va tomando forma tu página mientras escribes, y nosotros la creamos por ti.",
+    "intake.helpLink": "Primero, lee cómo funciona",
+    "intake.formHeading": "Tu campaña",
+    "intake.previewHeading": "Vista previa",
+    "intake.previewNote":
+      "Esto se actualiza mientras escribes. Es orientativo: la página definitiva la creamos nosotros y puede diferir en algunos detalles. Los importes y el número de donantes empiezan en cero.",
+    "intake.title": "Título de tu campaña",
+    "intake.titleHint": "Breve y concreto. Aparece arriba en la página.",
+    "intake.titlePlaceholder": "Voy a correr el maratón de Róterdam",
+    "intake.organizer": "Tu nombre",
+    "intake.organizerHint": "Tal como aparecerá en la página.",
+    "intake.organizerPlaceholder": "Anne de Vries",
+    "intake.excerpt": "Resumen breve",
+    "intake.excerptHint":
+      "Una o dos frases. Es lo que la gente ve en el listado de campañas.",
+    "intake.excerptPlaceholder":
+      "El 12 de abril corro el maratón de Róterdam para recaudar fondos para el hospital de San Miguel.",
+    "intake.goal": "Importe objetivo",
+    "intake.goalHint": "La cantidad que quieres recaudar, en euros enteros.",
+    "intake.endDate": "Fecha de finalización",
+    "intake.endDateHint":
+      "¿Cuándo termina tu campaña? La página sigue disponible después, pero deja de contar como activa.",
+    "intake.story": "Tu historia",
+    "intake.storyHint":
+      "Cuéntanos qué vas a hacer y por qué. ¿Por qué te importa? ¿Qué esperas conseguir? Tómate todo el espacio que necesites.",
+    "intake.storyPlaceholder":
+      "El año pasado estuve en Putumayo y vi lo que significa el hospital para la gente de alrededor...",
+    "intake.photo": "Foto",
+    "intake.photoHint":
+      "Una foto horizontal funciona mejor. Mínimo 1200 píxeles de ancho, máximo 8 MB. JPG, PNG o WebP.",
+    "intake.photoChoose": "Elige una foto",
+    "intake.photoChange": "Elegir otra foto",
+    "intake.photoAlt": "¿Qué se ve en la foto?",
+    "intake.photoAltHint":
+      "Una descripción breve, para quienes no pueden ver la foto.",
+    "intake.photoAltPlaceholder": "Anne entrenando en el parque",
+    "intake.email": "Tu correo electrónico",
+    "intake.emailHint":
+      "Solo para poder contactarte. No aparece en el sitio web.",
+    "intake.emailPlaceholder": "tu@correo.com",
+    "intake.language": "¿En qué idioma lo has escrito?",
+    "intake.languageHint": "Nosotros nos encargamos de las traducciones.",
+    "intake.required": "obligatorio",
+    "intake.optional": "opcional",
+    "intake.submit": "Enviar campaña",
+    "intake.submitting": "Enviando...",
+    "intake.successHeading": "Listo, hemos recibido tu campaña",
+    "intake.successBody":
+      "Recibirás una confirmación por correo. La leeremos y prepararemos la página por ti. Normalmente tendrás noticias nuestras en una semana.",
+    "intake.error":
+      "Algo salió mal al enviar. Inténtalo de nuevo o escríbenos a care@quinacare.org.",
+    "intake.fixErrors": "Todavía falta algo. Revisa los campos marcados.",
+    "intake.errRequired": "Este campo está vacío.",
+    "intake.errEmail": "No parece una dirección de correo válida.",
+    "intake.errGoal": "Introduce un importe mayor que cero.",
+    "intake.errGoalLarge":
+      "Ese importe parece demasiado alto. ¿Están bien los ceros?",
+    "intake.errDate": "Elige una fecha.",
+    "intake.errDatePast": "Elige una fecha futura.",
+    "intake.errPhotoRequired": "Elige una foto.",
+    "intake.errPhotoType": "Usa un JPG, PNG o WebP.",
+    "intake.errPhotoLarge": "Esta foto pesa más de 8 MB.",
+    "intake.errPhotoSmall":
+      "Esta foto es demasiado pequeña. Debe tener al menos 1200 píxeles de ancho; si no, se ve borrosa en la página.",
+    "intake.errPhotoUnreadable": "No podemos leer este archivo.",
+    "intake.publishedNotice":
+      "Tu nombre, tu historia y tu foto aparecen en el sitio web. Tu correo electrónico no.",
+    "intake.fundsNotice":
+      "Todas las donaciones van directamente a Quina Care. No se te paga nada como organizador.",
+    "intake.privacyNotice":
+      "Tratamos tus datos con cuidado — lee cómo en nuestra",
+    "intake.privacyLink": "declaración de privacidad",
+    "intake.previewTitle": "Título de tu campaña",
+    "intake.previewOrganizer": "Tu nombre",
+    "intake.previewExcerpt": "Aquí aparecerá tu resumen breve.",
+    "intake.previewStory": "Aquí aparecerá tu historia.",
+    "intake.previewPhoto": "Aquí va tu foto",
+    "intake.indexCta": "¿Quieres recaudar fondos para Quina Care?",
+    "intake.toolbarLabel": "Formato",
+    "intake.toolbarHint": "Formato",
+    "intake.fmtBold": "Negrita (Ctrl+B)",
+    "intake.fmtItalic": "Cursiva (Ctrl+I)",
+    "intake.fmtHeading": "Subtítulo",
+    "intake.fmtList": "Lista",
+    "intake.fmtLink": "Enlace",
+    "intake.fmtQuote": "Cita",
+    "intake.fmtSample": "texto",
+    "intake.files": "Archivos adicionales",
+    "intake.filesHint":
+      "¿Tienes algo más que nos ayude? Un mapa del recorrido, un cartel, el logotipo de un patrocinador, más fotos. Máximo 5 archivos, 25 MB en total. Imágenes o PDF. No aparecen en tu página automáticamente.",
+    "intake.errFilesCount": "Elige como máximo 5 archivos.",
+    "intake.errFilesType": "Usa imágenes o archivos PDF.",
+    "intake.errFilesLarge":
+      "Estos archivos son demasiado grandes juntos (máximo 25 MB).",
+    "intake.groupTarget": "Objetivo y duración",
+    "intake.groupStory": "Tu historia",
+    "intake.groupPhoto": "Tu foto",
+    "intake.groupContact": "Contacto",
     // Projects section
     "projects.title": "PROYECTOS",
     "projects.subtitle": "Nuestros Proyectos",
@@ -1489,6 +1791,11 @@ export const ROUTES: Record<string, Record<Lang, string>> = {
     nl: "hub-organiseren",
     en: "organize-a-hub",
     es: "organizar-un-hub",
+  },
+  "start-a-fundraiser": {
+    nl: "actie-starten",
+    en: "start-a-fundraiser",
+    es: "empezar-una-campana",
   },
 };
 

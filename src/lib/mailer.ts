@@ -15,6 +15,15 @@ export interface MailPayload {
    * subscribers.ts.
    */
   headers?: Record<string, string>;
+  /**
+   * Files to attach. Used by the fundraiser intake form, whose photo has
+   * to reach the maintainer when the GitHub upload is unavailable.
+   */
+  attachments?: {
+    filename: string;
+    content: Buffer;
+    contentType?: string;
+  }[];
 }
 
 export async function sendMail(payload: MailPayload): Promise<void> {
