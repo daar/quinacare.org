@@ -325,7 +325,7 @@ export const ui = {
       "Tot wanneer loopt je actie? Daarna blijft de pagina staan, maar telt hij niet meer mee als actief.",
     "intake.story": "Je verhaal",
     "intake.storyHint":
-      "Vertel wat je gaat doen en waarom. Waarom raakt dit je? Wat hoop je te bereiken? Dit mag zo lang zijn als je wilt.",
+      "Vertel wat je gaat doen en waarom. Waarom raakt dit je? Wat hoop je te bereiken? Dit mag zo lang zijn als je wilt. Gebruik de knoppen hierboven om je tekst op te maken.",
     "intake.storyPlaceholder":
       "Vorig jaar was ik in Putumayo en zag ik wat het ziekenhuis daar betekent voor de mensen in de omgeving...",
     "intake.photo": "Foto",
@@ -341,9 +341,6 @@ export const ui = {
     "intake.emailHint":
       "Alleen om contact met je op te nemen. Dit komt niet op de website.",
     "intake.emailPlaceholder": "jij@email.nl",
-    "intake.language": "In welke taal heb je dit geschreven?",
-    "intake.languageHint":
-      "Wij zorgen voor de vertalingen naar de andere talen.",
     "intake.required": "verplicht",
     "intake.optional": "optioneel",
     "intake.submit": "Actie indienen",
@@ -380,14 +377,15 @@ export const ui = {
     "intake.previewPhoto": "Je foto komt hier",
     "intake.indexCta": "Wil je zelf geld ophalen voor Quina Care?",
     "intake.toolbarLabel": "Opmaak",
-    "intake.toolbarHint": "Opmaak",
     "intake.fmtBold": "Vet (Ctrl+B)",
     "intake.fmtItalic": "Cursief (Ctrl+I)",
     "intake.fmtHeading": "Tussenkop",
     "intake.fmtList": "Opsomming",
     "intake.fmtLink": "Link",
     "intake.fmtQuote": "Citaat",
-    "intake.fmtSample": "tekst",
+    "intake.fmtUndo": "Ongedaan maken (Ctrl+Z)",
+    "intake.linkPrompt": "Naar welke pagina moet deze link wijzen?",
+    "intake.linkInvalid": "Een link moet met http:// of https:// beginnen.",
     "intake.files": "Extra bestanden",
     "intake.filesHint":
       "Heb je nog iets anders dat ons helpt? Denk aan een routekaart, een poster, een logo van een sponsor of extra foto's. Maximaal 5 bestanden, samen niet groter dan 25 MB. Afbeeldingen of PDF. Deze komen niet automatisch op je pagina.",
@@ -890,7 +888,7 @@ export const ui = {
       "When does your fundraiser finish? The page stays up afterwards, but no longer counts as active.",
     "intake.story": "Your story",
     "intake.storyHint":
-      "Tell us what you are going to do and why. Why does this matter to you? What do you hope to achieve? Take as much room as you need.",
+      "Tell us what you are going to do and why. Why does this matter to you? What do you hope to achieve? Take as much room as you need. Use the buttons above to format your text.",
     "intake.storyPlaceholder":
       "Last year I was in Putumayo and saw what the hospital means to the people living around it...",
     "intake.photo": "Photo",
@@ -906,8 +904,6 @@ export const ui = {
     "intake.emailHint":
       "Only so we can reach you. It does not go on the website.",
     "intake.emailPlaceholder": "you@email.com",
-    "intake.language": "Which language did you write this in?",
-    "intake.languageHint": "We take care of the translations.",
     "intake.required": "required",
     "intake.optional": "optional",
     "intake.submit": "Submit fundraiser",
@@ -944,14 +940,15 @@ export const ui = {
     "intake.previewPhoto": "Your photo goes here",
     "intake.indexCta": "Want to raise money for Quina Care yourself?",
     "intake.toolbarLabel": "Formatting",
-    "intake.toolbarHint": "Formatting",
     "intake.fmtBold": "Bold (Ctrl+B)",
     "intake.fmtItalic": "Italic (Ctrl+I)",
     "intake.fmtHeading": "Subheading",
     "intake.fmtList": "Bullet list",
     "intake.fmtLink": "Link",
     "intake.fmtQuote": "Quote",
-    "intake.fmtSample": "text",
+    "intake.fmtUndo": "Undo (Ctrl+Z)",
+    "intake.linkPrompt": "Which page should this link point to?",
+    "intake.linkInvalid": "A link has to start with http:// or https://.",
     "intake.files": "Extra files",
     "intake.filesHint":
       "Anything else that helps us? A route map, a poster, a sponsor logo, extra photos. Up to 5 files, 25 MB in total. Images or PDF. These do not go on your page automatically.",
@@ -1456,7 +1453,7 @@ export const ui = {
       "¿Cuándo termina tu campaña? La página sigue disponible después, pero deja de contar como activa.",
     "intake.story": "Tu historia",
     "intake.storyHint":
-      "Cuéntanos qué vas a hacer y por qué. ¿Por qué te importa? ¿Qué esperas conseguir? Tómate todo el espacio que necesites.",
+      "Cuéntanos qué vas a hacer y por qué. ¿Por qué te importa? ¿Qué esperas conseguir? Tómate todo el espacio que necesites. Usa los botones de arriba para dar formato al texto.",
     "intake.storyPlaceholder":
       "El año pasado estuve en Putumayo y vi lo que significa el hospital para la gente de alrededor...",
     "intake.photo": "Foto",
@@ -1472,8 +1469,6 @@ export const ui = {
     "intake.emailHint":
       "Solo para poder contactarte. No aparece en el sitio web.",
     "intake.emailPlaceholder": "tu@correo.com",
-    "intake.language": "¿En qué idioma lo has escrito?",
-    "intake.languageHint": "Nosotros nos encargamos de las traducciones.",
     "intake.required": "obligatorio",
     "intake.optional": "opcional",
     "intake.submit": "Enviar campaña",
@@ -1511,14 +1506,15 @@ export const ui = {
     "intake.previewPhoto": "Aquí va tu foto",
     "intake.indexCta": "¿Quieres recaudar fondos para Quina Care?",
     "intake.toolbarLabel": "Formato",
-    "intake.toolbarHint": "Formato",
     "intake.fmtBold": "Negrita (Ctrl+B)",
     "intake.fmtItalic": "Cursiva (Ctrl+I)",
     "intake.fmtHeading": "Subtítulo",
     "intake.fmtList": "Lista",
     "intake.fmtLink": "Enlace",
     "intake.fmtQuote": "Cita",
-    "intake.fmtSample": "texto",
+    "intake.fmtUndo": "Deshacer (Ctrl+Z)",
+    "intake.linkPrompt": "¿A qué página debe apuntar este enlace?",
+    "intake.linkInvalid": "Un enlace debe empezar por http:// o https://.",
     "intake.files": "Archivos adicionales",
     "intake.filesHint":
       "¿Tienes algo más que nos ayude? Un mapa del recorrido, un cartel, el logotipo de un patrocinador, más fotos. Máximo 5 archivos, 25 MB en total. Imágenes o PDF. No aparecen en tu página automáticamente.",

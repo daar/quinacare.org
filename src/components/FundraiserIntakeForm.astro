@@ -85,7 +85,7 @@ const fmtBtn =
 <Layout title={`${t("intake.heading")} - Quina Care`} lang={lang}>
   <Nav />
 
-  <header class="max-w-6xl mx-auto px-6 pt-32 pb-12">
+  <header class="max-w-[1600px] mx-auto px-6 pt-32 pb-12">
     <a
       href={getLocalizedPath("/fundraisers", lang)}
       class="qc-meta inline-flex items-center gap-2 hover:text-qcRed transition-colors group"
@@ -118,11 +118,11 @@ const fmtBtn =
     </a>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 pb-24">
+  <main class="max-w-[1600px] mx-auto px-6 pb-24">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-12">
       <!-- Preview. First on a phone: it is what the page is selling, and
            below a form this long nobody would ever reach it. -->
-      <div class="lg:col-span-5 lg:col-start-8 lg:row-start-1">
+      <div class="lg:col-span-7 lg:col-start-6 lg:row-start-1">
         <div class="lg:sticky lg:top-28">
           <h2
             class="text-xs font-bold uppercase tracking-[0.2em] text-gray-400"
@@ -268,7 +268,7 @@ const fmtBtn =
       </div>
 
       <!-- Form -->
-      <div class="lg:col-span-7 lg:row-start-1">
+      <div class="lg:col-span-5 lg:row-start-1">
         <div>
           <form id="intake-form" novalidate>
             {
@@ -288,6 +288,12 @@ const fmtBtn =
                 autocomplete="off"
               />
             </div>
+
+            {
+              /* The page's own language, not a question: whichever page
+                 they are on is the language they are writing in. */
+            }
+            <input type="hidden" name="lang" value={lang} />
 
             <fieldset>
               <legend class={legend}>{t("intake.formHeading")}</legend>
@@ -421,22 +427,24 @@ const fmtBtn =
                 </label>
                 <p class={hint} id="h-story">{t("intake.storyHint")}</p>
                 <div
-                  class="rounded-xl border border-gray-200 bg-white focus-within:ring-2 focus-within:ring-qcRed/30 focus-within:border-qcRed transition-all overflow-hidden"
+                  id="story-editor"
+                  class="rounded-xl border border-gray-200 bg-white overflow-hidden focus-within:ring-2 focus-within:ring-qcRed/30 focus-within:border-qcRed transition-all"
                 >
                   <div
                     class="flex flex-wrap items-center gap-1 border-b border-gray-100 bg-gray-50 px-2 py-2"
                     role="toolbar"
                     aria-label={t("intake.toolbarLabel")}
-                    aria-controls="f-story"
                   >
                     {
                       /* B, I and H are letterforms, which is what a text
                         toolbar has always used; the rest are drawn icons
-                        from the site's own set, never a stand-in glyph. */
+                        from the site's own set, never a stand-in glyph.
+                        aria-pressed is kept in sync with the caret. */
                     }
                     <button
                       type="button"
                       data-fmt="bold"
+                      aria-pressed="false"
                       title={t("intake.fmtBold")}
                       aria-label={t("intake.fmtBold")}
                       class={fmtBtn + " font-bold"}
@@ -446,6 +454,7 @@ const fmtBtn =
                     <button
                       type="button"
                       data-fmt="italic"
+                      aria-pressed="false"
                       title={t("intake.fmtItalic")}
                       aria-label={t("intake.fmtItalic")}
                       class={fmtBtn + " italic font-serif"}
@@ -455,6 +464,7 @@ const fmtBtn =
                     <button
                       type="button"
                       data-fmt="heading"
+                      aria-pressed="false"
                       title={t("intake.fmtHeading")}
                       aria-label={t("intake.fmtHeading")}
                       class={fmtBtn + " font-bold"}
@@ -465,7 +475,8 @@ const fmtBtn =
                     ></span>
                     <button
                       type="button"
-                      data-fmt="list"
+                      data-fmt="bulletList"
+                      aria-pressed="false"
                       title={t("intake.fmtList")}
                       aria-label={t("intake.fmtList")}
                       class={fmtBtn}
@@ -494,6 +505,7 @@ const fmtBtn =
                     <button
                       type="button"
                       data-fmt="link"
+                      aria-pressed="false"
                       title={t("intake.fmtLink")}
                       aria-label={t("intake.fmtLink")}
                       class={fmtBtn}
@@ -502,14 +514,46 @@ const fmtBtn =
                     </button>
                     <button
                       type="button"
-                      data-fmt="quote"
+                      data-fmt="blockquote"
+                      aria-pressed="false"
                       title={t("intake.fmtQuote")}
                       aria-label={t("intake.fmtQuote")}
                       class={fmtBtn}
                     >
                       <Icon name="quote-left" class="text-[13px]" />
                     </button>
+                    <span class="w-px h-5 bg-gray-200 mx-1" aria-hidden="true"
+                    ></span>
+                    <button
+                      type="button"
+                      data-fmt="undo"
+                      title={t("intake.fmtUndo")}
+                      aria-label={t("intake.fmtUndo")}
+                      class={fmtBtn}
+                    >
+                      <svg
+                        viewBox="0 0 16 16"
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M2.5 6.5h7a3.5 3.5 0 0 1 0 7H6"></path>
+                        <path d="M5 3.5 2 6.5l3 3"></path>
+                      </svg>
+                    </button>
                   </div>
+
+                  {
+                    /* TipTap mounts here. The textarea below it holds the
+                       Markdown the endpoint receives, so the form still
+                       submits normally and works if the editor fails to
+                       load. */
+                  }
+                  <div id="story-surface" class="story-surface"></div>
                   <textarea
                     id="f-story"
                     name="story"
@@ -592,7 +636,7 @@ const fmtBtn =
 
             <fieldset class={groupGap}>
               <legend class={legend}>{t("intake.groupContact")}</legend>
-              <div class="mt-6 grid sm:grid-cols-2 gap-6">
+              <div class="mt-6">
                 <div>
                   <label for="f-email" class={label}>
                     {t("intake.email")}
@@ -611,25 +655,6 @@ const fmtBtn =
                     placeholder={t("intake.emailPlaceholder")}
                   />
                   <p class="field-error hidden mt-2 text-sm text-qcRed"></p>
-                </div>
-
-                <div>
-                  <label for="f-lang" class={label}>
-                    {t("intake.language")}
-                  </label>
-                  <p class={hint} id="h-lang">{t("intake.languageHint")}</p>
-                  <select
-                    id="f-lang"
-                    name="lang"
-                    aria-describedby="h-lang"
-                    class={input}
-                  >
-                    <option value="nl" selected={lang === "nl"}
-                      >Nederlands</option
-                    >
-                    <option value="en" selected={lang === "en"}>English</option>
-                    <option value="es" selected={lang === "es"}>Español</option>
-                  </select>
                 </div>
               </div>
             </fieldset>
@@ -734,6 +759,105 @@ const fmtBtn =
     border-radius: 9999px;
   }
 
+  /* The editing surface and the preview body.
+     Both are built at runtime — TipTap mounts its own DOM, and the preview
+     slot is filled with the editor's HTML — so these have to be written
+     with :global(). Astro's scoping attribute is only stamped on markup
+     that exists in this template, and without :global() none of it lands.
+     One set of rules drives both, a size apart, so what is typed and what
+     is shown cannot drift. */
+  #story-surface :global(.ProseMirror) {
+    min-height: 20rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    color: var(--color-gray-700, #374151);
+    line-height: 1.65;
+  }
+  #story-surface :global(.ProseMirror > * + *),
+  #p-story :global(* + *) {
+    margin-top: 0.85em;
+  }
+  #story-surface :global(h2),
+  #story-surface :global(h3),
+  #p-story :global(h2),
+  #p-story :global(h3) {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-qcBlack, #111);
+    margin-top: 1.4em;
+  }
+  #story-surface :global(h2) {
+    font-size: 1.2rem;
+  }
+  #story-surface :global(h3) {
+    font-size: 1.02rem;
+  }
+  #p-story :global(h2) {
+    font-size: 1rem;
+  }
+  #p-story :global(h3) {
+    font-size: 0.9rem;
+  }
+  #story-surface :global(ul),
+  #p-story :global(ul) {
+    list-style: disc;
+    padding-left: 1.35em;
+  }
+  #story-surface :global(ol),
+  #p-story :global(ol) {
+    list-style: decimal;
+    padding-left: 1.35em;
+  }
+  #story-surface :global(li + li),
+  #p-story :global(li + li) {
+    margin-top: 0.3em;
+  }
+  #story-surface :global(blockquote),
+  #p-story :global(blockquote) {
+    border-left: 2px solid var(--color-gray-200, #e5e7eb);
+    padding-left: 0.9em;
+    font-style: italic;
+    color: var(--color-gray-500, #6b7280);
+  }
+  #story-surface :global(a),
+  #p-story :global(a) {
+    color: var(--color-qcRed, #e6172c);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  #story-surface :global(strong),
+  #p-story :global(strong) {
+    font-weight: 700;
+    color: var(--color-qcBlack, #111);
+  }
+  #p-story:not([data-empty="true"]) {
+    color: var(--color-gray-600, #4b5563);
+  }
+
+  /* The Placeholder extension marks the empty node; the hint itself is
+     drawn here, from the palette rather than the browser's grey. */
+  #story-surface :global(p.is-empty:first-child::before) {
+    content: attr(data-placeholder);
+    color: var(--color-gray-500, #6b7280);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+
+  /* The textarea still carries the Markdown that gets submitted; the
+     editor above it is what people actually use. */
+  .story-value {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     #p-photo {
       transition: none;
@@ -764,11 +888,20 @@ const fmtBtn =
     maxFiles: INTAKE_LIMITS.maxAttachments,
     maxFileBytes: INTAKE_LIMITS.maxAttachmentBytes,
     maxFilesTotalBytes: INTAKE_LIMITS.maxAttachmentTotalBytes,
-    fmtSample: t("intake.fmtSample"),
+    storyLabel: t("intake.story"),
+    storyPlaceholder: t("intake.storyPlaceholder"),
+    linkPrompt: t("intake.linkPrompt"),
+    linkInvalid: t("intake.linkInvalid"),
   })}
 />
 
 <script>
+  import { Editor } from "@tiptap/core";
+  import StarterKit from "@tiptap/starter-kit";
+  import { Placeholder } from "@tiptap/extensions";
+  import TurndownService from "turndown";
+  import { imageSize } from "../lib/fundraiserIntake";
+
   // Time-trap: bots submit a rendered form almost instantly.
   const loadedAt = Date.now();
 
@@ -826,163 +959,142 @@ const fmtBtn =
     const field = (name: string) =>
       form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
 
-    const escapeHtml = (text: string) =>
-      text.replace(
-        /[&<>"]/g,
-        (c) =>
-          ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] ?? c,
-      );
+    // --- rich text ----------------------------------------------------
+    // TipTap owns the story field. The textarea underneath it stays in the
+    // DOM and holds the Markdown: that is what the endpoint receives and
+    // what goes into the .mdoc body, and it means a failure to load the
+    // editor leaves a plain working textarea rather than no field at all.
+    const storyField = $<HTMLTextAreaElement>("f-story");
+    const surface = $<HTMLElement>("story-surface");
 
-    /**
-     * Render the subset of Markdown the toolbar can produce.
-     *
-     * Deliberately not a Markdown library: the toolbar writes the syntax,
-     * so the preview only has to read back what it wrote, and shipping a
-     * parser to every visitor to re-read six constructs is not a trade
-     * worth making. Everything is escaped before any tag is added — the
-     * text is the visitor's own, but it still must not be able to inject
-     * markup into the page rendering it.
-     */
-    function renderMarkdown(src: string): string {
-      const inline = (text: string) =>
-        escapeHtml(text)
-          .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-          .replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>")
-          .replace(
-            /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-            '<a href="$2" class="text-qcRed underline">$1</a>',
-          );
+    const turndown = new TurndownService({
+      headingStyle: "atx",
+      bulletListMarker: "-",
+      emDelimiter: "*",
+    });
 
-      const html: string[] = [];
-      let list: string[] = [];
+    // TipTap wraps every list item's text in its own <p>, and turndown's
+    // stock rule turns that into "-   item" with a blank line after each
+    // one. Valid Markdown, but a maintainer has to tidy it before it goes
+    // into a .mdoc. Emit a tight list instead.
+    turndown.addRule("tightListItem", {
+      filter: "li",
+      replacement: (content, node, options) => {
+        const text = content
+          .replace(/^\n+/, "")
+          .replace(/\n+$/, "")
+          .replace(/\n/g, "\n  ");
+        const parent = node.parentElement;
+        const marker =
+          parent && parent.nodeName === "OL"
+            ? `${Array.prototype.indexOf.call(parent.children, node) + 1}. `
+            : `${options.bulletListMarker} `;
+        return marker + text + (node.nextSibling ? "\n" : "");
+      },
+    });
 
-      const flush = () => {
-        if (!list.length) return;
-        html.push(
-          `<ul class="list-disc pl-5 space-y-1 my-3">${list.join("")}</ul>`,
-        );
-        list = [];
-      };
-
-      for (const raw of src.split(/\n{2,}/)) {
-        const block = raw.trim();
-        if (!block) continue;
-
-        const lines = block.split("\n");
-        if (lines.every((l) => /^\s*[-*]\s+/.test(l))) {
-          for (const l of lines) {
-            list.push(`<li>${inline(l.replace(/^\s*[-*]\s+/, ""))}</li>`);
-          }
-          flush();
-          continue;
+    const editor = new Editor({
+      element: surface,
+      extensions: [
+        StarterKit.configure({
+          // Only what the toolbar offers and a fundraiser page renders.
+          heading: { levels: [2, 3] },
+          codeBlock: false,
+          code: false,
+          horizontalRule: false,
+          strike: false,
+          link: { openOnClick: false, autolink: true },
+        }),
+        Placeholder.configure({ placeholder: PH.storyPlaceholder }),
+      ],
+      content: "",
+      editorProps: {
+        attributes: { class: "story-prose", "aria-label": PH.storyLabel },
+      },
+      onUpdate: ({ editor }) => {
+        const empty = editor.isEmpty;
+        const html = editor.getHTML();
+        storyField.value = empty ? "" : turndown.turndown(html);
+        if (empty) {
+          preview.story.textContent = PH.story;
+        } else {
+          preview.story.innerHTML = html;
         }
-        flush();
+        preview.story.dataset.empty = empty ? "true" : "false";
+        syncToolbar();
+      },
+      onSelectionUpdate: () => syncToolbar(),
+    });
 
-        const heading = block.match(/^(#{2,3})\s+(.*)$/);
-        if (heading) {
-          const tag = heading[1].length === 2 ? "h4" : "h5";
-          html.push(
-            `<${tag} class="font-bold tracking-tight text-qcBlack mt-4 mb-1">${inline(heading[2])}</${tag}>`,
-          );
-          continue;
-        }
+    // The editor is the real field now. The textarea stays for its value
+    // only — hidden, out of the tab order, and away from screen readers —
+    // so the form still submits Markdown the ordinary way.
+    storyField.classList.add("story-value");
+    storyField.setAttribute("tabindex", "-1");
+    storyField.setAttribute("aria-hidden", "true");
+    storyField.removeAttribute("required");
+    storyField.removeAttribute("placeholder");
 
-        if (/^>\s?/.test(block)) {
-          html.push(
-            `<blockquote class="border-l-2 border-gray-200 pl-3 italic my-3">${inline(
-              block.replace(/^>\s?/gm, ""),
-            )}</blockquote>`,
-          );
-          continue;
-        }
+    const TOOLBAR_STATE: Record<string, () => boolean> = {
+      bold: () => editor.isActive("bold"),
+      italic: () => editor.isActive("italic"),
+      heading: () => editor.isActive("heading", { level: 2 }),
+      bulletList: () => editor.isActive("bulletList"),
+      blockquote: () => editor.isActive("blockquote"),
+      link: () => editor.isActive("link"),
+    };
 
-        html.push(
-          `<p class="my-3">${inline(block).replace(/\n/g, "<br>")}</p>`,
-        );
-      }
-      flush();
-      return html.join("");
+    function syncToolbar() {
+      form.querySelectorAll<HTMLButtonElement>("[data-fmt]").forEach((btn) => {
+        const check = TOOLBAR_STATE[btn.dataset.fmt ?? ""];
+        if (!check) return;
+        const on = check();
+        btn.setAttribute("aria-pressed", String(on));
+        btn.classList.toggle("bg-white", on);
+        btn.classList.toggle("text-qcRed", on);
+        btn.classList.toggle("shadow-sm", on);
+      });
     }
 
-    // --- formatting toolbar ------------------------------------------
-    const story = $<HTMLTextAreaElement>("f-story");
-
-    /** Wrap the selection, or drop a marker the visitor types over. */
-    function applyFormat(cmd: string) {
-      const start = story.selectionStart;
-      const end = story.selectionEnd;
-      const selected = story.value.slice(start, end);
-      const sample = selected || PH.fmtSample;
-      let replacement = sample;
-      let caret = 0;
-
-      if (cmd === "bold") replacement = `**${sample}**`;
-      else if (cmd === "italic") replacement = `*${sample}*`;
-      else if (cmd === "heading") replacement = `## ${sample}`;
-      else if (cmd === "quote") replacement = `> ${sample}`;
+    function runFormat(cmd: string) {
+      const chain = editor.chain().focus();
+      if (cmd === "bold") chain.toggleBold().run();
+      else if (cmd === "italic") chain.toggleItalic().run();
+      else if (cmd === "heading") chain.toggleHeading({ level: 2 }).run();
+      else if (cmd === "bulletList") chain.toggleBulletList().run();
+      else if (cmd === "blockquote") chain.toggleBlockquote().run();
+      else if (cmd === "undo") chain.undo().run();
       else if (cmd === "link") {
-        replacement = `[${sample}](https://)`;
-        caret = replacement.length - 1;
-      } else if (cmd === "list") {
-        replacement = sample
-          .split("\n")
-          .map((l: string) => `- ${l.replace(/^[-*]\s*/, "")}`)
-          .join("\n");
+        if (editor.isActive("link")) {
+          chain.unsetLink().run();
+          return;
+        }
+        const href = window.prompt(PH.linkPrompt, "https://");
+        if (!href) return;
+        // http(s) only: a javascript: or data: URL would run in this page,
+        // and again on the published one.
+        if (!/^https?:\/\//i.test(href)) {
+          window.alert(PH.linkInvalid);
+          return;
+        }
+        chain.extendMarkRange("link").setLink({ href }).run();
       }
-
-      // Block-level marks need to start on their own line.
-      const needsBreak =
-        ["heading", "quote", "list"].includes(cmd) &&
-        start > 0 &&
-        story.value[start - 1] !== "\n";
-      if (needsBreak) replacement = `\n\n${replacement}`;
-
-      story.setRangeText(replacement, start, end, "end");
-      if (caret) {
-        const at = start + (needsBreak ? 2 : 0) + caret;
-        story.setSelectionRange(at, at);
-      } else if (!selected) {
-        // Leave the sample word selected so typing replaces it.
-        const from =
-          start +
-          (needsBreak ? 2 : 0) +
-          replacement.indexOf(sample) -
-          (needsBreak ? 2 : 0);
-        story.setSelectionRange(from, from + sample.length);
-      }
-      story.focus();
-      story.dispatchEvent(new Event("input", { bubbles: true }));
     }
 
     form.querySelectorAll<HTMLButtonElement>("[data-fmt]").forEach((btn) => {
-      // mousedown, not click: the textarea must keep its selection.
+      // mousedown, not click: the editor must keep its selection.
       btn.addEventListener("mousedown", (e) => {
         e.preventDefault();
-        applyFormat(btn.dataset.fmt!);
+        runFormat(btn.dataset.fmt!);
       });
     });
 
-    story.addEventListener("keydown", (e) => {
-      if (!(e.ctrlKey || e.metaKey)) return;
-      const key = e.key.toLowerCase();
-      if (key !== "b" && key !== "i") return;
-      e.preventDefault();
-      applyFormat(key === "b" ? "bold" : "italic");
-    });
+    syncToolbar();
 
     function render() {
       put(preview.title, field("title").value, PH.title);
       put(preview.organizer, field("organizer").value, PH.organizer);
       put(preview.excerpt, field("excerpt").value, PH.excerpt);
-
-      const story = field("story").value;
-      if (story.trim() === "") {
-        preview.story.textContent = PH.story;
-        preview.story.dataset.empty = "true";
-      } else {
-        preview.story.innerHTML = renderMarkdown(story);
-        preview.story.dataset.empty = "false";
-      }
 
       const goal = Number(field("goalAmount").value);
       preview.goal.textContent = money.format(
@@ -1048,7 +1160,7 @@ const fmtBtn =
       preview.photoEmpty.classList.remove("hidden");
     }
 
-    photoInput.addEventListener("change", () => {
+    photoInput.addEventListener("change", async () => {
       const file = photoInput.files?.[0];
       clearError(photoInput);
 
@@ -1067,28 +1179,43 @@ const fmtBtn =
         return;
       }
 
-      objectUrl = URL.createObjectURL(file);
-      // Measure before showing it. A photo too small to print sharply is
-      // the most common reason a fundraiser stalls, and saying so now is
-      // far cheaper than an email a week later.
-      const probe = new Image();
-      probe.onload = () => {
-        if (probe.naturalWidth < PH.minWidth) {
-          showError(photoInput, MSG["photo.too-small"]);
-          photoInput.value = "";
-          clearPhoto();
-          return;
-        }
-        preview.photo.src = objectUrl!;
-        preview.photo.classList.remove("opacity-0");
-        preview.photoEmpty.classList.add("hidden");
-      };
-      probe.onerror = () => {
+      // Measure from the file header with the same parser the endpoint
+      // uses, rather than by decoding the image in an <img>. A browser
+      // refuses to decode plenty of perfectly good camera files — HEIC
+      // from an iPhone, a CMYK JPEG, a progressive JPEG some versions
+      // choke on — and every one of those came back as "we cannot read
+      // this file" when the real answer was that the photo is fine.
+      let size: { width: number; height: number } | null;
+      try {
+        size = imageSize(new Uint8Array(await file.arrayBuffer()));
+      } catch {
+        size = null;
+      }
+
+      if (!size) {
         showError(photoInput, MSG["photo.unreadable"]);
         photoInput.value = "";
         clearPhoto();
+        return;
+      }
+
+      if (size.width < PH.minWidth) {
+        showError(photoInput, MSG["photo.too-small"]);
+        photoInput.value = "";
+        clearPhoto();
+        return;
+      }
+
+      // The file is accepted on its measurements. Showing it is a bonus:
+      // if this browser cannot render the format, the placeholder stays
+      // and the submission still goes through.
+      objectUrl = URL.createObjectURL(file);
+      preview.photo.onerror = () => clearPhoto();
+      preview.photo.onload = () => {
+        preview.photo.classList.remove("opacity-0");
+        preview.photoEmpty.classList.add("hidden");
       };
-      probe.src = objectUrl;
+      preview.photo.src = objectUrl;
     });
 
     // Keep the preview's alt text honest — it is what a screen reader
