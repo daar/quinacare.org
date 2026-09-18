@@ -68,6 +68,26 @@ function formatCurrency(amount: number): string {
           >.</span
         >
       </h1>
+      <div
+        class="mt-8 flex flex-col sm:flex-row sm:items-center gap-x-6 gap-y-2"
+      >
+        <p class="text-gray-500">{t("intake.indexCta")}</p>
+        <div class="flex items-center gap-5">
+          <a
+            href={getLocalizedPath("/fundraisers/start", lang)}
+            class="inline-flex items-center gap-2 font-semibold text-qcRed hover:underline"
+          >
+            {t("intake.heading")}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a
+            href={getLocalizedPath("/start-a-fundraiser", lang)}
+            class="text-sm text-gray-400 underline decoration-dotted underline-offset-4 hover:text-qcRed"
+          >
+            {t("intake.helpLink")}
+          </a>
+        </div>
+      </div>
     </div>
   </header>
 
