@@ -1,4 +1,9 @@
 import { createClient, type Client } from "@libsql/client";
+import {
+  SUBSCRIBERS_TABLE,
+  SUBSCRIBER_EVENTS_TABLE,
+  SUBSCRIBERS_INDEXES,
+} from "./subscribersSql.mjs";
 
 let client: Client | null = null;
 let migrated = false;
@@ -41,17 +46,18 @@ export async function ensureSchema(): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_donations_context ON donations(context)`,
     `CREATE INDEX IF NOT EXISTS idx_donations_status ON donations(status)`,
     // One row per person. `locale` is the set of language lists they are
-    // on, comma separated ("nl", "nl,en"): someone can subscribe to the
-    // Dutch and English newsletter without becoming two subscribers.
-    // Membership is what matters, the order is not significant — use the
-    // merging upsert below rather than writing this column blind.
-    `CREATE TABLE IF NOT EXISTS subscribers (
-      id         INTEGER PRIMARY KEY AUTOINCREMENT,
-      email      TEXT NOT NULL UNIQUE,
-      locale     TEXT NOT NULL DEFAULT 'nl',
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    )`,
-    `CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email)`,
+    // on, comma separated and in canonical order ("nl", "nl,en"): someone
+    // can subscribe to the Dutch and English newsletter without becoming
+    // two subscribers. Write it through the upserts in subscribersSql.mjs
+    // rather than blind — that is what keeps the order canonical.
+    //
+    // The DDL lives in subscribersSql.mjs because scripts/ needs it too
+    // and cannot import this file (import.meta.env). An existing table is
+    // migrated by scripts/migrate-subscribers.mjs; CREATE TABLE IF NOT
+    // EXISTS below only ever builds a fresh one.
+    SUBSCRIBERS_TABLE,
+    SUBSCRIBER_EVENTS_TABLE,
+    ...SUBSCRIBERS_INDEXES,
     `CREATE TABLE IF NOT EXISTS donor_thanks (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
       name       TEXT NOT NULL,
