@@ -41,10 +41,52 @@ const CURATED = {
   "/projecten/hospital-equipment": "/projecten/ziekenhuisapparatuur",
   // Stale WordPress person page (-N cruft) → the EN staff overview.
   "/en/maria-priscila-chacon-de-la-portilla-3": "/en/staff",
+  "/maria-vanessa-davila-campos-3": "/personeelsleden",
+
+  // The Putumayo Loop's own slug differs per language, and the EN one keeps
+  // being shared without its /en prefix.
+  "/putumayo-run": "/en/putumayo-run",
+  "/putumayo-carrera": "/es/putumayo-carrera",
+
+  // A Facebook post about the run linkified the URL together with the word
+  // that followed it, so every click lands on a path with a comma and a
+  // stray word in it. The post is out in the wild for good; catch the four
+  // shapes it produced rather than lose the traffic.
+  "/en/putumayo-run,Learned": "/en/putumayo-run",
+  "/en/putumayo-run,Also": "/en/putumayo-run",
+  "/en/putumayo-run,I'm": "/en/putumayo-run",
+  "/en/putumayo-run,Onto": "/en/putumayo-run",
+
+  // Old WordPress section indexes.
+  "/en/en-blogs-vlogs": "/en/news",
+  "/over-ons/wie-zijn-wij": "/over-ons",
+
+  // The ES bequest page is /es/herencia. astro.config.mjs used to send the
+  // old news URL to /es/legado, which never existed; that is fixed there,
+  // but Google indexed the dead target, so catch it here too.
+  "/es/legado": "/es/herencia",
+
+  // Guessed English paths for pages we do have.
+  "/team": "/personeelsleden",
+  "/founders": "/en/about",
+  "/en/departments": "/en/hospital",
 };
 
+// Shapes that are never worth a redirect, whoever asks for them. Feed URLs
+// and .asp(x) probes are the long tail of the WordPress site we replaced:
+// they recur every week, there is nothing to send them to, and without this
+// they would come up for review forever.
 const JUNK =
-  /(wp-admin|wp-login|wp-content|xmlrpc|cgi-bin|phpmyadmin|\.php|\.env|\.git|\?url=)/i;
+  /(wp-admin|wp-login|wp-content|xmlrpc|cgi-bin|phpmyadmin|\.php|\.env|\.git|\?url=|\.aspx?$|(^|\/)(comments\/)?feed$|(^|\/)rss(\.xml)?$|\/embed$)/i;
+
+// Individual paths reviewed and deliberately left alone, each with the
+// reason. JUNK covers shapes; this covers one-off decisions, so a later run
+// does not re-open a question that was already answered. Entries are
+// reported on every run, so nothing is silently dropped.
+//
+// Example:
+//   "/some-campaign-2019": "one-off print URL, campaign is over",
+const IGNORED = {};
 const ASSET = /\.(pdf|jpe?g|png|webp|gif|svg|css|js|ico|xml|txt)$/i;
 const norm = (p) => {
   let s = p.split("?")[0].split("#")[0];
@@ -152,8 +194,14 @@ const redirects = fs.existsSync(redirectsPath)
 const published = [];
 const skipped = [];
 
+const ignored = [];
+
 for (const raw of paths) {
   const p = norm(raw);
+  if (IGNORED[p]) {
+    ignored.push([p, IGNORED[p]]);
+    continue;
+  }
   if (p === "/" || JUNK.test(p) || ASSET.test(p)) {
     skipped.push([p, "junk/asset"]);
     continue;
@@ -215,6 +263,20 @@ for (const x of published.sort()) console.log("  +", x);
 console.log(`Redirects ${Object.keys(redirects).length}:`);
 for (const [k, v] of Object.entries(redirects)) console.log(`  ${k} -> ${v}`);
 console.log(`Skipped ${skipped.length} (already-resolved/junk/no-match).`);
+// Printed rather than silently dropped: an ignore decision should stay
+// visible, so it can be revisited when it stops being the right one.
+if (ignored.length) {
+  console.log(`Ignored by rule ${ignored.length}:`);
+  for (const [k, why] of ignored) console.log(`  ${k}  — ${why}`);
+}
+// The paths nobody has decided about yet. This is the list to review.
+const undecided = skipped.filter(([, why]) => why === "no match");
+if (undecided.length) {
+  console.log(`\nNeeds a decision ${undecided.length}:`);
+  for (const [k] of undecided) {
+    console.log(`  ${k}  — add to CURATED (redirect) or IGNORED (leave alone)`);
+  }
+}
 
 if (CLEAR) {
   const n = (await db.execute("SELECT COUNT(*) c FROM page_misses")).rows[0].c;

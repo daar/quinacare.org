@@ -101,9 +101,12 @@ export default defineConfig({
     "/doneer/demi-en-thomas": "/putumayo-loop",
     // The bequest post moved from the news collection to a standalone page
     // under "What can you do"; keep the old published news URLs alive.
+    // The EN and ES targets were the English words rather than the pages'
+    // actual slugs, so both redirects landed visitors on a 404 — which is
+    // how /es/legado turned up in the 404 log with Google as its referrer.
     "/actueel/nalatenschap": "/nalatenschap",
-    "/en/news/bequest": "/en/bequest",
-    "/es/noticias/legado": "/es/legado",
+    "/en/news/bequest": "/en/legacy",
+    "/es/noticias/legado": "/es/herencia",
     // Legacy WordPress URLs, retargeted to the native routes. Note:
     // /doneer is now the real NL donate page, so it no longer redirects.
     "/blogs-vlogs": "/actueel",

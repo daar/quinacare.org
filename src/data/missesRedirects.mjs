@@ -70,5 +70,17 @@ export default {
   "/es/maria-vanessa-davila-campos": "/es/noticias/maria-vanessa-davila-campos",
   "/es/andrea-diaz-saenz": "/es/noticias/andrea-diaz-saenz",
   "/actueel/actueel/jessica-rodriguez-valencia": "/actueel/jessica-rodriguez-valencia",
-  "/blogs-vlogs/ricardo-salazar": "/actueel/ricardo-salazar"
+  "/blogs-vlogs/ricardo-salazar": "/actueel/ricardo-salazar",
+  "/en/putumayo-run,Learned": "/en/putumayo-run",
+  "/en/putumayo-run,Also": "/en/putumayo-run",
+  "/en/putumayo-run,I'm": "/en/putumayo-run",
+  "/en/putumayo-run,Onto": "/en/putumayo-run",
+  "/putumayo-run": "/en/putumayo-run",
+  "/en/en-blogs-vlogs": "/en/news",
+  "/es/legado": "/es/herencia",
+  "/over-ons/wie-zijn-wij": "/over-ons",
+  "/maria-vanessa-davila-campos-3": "/personeelsleden",
+  "/team": "/personeelsleden",
+  "/founders": "/en/about",
+  "/en/departments": "/en/hospital"
 };

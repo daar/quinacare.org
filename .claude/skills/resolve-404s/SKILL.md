@@ -47,7 +47,14 @@ The matcher is conservative (same-language only; never resolves to a `-N` collis
 - A **published draft** that's actually cruft (a `-N` duplicate, a `test-*`/`wpsd-*` page) → it shouldn't have matched; if it did, `git checkout --` it and tighten the filter.
 - A **cross-language** target (NL slug on an EN path, etc.) → add a curated entry with the correct native target.
 
-Curated overrides live in the `CURATED` map at the top of `scripts/resolve-404s.mjs` (old URL → native target). Add entries there and re-run step 2 until clean. Verify targets exist: donate pages are `/doneer`, `/en/donate`, `/es/donar`; volunteer pages `/word-vrijwilliger`, `/en/become-volunteer`, `/es/hazte-voluntario`; section indexes `/actueel`·`/en/news`·`/es/noticias`, `/acties`·`/en/fundraisers`·`/es/campañas`.
+Curated overrides live in the `CURATED` map at the top of `scripts/resolve-404s.mjs` (old URL → native target). Add entries there and re-run step 2 until clean.
+
+**Not every miss deserves a redirect.** Two filters keep decided cases from coming back for review every run:
+
+- `JUNK` — _shapes_ that are never worth a redirect whoever asks for them: WordPress `/feed`, `/comments/feed`, `/rss`, `.asp(x)` probes, `/embed`, plus the usual `wp-admin`/`.php`/`.env` scanner noise. These are the long tail of the WordPress site we replaced and recur every week.
+- `IGNORED` — _individual paths_ reviewed and deliberately left alone, each with its reason (`"/some-campaign-2019": "one-off print URL, campaign is over"`). Use this when a path is real but there is nothing sensible to send it to.
+
+The run prints both, so an ignore decision stays visible and can be revisited. It also prints a **"Needs a decision"** list — the paths that matched nothing and nobody has ruled on yet. That list is the review queue; when it is empty the run is clean. Every entry has to end up in `CURATED` or `IGNORED`. Verify targets exist: donate pages are `/doneer`, `/en/donate`, `/es/donar`; volunteer pages `/word-vrijwilliger`, `/en/become-volunteer`, `/es/hazte-voluntario`; section indexes `/actueel`·`/en/news`·`/es/noticias`, `/acties`·`/en/fundraisers`·`/es/campañas`.
 
 ### 4. Clear the missed-pages table
 
