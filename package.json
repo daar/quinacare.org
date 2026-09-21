@@ -42,7 +42,7 @@
     "@astrojs/netlify": "^8.2.5",
     "@astrojs/react": "^6.0.5",
     "@astrojs/sitemap": "^3.7.4",
-    "@keystatic/astro": "^5.2.0",
+    "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.9",
     "@libsql/client": "^0.18.0",
     "@mollie/api-client": "^4.6.0",
