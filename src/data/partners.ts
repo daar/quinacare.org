@@ -199,6 +199,11 @@ export const sponsors: Partner[] = [
     logo: "/media/2026/09/logo-van-der-lely-foundation.png",
     url: "https://vanderlelyfoundation.com",
   },
+  {
+    name: "Stichting AKBHHH",
+    logo: "/media/2026/09/logo-akbhhh.png",
+    url: "https://www.akbhhh.nl",
+  },
 ];
 
 export const premiumPartners = partners.filter((p) => p.premium);
