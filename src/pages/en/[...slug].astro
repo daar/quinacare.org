@@ -31,21 +31,19 @@ const isYuraBoom = page.data.slug === "yura-boom";
   <div data-pagefind-body>
     <PageContent page={page} />
   </div>
-  {
-    isYuraBoom && (
-      <DonationModal id="sponsor-modal">
-        <DonationFormCard
-          lang={lang}
-          context="yura-boom"
-          scopeId="yura-boom:sponsor"
-          frequencies={["monthly", "quarterly", "yearly"]}
-          defaultFrequency="monthly"
-          allowCustom={false}
-          impact={{ kind: "none" }}
-          description="Quina Yura sponsor donation"
-        />
-      </DonationModal>
-    )
-  }
+  {isYuraBoom && (
+    <DonationModal id="sponsor-modal">
+      <DonationFormCard
+        lang={lang}
+        context="yura-boom"
+        scopeId="yura-boom:sponsor"
+        frequencies={["monthly", "quarterly", "yearly"]}
+        defaultFrequency="monthly"
+        allowCustom={false}
+        impact={{ kind: "none" }}
+        description="Quina Yura sponsor donation"
+      />
+    </DonationModal>
+  )}
   <Footer lang={lang} />
 </Layout>

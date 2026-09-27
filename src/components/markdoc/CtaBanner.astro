@@ -20,16 +20,12 @@ const { title, subtitle, cta, href } = Astro.props;
   <div class="max-w-7xl mx-auto px-6 relative z-10">
     <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
       <div class="text-white text-center lg:text-left">
-        <h2
-          class="text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.9] mb-6"
-        >
+        <h2 class="text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.9] mb-6">
           {title}
         </h2>
-        {
-          subtitle && (
-            <p class="qc-body max-w-md font-light !text-red-100">{subtitle}</p>
-          )
-        }
+        {subtitle && (
+          <p class="qc-body max-w-md font-light !text-red-100">{subtitle}</p>
+        )}
       </div>
 
       <div class="flex-shrink-0">
@@ -44,9 +40,7 @@ const { title, subtitle, cta, href } = Astro.props;
           <span>{cta}</span>
         </a>
 
-        <div
-          class="mt-4 flex items-center justify-center lg:justify-start gap-4 text-red-200 text-[9px] font-bold uppercase tracking-widest opacity-70"
-        >
+        <div class="mt-4 flex items-center justify-center lg:justify-start gap-4 text-red-200 text-[9px] font-bold uppercase tracking-widest opacity-70">
           <span class="flex items-center gap-1">
             <Icon name="lock" />
             ANBI

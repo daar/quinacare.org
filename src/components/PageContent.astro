@@ -17,63 +17,61 @@ const isLanding = page.data.layout === "landing";
 const articleMax = page.data.layout === "wide" ? "max-w-5xl" : "max-w-3xl";
 ---
 
-{
-  isLanding ? (
-    <Content />
-  ) : (
-    <>
-      {page.data.featured_image ? (
-        <header class="relative min-h-[60vh] flex items-end overflow-hidden mb-12 md:mb-16">
-          <div class="absolute inset-0 z-0">
-            <Image
-              src={page.data.featured_image}
-              alt={page.data.featured_image_alt || page.data.title}
-              class="w-full h-full object-cover"
-              widths={[640, 1024, 1600]}
-              sizes="100vw"
-              loading="eager"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-qcBlack via-qcBlack/60 to-transparent" />
-          </div>
-          <div class="relative z-10 max-w-[1600px] mx-auto px-6 w-full pb-20 pt-40">
-            {page.data.category_label && (
-              <span class="qc-label mb-6">{page.data.category_label}</span>
-            )}
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] tracking-tighter mb-6 uppercase max-w-3xl">
-              {page.data.title}
-            </h1>
-            {page.data.subtitle && (
-              <p class="qc-body--light max-w-2xl leading-relaxed font-light md:text-xl">
-                {page.data.subtitle}
-              </p>
-            )}
-          </div>
-        </header>
-      ) : (
-        <header class="pt-40 pb-16">
-          <div class="max-w-3xl mx-auto px-6 text-center">
-            {page.data.category_label && (
-              <span class="qc-label mb-8 inline-block">
-                {page.data.category_label}
-              </span>
-            )}
-            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1] mb-8 uppercase">
-              {page.data.title}
-            </h1>
-            {page.data.subtitle && (
-              <p class="qc-body max-w-2xl mx-auto leading-relaxed font-light md:text-xl !text-gray-400">
-                {page.data.subtitle}
-              </p>
-            )}
-          </div>
-        </header>
-      )}
-
-      <article class:list={[articleMax, "mx-auto px-6 mb-16"]}>
-        <div class="prose-article max-w-none space-y-6">
-          <Content />
+{isLanding ? (
+  <Content />
+) : (
+  <>
+    {page.data.featured_image ? (
+      <header class="relative min-h-[60vh] flex items-end overflow-hidden mb-12 md:mb-16">
+        <div class="absolute inset-0 z-0">
+          <Image
+            src={page.data.featured_image}
+            alt={page.data.featured_image_alt || page.data.title}
+            class="w-full h-full object-cover"
+            widths={[640, 1024, 1600]}
+            sizes="100vw"
+            loading="eager"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-qcBlack via-qcBlack/60 to-transparent" />
         </div>
-      </article>
-    </>
-  )
-}
+        <div class="relative z-10 max-w-[1600px] mx-auto px-6 w-full pb-20 pt-40">
+          {page.data.category_label && (
+            <span class="qc-label mb-6">{page.data.category_label}</span>
+          )}
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] tracking-tighter mb-6 uppercase max-w-3xl">
+            {page.data.title}
+          </h1>
+          {page.data.subtitle && (
+            <p class="qc-body--light max-w-2xl leading-relaxed font-light md:text-xl">
+              {page.data.subtitle}
+            </p>
+          )}
+        </div>
+      </header>
+    ) : (
+      <header class="pt-40 pb-16">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+          {page.data.category_label && (
+            <span class="qc-label mb-8 inline-block">
+              {page.data.category_label}
+            </span>
+          )}
+          <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1] mb-8 uppercase">
+            {page.data.title}
+          </h1>
+          {page.data.subtitle && (
+            <p class="qc-body max-w-2xl mx-auto leading-relaxed font-light md:text-xl !text-gray-400">
+              {page.data.subtitle}
+            </p>
+          )}
+        </div>
+      </header>
+    )}
+
+    <article class:list={[articleMax, "mx-auto px-6 mb-16"]}>
+      <div class="prose-article max-w-none space-y-6">
+        <Content />
+      </div>
+    </article>
+  </>
+)}

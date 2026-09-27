@@ -31,39 +31,35 @@ const cc = getCurrency(lang);
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {
-        donationTiers.map((tier, i) => {
-          const amountLabel = formatCurrency(tier.amount, cc, false);
-          const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
-          return (
-            <div
-              class:list={[
-                "group flex flex-col border border-gray-100 p-8 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md",
-                bg,
-              ]}
-            >
-              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <Icon name={tier.icon} class="text-6xl" />
-              </div>
-              <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-                {amountLabel}
-              </h3>
-              <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-                {t(tier.titleKey)}
-              </h4>
-              <p class="qc-body leading-relaxed mb-8">
-                {t(tier.descriptionKey)}
-              </p>
-              <a
-                href={`${getLocalizedPath("/donate", lang)}?amount=${tier.amount}`}
-                class="qc-btn block w-full py-3 text-center mt-auto rounded-md bg-white border border-qcBlack text-qcBlack hover:bg-qcRed hover:border-qcRed hover:text-white"
-              >
-                {t("donation.donate")} {amountLabel}
-              </a>
+      {donationTiers.map((tier, i) => {
+        const amountLabel = formatCurrency(tier.amount, cc, false);
+        const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
+        return (
+          <div
+            class:list={[
+              "group flex flex-col border border-gray-100 p-8 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md",
+              bg,
+            ]}
+          >
+            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <Icon name={tier.icon} class="text-6xl" />
             </div>
-          );
-        })
-      }
+            <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+              {amountLabel}
+            </h3>
+            <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+              {t(tier.titleKey)}
+            </h4>
+            <p class="qc-body leading-relaxed mb-8">{t(tier.descriptionKey)}</p>
+            <a
+              href={`${getLocalizedPath("/donate", lang)}?amount=${tier.amount}`}
+              class="qc-btn block w-full py-3 text-center mt-auto rounded-md bg-white border border-qcBlack text-qcBlack hover:bg-qcRed hover:border-qcRed hover:text-white"
+            >
+              {t("donation.donate")} {amountLabel}
+            </a>
+          </div>
+        );
+      })}
     </div>
 
     <div class="mt-16 text-center">

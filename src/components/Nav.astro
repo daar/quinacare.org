@@ -59,12 +59,8 @@ const donateModalId = isPutumayoPage ? putumayoModalIds[currentPath] : null;
 const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
 ---
 
-<nav
-  class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 h-20 font-sans"
->
-  <div
-    class="max-w-[1600px] mx-auto px-6 h-full flex items-center justify-between gap-4"
-  >
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 h-20 font-sans">
+  <div class="max-w-[1600px] mx-auto px-6 h-full flex items-center justify-between gap-4">
     <div class="flex items-center gap-8">
       <a href={getLocalizedPath("/", lang)}>
         <img
@@ -75,164 +71,156 @@ const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
           class="w-14 max-w-none"
         />
       </a>
-      {
-        (lang === "nl" || lang === "en") && (
-          <div class="hidden xl:flex items-center gap-3 border-l border-gray-200 pl-8">
-            {lang === "en" && (
+      {(lang === "nl" || lang === "en") && (
+        <div class="hidden xl:flex items-center gap-3 border-l border-gray-200 pl-8">
+          {lang === "en" && (
+            <a
+              href="https://www.irs.gov/charities-non-profits/charitable-organizations/exemption-requirements-501c3-organizations"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="/images/certifications/501c3.svg"
+                alt="501(c)(3) tax-exempt organization"
+                width="152"
+                height="62"
+                class="h-12 w-auto"
+              />
+            </a>
+          )}
+          {lang === "nl" && (
+            <>
               <a
-                href="https://www.irs.gov/charities-non-profits/charitable-organizations/exemption-requirements-501c3-organizations"
+                href="https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/bijzondere_regelingen/goede_doelen/algemeen_nut_beogende_instellingen/wat_is_een_anbi"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <img
-                  src="/images/certifications/501c3.svg"
-                  alt="501(c)(3) tax-exempt organization"
-                  width="152"
-                  height="62"
-                  class="h-12 w-auto"
+                  src="/images/certifications/anbi.png"
+                  alt="ANBI"
+                  class="h-12"
                 />
               </a>
-            )}
-            {lang === "nl" && (
-              <>
-                <a
-                  href="https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/bijzondere_regelingen/goede_doelen/algemeen_nut_beogende_instellingen/wat_is_een_anbi"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/images/certifications/anbi.png"
-                    alt="ANBI"
-                    class="h-12"
-                  />
-                </a>
-                <a
-                  href="https://www.cbf.nl/organisatie/quina-care"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/images/certifications/cbf.png"
-                    alt="CBF Erkend Goed Doel"
-                    class="h-12"
-                  />
-                </a>
-              </>
-            )}
-          </div>
-        )
-      }
+              <a
+                href="https://www.cbf.nl/organisatie/quina-care"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/images/certifications/cbf.png"
+                  alt="CBF Erkend Goed Doel"
+                  class="h-12"
+                />
+              </a>
+            </>
+          )}
+        </div>
+      )}
     </div>
 
     {/* Desktop navigation */}
-    {
-      /* TODO: re-enable the parked items_disabled entries in menus.json — whoAreWe (About + Organization) and whatDoWeDo (/projects + /hospital) — once their pages are content-ready. */
-    }
-    <div
-      class="hidden lg:flex items-center gap-10 text-[14px] font-bold uppercase tracking-[0.15em]"
-    >
-      {
-        menuItems.map((item) =>
-          item.submenu ? (
-            <div class="group relative">
-              <button
-                class="flex items-center gap-1.5 uppercase hover:text-qcRed transition cursor-pointer"
-                aria-expanded="false"
-                aria-haspopup="true"
-              >
-                {tk(item.labelKey)}
-                <Icon
-                  name="chevron-down"
-                  class="text-[8px] transition-transform duration-200 group-hover:rotate-180"
-                />
-              </button>
+    {/* TODO: re-enable the parked items_disabled entries in menus.json — whoAreWe (About + Organization) and whatDoWeDo (/projects + /hospital) — once their pages are content-ready. */}
+    <div class="hidden lg:flex items-center gap-10 text-[14px] font-bold uppercase tracking-[0.15em]">
+      {menuItems.map((item) =>
+        item.submenu ? (
+          <div class="group relative">
+            <button
+              class="flex items-center gap-1.5 uppercase hover:text-qcRed transition cursor-pointer"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              {tk(item.labelKey)}
+              <Icon
+                name="chevron-down"
+                class="text-[8px] transition-transform duration-200 group-hover:rotate-180"
+              />
+            </button>
 
-              <div class="submenu-dropdown absolute top-full left-1/2 -translate-x-1/2 pt-4 w-80">
-                <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
-                  {/* Submenu items in source order. Keep this in lockstep
+            <div class="submenu-dropdown absolute top-full left-1/2 -translate-x-1/2 pt-4 w-80">
+              <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+                {/* Submenu items in source order. Keep this in lockstep
                       with the mobile panel below so the ordering is
                       identical on both layouts (featured image cards
                       render inline, not grouped at the bottom). */}
-                  <div class="p-2 space-y-1">
-                    {item.submenu.map((sub) =>
-                      sub.image ? (
-                        <a
-                          href={getLocalizedPath(sub.path, lang)}
-                          class="block rounded-lg overflow-hidden transition group/item"
-                        >
-                          <div class="relative">
-                            <OptimizedImage
-                              src={sub.image}
-                              alt=""
-                              class="w-full h-36 object-cover bg-gray-100"
-                              widths={[440]}
-                              sizes="440px"
-                            />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                            <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
-                              <span class="w-7 h-7 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
-                                <Icon
-                                  name="arrow-right"
-                                  class="text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform"
-                                />
-                              </span>
-                              <span class="text-[12px] font-bold uppercase tracking-[0.12em] text-white">
-                                {tk(sub.labelKey)}
-                              </span>
-                            </div>
-                          </div>
-                          {sub.descriptionKey && (
-                            <p class="px-3 py-2 text-[10px] text-gray-400 leading-snug normal-case tracking-normal font-normal line-clamp-2">
-                              {tk(sub.descriptionKey)}
-                            </p>
-                          )}
-                        </a>
-                      ) : (
-                        <a
-                          href={getLocalizedPath(sub.path, lang)}
-                          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition group/item"
-                        >
-                          <Icon
-                            name={sub.icon ?? ""}
-                            class="text-gray-400 group-hover/item:text-qcRed transition"
-                          />
-                          <span class="text-[12px] font-bold uppercase tracking-[0.12em] group-hover/item:text-qcRed transition">
-                            {tk(sub.labelKey)}
-                          </span>
-                        </a>
-                      ),
-                    )}
-                  </div>
-
-                  {/* CTA button */}
-                  {item.cta && (
-                    <div class="border-t border-gray-100 p-2">
+                <div class="p-2 space-y-1">
+                  {item.submenu.map((sub) =>
+                    sub.image ? (
                       <a
-                        href={getLocalizedPath(item.cta.path, lang)}
-                        class="flex items-center justify-center gap-2 bg-qcRed text-white px-4 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-[0.15em] hover:bg-qcBlack transition"
+                        href={getLocalizedPath(sub.path, lang)}
+                        class="block rounded-lg overflow-hidden transition group/item"
                       >
-                        <Icon name={item.cta.icon} />
-                        {tk(item.cta.labelKey)}
+                        <div class="relative">
+                          <OptimizedImage
+                            src={sub.image}
+                            alt=""
+                            class="w-full h-36 object-cover bg-gray-100"
+                            widths={[440]}
+                            sizes="440px"
+                          />
+                          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                          <div class="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
+                              <Icon
+                                name="arrow-right"
+                                class="text-white text-[10px] group-hover/item:animate-[submenuPulse_0.4s_ease] will-change-transform"
+                              />
+                            </span>
+                            <span class="text-[12px] font-bold uppercase tracking-[0.12em] text-white">
+                              {tk(sub.labelKey)}
+                            </span>
+                          </div>
+                        </div>
+                        {sub.descriptionKey && (
+                          <p class="px-3 py-2 text-[10px] text-gray-400 leading-snug normal-case tracking-normal font-normal line-clamp-2">
+                            {tk(sub.descriptionKey)}
+                          </p>
+                        )}
                       </a>
-                    </div>
+                    ) : (
+                      <a
+                        href={getLocalizedPath(sub.path, lang)}
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition group/item"
+                      >
+                        <Icon
+                          name={sub.icon ?? ""}
+                          class="text-gray-400 group-hover/item:text-qcRed transition"
+                        />
+                        <span class="text-[12px] font-bold uppercase tracking-[0.12em] group-hover/item:text-qcRed transition">
+                          {tk(sub.labelKey)}
+                        </span>
+                      </a>
+                    ),
                   )}
                 </div>
+
+                {/* CTA button */}
+                {item.cta && (
+                  <div class="border-t border-gray-100 p-2">
+                    <a
+                      href={getLocalizedPath(item.cta.path, lang)}
+                      class="flex items-center justify-center gap-2 bg-qcRed text-white px-4 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-[0.15em] hover:bg-qcBlack transition"
+                    >
+                      <Icon name={item.cta.icon} />
+                      {tk(item.cta.labelKey)}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
-          ) : item.path ? (
-            <a
-              href={getLocalizedPath(item.path, lang)}
-              class="uppercase hover:text-qcRed transition"
-            >
-              {tk(item.labelKey)}
-            </a>
-          ) : (
-            <a href="#" class="uppercase hover:text-qcRed transition">
-              {tk(item.labelKey)}
-            </a>
-          ),
-        )
-      }
+          </div>
+        ) : item.path ? (
+          <a
+            href={getLocalizedPath(item.path, lang)}
+            class="uppercase hover:text-qcRed transition"
+          >
+            {tk(item.labelKey)}
+          </a>
+        ) : (
+          <a href="#" class="uppercase hover:text-qcRed transition">
+            {tk(item.labelKey)}
+          </a>
+        ),
+      )}
     </div>
 
     <div class="flex items-center gap-6">
@@ -283,29 +271,27 @@ const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
       </div>
 
       {/* Donate button */}
-      {
-        isPutumayoPage ? (
-          <button
-            id="nav-donate-btn"
-            data-open-modal={donateModalId}
-            class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
-          >
-            <Icon name="heart" class="qc-heartbeat" />
-            <span class="hidden lg:inline">{t("nav.donate")}</span>
-            <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
-          </button>
-        ) : (
-          <a
-            id="nav-donate-btn"
-            href={donateLink}
-            class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
-          >
-            <Icon name="heart" class="qc-heartbeat" />
-            <span class="hidden lg:inline">{t("nav.donate")}</span>
-            <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
-          </a>
-        )
-      }
+      {isPutumayoPage ? (
+        <button
+          id="nav-donate-btn"
+          data-open-modal={donateModalId}
+          class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
+        >
+          <Icon name="heart" class="qc-heartbeat" />
+          <span class="hidden lg:inline">{t("nav.donate")}</span>
+          <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
+        </button>
+      ) : (
+        <a
+          id="nav-donate-btn"
+          href={donateLink}
+          class="qc-btn qc-btn--primary px-4 lg:px-7 py-3 flex-shrink-0 whitespace-nowrap gap-2"
+        >
+          <Icon name="heart" class="qc-heartbeat" />
+          <span class="hidden lg:inline">{t("nav.donate")}</span>
+          <span class="lg:hidden">{t("nav.donate").split(" ")[0]}</span>
+        </a>
+      )}
 
       {/* Hamburger button (mobile only) */}
       <button
@@ -355,8 +341,7 @@ const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
   <div
     id="search-backdrop"
     class="hidden fixed inset-0 top-20 bg-black/20 z-[-1]"
-  >
-  </div>
+  ></div>
 
   {/* Mobile menu panel */}
   <div
@@ -366,113 +351,106 @@ const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
     <div class="mobile-menu-slider">
       {/* Main menu level */}
       <div class="mobile-menu-main flex flex-col px-6 py-4">
-        {
-          menuItems.map((item) =>
-            item.submenu ? (
-              <button
-                class="mobile-submenu-trigger w-full flex items-center justify-between py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
-                data-submenu={item.id}
-              >
-                {tk(item.labelKey)}
-                <Icon name="chevron-right" class="text-[10px]" />
-              </button>
-            ) : item.path ? (
-              <a
-                href={getLocalizedPath(item.path, lang)}
-                class="mobile-menu-link py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
-              >
-                {tk(item.labelKey)}
-              </a>
-            ) : (
-              <a
-                href="#"
-                class="mobile-menu-link py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
-              >
-                {tk(item.labelKey)}
-              </a>
-            ),
-          )
-        }
+        {menuItems.map((item) =>
+          item.submenu ? (
+            <button
+              class="mobile-submenu-trigger w-full flex items-center justify-between py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
+              data-submenu={item.id}
+            >
+              {tk(item.labelKey)}
+              <Icon name="chevron-right" class="text-[10px]" />
+            </button>
+          ) : item.path ? (
+            <a
+              href={getLocalizedPath(item.path, lang)}
+              class="mobile-menu-link py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
+            >
+              {tk(item.labelKey)}
+            </a>
+          ) : (
+            <a
+              href="#"
+              class="mobile-menu-link py-3 text-base font-bold uppercase tracking-widest hover:text-qcRed transition"
+            >
+              {tk(item.labelKey)}
+            </a>
+          ),
+        )}
         <div class="border-t border-gray-200 mt-2 pt-4 pb-2">
           <LanguageSwitcher />
         </div>
       </div>
 
       {/* Submenu panels (one per menu item with submenu) */}
-      {
-        menuItems
-          .filter((item) => item.submenu)
-          .map((item) => (
-            <div
-              class="mobile-submenu-panel flex flex-col px-6 py-4"
-              data-submenu-panel={item.id}
-            >
-              <button class="mobile-back-btn flex items-center gap-2 py-3 text-[12px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcBlack transition">
-                <Icon name="chevron-left" class="text-[10px]" />
-                {tk(item.labelKey)}
-              </button>
-              <div class="space-y-1 mt-1">
-                {item.submenu!.map((sub) =>
-                  sub.image ? (
-                    <a
-                      href={getLocalizedPath(sub.path, lang)}
-                      class="mobile-menu-link block rounded-lg overflow-hidden transition group/mitem"
-                    >
-                      <div class="relative mt-1">
-                        <OptimizedImage
-                          src={sub.image}
-                          alt=""
-                          class="w-full h-44 object-cover bg-gray-100 rounded-lg"
-                          widths={[400, 600]}
-                          sizes="(max-width: 768px) 100vw, 400px"
-                        />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
-                        <div class="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-2.5">
-                          <span class="w-8 h-8 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
-                            <Icon
-                              name="arrow-right"
-                              class="text-white text-xs submenu-arrow will-change-transform"
-                            />
-                          </span>
-                          <span class="text-[12px] font-bold uppercase tracking-widest text-white">
-                            {tk(sub.labelKey)}
-                          </span>
-                        </div>
-                      </div>
-                      {sub.descriptionKey && (
-                        <p class="py-2 text-xs text-gray-400 leading-snug normal-case tracking-normal font-normal">
-                          {tk(sub.descriptionKey)}
-                        </p>
-                      )}
-                    </a>
-                  ) : (
-                    <a
-                      href={getLocalizedPath(sub.path, lang)}
-                      class="mobile-menu-link flex items-center gap-3 py-2.5 rounded-lg hover:bg-gray-50 transition px-1"
-                    >
-                      <Icon
-                        name={sub.icon ?? ""}
-                        class="text-gray-400 text-sm"
-                      />
-                      <span class="text-[12px] font-bold uppercase tracking-widest">
-                        {tk(sub.labelKey)}
-                      </span>
-                    </a>
-                  ),
-                )}
-                {item.cta && (
+      {menuItems
+        .filter((item) => item.submenu)
+        .map((item) => (
+          <div
+            class="mobile-submenu-panel flex flex-col px-6 py-4"
+            data-submenu-panel={item.id}
+          >
+            <button class="mobile-back-btn flex items-center gap-2 py-3 text-[12px] font-bold uppercase tracking-widest text-gray-400 hover:text-qcBlack transition">
+              <Icon name="chevron-left" class="text-[10px]" />
+              {tk(item.labelKey)}
+            </button>
+            <div class="space-y-1 mt-1">
+              {item.submenu!.map((sub) =>
+                sub.image ? (
                   <a
-                    href={getLocalizedPath(item.cta.path, lang)}
-                    class="mobile-menu-link flex items-center justify-center gap-2 bg-qcRed text-white px-4 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-widest hover:bg-qcBlack transition mt-2"
+                    href={getLocalizedPath(sub.path, lang)}
+                    class="mobile-menu-link block rounded-lg overflow-hidden transition group/mitem"
                   >
-                    <Icon name={item.cta.icon} />
-                    {tk(item.cta.labelKey)}
+                    <div class="relative mt-1">
+                      <OptimizedImage
+                        src={sub.image}
+                        alt=""
+                        class="w-full h-44 object-cover bg-gray-100 rounded-lg"
+                        widths={[400, 600]}
+                        sizes="(max-width: 768px) 100vw, 400px"
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
+                      <div class="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-full bg-qcRed flex items-center justify-center flex-shrink-0">
+                          <Icon
+                            name="arrow-right"
+                            class="text-white text-xs submenu-arrow will-change-transform"
+                          />
+                        </span>
+                        <span class="text-[12px] font-bold uppercase tracking-widest text-white">
+                          {tk(sub.labelKey)}
+                        </span>
+                      </div>
+                    </div>
+                    {sub.descriptionKey && (
+                      <p class="py-2 text-xs text-gray-400 leading-snug normal-case tracking-normal font-normal">
+                        {tk(sub.descriptionKey)}
+                      </p>
+                    )}
                   </a>
-                )}
-              </div>
+                ) : (
+                  <a
+                    href={getLocalizedPath(sub.path, lang)}
+                    class="mobile-menu-link flex items-center gap-3 py-2.5 rounded-lg hover:bg-gray-50 transition px-1"
+                  >
+                    <Icon name={sub.icon ?? ""} class="text-gray-400 text-sm" />
+                    <span class="text-[12px] font-bold uppercase tracking-widest">
+                      {tk(sub.labelKey)}
+                    </span>
+                  </a>
+                ),
+              )}
+              {item.cta && (
+                <a
+                  href={getLocalizedPath(item.cta.path, lang)}
+                  class="mobile-menu-link flex items-center justify-center gap-2 bg-qcRed text-white px-4 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-widest hover:bg-qcBlack transition mt-2"
+                >
+                  <Icon name={item.cta.icon} />
+                  {tk(item.cta.labelKey)}
+                </a>
+              )}
             </div>
-          ))
-      }
+          </div>
+        ))}
     </div>
   </div>
 
@@ -480,8 +458,7 @@ const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
   <div
     id="mobile-menu-backdrop"
     class="hidden fixed inset-0 top-20 bg-black/20 z-30 lg:hidden"
-  >
-  </div>
+  ></div>
 </nav>
 
 <script>

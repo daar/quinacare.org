@@ -50,20 +50,14 @@ const metrics = [
 >
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center gap-4 py-8">
-      <div
-        class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100"
-      >
+      <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
         <span class="relative flex h-2 w-2">
-          <span
-            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"
-          ></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-qcRed"
-          ></span>
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-qcRed"></span>
         </span>
-        <span
-          class="text-[9px] font-bold uppercase tracking-[0.2em] text-qcBlack"
-          >{t("metrics.liveData")}</span
-        >
+        <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-qcBlack">
+          {t("metrics.liveData")}
+        </span>
       </div>
       <div class="h-px flex-1 bg-gray-100"></div>
     </div>
@@ -78,53 +72,45 @@ const metrics = [
         {/* Left column: metric counter */}
         <div class="w-1/2 flex items-center justify-between pr-12">
           <div class="relative h-28" id="metric-counter">
-            {
-              metrics.map((m, i) => (
-                <div
-                  class="metric-slide absolute inset-0 flex flex-col justify-center"
-                  data-index={i}
+            {metrics.map((m, i) => (
+              <div
+                class="metric-slide absolute inset-0 flex flex-col justify-center"
+                data-index={i}
+              >
+                <span class="qc-label mb-1">{m.label}</span>
+                <h2
+                  class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none"
+                  data-metric-value={m.key}
                 >
-                  <span class="qc-label mb-1">{m.label}</span>
-                  <h2
-                    class="text-6xl lg:text-8xl font-bold tracking-tighter leading-none"
-                    data-metric-value={m.key}
-                  >
-                    N/A
-                  </h2>
-                </div>
-              ))
-            }
+                  N/A
+                </h2>
+              </div>
+            ))}
           </div>
           <div class="flex flex-col gap-2">
-            {
-              metrics.map((_, i) => (
-                <div
-                  class="metric-dot w-1 h-8 rounded-full transition-colors duration-500"
-                  data-dot={i}
-                />
-              ))
-            }
+            {metrics.map((_, i) => (
+              <div
+                class="metric-dot w-1 h-8 rounded-full transition-colors duration-500"
+                data-dot={i}
+              />
+            ))}
           </div>
         </div>
 
         {/* Right column: text content */}
         <div class="w-1/2">
           <div class="relative h-32">
-            {
-              metrics.map((m, i) => (
-                <div
-                  class="metric-text absolute inset-0 flex flex-col justify-center"
-                  data-index={i}
-                >
-                  <h3 class="text-xl font-bold mb-4 uppercase tracking-tight">
-                    {m.title}
-                  </h3>
-                  <p class="qc-body leading-relaxed max-w-sm">
-                    {m.description}
-                  </p>
-                </div>
-              ))
-            }
+            {metrics.map((m, i) => (
+              <div
+                class="metric-text absolute inset-0 flex flex-col justify-center"
+                data-index={i}
+              >
+                <h3 class="text-xl font-bold mb-4 uppercase tracking-tight">
+                  {m.title}
+                </h3>
+                <p class="qc-body leading-relaxed max-w-sm">{m.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -133,53 +119,47 @@ const metrics = [
       <div class="md:hidden">
         {/* Counter on top */}
         <div class="relative h-24 mb-6" id="metric-counter-mobile">
-          {
-            metrics.map((m, i) => (
-              <div
-                class="metric-slide-mobile absolute inset-0 flex flex-col justify-center"
-                data-index={i}
+          {metrics.map((m, i) => (
+            <div
+              class="metric-slide-mobile absolute inset-0 flex flex-col justify-center"
+              data-index={i}
+            >
+              <span class="qc-label mb-1">{m.label}</span>
+              <h2
+                class="text-5xl font-bold tracking-tighter leading-none"
+                data-metric-value={m.key}
               >
-                <span class="qc-label mb-1">{m.label}</span>
-                <h2
-                  class="text-5xl font-bold tracking-tighter leading-none"
-                  data-metric-value={m.key}
-                >
-                  N/A
-                </h2>
-              </div>
-            ))
-          }
+                N/A
+              </h2>
+            </div>
+          ))}
         </div>
 
         {/* Text below */}
         <div class="relative h-28" id="metric-text-mobile">
-          {
-            metrics.map((m, i) => (
-              <div
-                class="metric-text-mobile absolute inset-0 flex flex-col justify-center"
-                data-index={i}
-              >
-                <h3 class="text-lg font-bold mb-2 uppercase tracking-tight">
-                  {m.title}
-                </h3>
-                <p class="text-gray-500 text-sm leading-relaxed">
-                  {m.description}
-                </p>
-              </div>
-            ))
-          }
+          {metrics.map((m, i) => (
+            <div
+              class="metric-text-mobile absolute inset-0 flex flex-col justify-center"
+              data-index={i}
+            >
+              <h3 class="text-lg font-bold mb-2 uppercase tracking-tight">
+                {m.title}
+              </h3>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                {m.description}
+              </p>
+            </div>
+          ))}
         </div>
 
         {/* Dots */}
         <div class="flex gap-2 mt-6">
-          {
-            metrics.map((_, i) => (
-              <div
-                class="metric-dot-mobile h-1 flex-1 rounded-full transition-colors duration-500"
-                data-dot={i}
-              />
-            ))
-          }
+          {metrics.map((_, i) => (
+            <div
+              class="metric-dot-mobile h-1 flex-1 rounded-full transition-colors duration-500"
+              data-dot={i}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -28,16 +28,14 @@ const href = report?.files[key] ?? report?.files.en ?? report?.files.nl;
 const cover = report?.covers[key] ?? report?.covers.en ?? report?.covers.nl;
 ---
 
-{
-  href && (
-    <div class="not-prose my-8 w-44">
-      <ReportCard
-        href={href}
-        cover={cover}
-        label={l.report}
-        title={String(year)}
-        downloadLabel={l.download}
-      />
-    </div>
-  )
-}
+{href && (
+  <div class="not-prose my-8 w-44">
+    <ReportCard
+      href={href}
+      cover={cover}
+      label={l.report}
+      title={String(year)}
+      downloadLabel={l.download}
+    />
+  </div>
+)}

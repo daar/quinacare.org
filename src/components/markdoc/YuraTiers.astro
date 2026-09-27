@@ -16,23 +16,21 @@ import { getLangFromUrl } from "../../i18n";
 const lang = getLangFromUrl(Astro.url);
 ---
 
-{
-  yuraBoomTiers.map((tier) => {
-    const copy = tier.i18n[lang];
-    return (
-      <TierCard
-        image={tier.image}
-        title={copy.title}
-        price={copy.price}
-        frequency={copy.frequency}
-        impact={copy.impact}
-        yearly={copy.yearly}
-        href={`/donate?amount=${tier.amount}`}
-        modal="sponsor-modal"
-        amount={tier.amount}
-        tier={tier.id}
-        featured={tier.featured}
-      />
-    );
-  })
-}
+{yuraBoomTiers.map((tier) => {
+  const copy = tier.i18n[lang];
+  return (
+    <TierCard
+      image={tier.image}
+      title={copy.title}
+      price={copy.price}
+      frequency={copy.frequency}
+      impact={copy.impact}
+      yearly={copy.yearly}
+      href={`/donate?amount=${tier.amount}`}
+      modal="sponsor-modal"
+      amount={tier.amount}
+      tier={tier.id}
+      featured={tier.featured}
+    />
+  );
+})}

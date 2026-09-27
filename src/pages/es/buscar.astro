@@ -15,16 +15,12 @@ const t = useTranslations(lang);
   <header class="pt-40 pb-16 border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-6">
       <div>
-        <span
-          class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4"
-          >{t("search.label")}</span
-        >
-        <h1
-          class="text-6xl md:text-8xl font-bold tracking-tighter leading-none"
-        >
-          {t("search.title")}<span class="italic font-light text-gray-300"
-            >.</span
-          >
+        <span class="text-qcRed font-bold text-[12px] uppercase tracking-[0.5em] block mb-4">
+          {t("search.label")}
+        </span>
+        <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">
+          {t("search.title")}
+          <span class="italic font-light text-gray-300">.</span>
         </h1>
       </div>
       <div class="mt-10">
@@ -56,10 +52,7 @@ const t = useTranslations(lang);
     </div>
 
     <div id="search-loading" class="hidden text-center py-20">
-      <div
-        class="w-8 h-8 border-2 border-gray-200 border-t-qcRed rounded-full animate-spin mx-auto"
-      >
-      </div>
+      <div class="w-8 h-8 border-2 border-gray-200 border-t-qcRed rounded-full animate-spin mx-auto"></div>
     </div>
 
     <div id="search-empty" class="hidden text-center py-20">
@@ -69,13 +62,10 @@ const t = useTranslations(lang);
     <div
       id="search-grid"
       class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
-    >
-    </div>
+    ></div>
 
     <div id="search-load-more" class="hidden text-center mt-16">
-      <button
-        class="px-8 py-3 border border-gray-200 rounded-md text-[11px] font-bold uppercase tracking-widest hover:bg-qcRed hover:text-white hover:border-qcRed transition"
-      >
+      <button class="px-8 py-3 border border-gray-200 rounded-md text-[11px] font-bold uppercase tracking-widest hover:bg-qcRed hover:text-white hover:border-qcRed transition">
         {t("search.seeAll")}
       </button>
     </div>
@@ -83,8 +73,7 @@ const t = useTranslations(lang);
     <div
       id="search-count"
       class="hidden mt-12 pt-6 border-t border-gray-100 text-[10px] font-bold uppercase tracking-widest text-gray-400"
-    >
-    </div>
+    ></div>
   </main>
 
   <Footer lang={lang} />

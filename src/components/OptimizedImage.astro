@@ -32,27 +32,25 @@ const {
 const resolved = resolveImage(src);
 ---
 
-{
-  resolved ? (
-    <Image
-      src={resolved()}
-      alt={alt}
-      class={className}
-      width={width}
-      height={height}
-      widths={widths}
-      sizes={sizes}
-      loading={loading}
-      layout={layout}
-    />
-  ) : (
-    <img
-      src={src}
-      alt={alt}
-      class={className}
-      width={width}
-      height={height}
-      loading={loading}
-    />
-  )
-}
+{resolved ? (
+  <Image
+    src={resolved()}
+    alt={alt}
+    class={className}
+    width={width}
+    height={height}
+    widths={widths}
+    sizes={sizes}
+    loading={loading}
+    layout={layout}
+  />
+) : (
+  <img
+    src={src}
+    alt={alt}
+    class={className}
+    width={width}
+    height={height}
+    loading={loading}
+  />
+)}

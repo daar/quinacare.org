@@ -91,10 +91,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
 
   <!-- Hero -->
   <header class="relative pt-40 pb-16 overflow-hidden" data-pagefind-body>
-    <div
-      class="absolute inset-0 -z-10 bg-gradient-to-b from-red-50/60 via-white to-white"
-    >
-    </div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-red-50/60 via-white to-white"></div>
     <div class="max-w-[1600px] mx-auto px-6">
       <div class="mb-8">
         <PutumayoLoopEditionNav lang={lang} currentYear={edition.year} />
@@ -105,9 +102,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             <Icon name="heart" class="text-xs" />
             {t("putumayoLoop.heroLabel")} Hospital San Miguel
           </span>
-          <h1
-            class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.95] uppercase"
-          >
+          <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.95] uppercase">
             {title}
           </h1>
           <p class="qc-body mt-6 max-w-2xl text-lg">
@@ -137,9 +132,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           <div class="space-y-4">
             <!-- Run date + total runners -->
             <div class="grid grid-cols-2 gap-4">
-              <div
-                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
-              >
+              <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
                 <span class="qc-label block mb-1">
                   {t("putumayoLoop.runDateLabel")}
                 </span>
@@ -147,9 +140,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
                   {formatRunDate(edition.runDate)}
                 </div>
               </div>
-              <div
-                class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
-              >
+              <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
                 <span class="qc-label block mb-1">
                   {t("putumayoLoop.statsRunners")}
                 </span>
@@ -160,9 +151,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             </div>
 
             <!-- Distance breakdown -->
-            <div
-              class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
-            >
+            <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
               <span class="qc-label block mb-3">
                 {t("putumayoLoop.distanceBreakdown")}
               </span>
@@ -211,32 +200,25 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             </div>
 
             <!-- Donation tracker -->
-            <div
-              class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
-            >
+            <div class="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
               <div class="flex items-end justify-between mb-2">
                 <span class="qc-label">{t("putumayoLoop.statsRaised")}</span>
                 <span class="qc-meta">
-                  {t("putumayoLoop.statsOf")}{" "}
-                  {formatCurrency(donations.target)}
+                  {t("putumayoLoop.statsOf")} {formatCurrency(donations.target)}
                 </span>
               </div>
-              <div
-                class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden mb-3"
-              >
+              <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden mb-3">
                 <div
                   class="h-2.5 rounded-full bg-gradient-to-r from-qcRed to-rose-400"
                   style={`width: ${pct}%`}
-                >
-                </div>
+                ></div>
               </div>
               <div class="flex items-baseline justify-between">
                 <div class="text-2xl font-bold tracking-tight">
                   {formatCurrency(donations.raised)}
                 </div>
                 <div class="qc-meta">
-                  {donations.donors}{" "}
-                  {t("putumayoLoop.statsDonors")}
+                  {donations.donors} {t("putumayoLoop.statsDonors")}
                 </div>
               </div>
             </div>
@@ -268,9 +250,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
     <span class="qc-label text-qcRed mb-4 block">
       {t("putumayoLoop.whyTitle")}
     </span>
-    <h2
-      class="text-3xl md:text-5xl font-bold tracking-tighter leading-tight uppercase mb-6"
-    >
+    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter leading-tight uppercase mb-6">
       {t("putumayoLoop.whyHeading")}
     </h2>
     <p class="qc-body text-lg leading-relaxed mb-4">
@@ -287,73 +267,61 @@ const excerpt = t("putumayoLoop.heroSubtitle");
     data-pagefind-body
   >
     <div class="mb-10">
-      <span class="qc-label mb-2 block">
-        {t("putumayoLoop.hubsTitle")}
-      </span>
-      <h2
-        class="text-3xl md:text-5xl font-bold tracking-tighter leading-tight uppercase mb-6"
-      >
+      <span class="qc-label mb-2 block">{t("putumayoLoop.hubsTitle")}</span>
+      <h2 class="text-3xl md:text-5xl font-bold tracking-tighter leading-tight uppercase mb-6">
         {t("putumayoLoop.hubsSubtitle")}
       </h2>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {
-        hubs.map((hub) => (
-          <button
-            type="button"
-            data-open-modal="putumayo-loop-signup-modal"
-            data-hub-select={hub.id}
-            class="rounded-xl border border-gray-100 bg-white p-5 hover:border-qcRed hover:shadow-md transition group text-left cursor-pointer"
-          >
-            <div class="flex items-center justify-between mb-4">
-              <span class="w-10 h-10 rounded-full bg-red-50 text-qcRed flex items-center justify-center">
-                <Icon name="heart" />
-              </span>
-              {/* TODO: Re-enable hub count display
+      {hubs.map((hub) => (
+        <button
+          type="button"
+          data-open-modal="putumayo-loop-signup-modal"
+          data-hub-select={hub.id}
+          class="rounded-xl border border-gray-100 bg-white p-5 hover:border-qcRed hover:shadow-md transition group text-left cursor-pointer"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-10 h-10 rounded-full bg-red-50 text-qcRed flex items-center justify-center">
+              <Icon name="heart" />
+            </span>
+            {/* TODO: Re-enable hub count display
               <span class="text-2xl font-bold tracking-tight text-qcRed">
                 {hubCounts[hub.id] || 0}
               </span>
               */}
-            </div>
-            <h3 class="text-xl font-bold tracking-tighter uppercase mb-1 group-hover:text-qcRed transition">
-              {hub.name}
-            </h3>
-            <p class="qc-meta mb-2">
-              {hub.city}, {countryName(hub.country, lang)}
+          </div>
+          <h3 class="text-xl font-bold tracking-tighter uppercase mb-1 group-hover:text-qcRed transition">
+            {hub.name}
+          </h3>
+          <p class="qc-meta mb-2">
+            {hub.city}, {countryName(hub.country, lang)}
+          </p>
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            {ALL_DISTANCES.filter((d) =>
+              hubDistances(hub).includes(d.value),
+            ).map((d) => (
+              <span class="inline-flex items-center rounded-full bg-red-50 text-qcRed text-[11px] font-bold px-2 py-0.5">
+                {d.label}
+              </span>
+            ))}
+          </div>
+          {hub.captain && (
+            <p class="qc-body text-sm">
+              <span class="qc-meta block">{t("putumayoLoop.hubCaptain")}</span>
+              {hub.captain}
             </p>
-            <div class="flex flex-wrap gap-1.5 mb-3">
-              {ALL_DISTANCES.filter((d) =>
-                hubDistances(hub).includes(d.value),
-              ).map((d) => (
-                <span class="inline-flex items-center rounded-full bg-red-50 text-qcRed text-[11px] font-bold px-2 py-0.5">
-                  {d.label}
-                </span>
-              ))}
-            </div>
-            {hub.captain && (
-              <p class="qc-body text-sm">
-                <span class="qc-meta block">
-                  {t("putumayoLoop.hubCaptain")}
-                </span>
-                {hub.captain}
-              </p>
-            )}
-          </button>
-        ))
-      }
+          )}
+        </button>
+      ))}
 
       <!--
         Start-your-own-hub invitation as the 5th tile. A div rather than a
         button: it holds two actions now — the contact form and a link to
         the guide — and an anchor cannot live inside a button.
       -->
-      <div
-        class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col text-left hover:border-qcRed hover:bg-red-50/30 transition group"
-      >
+      <div class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/40 p-5 flex flex-col text-left hover:border-qcRed hover:bg-red-50/30 transition group">
         <div class="flex items-center justify-between mb-4">
-          <span
-            class="w-10 h-10 rounded-full bg-white border border-gray-200 text-qcRed flex items-center justify-center group-hover:border-qcRed transition"
-          >
+          <span class="w-10 h-10 rounded-full bg-white border border-gray-200 text-qcRed flex items-center justify-center group-hover:border-qcRed transition">
             <Icon name="heart" />
           </span>
           <button
@@ -364,9 +332,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
             {t("putumayoLoop.organizeHubCta")} →
           </button>
         </div>
-        <h3
-          class="text-xl font-bold tracking-tighter uppercase mb-2 group-hover:text-qcRed transition"
-        >
+        <h3 class="text-xl font-bold tracking-tighter uppercase mb-2 group-hover:text-qcRed transition">
           {t("putumayoLoop.organizeHubTitle")}
         </h3>
         <p class="qc-body text-sm leading-snug">
@@ -394,33 +360,24 @@ const excerpt = t("putumayoLoop.heroSubtitle");
         class="absolute inset-0 w-full h-full object-cover"
         loading="lazy"
       />
-      <div
-        class="absolute inset-0 bg-gradient-to-br from-qcBlack/85 via-qcBlack/65 to-qcBlack/85"
-      >
-      </div>
-      <div
-        class="relative z-10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center"
-      >
+      <div class="absolute inset-0 bg-gradient-to-br from-qcBlack/85 via-qcBlack/65 to-qcBlack/85"></div>
+      <div class="relative z-10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center">
         <div>
           <span class="qc-label !text-red-300 mb-3 block">
             {t("putumayoLoop.statsRaised")}
           </span>
-          <div
-            class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-3"
-          >
+          <div class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-3">
             {formatCurrency(donations.raised)}
           </div>
           <p class="text-white/60 mb-6">
-            {t("putumayoLoop.statsOf")}{" "}
-            {formatCurrency(donations.target)} · {donations.donors}{" "}
-            {t("putumayoLoop.statsDonors")}
+            {t("putumayoLoop.statsOf")} {formatCurrency(donations.target)} ·{" "}
+            {donations.donors} {t("putumayoLoop.statsDonors")}
           </p>
           <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden mb-6">
             <div
               class="h-3 rounded-full bg-gradient-to-r from-qcRed to-rose-400"
               style={`width: ${pct}%`}
-            >
-            </div>
+            ></div>
           </div>
           <div class="flex flex-wrap gap-3">
             <button
@@ -442,9 +399,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           </div>
         </div>
         <div class="flex justify-center lg:justify-end">
-          <div
-            class="bg-white rounded-xl p-5 text-center shadow-2xl max-w-[260px]"
-          >
+          <div class="bg-white rounded-xl p-5 text-center shadow-2xl max-w-[260px]">
             <span class="qc-label !text-qcBlack block mb-3">
               {t("putumayoLoop.qrTitle")}
             </span>

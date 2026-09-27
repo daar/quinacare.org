@@ -25,18 +25,14 @@ const reports = annualReports
   .sort((a, b) => b.year - a.year);
 ---
 
-<div
-  class="not-prose my-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"
->
-  {
-    reports.map((r) => (
-      <ReportCard
-        href={r.files[key]!}
-        cover={r.covers[key]}
-        label={l.report}
-        title={String(r.year)}
-        downloadLabel={l.download}
-      />
-    ))
-  }
+<div class="not-prose my-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+  {reports.map((r) => (
+    <ReportCard
+      href={r.files[key]!}
+      cover={r.covers[key]}
+      label={l.report}
+      title={String(r.year)}
+      downloadLabel={l.download}
+    />
+  ))}
 </div>

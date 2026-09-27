@@ -123,7 +123,7 @@ Shortcodes to Strip/Convert
 
 WpImage.astro Component (for reference)
 
-The Python script will output tags like:  
+The Python script will output tags like:
 {% image src="/media/2024/01/photo.jpg" width=800 height=600 caption="A beautiful
   scene" align="center" %}
 

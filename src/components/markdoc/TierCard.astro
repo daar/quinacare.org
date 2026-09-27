@@ -86,42 +86,36 @@ const causeImageUrl = causeImageResolver
     <span class="text-gray-400 text-sm block">{frequency}</span>
   </div>
 
-  <p class="qc-body leading-relaxed mb-2 min-h-[3rem] flex-grow">
-    {impact}
-  </p>
+  <p class="qc-body leading-relaxed mb-2 min-h-[3rem] flex-grow">{impact}</p>
 
-  <span class="qc-meta mb-6">
-    {yearly}
-  </span>
+  <span class="qc-meta mb-6">{yearly}</span>
 
-  {
-    modal ? (
-      <button
-        type="button"
-        data-open-modal={modal}
-        data-amount={dataAmount}
-        data-tier={dataTier}
-        data-cause-title={title}
-        data-cause-image={causeImageUrl}
-        data-cause-impact={impact}
-        data-cause-frequency={frequency}
-        class={`qc-btn block w-full py-3.5 text-center ${
-          featured ? "qc-btn--primary" : "qc-btn--outline"
-        }`}
-      >
-        <Icon name="heart" class="mr-2" />
-        {title}
-      </button>
-    ) : (
-      <a
-        href={href}
-        class={`qc-btn block w-full py-3.5 text-center ${
-          featured ? "qc-btn--primary" : "qc-btn--outline"
-        }`}
-      >
-        <Icon name="heart" class="mr-2" />
-        {title}
-      </a>
-    )
-  }
+  {modal ? (
+    <button
+      type="button"
+      data-open-modal={modal}
+      data-amount={dataAmount}
+      data-tier={dataTier}
+      data-cause-title={title}
+      data-cause-image={causeImageUrl}
+      data-cause-impact={impact}
+      data-cause-frequency={frequency}
+      class={`qc-btn block w-full py-3.5 text-center ${
+        featured ? "qc-btn--primary" : "qc-btn--outline"
+      }`}
+    >
+      <Icon name="heart" class="mr-2" />
+      {title}
+    </button>
+  ) : (
+    <a
+      href={href}
+      class={`qc-btn block w-full py-3.5 text-center ${
+        featured ? "qc-btn--primary" : "qc-btn--outline"
+      }`}
+    >
+      <Icon name="heart" class="mr-2" />
+      {title}
+    </a>
+  )}
 </div>
