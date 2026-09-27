@@ -60,198 +60,192 @@ function formatCurrency(amount: number): string {
 
   <header class="pt-40 pb-16 border-b border-gray-100" data-pagefind-body>
     <div class="max-w-[1600px] mx-auto px-6">
-      <span class="qc-label mb-4">
-        {t("fundraise.subtitle")}
-      </span>
+      <span class="qc-label mb-4">{t("fundraise.subtitle")}</span>
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-none">
-        {t("fundraise.title")}<span class="italic font-light text-gray-300"
-          >.</span
-        >
+        {t("fundraise.title")}
+        <span class="italic font-light text-gray-300">.</span>
       </h1>
     </div>
   </header>
 
   <main class="py-20 max-w-[1600px] mx-auto px-6">
-    {
-      sorted.length === 0 ? (
-        <p class="text-gray-500 text-center text-lg">
-          {t("fundraise.noFundraisers")}
-        </p>
-      ) : (
-        <>
-          <div
-            id="fundraise-grid"
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
-          >
-            {sorted.map((fundraiser, idx) => {
-              const pct = getPercentage(
-                fundraiser.data.raised_offset,
-                fundraiser.data.goal_amount,
-              );
-              const barPct = Math.min(100, pct);
-              const days = getDaysToGo(fundraiser.data.end_date);
-              const isActive = fundraiser.data.end_date.getTime() > Date.now();
-              const qr = qrBySlug.get(fundraiser.data.slug)!;
-              const cardPath = getLocalizedPath(
-                `/fundraisers/${fundraiser.data.slug}`,
-                lang,
-              );
-              return (
-                <article
-                  class="group relative fundraise-card bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                  data-card-index={idx}
-                  data-slug={fundraiser.data.slug}
-                  data-goal={fundraiser.data.goal_amount}
-                  data-initial-raised={fundraiser.data.raised_offset}
-                  data-initial-backers={fundraiser.data.backers_offset}
-                >
-                  <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
-                    {fundraiser.data.featured_image ? (
-                      <Image
-                        src={fundraiser.data.featured_image}
-                        alt={
-                          fundraiser.data.featured_image_alt ||
-                          fundraiser.data.title
-                        }
-                        class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                        widths={[300, 600]}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    ) : (
-                      <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
-                    )}
-                    {isActive && (
-                      <div class="absolute top-4 left-4">
-                        <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-sm">
-                          {t("fundraise.active")}
-                        </span>
-                      </div>
-                    )}
-                    {import.meta.env.DEV && (
-                      <div class="absolute top-4 right-4">
-                        <span
-                          class={`qc-meta !text-white px-3 py-1.5 rounded-sm ${fundraiser.data.draft ? "bg-gray-800" : "bg-emerald-600"}`}
-                        >
-                          {fundraiser.data.draft ? "Draft" : "Published"}
-                        </span>
-                      </div>
-                    )}
-                    <div class="absolute bottom-3 right-3 z-20 inline-block">
-                      <QRCode
-                        dataUri={qr}
-                        alt={`QR code for ${fundraiser.data.slug}`}
-                        size="sm"
-                        downloadFilename={`quinacare-${fundraiser.data.slug}-qr.png`}
-                      />
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr${cardPath}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] shadow-lg ring-2 ring-white transition-transform hover:scale-110 active:scale-95"
-                        aria-label={t("share.whatsapp")}
-                        title={t("share.whatsapp")}
+    {sorted.length === 0 ? (
+      <p class="text-gray-500 text-center text-lg">
+        {t("fundraise.noFundraisers")}
+      </p>
+    ) : (
+      <>
+        <div
+          id="fundraise-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
+        >
+          {sorted.map((fundraiser, idx) => {
+            const pct = getPercentage(
+              fundraiser.data.raised_offset,
+              fundraiser.data.goal_amount,
+            );
+            const barPct = Math.min(100, pct);
+            const days = getDaysToGo(fundraiser.data.end_date);
+            const isActive = fundraiser.data.end_date.getTime() > Date.now();
+            const qr = qrBySlug.get(fundraiser.data.slug)!;
+            const cardPath = getLocalizedPath(
+              `/fundraisers/${fundraiser.data.slug}`,
+              lang,
+            );
+            return (
+              <article
+                class="group relative fundraise-card bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                data-card-index={idx}
+                data-slug={fundraiser.data.slug}
+                data-goal={fundraiser.data.goal_amount}
+                data-initial-raised={fundraiser.data.raised_offset}
+                data-initial-backers={fundraiser.data.backers_offset}
+              >
+                <div class="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+                  {fundraiser.data.featured_image ? (
+                    <Image
+                      src={fundraiser.data.featured_image}
+                      alt={
+                        fundraiser.data.featured_image_alt ||
+                        fundraiser.data.title
+                      }
+                      class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                      widths={[300, 600]}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
+                  )}
+                  {isActive && (
+                    <div class="absolute top-4 left-4">
+                      <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-sm">
+                        {t("fundraise.active")}
+                      </span>
+                    </div>
+                  )}
+                  {import.meta.env.DEV && (
+                    <div class="absolute top-4 right-4">
+                      <span
+                        class={`qc-meta !text-white px-3 py-1.5 rounded-sm ${fundraiser.data.draft ? "bg-gray-800" : "bg-emerald-600"}`}
                       >
-                        <Icon
-                          name="fa-brands fa-whatsapp"
-                          class="text-xs text-white"
-                        />
-                      </a>
+                        {fundraiser.data.draft ? "Draft" : "Published"}
+                      </span>
                     </div>
-                  </div>
-
-                  <div class="p-5 md:p-6">
-                    <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
-                      <div
-                        class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
-                        style={`width: ${barPct}%`}
+                  )}
+                  <div class="absolute bottom-3 right-3 z-20 inline-block">
+                    <QRCode
+                      dataUri={qr}
+                      alt={`QR code for ${fundraiser.data.slug}`}
+                      size="sm"
+                      downloadFilename={`quinacare-${fundraiser.data.slug}-qr.png`}
+                    />
+                    <a
+                      href={`https://wa.me/?text=${encodeURIComponent(`${fundraiser.data.title}\n\nhttps://quinacare.org/api/qr${cardPath}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="absolute -bottom-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] shadow-lg ring-2 ring-white transition-transform hover:scale-110 active:scale-95"
+                      aria-label={t("share.whatsapp")}
+                      title={t("share.whatsapp")}
+                    >
+                      <Icon
+                        name="fa-brands fa-whatsapp"
+                        class="text-xs text-white"
                       />
-                    </div>
+                    </a>
+                  </div>
+                </div>
 
-                    <div class="flex items-baseline justify-between mb-1">
-                      <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
-                        {formatCurrency(fundraiser.data.raised_offset)}
-                      </span>
-                      <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
-                        <span class="fc-pct">{pct}</span>%{" "}
-                        {t("fundraise.funded")}
-                      </span>
-                    </div>
-
-                    <p class="text-sm text-gray-400 mb-4">
-                      {t("fundraise.of")}{" "}
-                      {formatCurrency(fundraiser.data.goal_amount)}{" "}
-                      {t("fundraise.goal")}
-                    </p>
-
-                    <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
-                      <span>
-                        <span class="fc-backers">
-                          {fundraiser.data.backers_offset}
-                        </span>{" "}
-                        {t("fundraise.backers")}
-                      </span>
-                      <span class="w-1 h-1 rounded-full bg-gray-200" />
-                      <span>
-                        {days} {t("fundraise.daysToGo")}
-                      </span>
-                    </div>
-
-                    <h3 class="text-base md:text-lg font-bold uppercase tracking-tight leading-tight group-hover:text-qcRed transition">
-                      {fundraiser.data.title}
-                    </h3>
-                    <p class="text-[11px] text-gray-400 mt-1">
-                      {t("fundraise.by")} {fundraiser.data.organizer}
-                    </p>
+                <div class="p-5 md:p-6">
+                  <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+                    <div
+                      class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
+                      style={`width: ${barPct}%`}
+                    />
                   </div>
 
-                  {/* Stretched link: covers the card without wrapping the
-                        QR/WhatsApp anchors, which would nest <a> elements. */}
-                  <a href={cardPath} class="absolute inset-0 z-10">
-                    <span class="sr-only">{fundraiser.data.title}</span>
-                  </a>
-                </article>
-              );
-            })}
-          </div>
+                  <div class="flex items-baseline justify-between mb-1">
+                    <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
+                      {formatCurrency(fundraiser.data.raised_offset)}
+                    </span>
+                    <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
+                      <span class="fc-pct">{pct}</span>% {t("fundraise.funded")}
+                    </span>
+                  </div>
 
-          <nav
-            id="fundraise-pagination"
-            class="hidden mt-12 flex items-center justify-center gap-2"
-            aria-label="Pagination"
+                  <p class="text-sm text-gray-400 mb-4">
+                    {t("fundraise.of")}{" "}
+                    {formatCurrency(fundraiser.data.goal_amount)}{" "}
+                    {t("fundraise.goal")}
+                  </p>
+
+                  <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
+                    <span>
+                      <span class="fc-backers">
+                        {fundraiser.data.backers_offset}
+                      </span>{" "}
+                      {t("fundraise.backers")}
+                    </span>
+                    <span class="w-1 h-1 rounded-full bg-gray-200" />
+                    <span>
+                      {days} {t("fundraise.daysToGo")}
+                    </span>
+                  </div>
+
+                  <h3 class="text-base md:text-lg font-bold uppercase tracking-tight leading-tight group-hover:text-qcRed transition">
+                    {fundraiser.data.title}
+                  </h3>
+                  <p class="text-[11px] text-gray-400 mt-1">
+                    {t("fundraise.by")} {fundraiser.data.organizer}
+                  </p>
+                </div>
+
+                {/* Stretched link: covers the card without wrapping the
+                        QR/WhatsApp anchors, which would nest <a> elements. */}
+                <a href={cardPath} class="absolute inset-0 z-10">
+                  <span class="sr-only">{fundraiser.data.title}</span>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+
+        <nav
+          id="fundraise-pagination"
+          class="hidden mt-12 flex items-center justify-center gap-2"
+          aria-label="Pagination"
+        >
+          <button
+            id="pagination-prev"
+            class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-400"
+            aria-label="Previous page"
           >
-            <button
-              id="pagination-prev"
-              class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-400"
-              aria-label="Previous page"
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div id="pagination-pages" class="flex items-center gap-1" />
-            <button
-              id="pagination-next"
-              class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-400"
-              aria-label="Next page"
+              <path stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div id="pagination-pages" class="flex items-center gap-1" />
+          <button
+            id="pagination-next"
+            class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:border-qcRed hover:text-qcRed transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-400"
+            aria-label="Next page"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </nav>
-        </>
-      )
-    }
+              <path stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </nav>
+      </>
+    )}
   </main>
 
   <Footer />

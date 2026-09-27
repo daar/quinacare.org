@@ -48,9 +48,7 @@ const mapData = JSON.stringify({
 >
   <div id="putumayo-loop-map" class="absolute inset-0 z-[1]"></div>
 
-  <div
-    class="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur px-3 py-2 rounded-md shadow-md"
-  >
+  <div class="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur px-3 py-2 rounded-md shadow-md">
     <span class="qc-meta block !text-qcBlack">
       <span class="font-bold text-qcRed">{runnerCount}</span>{" "}
       {t("putumayoLoop.runnersWorldwide")}
@@ -62,7 +60,7 @@ const mapData = JSON.stringify({
     id="putumayo-loop-map-data"
     type="application/json"
     set:html={mapData}
-  />
+  ></script>
 </div>
 
 <script>

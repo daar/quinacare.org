@@ -27,28 +27,24 @@ const { href, cover, label, title, downloadLabel } = Astro.props;
   aria-label={`${label} ${title} — ${downloadLabel}`}
 >
   <div class="relative aspect-[1/1.414] overflow-hidden bg-gray-50">
-    {
-      cover ? (
-        <OptimizedImage
-          src={cover}
-          alt={`${label} ${title}`}
-          class="absolute inset-0 m-0! h-full w-full object-cover"
-          layout="none"
-          widths={[220, 440]}
-          sizes="(max-width: 640px) 50vw, 240px"
-        />
-      ) : (
-        <div class="absolute inset-0 flex items-center justify-center">
-          <Icon name="file-lines" class="text-4xl text-gray-200" />
-        </div>
-      )
-    }
+    {cover ? (
+      <OptimizedImage
+        src={cover}
+        alt={`${label} ${title}`}
+        class="absolute inset-0 m-0! h-full w-full object-cover"
+        layout="none"
+        widths={[220, 440]}
+        sizes="(max-width: 640px) 50vw, 240px"
+      />
+    ) : (
+      <div class="absolute inset-0 flex items-center justify-center">
+        <Icon name="file-lines" class="text-4xl text-gray-200" />
+      </div>
+    )}
   </div>
   <div class="flex items-center justify-between gap-2 p-4">
     <div>
-      <p
-        class="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400"
-      >
+      <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">
         {label}
       </p>
       <p class="text-2xl font-bold tracking-tighter text-qcBlack">{title}</p>

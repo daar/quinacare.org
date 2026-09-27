@@ -158,135 +158,114 @@ const showFrequencyToggle = frequencies.length > 1;
     {t("donate.submitButton")}
   </h2>
 
-  {
-    /* Optional cause card — populated and revealed when the form is
+  {/* Optional cause card — populated and revealed when the form is
       opened from a tier-style modal trigger that carries
-      data-cause-title / data-cause-image / data-cause-impact. */
-  }
-  <div
-    class="dfc-cause hidden mb-6 flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4"
-  >
+      data-cause-title / data-cause-image / data-cause-impact. */}
+  <div class="dfc-cause hidden mb-6 flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4">
     <img
       alt=""
       class="dfc-cause-image h-16 w-16 flex-shrink-0 object-contain"
     />
     <div class="min-w-0 flex-1">
-      <p
-        class="dfc-cause-title font-bold uppercase tracking-tight text-sm leading-tight"
-      >
-      </p>
+      <p class="dfc-cause-title font-bold uppercase tracking-tight text-sm leading-tight"></p>
       <p class="dfc-cause-impact qc-meta mt-1 leading-snug"></p>
     </div>
   </div>
 
-  {
-    showFrequencyToggle && (
-      <div class="flex gap-2 mb-6 dfc-frequency">
-        {frequencies.map((f) => (
-          <button
-            type="button"
-            data-frequency={f}
-            class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
-          >
-            {t(FREQUENCY_LABEL_KEYS[f] as TranslationKey)}
-          </button>
-        ))}
-      </div>
-    )
-  }
+  {showFrequencyToggle && (
+    <div class="flex gap-2 mb-6 dfc-frequency">
+      {frequencies.map((f) => (
+        <button
+          type="button"
+          data-frequency={f}
+          class="qc-btn flex-1 py-3 rounded-md border border-gray-200 bg-white text-qcBlack"
+        >
+          {t(FREQUENCY_LABEL_KEYS[f] as TranslationKey)}
+        </button>
+      ))}
+    </div>
+  )}
 
   <!-- Preset amounts -->
   <div class="grid grid-cols-4 gap-2 mb-2 dfc-amounts">
-    {
-      effectivePresets.map((amount) => (
-        <button
-          type="button"
-          data-amount={amount}
-          class:list={[
-            "py-3 text-center font-bold text-base rounded-md border transition-all",
-            amount === effectiveDefaultAmount
-              ? "bg-qcRed text-white border-qcRed"
-              : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
-          ]}
-        >
-          {formatCurrency(amount, cc, false)}
-        </button>
-      ))
-    }
+    {effectivePresets.map((amount) => (
+      <button
+        type="button"
+        data-amount={amount}
+        class:list={[
+          "py-3 text-center font-bold text-base rounded-md border transition-all",
+          amount === effectiveDefaultAmount
+            ? "bg-qcRed text-white border-qcRed"
+            : "bg-white text-qcBlack border-gray-200 hover:border-qcRed",
+        ]}
+      >
+        {formatCurrency(amount, cc, false)}
+      </button>
+    ))}
   </div>
 
-  {
-    allowCustom && (
-      <input
-        type="text"
-        inputmode="decimal"
-        class="dfc-custom w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
-        placeholder={t("donate.customPlaceholder")}
-      />
-    )
-  }
+  {allowCustom && (
+    <input
+      type="text"
+      inputmode="decimal"
+      class="dfc-custom w-full py-3 px-4 text-center font-bold text-base rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-all mb-6"
+      placeholder={t("donate.customPlaceholder")}
+    />
+  )}
 
   <!-- Impact preview — kind drives the panel shape -->
-  {
-    impact.kind === "tiered" && (
-      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
-        <span class="qc-label mb-1">{t("donate.impactLabel")}</span>
-        <p class="dfc-impact qc-body leading-relaxed">
-          {t("donate.impactGeneric")}
-        </p>
-        <span class="hidden" data-impact="consultation">
-          {t("donation.consultationDesc")}
+  {impact.kind === "tiered" && (
+    <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+      <span class="qc-label mb-1">{t("donate.impactLabel")}</span>
+      <p class="dfc-impact qc-body leading-relaxed">
+        {t("donate.impactGeneric")}
+      </p>
+      <span class="hidden" data-impact="consultation">
+        {t("donation.consultationDesc")}
+      </span>
+      <span class="hidden" data-impact="prenatal">
+        {t("donation.prenatalDesc")}
+      </span>
+      <span class="hidden" data-impact="surgery">
+        {t("donation.surgeryDesc")}
+      </span>
+      <span class="hidden" data-impact="equipment">
+        {t("donation.equipmentDesc")}
+      </span>
+      <span class="hidden" data-impact="generic">
+        {t("donate.impactGeneric")}
+      </span>
+      <span class="hidden" data-impact="custom">
+        {t("donate.impactCustom")}
+      </span>
+    </div>
+  )}
+  {impact.kind === "fundraiser" && (
+    <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+      <p class="qc-body leading-relaxed">
+        {t("fundraise.impactLabel")}{" "}
+        <span class="font-bold text-qcRed">
+          {impact.organizer || impact.fallback || ""}
         </span>
-        <span class="hidden" data-impact="prenatal">
-          {t("donation.prenatalDesc")}
-        </span>
-        <span class="hidden" data-impact="surgery">
-          {t("donation.surgeryDesc")}
-        </span>
-        <span class="hidden" data-impact="equipment">
-          {t("donation.equipmentDesc")}
-        </span>
-        <span class="hidden" data-impact="generic">
-          {t("donate.impactGeneric")}
-        </span>
-        <span class="hidden" data-impact="custom">
-          {t("donate.impactCustom")}
-        </span>
-      </div>
-    )
-  }
-  {
-    impact.kind === "fundraiser" && (
-      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
-        <p class="qc-body leading-relaxed">
-          {t("fundraise.impactLabel")}{" "}
-          <span class="font-bold text-qcRed">
-            {impact.organizer || impact.fallback || ""}
-          </span>
-          {impact.excerpt && (
-            <>
-              {" — "}
-              <em>“{impact.excerpt}”</em>
-            </>
-          )}
-        </p>
-      </div>
-    )
-  }
-  {
-    impact.kind === "custom" && (
-      <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
-        {impact.label && <span class="qc-label mb-1">{impact.label}</span>}
-        <p class="qc-body leading-relaxed">{impact.body}</p>
-      </div>
-    )
-  }
+        {impact.excerpt && (
+          <>
+            {" — "}
+            <em>“{impact.excerpt}”</em>
+          </>
+        )}
+      </p>
+    </div>
+  )}
+  {impact.kind === "custom" && (
+    <div class="bg-gray-50 border border-gray-100 rounded-md p-4 mb-6">
+      {impact.label && <span class="qc-label mb-1">{impact.label}</span>}
+      <p class="qc-body leading-relaxed">{impact.body}</p>
+    </div>
+  )}
 
   <!-- Payment methods (all rendered; JS hides the ones not in `methods`) -->
   <div class="mb-6">
-    <span
-      class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3"
-    >
+    <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-3">
       {t("donate.paymentMethod")}
     </span>
     <div class="grid grid-cols-2 gap-2 dfc-methods">
@@ -308,8 +287,12 @@ const showFrequencyToggle = frequencies.length > 1;
             height="16"
             rx="2"
             stroke="currentColor"
-            stroke-width="2"></rect>
-          <path d="M7 12h10M7 8h6" stroke="currentColor" stroke-width="2"
+            stroke-width="2"
+          ></rect>
+          <path
+            d="M7 12h10M7 8h6"
+            stroke="currentColor"
+            stroke-width="2"
           ></path>
         </svg>
         iDEAL
@@ -352,24 +335,22 @@ const showFrequencyToggle = frequencies.length > 1;
   <!-- Submit -->
   <button type="button" class="dfc-submit qc-btn qc-btn--primary w-full py-4">
     <Icon name="heart" class="dfc-icon mr-2" />
-    <span
-      >{t("donate.submitButton")}
-      <span class="dfc-amount"
-        >{formatCurrency(effectiveDefaultAmount, cc, false)}</span
-      ></span
-    >
+    <span>
+      {t("donate.submitButton")}
+      <span class="dfc-amount">
+        {formatCurrency(effectiveDefaultAmount, cc, false)}
+      </span>
+    </span>
   </button>
 
   <!-- Trust badges -->
-  <div
-    class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400"
-  >
-    <span class="flex items-center gap-1"
-      ><Icon name="lock" /> {t("cta.securePayment")}</span
-    >
-    <span class="flex items-center gap-1"
-      ><Icon name="shield-halved" /> SSL</span
-    >
+  <div class="mt-4 flex items-center justify-center gap-4 text-[9px] font-bold uppercase tracking-widest text-gray-400">
+    <span class="flex items-center gap-1">
+      <Icon name="lock" /> {t("cta.securePayment")}
+    </span>
+    <span class="flex items-center gap-1">
+      <Icon name="shield-halved" /> SSL
+    </span>
   </div>
 </div>
 

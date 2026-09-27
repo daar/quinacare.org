@@ -38,19 +38,17 @@ const stats = [
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      {
-        stats.map((s) => (
-          <div class="bg-white rounded-2xl p-6 md:p-8 text-center border border-gray-100">
-            <div
-              class="text-4xl md:text-5xl font-bold tracking-tighter text-qcBlack"
-              data-stat-value={s.key}
-            >
-              N/A
-            </div>
-            <div class="qc-label mt-2 text-gray-500">{s.label}</div>
+      {stats.map((s) => (
+        <div class="bg-white rounded-2xl p-6 md:p-8 text-center border border-gray-100">
+          <div
+            class="text-4xl md:text-5xl font-bold tracking-tighter text-qcBlack"
+            data-stat-value={s.key}
+          >
+            N/A
           </div>
-        ))
-      }
+          <div class="qc-label mt-2 text-gray-500">{s.label}</div>
+        </div>
+      ))}
     </div>
   </div>
 </section>

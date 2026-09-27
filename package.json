@@ -79,7 +79,7 @@
     "patch-package": "^8.0.0",
     "pagefind": "^1.5.2",
     "prettier": "^3.9.8",
-    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-astro": "^1.0.1",
     "svgo": "^4.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.70.0"

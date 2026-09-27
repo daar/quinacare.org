@@ -31,36 +31,32 @@ const t = useTranslations(lang);
       </div>
 
       <div class="lg:col-span-7 flex flex-col gap-12">
-        <div
-          class="flex flex-wrap items-center justify-start gap-x-12 gap-y-10"
-        >
-          {
-            premiumPartners.map((partner) => (
-              <a
-                href={partner.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="group relative flex items-center justify-center transition-all duration-300"
-              >
-                {partner.logo ? (
-                  <OptimizedImage
-                    src={partner.logo}
-                    alt={partner.name}
-                    class="h-20 w-auto max-w-[140px] object-contain lg:grayscale lg:opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
-                  />
-                ) : (
-                  /* No logo on file — fall back to the partner name set in
+        <div class="flex flex-wrap items-center justify-start gap-x-12 gap-y-10">
+          {premiumPartners.map((partner) => (
+            <a
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group relative flex items-center justify-center transition-all duration-300"
+            >
+              {partner.logo ? (
+                <OptimizedImage
+                  src={partner.logo}
+                  alt={partner.name}
+                  class="h-20 w-auto max-w-[140px] object-contain lg:grayscale lg:opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out"
+                />
+              ) : (
+                /* No logo on file — fall back to the partner name set in
                      the brand's Effra display font. */
-                  <span
-                    class="flex h-20 max-w-[180px] items-center text-center text-xl md:text-2xl font-bold leading-tight tracking-tight text-qcBlack group-hover:scale-110 transition-transform duration-500 ease-out"
-                    style="font-family: var(--font-effra)"
-                  >
-                    {partner.name}
-                  </span>
-                )}
-              </a>
-            ))
-          }
+                <span
+                  class="flex h-20 max-w-[180px] items-center text-center text-xl md:text-2xl font-bold leading-tight tracking-tight text-qcBlack group-hover:scale-110 transition-transform duration-500 ease-out"
+                  style="font-family: var(--font-effra)"
+                >
+                  {partner.name}
+                </span>
+              )}
+            </a>
+          ))}
         </div>
 
         <div class="flex items-center gap-6 pt-4 border-t border-gray-100">
@@ -78,8 +74,10 @@ const t = useTranslations(lang);
             {t("partners.interested")}
             <a
               href={getLocalizedPath("/contact", lang)}
-              class="text-qcRed underline ml-1">{t("partners.contact")}</a
+              class="text-qcRed underline ml-1"
             >
+              {t("partners.contact")}
+            </a>
           </span>
         </div>
       </div>

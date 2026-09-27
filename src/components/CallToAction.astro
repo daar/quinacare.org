@@ -25,16 +25,13 @@ const t = useTranslations(lang);
   <div class="max-w-7xl mx-auto px-6 relative z-10">
     <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
       <div class="text-white text-center lg:text-left">
-        <span class="qc-label opacity-80 mb-4 !text-white"
-          >{t("cta.label")}</span
-        >
-        <h2
-          class="text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.9] mb-6"
-        >
+        <span class="qc-label opacity-80 mb-4 !text-white">
+          {t("cta.label")}
+        </span>
+        <h2 class="text-4xl md:text-6xl font-bold tracking-tighter uppercase leading-[0.9] mb-6">
           {t("cta.title1")}
-          <br /><span class="italic font-black text-qcBlack"
-            >{t("cta.title2")}</span
-          >
+          <br />
+          <span class="italic font-black text-qcBlack">{t("cta.title2")}</span>
         </h2>
         <p class="qc-body max-w-md font-light !text-red-100">
           {t("cta.subtitle")}
@@ -53,16 +50,14 @@ const t = useTranslations(lang);
           <span>{t("cta.donate")}</span>
         </a>
 
-        <div
-          class="mt-4 flex items-center justify-center lg:justify-start gap-4 text-red-200 text-[9px] font-bold uppercase tracking-widest opacity-70"
-        >
-          <span class="flex items-center gap-1"
-            ><Icon name="shield-halved" />
-            {t("cta.securePayment")}</span
-          >
-          <span class="flex items-center gap-1"
-            ><Icon name="certificate" /> {t("cta.certified")}</span
-          >
+        <div class="mt-4 flex items-center justify-center lg:justify-start gap-4 text-red-200 text-[9px] font-bold uppercase tracking-widest opacity-70">
+          <span class="flex items-center gap-1">
+            <Icon name="shield-halved" />
+            {t("cta.securePayment")}
+          </span>
+          <span class="flex items-center gap-1">
+            <Icon name="certificate" /> {t("cta.certified")}
+          </span>
         </div>
       </div>
     </div>

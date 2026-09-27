@@ -35,11 +35,7 @@ const floatClass =
     height={height}
     class={`${align === "center" ? alignClass : ""} max-w-full h-auto`}
   />
-  {
-    caption && (
-      <figcaption class="text-sm text-gray-500 mt-2 italic">
-        {caption}
-      </figcaption>
-    )
-  }
+  {caption && (
+    <figcaption class="text-sm text-gray-500 mt-2 italic">{caption}</figcaption>
+  )}
 </figure>

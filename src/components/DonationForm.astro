@@ -32,9 +32,7 @@ const numberLocale = localeMap[lang];
 ---
 
 <!-- SECTION 1: Hero with floating donation form -->
-<header
-  class="relative min-h-screen bg-qcBlack flex items-center overflow-hidden"
->
+<header class="relative min-h-screen bg-qcBlack flex items-center overflow-hidden">
   <div class="absolute inset-0 z-0">
     <Image
       src={heroImage}
@@ -48,28 +46,17 @@ const numberLocale = localeMap[lang];
       widths={[480, 800, 1200, 1600]}
       sizes="100vw"
     />
-    <div
-      class="absolute inset-0 bg-gradient-to-r from-qcBlack via-qcBlack/80 to-qcBlack/40"
-    >
-    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-qcBlack via-qcBlack/80 to-qcBlack/40"></div>
   </div>
 
-  <div
-    class="relative z-10 max-w-[1600px] mx-auto px-6 w-full py-32 flex flex-col lg:flex-row items-center gap-16"
-  >
+  <div class="relative z-10 max-w-[1600px] mx-auto px-6 w-full py-32 flex flex-col lg:flex-row items-center gap-16">
     <!-- Left: Title + Counter -->
     <div class="flex-1 text-center lg:text-left">
-      <span class="qc-label mb-8">
-        {t("hero.foundation")}
-      </span>
-      <h1
-        class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] tracking-tighter mb-8"
-      >
+      <span class="qc-label mb-8">{t("hero.foundation")}</span>
+      <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.9] tracking-tighter mb-8">
         {t("donate.pageTitle")}
       </h1>
-      <p
-        class="qc-body--light max-w-lg mb-12 font-light leading-relaxed mx-auto lg:mx-0"
-      >
+      <p class="qc-body--light max-w-lg mb-12 font-light leading-relaxed mx-auto lg:mx-0">
         {t("donate.pageSubtitle")}
       </p>
 
@@ -77,51 +64,46 @@ const numberLocale = localeMap[lang];
       <div class="flex items-center gap-4 justify-center lg:justify-start">
         <div class="flex items-center gap-2">
           <span class="relative flex h-2.5 w-2.5">
-            <span
-              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"
-            ></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-qcRed"
-            ></span>
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-qcRed"></span>
           </span>
         </div>
         <div data-donate-hero-counter data-locale={numberLocale}>
           <span
             class="text-white font-bold text-4xl md:text-5xl tracking-tighter"
-            data-stat-value="patients">0</span
+            data-stat-value="patients"
           >
-          <span class="text-white/50 text-sm block mt-1"
-            >{t("donate.counterLabel")}</span
-          >
+            0
+          </span>
+          <span class="text-white/50 text-sm block mt-1">
+            {t("donate.counterLabel")}
+          </span>
         </div>
       </div>
 
-      {
-        qrDataUri && (
-          <div class="mt-8 relative inline-block">
-            <QRCode
-              dataUri={qrDataUri}
-              alt="QR code for donation page"
-              size="md"
-              downloadFilename="quinacare-donate-qr.png"
-            />
-            <a
-              href={`https://wa.me/?text=${encodeURIComponent(`${t("donate.pageTitle")}\n\nhttps://quinacare.org/api/qr${Astro.url.pathname}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
-              aria-label={t("share.whatsapp")}
-            >
-              <Icon name="fa-brands fa-whatsapp" class="text-lg" />
-            </a>
-          </div>
-        )
-      }
+      {qrDataUri && (
+        <div class="mt-8 relative inline-block">
+          <QRCode
+            dataUri={qrDataUri}
+            alt="QR code for donation page"
+            size="md"
+            downloadFilename="quinacare-donate-qr.png"
+          />
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(`${t("donate.pageTitle")}\n\nhttps://quinacare.org/api/qr${Astro.url.pathname}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg ring-2 ring-white/80 transition-transform hover:scale-110 active:scale-95"
+            aria-label={t("share.whatsapp")}
+          >
+            <Icon name="fa-brands fa-whatsapp" class="text-lg" />
+          </a>
+        </div>
+      )}
     </div>
 
     <!-- Right: Floating donation form card -->
-    <div
-      class="w-full lg:w-[460px] flex-shrink-0 bg-white rounded-xl shadow-2xl p-8"
-    >
+    <div class="w-full lg:w-[460px] flex-shrink-0 bg-white rounded-xl shadow-2xl p-8">
       <DonationFormCard
         lang={lang}
         scopeId="donate-page"
@@ -145,36 +127,33 @@ const numberLocale = localeMap[lang];
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {
-        donationTiers.map((tier, i) => {
-          const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
-          return (
-            <div
-              class:list={[
-                "group border border-gray-100 p-8 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md",
-                bg,
-              ]}
-            >
-              <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                <Icon name={tier.icon} class="text-6xl" />
-              </div>
-              <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
-                {formatCurrency(tier.amount, cc, false)}
-              </h3>
-              <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
-                {t(tier.titleKey)}
-              </h4>
-              <p class="qc-body leading-relaxed">{t(tier.descriptionKey)}</p>
+      {donationTiers.map((tier, i) => {
+        const bg = i % 2 === 1 ? "bg-qcGray/30" : "";
+        return (
+          <div
+            class:list={[
+              "group border border-gray-100 p-8 hover:border-qcRed transition-all duration-500 relative overflow-hidden rounded-md",
+              bg,
+            ]}
+          >
+            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+              <Icon name={tier.icon} class="text-6xl" />
             </div>
-          );
-        })
-      }
+            <h3 class="text-qcRed font-bold text-5xl tracking-tighter mb-6">
+              {formatCurrency(tier.amount, cc, false)}
+            </h3>
+            <h4 class="text-lg font-bold uppercase tracking-tight mb-4">
+              {t(tier.titleKey)}
+            </h4>
+            <p class="qc-body leading-relaxed">{t(tier.descriptionKey)}</p>
+          </div>
+        );
+      })}
     </div>
   </div>
 </section>
 
-{
-  /* TODO: re-enable "Vanuit het Veld" / "From the Field" / "Desde el Campo" section
+{/* TODO: re-enable "Vanuit het Veld" / "From the Field" / "Desde el Campo" section
 <!-- SECTION 3: Personal notes from the team -->
 <section class="py-24 bg-qcGray border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
@@ -230,11 +209,9 @@ const numberLocale = localeMap[lang];
     </div>
   </div>
 </section>
-*/
-}
+*/}
 
-{
-  /* TODO: re-enable "Onze Resultaten" / "Our Results" / "Nuestros Resultados" section
+{/* TODO: re-enable "Onze Resultaten" / "Our Results" / "Nuestros Resultados" section
 <!-- SECTION 4: What we've achieved -->
 <section class="py-24 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6">
@@ -350,8 +327,7 @@ const numberLocale = localeMap[lang];
     </div>
   </div>
 </section>
-*/
-}
+*/}
 
 <!-- Success overlay -->
 <div
@@ -359,9 +335,7 @@ const numberLocale = localeMap[lang];
   class="fixed inset-0 z-[100] bg-white flex items-center justify-center hidden"
 >
   <div class="text-center px-6">
-    <div
-      class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8"
-    >
+    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8">
       <Icon name="check" class="text-green-600 text-3xl" />
     </div>
     <h2 class="text-4xl font-bold tracking-tighter uppercase mb-4">

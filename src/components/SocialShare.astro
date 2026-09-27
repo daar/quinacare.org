@@ -86,20 +86,18 @@ const btnClass =
   >
     <Icon name="share-nodes" />
   </button>
-  {
-    networks.map((n) => (
-      <a
-        href={n.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        class={btnClass}
-        aria-label={n.label}
-        data-qr-share={n["data-qr-share"] ? true : undefined}
-      >
-        <Icon name={n.icon} />
-      </a>
-    ))
-  }
+  {networks.map((n) => (
+    <a
+      href={n.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class={btnClass}
+      aria-label={n.label}
+      data-qr-share={n["data-qr-share"] ? true : undefined}
+    >
+      <Icon name={n.icon} />
+    </a>
+  ))}
   <button
     type="button"
     data-share-copy
@@ -112,8 +110,12 @@ const btnClass =
       rule. Spans have no competing display style — plain `hidden`
       wins cleanly.
     -->
-    <span class="share-copy-link"><Icon name="link" /></span>
-    <span class="share-copy-done hidden"><Icon name="check" /></span>
+    <span class="share-copy-link">
+      <Icon name="link" />
+    </span>
+    <span class="share-copy-done hidden">
+      <Icon name="check" />
+    </span>
   </button>
 </div>
 

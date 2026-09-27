@@ -125,9 +125,7 @@ const t = {
 
     <div class="space-y-6">
       <a href="mailto:care@quinacare.org" class="flex items-center gap-4 group">
-        <div
-          class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 group-hover:bg-qcRed transition-colors duration-300"
-        >
+        <div class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 group-hover:bg-qcRed transition-colors duration-300">
           <Icon
             name="envelope"
             class="text-qcRed group-hover:text-white transition-colors duration-300"
@@ -135,18 +133,14 @@ const t = {
         </div>
         <div>
           <p class="text-sm text-gray-400">{t.email}</p>
-          <p
-            class="font-semibold text-qcBlack group-hover:text-qcRed transition-colors"
-          >
+          <p class="font-semibold text-qcBlack group-hover:text-qcRed transition-colors">
             care@quinacare.org
           </p>
         </div>
       </a>
 
       <a href="tel:+31630366030" class="flex items-center gap-4 group">
-        <div
-          class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 group-hover:bg-qcRed transition-colors duration-300"
-        >
+        <div class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0 group-hover:bg-qcRed transition-colors duration-300">
           <Icon
             name="phone"
             class="text-qcRed group-hover:text-white transition-colors duration-300"
@@ -154,18 +148,14 @@ const t = {
         </div>
         <div>
           <p class="text-sm text-gray-400">{t.phone}</p>
-          <p
-            class="font-semibold text-qcBlack group-hover:text-qcRed transition-colors"
-          >
+          <p class="font-semibold text-qcBlack group-hover:text-qcRed transition-colors">
             +31 6 30 36 60 30
           </p>
         </div>
       </a>
 
       <div class="flex items-center gap-4">
-        <div
-          class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
-        >
+        <div class="w-12 h-12 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0">
           <Icon name="location-dot" class="text-qcRed" />
         </div>
         <div>
@@ -226,10 +216,8 @@ const t = {
     data-msg-from={t.messageFrom}
     data-from={t.from}
   >
-    {
-      /* Honeypot — hidden from people and assistive tech; spam bots fill it
-        and get silently dropped server-side. Not a real field. */
-    }
+    {/* Honeypot — hidden from people and assistive tech; spam bots fill it
+        and get silently dropped server-side. Not a real field. */}
     <div
       class="absolute -left-[9999px] h-px w-px overflow-hidden"
       aria-hidden="true"
@@ -246,9 +234,9 @@ const t = {
 
     <div class="grid sm:grid-cols-2 gap-6">
       <div>
-        <label for="name" class="block text-sm font-semibold text-qcBlack mb-2"
-          >{t.name} *</label
-        >
+        <label for="name" class="block text-sm font-semibold text-qcBlack mb-2">
+          {t.name} *
+        </label>
         <input
           type="text"
           id="name"
@@ -259,9 +247,12 @@ const t = {
         />
       </div>
       <div>
-        <label for="email" class="block text-sm font-semibold text-qcBlack mb-2"
-          >{t.emailLabel} *</label
+        <label
+          for="email"
+          class="block text-sm font-semibold text-qcBlack mb-2"
         >
+          {t.emailLabel} *
+        </label>
         <input
           type="email"
           id="email"
@@ -274,16 +265,21 @@ const t = {
     </div>
 
     <div>
-      <label for="subject" class="block text-sm font-semibold text-qcBlack mb-2"
-        >{t.subject} *</label
+      <label
+        for="subject"
+        class="block text-sm font-semibold text-qcBlack mb-2"
       >
+        {t.subject} *
+      </label>
       <select
         id="subject"
         name="subject"
         required
         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all"
       >
-        <option value="" disabled selected>{t.subjectPlaceholder}</option>
+        <option value="" disabled selected>
+          {t.subjectPlaceholder}
+        </option>
         <option value="general">{t.subjectGeneral}</option>
         <option value="volunteer">{t.subjectVolunteer}</option>
         <option value="donate">{t.subjectDonate}</option>
@@ -296,28 +292,34 @@ const t = {
     </div>
 
     <div>
-      <label for="message" class="block text-sm font-semibold text-qcBlack mb-2"
-        >{t.message} *</label
+      <label
+        for="message"
+        class="block text-sm font-semibold text-qcBlack mb-2"
       >
+        {t.message} *
+      </label>
       <textarea
         id="message"
         name="message"
         rows="6"
         required
         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-qcBlack placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-qcRed/30 focus:border-qcRed transition-all resize-none"
-        placeholder={t.messagePlaceholder}></textarea>
+        placeholder={t.messagePlaceholder}
+      ></textarea>
     </div>
 
     <button
       type="submit"
       class="contact-btn qc-btn qc-btn--primary w-full sm:w-auto px-10 py-4 text-base"
     >
-      <span class="contact-btn-text"
-        ><Icon name="paper-plane" class="mr-2" />{t.send}</span
-      >
-      <span class="contact-btn-sending !hidden"
-        ><Icon name="spinner" class="mr-2 animate-spin" />{t.sending}</span
-      >
+      <span class="contact-btn-text">
+        <Icon name="paper-plane" class="mr-2" />
+        {t.send}
+      </span>
+      <span class="contact-btn-sending !hidden">
+        <Icon name="spinner" class="mr-2 animate-spin" />
+        {t.sending}
+      </span>
     </button>
 
     <p class="contact-error !hidden mt-4 text-sm font-sans text-qcRed">
@@ -334,7 +336,8 @@ const t = {
         class="underline decoration-dotted underline-offset-4 text-qcRed hover:decoration-solid"
       >
         {t.privacyLink}
-      </a>.
+      </a>
+      .
     </p>
   </form>
 </div>

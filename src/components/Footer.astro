@@ -56,37 +56,40 @@ const policyPlanLabel =
             rel="noopener noreferrer"
             aria-label="Instagram"
             class="hover:text-white transition-colors text-lg"
-            ><Icon name="instagram" /></a
           >
+            <Icon name="instagram" />
+          </a>
           <a
             href="https://www.linkedin.com/company/quina-care"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
             class="hover:text-white transition-colors text-lg"
-            ><Icon name="linkedin" /></a
           >
+            <Icon name="linkedin" />
+          </a>
           <a
             href="https://www.facebook.com/quinacare/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
             class="hover:text-white transition-colors text-lg"
-            ><Icon name="facebook" /></a
           >
+            <Icon name="facebook" />
+          </a>
           <a
             href="https://www.youtube.com/@quinacare2001"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="YouTube"
             class="hover:text-white transition-colors text-lg"
-            ><Icon name="youtube" /></a
           >
+            <Icon name="youtube" />
+          </a>
         </div>
       </div>
 
-      {
-        /* TODO: re-enable Organization column (and switch grid back to lg:grid-cols-4)
+      {/* TODO: re-enable Organization column (and switch grid back to lg:grid-cols-4)
       <div>
         <h2 class="qc-footer-heading mb-8">
           {t("footer.organization")}
@@ -116,39 +119,38 @@ const policyPlanLabel =
           </li>
         </ul>
       </div>
-      */
-      }
+      */}
 
       <div>
-        <h2 class="qc-footer-heading mb-8">
-          {t("footer.contact")}
-        </h2>
+        <h2 class="qc-footer-heading mb-8">{t("footer.contact")}</h2>
         <ul class="space-y-4 text-white/50 text-base">
           <li class="flex items-start gap-3">
             <Icon name="envelope" class="mt-1 text-white/50" />
             <a
               href={`mailto:${contact.email}`}
-              class="hover:text-white transition-colors">{contact.email}</a
+              class="hover:text-white transition-colors"
             >
+              {contact.email}
+            </a>
           </li>
           <li class="flex items-start gap-3">
             <Icon name="phone" class="mt-1 text-white/50" />
             <a
               href={`tel:${contact.phoneHref}`}
-              class="hover:text-white transition-colors">{contact.phone}</a
+              class="hover:text-white transition-colors"
             >
+              {contact.phone}
+            </a>
           </li>
           <li class="flex items-start gap-3">
             <Icon name="location-dot" class="mt-1 text-white/50" />
             <span>
-              {
-                contact.address.map((line, i) => (
-                  <>
-                    {i > 0 && <br />}
-                    {line}
-                  </>
-                ))
-              }
+              {contact.address.map((line, i) => (
+                <>
+                  {i > 0 && <br />}
+                  {line}
+                </>
+              ))}
             </span>
           </li>
           <li class="flex items-start gap-3">
@@ -208,26 +210,20 @@ const policyPlanLabel =
             />
           </a>
         </div>
-        <p
-          class="mt-6 text-sm text-white/50 leading-relaxed uppercase tracking-widest"
-        >
+        <p class="mt-6 text-sm text-white/50 leading-relaxed uppercase tracking-widest">
           {t("footer.certifiedCharity")}
         </p>
       </div>
     </div>
 
-    <div
-      class="qc-meta pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 !text-white/50"
-    >
+    <div class="qc-meta pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 !text-white/50">
       <div class="flex gap-8">
         <p>&copy; 2026 Quina Care</p>
-        {
-          /* TODO: re-enable privacy policy link once the page is written
+        {/* TODO: re-enable privacy policy link once the page is written
         <a href="#" class="hover:text-white transition-colors"
           >{t("footer.privacyPolicy")}</a
         >
-        */
-        }
+        */}
       </div>
     </div>
   </div>

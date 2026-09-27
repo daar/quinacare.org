@@ -26,38 +26,36 @@ const featured = projects
   )[0];
 ---
 
-{
-  featured && (
-    <section class="bg-qcGray py-24 border-y border-gray-100">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 items-center gap-16 px-6 md:grid-cols-2">
-        <div class="relative h-[500px] overflow-hidden rounded-2xl bg-gray-100 shadow-xl">
-          {featured.data.featured_image ? (
-            <Image
-              src={featured.data.featured_image}
-              alt={featured.data.featured_image_alt || featured.data.title}
-              layout="none"
-              class="absolute inset-0 h-full w-full object-cover"
-              widths={[400, 600, 900]}
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          ) : (
-            <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-              <img src="/logo-quina-care.svg" alt="" class="w-24 opacity-15" />
-            </div>
-          )}
-        </div>
-        <div>
-          <span class="qc-label mb-4">{t("focus.label")}</span>
-          <h2 class="mb-6 text-4xl font-bold">{featured.data.title}</h2>
-          <p class="qc-body mb-8 leading-relaxed">{featured.data.excerpt}</p>
-          <a
-            href={getLocalizedPath(`/projects/${featured.data.slug}`, lang)}
-            class="qc-btn qc-btn--primary inline-block px-10 py-4"
-          >
-            {t("focus.cta")}
-          </a>
-        </div>
+{featured && (
+  <section class="bg-qcGray py-24 border-y border-gray-100">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 items-center gap-16 px-6 md:grid-cols-2">
+      <div class="relative h-[500px] overflow-hidden rounded-2xl bg-gray-100 shadow-xl">
+        {featured.data.featured_image ? (
+          <Image
+            src={featured.data.featured_image}
+            alt={featured.data.featured_image_alt || featured.data.title}
+            layout="none"
+            class="absolute inset-0 h-full w-full object-cover"
+            widths={[400, 600, 900]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        ) : (
+          <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+            <img src="/logo-quina-care.svg" alt="" class="w-24 opacity-15" />
+          </div>
+        )}
       </div>
-    </section>
-  )
-}
+      <div>
+        <span class="qc-label mb-4">{t("focus.label")}</span>
+        <h2 class="mb-6 text-4xl font-bold">{featured.data.title}</h2>
+        <p class="qc-body mb-8 leading-relaxed">{featured.data.excerpt}</p>
+        <a
+          href={getLocalizedPath(`/projects/${featured.data.slug}`, lang)}
+          class="qc-btn qc-btn--primary inline-block px-10 py-4"
+        >
+          {t("focus.cta")}
+        </a>
+      </div>
+    </div>
+  </section>
+)}

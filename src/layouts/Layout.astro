@@ -220,17 +220,15 @@ const structuredData = {
         });
       })();
     </script>
-    {
-      cfAnalyticsToken && (
-        <script
-          is:inline
-          defer
-          crossorigin="anonymous"
-          src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon={`{"token":"${cfAnalyticsToken}"}`}
-        />
-      )
-    }
+    {cfAnalyticsToken && (
+      <script
+        is:inline
+        defer
+        crossorigin="anonymous"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={`{"token":"${cfAnalyticsToken}"}`}
+      ></script>
+    )}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--astro-font-arimo" preload />
     <Font cssVariable="--astro-font-effra" preload />
@@ -260,12 +258,10 @@ const structuredData = {
       type="application/ld+json"
       is:inline
       set:html={JSON.stringify(structuredData)}
-    />
-    {
-      alternateUrls.map(({ lang, url }) => (
-        <link rel="alternate" hreflang={lang} href={url} />
-      ))
-    }
+    ></script>
+    {alternateUrls.map(({ lang, url }) => (
+      <link rel="alternate" hreflang={lang} href={url} />
+    ))}
     <link
       rel="alternate"
       hreflang="x-default"

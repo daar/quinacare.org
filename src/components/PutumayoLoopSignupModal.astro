@@ -48,11 +48,8 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
   <div
     class="absolute inset-0 bg-black/60 backdrop-blur-sm"
     data-modal-backdrop
-  >
-  </div>
-  <div
-    class="relative z-10 w-full max-w-[480px] mx-4 max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl"
-  >
+  ></div>
+  <div class="relative z-10 w-full max-w-[480px] mx-4 max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl">
     <button
       type="button"
       data-modal-close
@@ -108,9 +105,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
               <legend class="qc-label mb-2">
                 {t("putumayoLoop.howToRun")}
               </legend>
-              <label
-                class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
-              >
+              <label class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50">
                 <input
                   type="radio"
                   name="mode"
@@ -127,9 +122,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                   </span>
                 </span>
               </label>
-              <label
-                class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
-              >
+              <label class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50">
                 <input
                   type="radio"
                   name="mode"
@@ -138,8 +131,9 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                   class="mt-1 accent-qcRed"
                 />
                 <span class="flex-1">
-                  <span class="font-bold block">{t("putumayoLoop.runHub")}</span
-                  >
+                  <span class="font-bold block">
+                    {t("putumayoLoop.runHub")}
+                  </span>
                   <span class="qc-meta block mt-0.5">
                     {t("putumayoLoop.runHubDesc")}
                   </span>
@@ -154,23 +148,19 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                 name="hub"
                 class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none bg-white"
               >
-                {
-                  /*
+                {/*
                 The placeholder option has an empty value so `required` on the
                 <select> (toggled by syncMode when hub mode is active) blocks
                 submit until the user picks a real hub.
-              */
-                }
+              */}
                 <option value="" disabled selected>
                   {t("putumayoLoop.chooseHubPlaceholder")}
                 </option>
-                {
-                  hubs.map((h) => (
-                    <option value={h.id}>
-                      {h.name} — {h.city}, {h.country}
-                    </option>
-                  ))
-                }
+                {hubs.map((h) => (
+                  <option value={h.id}>
+                    {h.name} — {h.city}, {h.country}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -203,13 +193,13 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                     class="w-full py-2.5 px-3 text-sm rounded-md border border-gray-200 focus:border-qcRed focus:outline-none transition-colors"
                   />
                   <datalist id={countryListId}>
-                    {countryOptions.map((c) => <option value={c.name} />)}
+                    {countryOptions.map((c) => (
+                      <option value={c.name} />
+                    ))}
                   </datalist>
                 </div>
               </div>
-              <p class="qc-meta mt-1">
-                {t("putumayoLoop.runLocationHelp")}
-              </p>
+              <p class="qc-meta mt-1">{t("putumayoLoop.runLocationHelp")}</p>
             </div>
 
             <fieldset class="distance-fieldset hidden">
@@ -217,23 +207,21 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                 {t("putumayoLoop.distanceLabel")}
               </legend>
               <div class="distance-options grid grid-cols-3 gap-2">
-                {
-                  ALL_DISTANCES.map((d) => (
-                    <label
-                      class="distance-option flex items-center justify-center cursor-pointer py-2.5 px-3 text-sm font-bold border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50 has-checked:text-qcRed"
-                      data-distance={d.value}
-                    >
-                      <input
-                        type="radio"
-                        name="distance"
-                        value={d.value}
-                        required
-                        class="sr-only"
-                      />
-                      {d.label}
-                    </label>
-                  ))
-                }
+                {ALL_DISTANCES.map((d) => (
+                  <label
+                    class="distance-option flex items-center justify-center cursor-pointer py-2.5 px-3 text-sm font-bold border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50 has-checked:text-qcRed"
+                    data-distance={d.value}
+                  >
+                    <input
+                      type="radio"
+                      name="distance"
+                      value={d.value}
+                      required
+                      class="sr-only"
+                    />
+                    {d.label}
+                  </label>
+                ))}
               </div>
             </fieldset>
 
@@ -249,9 +237,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                   {t("putumayoLoop.submitSignup")}
                 </span>
               </span>
-              <span
-                class="signup-btn-sending !hidden inline-flex items-center gap-2"
-              >
+              <span class="signup-btn-sending !hidden inline-flex items-center gap-2">
                 <Icon name="spinner" class="animate-spin" />
                 {t("putumayoLoop.hubContactSending")}
               </span>
@@ -282,9 +268,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
               {t("putumayoLoop.emergencyTitle")}
             </h3>
             <p class="qc-meta">{t("putumayoLoop.emergencyIntro")}</p>
-            <label
-              class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50"
-            >
+            <label class="flex items-start gap-3 cursor-pointer p-3 border border-gray-200 rounded-md hover:border-qcRed transition-colors has-checked:border-qcRed has-checked:bg-red-50/50">
               <input
                 type="checkbox"
                 name="emergencyOptIn"
@@ -330,9 +314,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
                   <Icon name="heart" />
                   {t("putumayoLoop.submitSignup")}
                 </span>
-                <span
-                  class="signup-btn-sending !hidden inline-flex items-center gap-2"
-                >
+                <span class="signup-btn-sending !hidden inline-flex items-center gap-2">
                   <Icon name="spinner" class="animate-spin" />
                   {t("putumayoLoop.hubContactSending")}
                 </span>
@@ -346,9 +328,7 @@ const hubDistanceMap: Record<string, string[]> = Object.fromEntries(
       </div>
 
       <div class="success-view hidden text-center py-6">
-        <div
-          class="mx-auto w-16 h-16 rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-4"
-        >
+        <div class="mx-auto w-16 h-16 rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-4">
           <Icon name="check" class="text-2xl" />
         </div>
         <h3 class="text-xl font-bold tracking-tighter uppercase mb-2">

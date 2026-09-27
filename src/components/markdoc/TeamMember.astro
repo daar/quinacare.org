@@ -20,33 +20,29 @@ const hasPhoto = !!image && !image.includes("placeholder");
        screens and full-width on a phone, and a portrait that stays 176px
        reads as an afterthought beside a 24px name and ten lines of story.
        The cap keeps it from dominating once the card grows. -->
-  <div
-    class="w-[58%] max-w-56 aspect-square rounded-full overflow-hidden mb-6 ring-2 ring-gray-100"
-  >
-    {
-      hasPhoto ? (
-        <OptimizedImage
-          src={image}
-          alt={name}
-          class="w-full h-full object-cover !rounded-none !m-0"
-        />
-      ) : (
-        <div
-          class="w-full h-full flex items-end justify-center bg-gray-100"
-          role="img"
-          aria-label={name}
+  <div class="w-[58%] max-w-56 aspect-square rounded-full overflow-hidden mb-6 ring-2 ring-gray-100">
+    {hasPhoto ? (
+      <OptimizedImage
+        src={image}
+        alt={name}
+        class="w-full h-full object-cover !rounded-none !m-0"
+      />
+    ) : (
+      <div
+        class="w-full h-full flex items-end justify-center bg-gray-100"
+        role="img"
+        aria-label={name}
+      >
+        <svg
+          class="w-[80%] h-[80%] text-gray-300"
+          viewBox="0 0 448 512"
+          fill="currentColor"
+          aria-hidden="true"
         >
-          <svg
-            class="w-[80%] h-[80%] text-gray-300"
-            viewBox="0 0 448 512"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
-          </svg>
-        </div>
-      )
-    }
+          <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
+        </svg>
+      </div>
+    )}
   </div>
   <!-- Global heading and paragraph rules otherwise win here, which left a
        72px void under the portrait and pushed the role away from the name.
@@ -54,13 +50,11 @@ const hasPhoto = !!image && !image.includes("placeholder");
        name and role read as one block, then the story. -->
   <h3 class="text-base font-bold text-qcBlack !mt-0 !mb-1">{name}</h3>
   <p class="text-sm text-gray-500 !mb-0">{role}</p>
-  {
-    email && (
-      <a href={`mailto:${email}`} class="text-xs text-qcRed hover:underline">
-        {email}
-      </a>
-    )
-  }
+  {email && (
+    <a href={`mailto:${email}`} class="text-xs text-qcRed hover:underline">
+      {email}
+    </a>
+  )}
   <div class="text-sm text-gray-600 mt-4 leading-relaxed prose-landing">
     <slot />
   </div>

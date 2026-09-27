@@ -14,24 +14,20 @@ const { quote, name, role, image } = Astro.props;
 
 <div class="bg-white rounded-xl p-8 md:p-10 shadow-sm max-w-3xl mx-auto">
   <div class="flex flex-col md:flex-row items-center gap-8">
-    {
-      image && (
-        <div class="flex-shrink-0">
-          <OptimizedImage
-            src={image}
-            alt={name}
-            width={128}
-            height={128}
-            class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-md"
-          />
-        </div>
-      )
-    }
+    {image && (
+      <div class="flex-shrink-0">
+        <OptimizedImage
+          src={image}
+          alt={name}
+          width={128}
+          height={128}
+          class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-md"
+        />
+      </div>
+    )}
     <div class={image ? "" : "text-center"}>
       <div class="flex items-center gap-3 mb-4">
-        <div
-          class="w-10 h-10 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0"
-        >
+        <div class="w-10 h-10 rounded-full bg-qcRed/10 flex items-center justify-center flex-shrink-0">
           <Icon name="quote-left" class="text-qcRed" />
         </div>
         <div>

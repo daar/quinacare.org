@@ -61,52 +61,50 @@ function relTime(iso: string): string {
     class="flex-1 overflow-y-auto divide-y divide-gray-50"
     style="max-height: 360px;"
   >
-    {
-      activities.map((activity) => {
-        if (activity.type === "signup") {
-          const s = activity.data;
-          const hub = s.hubId ? hubsById.get(s.hubId) : null;
-          const name = s.firstName ?? "";
-          const place = hub
-            ? `${hub.city}, ${countryName(hub.country, lang)}`
-            : (s.location ?? "—");
-          const text = t("putumayoLoop.signedUp")
-            .replace("{name}", name)
-            .replace("{place}", place);
-          return (
-            <li class="flex items-start gap-3 px-4 py-3">
-              <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
-                <Icon name="heart" class="text-xs" />
-              </span>
-              <div class="min-w-0 flex-1">
-                <p class="qc-body text-sm leading-snug">{text}</p>
-                <p class="qc-meta mt-0.5">{relTime(s.signedUpAt)}</p>
-              </div>
-            </li>
-          );
-        } else {
-          const d = activity.data;
-          const name = d.firstName ?? "Iemand";
-          const amount = `€${Math.round(d.amount_cents / 100)}`;
-          const donatedText = t("putumayoLoop.donated")
-            .replace("{name}", name)
-            .replace("{amount}", amount);
-          const thankYouText = t("putumayoLoop.donatedThankYou");
-          return (
-            <li class="flex items-start gap-3 px-4 py-3">
-              <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
-                <Icon name="hand-holding-heart" class="text-xs" />
-              </span>
-              <div class="min-w-0 flex-1">
-                <p class="qc-body text-sm leading-snug">
-                  {donatedText}. {thankYouText}
-                </p>
-                <p class="qc-meta mt-0.5">{relTime(d.donatedAt)}</p>
-              </div>
-            </li>
-          );
-        }
-      })
-    }
+    {activities.map((activity) => {
+      if (activity.type === "signup") {
+        const s = activity.data;
+        const hub = s.hubId ? hubsById.get(s.hubId) : null;
+        const name = s.firstName ?? "";
+        const place = hub
+          ? `${hub.city}, ${countryName(hub.country, lang)}`
+          : (s.location ?? "—");
+        const text = t("putumayoLoop.signedUp")
+          .replace("{name}", name)
+          .replace("{place}", place);
+        return (
+          <li class="flex items-start gap-3 px-4 py-3">
+            <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
+              <Icon name="heart" class="text-xs" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="qc-body text-sm leading-snug">{text}</p>
+              <p class="qc-meta mt-0.5">{relTime(s.signedUpAt)}</p>
+            </div>
+          </li>
+        );
+      } else {
+        const d = activity.data;
+        const name = d.firstName ?? "Iemand";
+        const amount = `€${Math.round(d.amount_cents / 100)}`;
+        const donatedText = t("putumayoLoop.donated")
+          .replace("{name}", name)
+          .replace("{amount}", amount);
+        const thankYouText = t("putumayoLoop.donatedThankYou");
+        return (
+          <li class="flex items-start gap-3 px-4 py-3">
+            <span class="w-8 h-8 rounded-full bg-red-50 text-qcRed flex items-center justify-center flex-shrink-0">
+              <Icon name="hand-holding-heart" class="text-xs" />
+            </span>
+            <div class="min-w-0 flex-1">
+              <p class="qc-body text-sm leading-snug">
+                {donatedText}. {thankYouText}
+              </p>
+              <p class="qc-meta mt-0.5">{relTime(d.donatedAt)}</p>
+            </div>
+          </li>
+        );
+      }
+    })}
   </ul>
 </div>
