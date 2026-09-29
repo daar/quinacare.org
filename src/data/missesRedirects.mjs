@@ -8,7 +8,7 @@ export default {
   "/en/word-vrijwilliger": "/en/become-volunteer",
   "/news/nieuwe-website": "/actueel/nieuwe-website",
   "/news/putumayo-loop-2026-launch": "/actueel/putumayo-loop-2026-launch",
-  "/fundraisers/demi-en-thomas": "/acties/demi-en-thomas",
+  "/fundraisers/demi-en-thomas": "/putumayo-loop",
   "/actueel/looking-for-equipment": "/actueel/we-zoeken-apparatuur",
   "/doneer/matthijs-altena-running-4-running-costs": "/acties/matthijs-altena-running-4-running-costs",
   "/fundraisers/karin-martens": "/acties/karin-martens",

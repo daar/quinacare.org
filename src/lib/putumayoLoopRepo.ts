@@ -134,9 +134,11 @@ async function hydrate(config: EditionConfig): Promise<Edition> {
     donations: {
       raised: skipStats
         ? (config.raised as number)
-        : Math.round(stats.raised_cents / 100),
+        : Math.round(stats.raised_cents / 100) + (config.raisedOffset ?? 0),
       target: config.target,
-      donors: skipStats ? (config.donors as number) : stats.donor_count,
+      donors: skipStats
+        ? (config.donors as number)
+        : stats.donor_count + (config.donorsOffset ?? 0),
       currency: "EUR",
     },
     donationItems,
