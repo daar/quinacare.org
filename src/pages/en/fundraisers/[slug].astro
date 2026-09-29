@@ -16,6 +16,7 @@ import DonationFormCard from "../../../components/DonationFormCard.astro";
 import SocialShare from "../../../components/SocialShare.astro";
 import QRCode from "../../../components/QRCode.astro";
 import { generateQrDataUri } from "../../../lib/qr";
+import { daysToGo, isActive } from "../../../lib/countdown";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
@@ -41,12 +42,9 @@ const pct = Math.round(
   (entry.data.raised_offset / entry.data.goal_amount) * 100,
 );
 const barPct = Math.min(100, pct);
-const daysToGo = Math.max(
-  0,
-  Math.ceil(
-    (entry.data.end_date.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
-  ),
-);
+// Both of these are corrected in the browser on load: the page is static,
+// so a build-time countdown stands still — see src/lib/countdown.ts.
+const days = daysToGo(entry.data.end_date);
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -65,8 +63,7 @@ function formatDate(date: Date): string {
   }).format(date);
 }
 
-// A fundraiser counts as active until its end date passes.
-const isActive = entry.data.end_date.getTime() > Date.now();
+const active = isActive(entry.data.end_date);
 
 const shareUrl = `https://quinacare.org${getLocalizedPath(`/fundraisers/${entry.data.slug}`, lang)}`;
 const shareTitle = entry.data.title;
@@ -93,13 +90,16 @@ const qrDataUri = await generateQrDataUri(shareUrl);
     </a>
 
     <div class="mt-6 mb-8">
-      {isActive && (
-        <div class="flex items-center gap-3 mb-4">
+      {
+        <div
+          class="fundraiser-active flex items-center gap-3 mb-4"
+          hidden={!active}
+        >
           <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-full">
             {t("fundraise.active")}
           </span>
         </div>
-      )}
+      }
       <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter leading-[1.1] uppercase">
         {entry.data.title}
       </h1>
@@ -153,6 +153,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                 data-currency="EUR"
                 data-initial-raised={entry.data.raised_offset}
                 data-initial-backers={entry.data.backers_offset}
+                data-end={entry.data.end_date.toISOString()}
               >
                 {formatCurrency(entry.data.raised_offset)}
               </div>
@@ -182,7 +183,9 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                 <Icon name="clock" class="text-gray-400" />
               </div>
               <div>
-                <div class="text-xl font-bold tracking-tight">{daysToGo}</div>
+                <div class="fundraiser-days text-xl font-bold tracking-tight">
+                  {days}
+                </div>
                 <div class="qc-meta">{t("fundraise.daysToGo")}</div>
               </div>
             </div>
@@ -331,7 +334,20 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 </style>
 
 <script>
+  import { daysToGo, isActive } from "../../../lib/countdown";
+
   document.addEventListener("DOMContentLoaded", () => {
+    // Static page: the countdown and the "active" badge were frozen at
+    // build time while the amount raised was fetched live. Correct them.
+    const stats = document.querySelector<HTMLElement>(".fundraiser-raised");
+    const end = stats?.dataset.end;
+    if (end) {
+      const daysEl = document.querySelector<HTMLElement>(".fundraiser-days");
+      if (daysEl) daysEl.textContent = String(daysToGo(end));
+      const badge = document.querySelector<HTMLElement>(".fundraiser-active");
+      if (badge) badge.hidden = !isActive(end);
+    }
+
     document.querySelectorAll(".progress-fill").forEach((bar) => {
       const el = bar as HTMLElement;
       el.style.setProperty("--target-width", el.style.width);

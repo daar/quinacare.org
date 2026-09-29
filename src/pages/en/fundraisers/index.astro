@@ -7,6 +7,7 @@ import Nav from "../../../components/Nav.astro";
 import Footer from "../../../components/Footer.astro";
 import { useTranslations, getLocalizedPath, type Lang } from "../../../i18n";
 import { generateQrDataUri } from "../../../lib/qr";
+import { daysToGo, isActive } from "../../../lib/countdown";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
@@ -38,11 +39,8 @@ function getPercentage(raised: number, goal: number): number {
   return Math.round((raised / goal) * 100);
 }
 
-function getDaysToGo(endDate: Date): number {
-  const now = new Date();
-  const diff = endDate.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
+// Rendered once at build time and then corrected in the browser, so the
+// countdown cannot go stale between deploys — see src/lib/countdown.ts.
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -84,8 +82,8 @@ function formatCurrency(amount: number): string {
               fundraiser.data.goal_amount,
             );
             const barPct = Math.min(100, pct);
-            const days = getDaysToGo(fundraiser.data.end_date);
-            const isActive = fundraiser.data.end_date.getTime() > Date.now();
+            const days = daysToGo(fundraiser.data.end_date);
+            const active = isActive(fundraiser.data.end_date);
             const qr = qrBySlug.get(fundraiser.data.slug)!;
             return (
               <a
@@ -97,6 +95,7 @@ function formatCurrency(amount: number): string {
                 data-card-index={idx}
                 data-slug={fundraiser.data.slug}
                 data-goal={fundraiser.data.goal_amount}
+                data-end={fundraiser.data.end_date.toISOString()}
                 data-initial-raised={fundraiser.data.raised_offset}
                 data-initial-backers={fundraiser.data.backers_offset}
               >
@@ -116,13 +115,16 @@ function formatCurrency(amount: number): string {
                     ) : (
                       <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
                     )}
-                    {isActive && (
-                      <div class="absolute top-4 left-4">
+                    {
+                      <div
+                        class="absolute top-4 left-4 fc-active"
+                        hidden={!active}
+                      >
                         <span class="qc-meta bg-emerald-500 !text-white px-3 py-1.5 rounded-sm">
                           {t("fundraise.active")}
                         </span>
                       </div>
-                    )}
+                    }
                     {import.meta.env.DEV && (
                       <div class="absolute top-4 right-4">
                         <span
@@ -185,7 +187,8 @@ function formatCurrency(amount: number): string {
                       </span>
                       <span class="w-1 h-1 rounded-full bg-gray-200" />
                       <span>
-                        {days} {t("fundraise.daysToGo")}
+                        <span class="fc-days">{days}</span>{" "}
+                        {t("fundraise.daysToGo")}
                       </span>
                     </div>
 
@@ -245,8 +248,21 @@ function formatCurrency(amount: number): string {
 </Layout>
 
 <script>
+  import { daysToGo, isActive } from "../../../lib/countdown";
+
   document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll<HTMLElement>(".fundraise-card");
+
+    // The page is static, so both of these were frozen at build time while
+    // the money beside them was fetched live. Put them right on load.
+    cards.forEach((card) => {
+      const end = card.dataset.end;
+      if (!end) return;
+      const daysEl = card.querySelector<HTMLElement>(".fc-days");
+      if (daysEl) daysEl.textContent = String(daysToGo(end));
+      const badge = card.querySelector<HTMLElement>(".fc-active");
+      if (badge) badge.hidden = !isActive(end);
+    });
 
     // QR code download — bypass the card link and save the PNG.
     document
