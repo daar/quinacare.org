@@ -148,6 +148,14 @@ export interface EditionConfig {
    */
   raised?: number;
   donors?: number;
+  /**
+   * Added on top of the live Turso totals, for money raised for this
+   * edition that never passed through our donate flow and so has no row
+   * in `donations`. Ignored when `raised`/`donors` are set, since those
+   * are final figures that already account for everything.
+   */
+  raisedOffset?: number;
+  donorsOffset?: number;
   /** Static per-location subscribers for the map (past editions). */
   subscribers?: Subscriber[];
 }
@@ -329,6 +337,14 @@ export const editions: EditionConfig[] = [
       },
     ],
     target: 25000,
+    // Demi and Thomas ran for the Putumayo Loop, so their fundraiser was
+    // folded into this edition (#144). Their paid donations were moved to
+    // this slug in Turso and show up in the live query; these two are the
+    // offset their page carried for donations collected off the website,
+    // which exist nowhere in the database and would otherwise be lost
+    // when that page was deleted.
+    raisedOffset: 310,
+    donorsOffset: 9,
   },
 ];
 

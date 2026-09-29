@@ -90,6 +90,15 @@ export default defineConfig({
     "/es/donate/return": "/es/donar/return",
     // Old WordPress ES contact slug.
     "/es/es-contacto": "/es/contacto",
+    // Demi and Thomas ran for the Putumayo Loop, so their fundraiser was
+    // merged into it (#144) and their page deleted. Each language keeps
+    // its own slug, and each goes to the Putumayo Loop in that language.
+    // "/doneer/demi-en-thomas" is the old WordPress URL, which used to
+    // point at the fundraiser page and would now land on nothing.
+    "/acties/demi-en-thomas": "/putumayo-loop",
+    "/en/fundraisers/demi-and-thomas": "/en/putumayo-run",
+    "/es/campañas/demi-y-thomas": "/es/putumayo-carrera",
+    "/doneer/demi-en-thomas": "/putumayo-loop",
     // The bequest post moved from the news collection to a standalone page
     // under "What can you do"; keep the old published news URLs alive.
     "/actueel/nalatenschap": "/nalatenschap",
@@ -100,7 +109,6 @@ export default defineConfig({
     "/blogs-vlogs": "/actueel",
     "/doneer/anbi": "/doneer",
     "/doneer/andrea-halve-marathon": "/acties/andrea-halve-marathon",
-    "/doneer/demi-en-thomas": "/acties/demi-en-thomas",
     "/doneer/esmee-en-diana": "/acties/esmee-en-diana",
     "/doneer/karin-martens-maakt-operaties-mogelijk": "/acties/karin-martens",
     "/doneer/putumayo-loop-2025": "/putumayo-loop/2025",
