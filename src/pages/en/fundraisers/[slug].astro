@@ -38,10 +38,12 @@ const { Content } = await render(entry);
 
 // The displayed percentage shows the true funded amount (can exceed 100%),
 // while the progress bar width stays capped so it never overflows its track.
-const pct = Math.round(
-  (entry.data.raised_offset / entry.data.goal_amount) * 100,
-);
-const barPct = Math.min(100, pct);
+// Both are absent when the fundraiser has no goal_amount at all.
+const hasGoal = entry.data.goal_amount != null;
+const pct = hasGoal
+  ? Math.round((entry.data.raised_offset / entry.data.goal_amount!) * 100)
+  : null;
+const barPct = pct == null ? 0 : Math.min(100, pct);
 // Both of these are corrected in the browser on load: the page is static,
 // so a build-time countdown stands still — see src/lib/countdown.ts.
 const days = daysToGo(entry.data.end_date);
@@ -136,14 +138,16 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 
           <div class="p-6 md:p-8 flex flex-col flex-1">
             <div class="mb-6">
-              <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden mb-4">
-                <div
-                  class="progress-fill bg-gradient-to-r from-qcRed to-rose-400 h-3 rounded-full relative"
-                  style={`width: ${barPct}%`}
-                >
-                  <div class="absolute inset-0 rounded-full bg-white/20 animate-pulse-subtle"></div>
+              {hasGoal && (
+                <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden mb-4">
+                  <div
+                    class="progress-fill bg-gradient-to-r from-qcRed to-rose-400 h-3 rounded-full relative"
+                    style={`width: ${barPct}%`}
+                  >
+                    <div class="absolute inset-0 rounded-full bg-white/20 animate-pulse-subtle"></div>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div
                 class="fundraiser-raised text-3xl md:text-4xl font-bold tracking-tight mb-1"
@@ -158,18 +162,32 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                 {formatCurrency(entry.data.raised_offset)}
               </div>
               <p class="text-sm text-gray-400">
-                {t("fundraise.raised")} {t("fundraise.of")}{" "}
-                {formatCurrency(entry.data.goal_amount)} {t("fundraise.goal")}
+                {t("fundraise.raised")}
+                {hasGoal && (
+                  <>
+                    {" "}
+                    {t("fundraise.of")}{" "}
+                    {formatCurrency(entry.data.goal_amount!)}{" "}
+                    {t("fundraise.goal")}
+                  </>
+                )}
               </p>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 py-5 border-t border-gray-100 mb-6">
-              <div>
-                <div class="fundraiser-pct text-2xl font-bold tracking-tight">
-                  {pct}%
+            <div
+              class:list={[
+                "grid gap-4 py-5 border-t border-gray-100 mb-6",
+                hasGoal ? "grid-cols-2" : "grid-cols-1",
+              ]}
+            >
+              {hasGoal && (
+                <div>
+                  <div class="fundraiser-pct text-2xl font-bold tracking-tight">
+                    {pct}%
+                  </div>
+                  <div class="qc-meta">{t("fundraise.funded")}</div>
                 </div>
-                <div class="qc-meta">{t("fundraise.funded")}</div>
-              </div>
+              )}
               <div>
                 <div class="fundraiser-backers text-2xl font-bold tracking-tight">
                   {entry.data.backers_offset}
@@ -363,7 +381,9 @@ const qrDataUri = await generateQrDataUri(shareUrl);
     if (!raisedEl) return;
 
     const slug = raisedEl.dataset.slug!;
-    const goal = Number(raisedEl.dataset.goal);
+    // Absent for goal-less fundraisers — data-goal is simply not rendered
+    // in that case (see hasGoal in the frontmatter).
+    const goal = raisedEl.dataset.goal ? Number(raisedEl.dataset.goal) : null;
     const locale = raisedEl.dataset.locale!;
     const currency = raisedEl.dataset.currency!;
     const raisedOffset = Number(raisedEl.dataset.initialRaised);
@@ -376,8 +396,6 @@ const qrDataUri = await generateQrDataUri(shareUrl);
         // off-site donations or any missing from the database.
         const totalRaised = raisedOffset + data.raised_cents / 100;
         const totalBackers = backersOffset + data.donor_count;
-        const pct = Math.round((totalRaised / goal) * 100);
-        const barPct = Math.min(100, pct);
 
         const fmt = new Intl.NumberFormat(locale, {
           style: "currency",
@@ -388,13 +406,17 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 
         raisedEl.textContent = fmt.format(totalRaised);
 
-        const pctEl = document.querySelector<HTMLElement>(".fundraiser-pct");
-        if (pctEl) pctEl.textContent = `${pct}%`;
-
         const backersEl = document.querySelector<HTMLElement>(
           ".fundraiser-backers",
         );
         if (backersEl) backersEl.textContent = String(totalBackers);
+
+        if (goal == null) return;
+        const pct = Math.round((totalRaised / goal) * 100);
+        const barPct = Math.min(100, pct);
+
+        const pctEl = document.querySelector<HTMLElement>(".fundraiser-pct");
+        if (pctEl) pctEl.textContent = `${pct}%`;
 
         const bar = document.querySelector<HTMLElement>(".progress-fill");
         if (bar) {

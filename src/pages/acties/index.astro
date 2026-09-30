@@ -36,7 +36,11 @@ for (const f of sorted) {
 
 // True funded percentage — may exceed 100%. The progress bar caps the
 // width separately so it never overflows its track.
-function getPercentage(raised: number, goal: number): number {
+function getPercentage(
+  raised: number,
+  goal: number | undefined,
+): number | null {
+  if (goal == null) return null;
   return Math.round((raised / goal) * 100);
 }
 
@@ -78,11 +82,12 @@ function formatCurrency(amount: number): string {
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
         >
           {sorted.map((fundraiser, idx) => {
+            const hasGoal = fundraiser.data.goal_amount != null;
             const pct = getPercentage(
               fundraiser.data.raised_offset,
               fundraiser.data.goal_amount,
             );
-            const barPct = Math.min(100, pct);
+            const barPct = pct == null ? 0 : Math.min(100, pct);
             const days = daysToGo(fundraiser.data.end_date);
             const active = isActive(fundraiser.data.end_date);
             const qr = qrBySlug.get(fundraiser.data.slug)!;
@@ -158,27 +163,39 @@ function formatCurrency(amount: number): string {
                 </div>
 
                 <div class="p-5 md:p-6">
-                  <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
-                    <div
-                      class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
-                      style={`width: ${barPct}%`}
-                    />
-                  </div>
+                  {hasGoal && (
+                    <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4">
+                      <div
+                        class="fc-bar bg-qcRed h-1.5 rounded-full transition-all duration-500"
+                        style={`width: ${barPct}%`}
+                      />
+                    </div>
+                  )}
 
-                  <div class="flex items-baseline justify-between mb-1">
+                  <div
+                    class:list={[
+                      "flex items-baseline justify-between",
+                      hasGoal ? "mb-1" : "mb-4",
+                    ]}
+                  >
                     <span class="fc-raised text-xl md:text-2xl font-bold tracking-tight">
                       {formatCurrency(fundraiser.data.raised_offset)}
                     </span>
-                    <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
-                      <span class="fc-pct">{pct}</span>% {t("fundraise.funded")}
-                    </span>
+                    {hasGoal && (
+                      <span class="bg-gray-100 text-qcBlack text-[10px] font-bold px-2 py-0.5 rounded">
+                        <span class="fc-pct">{pct}</span>%{" "}
+                        {t("fundraise.funded")}
+                      </span>
+                    )}
                   </div>
 
-                  <p class="text-sm text-gray-400 mb-4">
-                    {t("fundraise.of")}{" "}
-                    {formatCurrency(fundraiser.data.goal_amount)}{" "}
-                    {t("fundraise.goal")}
-                  </p>
+                  {hasGoal && (
+                    <p class="text-sm text-gray-400 mb-4">
+                      {t("fundraise.of")}{" "}
+                      {formatCurrency(fundraiser.data.goal_amount!)}{" "}
+                      {t("fundraise.goal")}
+                    </p>
+                  )}
 
                   <div class="flex items-center gap-2 text-[11px] text-gray-400 font-bold mb-4">
                     <span>
@@ -381,7 +398,9 @@ function formatCurrency(amount: number): string {
       const slug = card.dataset.slug;
       if (!slug) return;
 
-      const goal = Number(card.dataset.goal);
+      // Absent for goal-less fundraisers — data-goal is simply not
+      // rendered on the card in that case (see hasGoal in the frontmatter).
+      const goal = card.dataset.goal ? Number(card.dataset.goal) : null;
       const raisedOffset = Number(card.dataset.initialRaised);
       const backersOffset = Number(card.dataset.initialBackers);
 
@@ -391,17 +410,19 @@ function formatCurrency(amount: number): string {
           // Live Turso totals plus the frontmatter offset.
           const totalRaised = raisedOffset + data.raised_cents / 100;
           const totalBackers = backersOffset + data.donor_count;
-          const pct = Math.round((totalRaised / goal) * 100);
-          const barPct = Math.min(100, pct);
 
           const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
           if (raisedEl) raisedEl.textContent = fmt.format(totalRaised);
 
-          const pctEl = card.querySelector<HTMLElement>(".fc-pct");
-          if (pctEl) pctEl.textContent = String(pct);
-
           const backersEl = card.querySelector<HTMLElement>(".fc-backers");
           if (backersEl) backersEl.textContent = String(totalBackers);
+
+          if (goal == null) return;
+          const pct = Math.round((totalRaised / goal) * 100);
+          const barPct = Math.min(100, pct);
+
+          const pctEl = card.querySelector<HTMLElement>(".fc-pct");
+          if (pctEl) pctEl.textContent = String(pct);
 
           const bar = card.querySelector<HTMLElement>(".fc-bar");
           if (bar) bar.style.width = `${barPct}%`;
