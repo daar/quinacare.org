@@ -40,23 +40,75 @@ const tk = (key: string) => t(key as TranslationKey);
 
 const searchPath = getLocalizedPath("/search", lang);
 
-// Determine donate button behavior based on current page
-const currentPath = new URL(Astro.url).pathname;
-const putumayoRoutes: Record<string, string> = {
-  nl: "/putumayo-loop",
-  en: "/en/putumayo-run",
-  es: "/es/putumayo-carrera",
-};
-const isPutumayoPage = Object.values(putumayoRoutes).some(
-  (route) => currentPath === route,
-);
+// --- Donate button target ------------------------------------------
+//
+// Most pages send the nav's donate button to the general /donate page.
+// A few pages should instead open THEIR OWN donation modal, so "donate"
+// means "donate to what I'm looking at" rather than sending the visitor
+// away. This is the one place that decides — add a rule to donateRules
+// for any future page that needs it; nothing below this block, or in
+// the button markup further down, should need to change.
+interface DonateRule {
+  /** For readability of this list only. */
+  name: string;
+  /** Normalized pathname (see below) -> dialog id, or null if this rule
+   *  does not apply to the current page. */
+  modalId: (path: string) => string | null;
+}
+
+// Putumayo Loop / Run / Carrera: one edition page per language, each a
+// fixed path with its own fixed modal id.
 const putumayoModalIds: Record<string, string> = {
   "/putumayo-loop": "putumayo-loop-donate-modal",
   "/en/putumayo-run": "putumayo-run-donate-modal",
   "/es/putumayo-carrera": "putumayo-carrera-donate-modal",
 };
-const donateModalId = isPutumayoPage ? putumayoModalIds[currentPath] : null;
-const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
+
+// A fundraiser's own detail page ("/acties/<slug>", "/en/fundraisers/<slug>",
+// "/es/campañas/<slug>"). Every fundraiser shares the same fixed modal id
+// (DonationModal id="fundraiser-donate-modal" on each fundraiser page),
+// so only "is this a detail page, not the listing or the intake form"
+// needs deciding here — no slug needs to be threaded through.
+const fundraiserListPath = getLocalizedPath("/fundraisers", lang);
+
+const donateRules: DonateRule[] = [
+  {
+    name: "Putumayo Loop edition",
+    modalId: (path) => putumayoModalIds[path] ?? null,
+  },
+  {
+    name: "Fundraiser detail page",
+    modalId: (path) => {
+      if (!path.startsWith(`${fundraiserListPath}/`)) return null;
+      const slug = path.slice(fundraiserListPath.length + 1);
+      // "start" excludes the fundraiser intake form (PR #136), which
+      // sits one segment under the same listing path but has no donate
+      // modal of its own — not live on main yet, but cheap to guard
+      // against now rather than forget about later.
+      return slug && !slug.includes("/") && slug !== "start"
+        ? "fundraiser-donate-modal"
+        : null;
+    },
+  },
+];
+
+// Astro.url.pathname carries a trailing slash during static generation
+// and percent-encodes non-ASCII characters (so the Spanish "campañas"
+// segment arrives as "campa%C3%B1as") — normalized once, here, rather
+// than in every rule above.
+const currentPath = new URL(Astro.url).pathname;
+const normalizedPath =
+  currentPath
+    .replace(/\/$/, "")
+    .split("/")
+    .map((s) => decodeURIComponent(s))
+    .join("/") || "/";
+
+const donateModalId = donateRules.reduce<string | null>(
+  (found, rule) => found ?? rule.modalId(normalizedPath),
+  null,
+);
+const donateLink = donateModalId ? null : getLocalizedPath("/donate", lang);
 ---
 
 <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 h-20 font-sans">
@@ -270,8 +322,11 @@ const donateLink = isPutumayoPage ? null : getLocalizedPath("/donate", lang);
         </button>
       </div>
 
-      {/* Donate button */}
-      {isPutumayoPage ? (
+      {/* Donate button. Branches on donateModalId, not on which page
+          type set it — any page that opens its own donate modal (the
+          Putumayo Loop editions, a fundraiser's own page) gets the
+          button variant; everywhere else gets a plain link to /donate. */}
+      {donateModalId ? (
         <button
           id="nav-donate-btn"
           data-open-modal={donateModalId}
