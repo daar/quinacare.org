@@ -1,0 +1,35 @@
+---
+// Redirects the two old jaarverslag PDF paths from the previous WordPress
+// site (#101). Handled as an SSR route rather than a static Netlify
+// redirect because the source paths contain a space
+// ("Quina Care jaarverslag 2021.pdf"), and Netlify's _redirects format
+// uses whitespace to separate the from/to/status columns — a literal
+// space breaks the rule, and percent-encoding it did not match either
+// (confirmed against the local Netlify CLI's redirect engine; matching
+// only the two other rules in the same file that don't contain a space).
+// Astro's own routing decodes the path for us, so this matches reliably
+// regardless of how the space arrives on the wire.
+export const prerender = false;
+
+const OLD_TO_NEW: Record<string, string> = {
+  "Quina Care jaarverslag 2021.pdf":
+    "/nl/jaarverslagen/Jaarverslag-Quina-Care-2021.pdf",
+  "Quina Care Jaarverslag 2020.pdf":
+    "/nl/jaarverslagen/Jaarverslag-Quina-Care-2020.pdf",
+};
+
+const requested = Astro.params.path;
+const target = requested ? OLD_TO_NEW[requested] : undefined;
+
+if (target) {
+  return Astro.redirect(target, 301);
+}
+
+Astro.response.status = 404;
+---
+
+<html lang="nl">
+  <body>
+    <p>Pagina niet gevonden.</p>
+  </body>
+</html>
