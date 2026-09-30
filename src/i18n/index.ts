@@ -415,6 +415,14 @@ export const ui = {
     "putumayoLoop.participantsMapTitle": "Waar er gelopen werd",
     "putumayoLoop.story2025":
       "In 2025 vierden we het lustrum van de Putumayo Loop. Voor het eerst werd op meerdere plekken in de wereld tegelijk gelopen — Putumayo, Den Haag en Hulst — met in totaal meer dan 170 deelnemers. Een dag om nooit te vergeten.",
+    // Homepage - Putumayo Run announcement popup
+    "runPopup.liveBadge": "Live",
+    "runPopup.title": "De Putumayo Loop komt eraan!",
+    "runPopup.body":
+      "Op zondag 18 oktober lopen we wereldwijd tegelijk voor Hospital San Miguel. Doe mee als loper of steun ons met een donatie — iedere bijdrage telt!",
+    "runPopup.liveStat":
+      "We lopen al in {locations} locaties, met {runners} lopers aangemeld!",
+    "runPopup.liveStatLoading": "Live cijfers laden…",
     "submenu.joinTeam": "Word vrijwilliger",
     "submenu.bequest": "Nalatenschap",
     "submenu.becomePartner": "Word partner",
@@ -853,6 +861,14 @@ export const ui = {
     "putumayoLoop.participantsMapTitle": "Where the running happened",
     "putumayoLoop.story2025":
       "In 2025 we celebrated the fifth anniversary of the Putumayo Run. For the first time runners gathered in multiple cities at once — Putumayo, The Hague and Hulst — with more than 170 participants in total. A day to remember.",
+    // Homepage - Putumayo Run announcement popup
+    "runPopup.liveBadge": "Live",
+    "runPopup.title": "The Putumayo Run is almost here!",
+    "runPopup.body":
+      "On Sunday October 18th, runners all over the world lace up together for Hospital San Miguel. Join us on the road or back us with a donation — every bit helps!",
+    "runPopup.liveStat":
+      "We're already running in {locations} locations, with {runners} runners signed up!",
+    "runPopup.liveStatLoading": "Loading live numbers…",
     "submenu.joinTeam": "Join Our Team",
     "submenu.bequest": "Bequests",
     "submenu.becomePartner": "Become a Partner",
@@ -1291,6 +1307,14 @@ export const ui = {
     "putumayoLoop.participantsMapTitle": "Dónde se corrió",
     "putumayoLoop.story2025":
       "En 2025 celebramos el quinto aniversario de la Putumayo Carrera. Por primera vez se corrió simultáneamente en varias ciudades — Putumayo, La Haya y Hulst — con más de 170 participantes en total. Un día para recordar.",
+    // Homepage - Putumayo Run announcement popup
+    "runPopup.liveBadge": "En vivo",
+    "runPopup.title": "¡La Putumayo Carrera ya está cerca!",
+    "runPopup.body":
+      "El domingo 18 de octubre corremos a la vez en todo el mundo por Hospital San Miguel. Únete como corredor o apóyanos con una donación — ¡cada aporte cuenta!",
+    "runPopup.liveStat":
+      "¡Ya corremos en {locations} ubicaciones, con {runners} corredores inscritos!",
+    "runPopup.liveStatLoading": "Cargando cifras en vivo…",
     "submenu.joinTeam": "Únete al equipo",
     "submenu.bequest": "Legado",
     "submenu.becomePartner": "Sé socio",
