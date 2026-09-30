@@ -120,6 +120,59 @@ export default defineConfig({
     // Sponsor booklet moved from donate subroutes to standalone pages
     "/en/donate/sponsor-booklet": "/en/sponsor-a-staff-member",
     "/es/donar/sponsor-booklet": "/es/patrocinar-personal",
+
+    // --- Resolved from issue #101 (curated, not from the auto-generated
+    // 404 log) --------------------------------------------------------
+
+    // Annual report PDFs from the old WordPress uploads folder — the
+    // reports themselves are already hosted at their native paths.
+    "/wp-content/uploads/2025/05/Jaarverslag-Quina-Care-2024.pdf":
+      "/nl/jaarverslagen/Jaarverslag-Quina-Care-2024.pdf",
+    "/wp-content/uploads/2024/06/Jaarverslag-Quina-Care-2023.pdf":
+      "/nl/jaarverslagen/Jaarverslag-Quina-Care-2023.pdf",
+    "/wp-content/uploads/2023/06/Jaarverslag-Quina-Care-2022.pdf":
+      "/nl/jaarverslagen/Jaarverslag-Quina-Care-2022.pdf",
+
+    // Old WordPress "about us" pages, retargeted per Yvonne's review.
+    "/over-ons/wie-zijn-wij": "/over-ons",
+    "/over-ons/beleidsplan": "/over-ons",
+    "/over-ons/waarom-willen-we-dit": "/over-ons",
+    "/wat-is-quina-care/quina-care": "/over-ons",
+    "/wat-is-quina-care/beleid": "/over-ons",
+    "/en/about-us/annual-report-and-policy-plan": "/en/annual-reports",
+    "/en/about-us/en-media": "/en/news",
+    "/en/what-is-quina-care/the-beginning": "/en/news/the-beginning",
+    "/en/about-us/newsletter/2018-newsletter": "/en/news",
+    "/en/en-blogs-vlogs/2018-blogs-vlogs": "/en/news",
+
+    // Old sponsor-action URLs — the fundraiser kept a different working
+    // title internally (Mollie donations were tagged "lopen-lopen-lopen"),
+    // and "sponsorboekje" is the current "sponsor a staff member" page.
+    "/doneer/lopen-lopen-lopen": "/acties/ellen-en-gerrit",
+    "/doneer/van-amsterdam-tot-putumayo": "/acties/marathon-amsterdam-2021",
+    "/doneer/sponsorboekje": "/sponsor-medewerker",
+
+    // Old WordPress person pages ("-1"/"-2"/"-3" collision-cruft slugs).
+    // Most go to the staff overview; three have a specific post instead.
+    "/mercedes-lidia-dagua-noteno-1": "/personeelsleden",
+    "/angelo-xavier-reyes-barco-2": "/personeelsleden",
+    "/gema-karolina-zambrano-garcia-3": "/personeelsleden",
+    "/maria-vanessa-davila-campos-3": "/personeelsleden",
+    "/nl-andrea-diaz-saenz": "/personeelsleden",
+    "/es/es-rosa-perez-tobar": "/es/personal",
+    "/hanna-hazenberg-3": "/actueel/hanna-hazenberg",
+    "/cootjebouwman-zaaijer": "/actueel/cootje-bouwman-zaaijer",
+    "/en/baukje-zaaijer-2": "/en/news/baukje-zaaijer",
+
+    // Small confirmed fixes: a typo, an old contact path, and old blog
+    // paths that moved into the news collection.
+    "/putomayo-loop": "/putumayo-loop",
+    "/en/en-contact": "/en/contact",
+    "/blogs-vlogs/rotterdam-marathon": "/acties/rotterdam-marathon",
+    "/blogs-vlogs/nuevo-rocafuerte-is-de-wereld":
+      "/actueel/nuevo-rocafuerte-is-de-wereld",
+    "/en/en-blogs-vlogs/renovation-started": "/en/news/renovation-started",
+    "/en/en-blogs-vlogs/en-ricardo-salazar": "/en/news/ricardo-salazar",
   },
   fonts: [
     {
