@@ -7,11 +7,11 @@ temp
 # reports/  — donations dashboards written by scripts/donations-report.py;
 #             the HTML is emitted by the script, so reformatting it only
 #             produces churn on the next run.
-# missesRedirects.mjs — written by scripts/resolve-404s.mjs, one redirect
+# routesRedirects.mjs — written by scripts/resolve-404s.mjs, one redirect
 #             per line on purpose so a diff shows routes that changed
 #             rather than rewrapped lines.
 reports
-src/data/missesRedirects.mjs
+src/data/routesRedirects.mjs
 
 # Vendored from github:pbakaus/impeccable. Upstream's formatting, not ours —
 # reformatting it would diverge from the source and churn on every update.
