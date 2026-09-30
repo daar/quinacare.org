@@ -31,9 +31,9 @@ const hubsForClient = hubs.map((h) => ({
   country: countryName(h.country, lang),
 }));
 
-// Bridge the SSR data to the client-side module script (Astro processes
-// <script> tags in isolation and does not give them access to frontmatter
-// variables directly).
+// Bridge the SSR data to the client-side module script below (Astro
+// processes a page's script tag in isolation and does not give it access
+// to frontmatter variables directly).
 const mapData = JSON.stringify({
   hubs: hubsForClient,
   subscribers,
