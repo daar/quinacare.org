@@ -85,7 +85,7 @@ Stage `src/data/routesRedirects.mjs` plus every published `.mdoc` (group a post'
 ## Notes
 
 - **Local/dev misses are ignored** by referrer (`localhost`/`127.0.0.1`/`0.0.0.0`/`.local`) — and `src/pages/404.astro` no longer beacons at all from those hosts, so the table stays clean going forward.
-- `routeRedirects.mjs` (note: singular "route" — an older, unrelated file, already removed) was removed: redirects come **only** from this 404 log. There is no separate manual block anywhere else — a hand-added redirect (a page merge, a broken external link, anything not sourced from the 404 log) is added directly to `routesRedirects.mjs` as a normal entry, exactly like an auto-resolved one. The script treats it the same way: it survives every future run because the script seeds from the file already on disk (see "cumulative" below), and it gets kept sorted alphabetically along with everything else.
+- Redirects come **only** from `routesRedirects.mjs` — there is no separate manual block anywhere else. A hand-added redirect (a page merge, a broken external link, anything not sourced from the 404 log) goes in directly as a normal entry, exactly like an auto-resolved one: it survives every future run (see "cumulative" below) and stays sorted alphabetically with everything else.
 - **Sorted alphabetically by key**, enforced by the script on every write — not just this run's cleanup. Keeps the file scannable and diffs small; a fresh resolution lands in place rather than always appending at the end.
 - Targets always use the **native localized routes** (see `SEG` in the script, mirroring `src/i18n` `ROUTES`).
 - The script is safe to re-run; publishing and the generated file are idempotent. Only `--clear` is destructive (and snapshotted).
