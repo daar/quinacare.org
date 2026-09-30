@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 import netlify from "@astrojs/netlify";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
-import missesRedirects from "./src/data/missesRedirects.mjs";
+import routesRedirects from "./src/data/routesRedirects.mjs";
 
 // Keep the build-time image-optimization pass within the Netlify
 // container's memory. Source images are already capped to a sane size
@@ -80,7 +80,7 @@ export default defineConfig({
     },
   },
   redirects: {
-    ...missesRedirects,
+    ...routesRedirects,
   },
   fonts: [
     {

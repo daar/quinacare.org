@@ -5,7 +5,7 @@
 //   - if a matching draft page/post exists -> publish it (and redirect the
 //     old URL to its native canonical URL),
 //   - else if it maps to a known section -> add a redirect,
-// writing src/data/missesRedirects.mjs. Targets use the native (localized)
+// writing src/data/routesRedirects.mjs. Targets use the native (localized)
 // routes from PR #27. With --clear it also empties the table afterwards.
 //
 // Usage:  node --env-file=.env scripts/resolve-404s.mjs [--clear]
@@ -187,7 +187,7 @@ const paths = [
 // Cumulative: seed from the redirects already on disk so a re-run — or a
 // now-smaller/cleared page_misses log — never drops previously-resolved
 // entries. New resolutions below override on key conflict.
-const redirectsPath = path.join(ROOT, "src/data/missesRedirects.mjs");
+const redirectsPath = path.join(ROOT, "src/data/routesRedirects.mjs");
 const redirects = fs.existsSync(redirectsPath)
   ? { ...(await import(pathToFileURL(redirectsPath).href)).default }
   : {};
@@ -261,7 +261,7 @@ const out =
   "export default " +
   JSON.stringify(sortedRedirects, null, 2) +
   ";\n";
-fs.writeFileSync(path.join(ROOT, "src/data/missesRedirects.mjs"), out);
+fs.writeFileSync(path.join(ROOT, "src/data/routesRedirects.mjs"), out);
 
 console.log(
   `404 paths (human, non-local): ${paths.length}  ·  ignored local/dev: ${localCount}`,

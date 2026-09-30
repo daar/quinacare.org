@@ -1,6 +1,6 @@
 ---
 name: resolve-404s
-description: Resolve the Turso page_misses (404) log into native-route redirects and draft publishes, then clear the page_misses (missed-pages) table and open a PR. Use whenever the user asks to "resolve 404s", "process the missed routes", "make redirects from the 404 log", "clear the page misses", "publish pages people are looking for", or invokes /resolve-404s. Reads the page_misses table from the live Turso DB and writes src/data/missesRedirects.mjs.
+description: Resolve the Turso page_misses (404) log into native-route redirects and draft publishes, then clear the page_misses (missed-pages) table and open a PR. Use whenever the user asks to "resolve 404s", "process the missed routes", "make redirects from the 404 log", "clear the page misses", "publish pages people are looking for", or invokes /resolve-404s. Reads the page_misses table from the live Turso DB and writes src/data/routesRedirects.mjs.
 ---
 
 # Resolve the Turso 404 log into redirects / publishes
@@ -11,7 +11,7 @@ Reads the `page_misses` table (every 404 a real visitor hit), and for each human
 - else if it maps to a known section (curated) → **add a redirect**,
 - otherwise skip (junk, asset, bot, already-resolved).
 
-The output is `src/data/missesRedirects.mjs` — the single source of every redirect on the site, sorted alphabetically by key — which `astro.config.mjs` spreads wholesale into its `redirects` map (`redirects: { ...missesRedirects }`, nothing else). The script is `scripts/resolve-404s.mjs` (Node, uses `@libsql/client`).
+The output is `src/data/routesRedirects.mjs` — the single source of every redirect on the site, sorted alphabetically by key — which `astro.config.mjs` spreads wholesale into its `redirects` map (`redirects: { ...routesRedirects }`, nothing else). The script is `scripts/resolve-404s.mjs` (Node, uses `@libsql/client`).
 
 ## When to invoke
 
@@ -19,7 +19,7 @@ Trigger on `/resolve-404s` or: "resolve the 404s", "process missed routes", "bui
 
 ## Important: the run mutates content even without `--clear`
 
-Only the **table DELETE** is gated by `--clear`. Every run still **publishes matching drafts** (edits `status: draft → publish`) and **rewrites `missesRedirects.mjs`**. So:
+Only the **table DELETE** is gated by `--clear`. Every run still **publishes matching drafts** (edits `status: draft → publish`) and **rewrites `routesRedirects.mjs`**. So:
 
 1. Run **without** `--clear` first to inspect.
 2. Review the proposed publishes/redirects (see step 3). Revert anything wrong with `git checkout -- <file>`.
@@ -74,19 +74,19 @@ Put the result on its own branch and open a pull request — do **not** commit t
 
 ```bash
 git checkout -b chore/resolve-404s-<YYYY-MM-DD>
-git add src/data/missesRedirects.mjs <each published .mdoc>
+git add src/data/routesRedirects.mjs <each published .mdoc>
 git commit --no-verify -m "404s: refresh missed-route redirects from the live Turso log"
 git push -u origin HEAD
 gh pr create --title "Resolve missed routes from the 404 log" --body "<summary>"
 ```
 
-Stage `src/data/missesRedirects.mjs` plus every published `.mdoc` (group a post's NL/EN/ES siblings together). The PR body should summarise the script output: how many rows were cleared, how many local/dev misses were ignored, the drafts published, and the redirects added. Report the PR URL back to the user.
+Stage `src/data/routesRedirects.mjs` plus every published `.mdoc` (group a post's NL/EN/ES siblings together). The PR body should summarise the script output: how many rows were cleared, how many local/dev misses were ignored, the drafts published, and the redirects added. Report the PR URL back to the user.
 
 ## Notes
 
 - **Local/dev misses are ignored** by referrer (`localhost`/`127.0.0.1`/`0.0.0.0`/`.local`) — and `src/pages/404.astro` no longer beacons at all from those hosts, so the table stays clean going forward.
-- `routeRedirects.mjs` was removed: redirects come **only** from this 404 log. There is no separate manual block anywhere else — a hand-added redirect (a page merge, a broken external link, anything not sourced from the 404 log) is added directly to `missesRedirects.mjs` as a normal entry, exactly like an auto-resolved one. The script treats it the same way: it survives every future run because the script seeds from the file already on disk (see "cumulative" below), and it gets kept sorted alphabetically along with everything else.
+- `routeRedirects.mjs` (note: singular "route" — an older, unrelated file, already removed) was removed: redirects come **only** from this 404 log. There is no separate manual block anywhere else — a hand-added redirect (a page merge, a broken external link, anything not sourced from the 404 log) is added directly to `routesRedirects.mjs` as a normal entry, exactly like an auto-resolved one. The script treats it the same way: it survives every future run because the script seeds from the file already on disk (see "cumulative" below), and it gets kept sorted alphabetically along with everything else.
 - **Sorted alphabetically by key**, enforced by the script on every write — not just this run's cleanup. Keeps the file scannable and diffs small; a fresh resolution lands in place rather than always appending at the end.
 - Targets always use the **native localized routes** (see `SEG` in the script, mirroring `src/i18n` `ROUTES`).
 - The script is safe to re-run; publishing and the generated file are idempotent. Only `--clear` is destructive (and snapshotted).
-- **Redirect generation is cumulative**: each run seeds from the existing `missesRedirects.mjs` and merges in the new resolutions (new wins on key conflict), so a cleared/smaller `page_misses` log never drops previously-resolved redirects. To intentionally remove a stale redirect, delete its line from `missesRedirects.mjs` directly.
+- **Redirect generation is cumulative**: each run seeds from the existing `routesRedirects.mjs` and merges in the new resolutions (new wins on key conflict), so a cleared/smaller `page_misses` log never drops previously-resolved redirects. To intentionally remove a stale redirect, delete its line from `routesRedirects.mjs` directly.
