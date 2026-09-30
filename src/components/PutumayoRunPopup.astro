@@ -1,0 +1,187 @@
+---
+// Homepage announcement popup for the upcoming Putumayo Loop edition.
+// The homepage is prerendered static output, so the edition's year and
+// run date come from the static config here; the live "locations /
+// runners" headline numbers are fetched client-side from
+// /api/putumayo-loop/stats (SSR, reads Turso) once the popup opens.
+import Icon from "./Icon.astro";
+import {
+  useTranslations,
+  getLocalizedPath,
+  getDateLocale,
+  type Lang,
+} from "../i18n";
+import { editions } from "../data/putumayoLoop";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const dateLocale = getDateLocale(lang);
+
+const edition =
+  editions.find((e) => e.status === "active" || e.status === "upcoming") ??
+  editions[editions.length - 1];
+
+const runDateFormatted = new Intl.DateTimeFormat(dateLocale, {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+}).format(new Date(edition.runDate));
+
+const landingHref = getLocalizedPath("/putumayo-loop", lang);
+---
+
+<dialog
+  id="putumayo-run-popup"
+  data-year={edition.year}
+  data-run-date={edition.runDate}
+  data-live-stat-template={t("runPopup.liveStat")}
+  class="pr-popup fixed inset-0 z-[200] m-0 w-full h-full max-w-none max-h-none bg-transparent p-0 open:flex items-center justify-center"
+>
+  <div
+    class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+    data-popup-backdrop
+  ></div>
+  <div class="relative z-10 w-full max-w-[440px] mx-4 max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl">
+    <button
+      type="button"
+      data-popup-close
+      class="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      aria-label="Close"
+    >
+      <Icon name="xmark" class="text-sm text-gray-500" />
+    </button>
+    <div class="p-8 text-center">
+      <div class="inline-flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 mb-5">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-qcRed opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-qcRed"></span>
+        </span>
+        <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-qcBlack">
+          {t("runPopup.liveBadge")}
+        </span>
+      </div>
+
+      <h2 class="text-2xl font-bold tracking-tighter uppercase mb-2">
+        {t("runPopup.title")}
+      </h2>
+
+      <div class="inline-flex items-center gap-2 text-qcRed font-bold mb-4">
+        <Icon name="calendar" />
+        <span>{runDateFormatted}</span>
+      </div>
+
+      <p class="qc-body mb-6">{t("runPopup.body")}</p>
+
+      <p
+        class="popup-live-stat qc-meta bg-red-50/60 border border-red-100 rounded-md py-2.5 px-3 mb-6"
+        data-popup-live-stat
+      >
+        {t("runPopup.liveStatLoading")}
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a
+          href={landingHref}
+          data-popup-cta
+          class="qc-btn qc-btn--primary flex-1 flex items-center justify-center gap-2"
+        >
+          <Icon name="heart" />
+          {t("putumayoLoop.signUpCta")}
+        </a>
+        <a
+          href={landingHref}
+          data-popup-cta
+          class="qc-btn flex-1 border border-gray-200 rounded-md hover:border-qcRed transition flex items-center justify-center gap-2"
+        >
+          <Icon name="heart" class="text-qcRed" />
+          {t("putumayoLoop.donateCta")}
+        </a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const dialog = document.querySelector<HTMLDialogElement>(
+      "#putumayo-run-popup",
+    );
+    if (!dialog) return;
+
+    const year = dialog.dataset.year;
+    const runDate = dialog.dataset.runDate;
+    const liveStatTemplate = dialog.dataset.liveStatTemplate || "";
+    // Scoped to the edition year so next year's run gets a clean slate
+    // even for a visitor who dismissed this year's popup.
+    const storageKey = `qc-run-popup-dismissed-${year}`;
+    const DISMISS_TTL_MS = 24 * 60 * 60 * 1000;
+
+    // A dismissal is only remembered for 24h — after that the popup is
+    // fair game to show again on the visitor's next homepage visit.
+    const alreadyDismissed = (() => {
+      try {
+        const dismissedAt = localStorage.getItem(storageKey);
+        if (!dismissedAt) return false;
+        return Date.now() - Number(dismissedAt) < DISMISS_TTL_MS;
+      } catch {
+        return false;
+      }
+    })();
+    // The run happens on runDate itself, so the popup stays visible
+    // through the whole of that day and only disappears the day after.
+    const runHasPassed = (() => {
+      if (!runDate) return false;
+      const cutoff = new Date(runDate);
+      cutoff.setUTCDate(cutoff.getUTCDate() + 1);
+      return new Date() >= cutoff;
+    })();
+    if (alreadyDismissed || runHasPassed) return;
+
+    const dismiss = () => {
+      dialog.close();
+      document.body.style.overflow = "";
+      try {
+        localStorage.setItem(storageKey, String(Date.now()));
+      } catch {
+        // Private browsing / storage disabled — worst case it shows
+        // again on the next visit, which is a harmless fallback.
+      }
+    };
+
+    dialog
+      .querySelectorAll(
+        "[data-popup-close], [data-popup-backdrop], [data-popup-cta]",
+      )
+      .forEach((el) => el.addEventListener("click", dismiss));
+    dialog.addEventListener("cancel", (e) => {
+      e.preventDefault();
+      dismiss();
+    });
+
+    // Numbers arrive independently of the popup's own open timer so a
+    // slow API response never delays the announcement itself; the stat
+    // line just pops in once it resolves, or disappears on failure.
+    const liveStatEl = dialog.querySelector<HTMLElement>(
+      "[data-popup-live-stat]",
+    );
+    fetch("/api/putumayo-loop/stats")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data: { locations: number; runners: number }) => {
+        if (!liveStatEl || !liveStatTemplate) return;
+        liveStatEl.textContent = liveStatTemplate
+          .replace("{locations}", String(data.locations))
+          .replace("{runners}", String(data.runners));
+      })
+      .catch(() => {
+        liveStatEl?.remove();
+      });
+
+    window.setTimeout(() => {
+      dialog.showModal();
+      document.body.style.overflow = "hidden";
+    }, 1500);
+  });
+</script>
