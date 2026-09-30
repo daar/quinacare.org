@@ -69,7 +69,11 @@ const fundraiserSchema = ({ image }: SchemaContext) =>
     translationKey: z.string().optional(),
     organizer: z.string(),
     excerpt: z.string(),
-    goal_amount: z.number(),
+    // Optional: some fundraisers ("run/ride N km for the cause") have no
+    // euro target at all, only a distance or a date. When unset, every
+    // goal-dependent bit of UI (progress bar, percentage, "of €X goal")
+    // is left out rather than shown against a fabricated number.
+    goal_amount: z.number().optional(),
     // Manual offsets added on top of the live Turso totals — cover
     // donations made outside this site, or any missing from the database.
     raised_offset: z.number().default(0),
