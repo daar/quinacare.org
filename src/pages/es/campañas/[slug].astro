@@ -18,6 +18,7 @@ import QRCode from "../../../components/QRCode.astro";
 import { generateQrDataUri } from "../../../lib/qr";
 import { daysToGo, isActive } from "../../../lib/countdown";
 import { getCurrentEurToUsdRate } from "../../../lib/donations";
+import { formatCurrency as formatCurrencyShared } from "../../../lib/currency";
 
 const lang: Lang = "es";
 const t = useTranslations(lang);
@@ -53,13 +54,11 @@ const days = daysToGo(entry.data.end_date);
 // but ES donors pay in USD — convert for display using the live rate.
 const rate = await getCurrentEurToUsdRate();
 
+// Routed through the shared helper (same one the donate form uses) so
+// the $ prefix style is identical everywhere — "es-ES" Intl formatting
+// would otherwise render USD as a "10 US$" postfix.
 function formatCurrency(amountEur: number): string {
-  return new Intl.NumberFormat("es-ES", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amountEur * rate);
+  return formatCurrencyShared(amountEur * rate, lang, false);
 }
 
 function formatDate(date: Date): string {
@@ -158,8 +157,6 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                 class="fundraiser-raised text-3xl md:text-4xl font-bold tracking-tight mb-1"
                 data-slug={entry.data.slug}
                 data-goal={entry.data.goal_amount}
-                data-locale="es-ES"
-                data-currency="USD"
                 data-rate={rate}
                 data-initial-raised={entry.data.raised_offset}
                 data-initial-backers={entry.data.backers_offset}
@@ -359,6 +356,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
 
 <script>
   import { daysToGo, isActive } from "../../../lib/countdown";
+  import { formatCurrency } from "../../../lib/currency";
 
   document.addEventListener("DOMContentLoaded", () => {
     // Static page: the countdown and the "active" badge were frozen at
@@ -390,8 +388,6 @@ const qrDataUri = await generateQrDataUri(shareUrl);
     // Absent for goal-less fundraisers — data-goal is simply not rendered
     // in that case (see hasGoal in the frontmatter).
     const goal = raisedEl.dataset.goal ? Number(raisedEl.dataset.goal) : null;
-    const locale = raisedEl.dataset.locale!;
-    const currency = raisedEl.dataset.currency!;
     // Build-time rate, used until the live fetch below resolves with the
     // actual current one — avoids showing a stale baked-in value longer
     // than the instant it takes this request to come back.
@@ -416,14 +412,7 @@ const qrDataUri = await generateQrDataUri(shareUrl);
           const rate = data.rate || buildRate;
           const totalRaised = totalRaisedEur * rate;
 
-          const fmt = new Intl.NumberFormat(locale, {
-            style: "currency",
-            currency,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          });
-
-          raisedEl.textContent = fmt.format(totalRaised);
+          raisedEl.textContent = formatCurrency(totalRaised, "es", false);
 
           const backersEl = document.querySelector<HTMLElement>(
             ".fundraiser-backers",

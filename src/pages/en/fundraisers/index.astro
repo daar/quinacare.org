@@ -9,6 +9,7 @@ import { useTranslations, getLocalizedPath, type Lang } from "../../../i18n";
 import { generateQrDataUri } from "../../../lib/qr";
 import { daysToGo, isActive } from "../../../lib/countdown";
 import { getCurrentEurToUsdRate } from "../../../lib/donations";
+import { formatCurrency as formatCurrencyShared } from "../../../lib/currency";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
@@ -51,13 +52,10 @@ function getPercentage(
 // but EN donors pay in USD — convert for display using the live rate.
 const rate = await getCurrentEurToUsdRate();
 
+// Routed through the shared helper (same one the donate form uses) so
+// the $ prefix style is identical everywhere.
 function formatCurrency(amountEur: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amountEur * rate);
+  return formatCurrencyShared(amountEur * rate, lang, false);
 }
 ---
 
@@ -271,6 +269,7 @@ function formatCurrency(amountEur: number): string {
 
 <script>
   import { daysToGo, isActive } from "../../../lib/countdown";
+  import { formatCurrency } from "../../../lib/currency";
 
   document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll<HTMLElement>(".fundraise-card");
@@ -401,14 +400,6 @@ function formatCurrency(amountEur: number): string {
     render();
 
     // Hydrate live stats from Turso
-    const locale = "en-US";
-    const currency = "USD";
-    const fmt = new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
     // Build-time rate, used until each card's live fetch below resolves
     // with the actual current one.
     const grid = document.getElementById("fundraise-grid");
@@ -441,7 +432,8 @@ function formatCurrency(amountEur: number): string {
             const totalRaised = totalRaisedEur * rate;
 
             const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
-            if (raisedEl) raisedEl.textContent = fmt.format(totalRaised);
+            if (raisedEl)
+              raisedEl.textContent = formatCurrency(totalRaised, "en", false);
 
             const backersEl = card.querySelector<HTMLElement>(".fc-backers");
             if (backersEl) backersEl.textContent = String(totalBackers);
