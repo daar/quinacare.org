@@ -27,6 +27,13 @@ export async function ensureSchema(): Promise<void> {
       mollie_id          TEXT UNIQUE,
       status             TEXT NOT NULL DEFAULT 'pending',
       amount_cents       INTEGER NOT NULL,
+      -- amount_cents converted to EUR (Mollie's own settlementAmount for
+      -- non-EUR payments; identical to amount_cents when currency is
+      -- already EUR). NULL until a non-EUR payment is confirmed paid and
+      -- the webhook learns the real rate — see getFundraiserStats, which
+      -- falls back to amount_cents until then. Never sum amount_cents
+      -- directly across currencies (see issue #169).
+      amount_eur_cents   INTEGER,
       currency           TEXT NOT NULL DEFAULT 'EUR',
       frequency          TEXT NOT NULL DEFAULT 'one-time',
       payment_method     TEXT,
