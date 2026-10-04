@@ -29,6 +29,8 @@ import {
   hubDistances,
 } from "../../data/putumayoLoop";
 import { countryName } from "../../lib/countryName";
+import { getCurrentEurToUsdRate } from "../../lib/donations";
+import { formatCurrency as formatCurrencyShared } from "../../lib/currency";
 
 const lang: Lang = "es";
 const t = useTranslations(lang);
@@ -37,13 +39,16 @@ const edition = await getCurrentEdition();
 const { hubs, subscribers, donations, donationItems } = edition;
 const title = editionTitle(edition, lang);
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat(dateLocale, {
-    style: "currency",
-    currency: donations.currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+// Donation totals are tracked internally in EUR (see donations.currency
+// in putumayoLoopRepo), but ES donors pay in USD — convert for display
+// using the live rate.
+const rate = await getCurrentEurToUsdRate();
+
+// Routed through the shared helper (same one the donate form uses) so
+// the $ prefix style is identical everywhere — "es-ES" Intl formatting
+// would otherwise render USD as a "10 US$" postfix.
+function formatCurrency(amountEur: number): string {
+  return formatCurrencyShared(amountEur * rate, lang, false);
 }
 
 function formatRunDate(iso: string): string {
@@ -240,6 +245,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           hubs={hubs}
           subscribers={subscribers}
           donationItems={donationItems}
+          rate={rate}
         />
       </div>
     </div>

@@ -1,5 +1,15 @@
 import { getDb, ensureSchema } from "./db";
 
+/**
+ * Safety-net EUR->USD rate, used only if the database has no observed
+ * conversion yet or the lookup fails — see getCurrentEurToUsdRate, which
+ * is always preferred and reflects the real rate Mollie actually applied
+ * to the most recent USD donation. Update occasionally; this constant is
+ * not the source of truth and is never used while live data is reachable.
+ * Last synced to the observed rate on 2026-10-04.
+ */
+const FALLBACK_EUR_TO_USD_RATE = 1.17;
+
 export type DonationContext = "donate" | "yura-boom" | "fundraiser";
 export type DonationFrequency = "one-time" | "monthly" | "quarterly" | "yearly";
 
@@ -8,6 +18,7 @@ export interface DonationRecord {
   mollie_id: string | null;
   status: string;
   amount_cents: number;
+  amount_eur_cents: number | null;
   currency: string;
   frequency: DonationFrequency;
   payment_method: string;
@@ -35,11 +46,17 @@ export async function insertDonation(
 ): Promise<number> {
   await ensureSchema();
   const db = getDb();
+  // EUR donations need no conversion, so the EUR amount is already known
+  // at creation time. Non-EUR donations only learn their real EUR value
+  // once Mollie reports it (settlementAmount) on the "paid" webhook — see
+  // updateDonationStatus.
+  const amountEurCents = input.currency === "EUR" ? input.amount_cents : null;
   const result = await db.execute({
-    sql: `INSERT INTO donations (status, amount_cents, currency, frequency, payment_method, locale, context, metadata)
-          VALUES ('pending', ?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO donations (status, amount_cents, amount_eur_cents, currency, frequency, payment_method, locale, context, metadata)
+          VALUES ('pending', ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       input.amount_cents,
+      amountEurCents,
       input.currency,
       input.frequency,
       input.payment_method,
@@ -64,17 +81,28 @@ export async function setMollieId(
   });
 }
 
-/** Update donation status (called from webhook). */
+/**
+ * Update donation status (called from webhook). `amountEurCents`, when
+ * given, records the real EUR value of a non-EUR payment once Mollie
+ * reports it — see the `amount_eur_cents` column comment in db.ts.
+ */
 export async function updateDonationStatus(
   mollieId: string,
   status: string,
   customerId?: string,
+  amountEurCents?: number,
 ): Promise<void> {
   await ensureSchema();
   const db = getDb();
-  const args: (string | null)[] = [status, customerId ?? null, mollieId];
+  const args: (string | number | null)[] = [
+    status,
+    customerId ?? null,
+    amountEurCents ?? null,
+    mollieId,
+  ];
   await db.execute({
-    sql: `UPDATE donations SET status = ?, mollie_customer_id = COALESCE(?, mollie_customer_id), updated_at = datetime('now')
+    sql: `UPDATE donations SET status = ?, mollie_customer_id = COALESCE(?, mollie_customer_id),
+          amount_eur_cents = COALESCE(?, amount_eur_cents), updated_at = datetime('now')
           WHERE mollie_id = ?`,
     args,
   });
@@ -87,7 +115,7 @@ export async function getFundraiserStats(
   await ensureSchema();
   const db = getDb();
   const result = await db.execute({
-    sql: `SELECT COALESCE(SUM(amount_cents), 0) AS raised_cents,
+    sql: `SELECT COALESCE(SUM(COALESCE(amount_eur_cents, amount_cents)), 0) AS raised_cents,
                  COUNT(*) AS donor_count
           FROM donations
           WHERE context = 'fundraiser'
@@ -100,6 +128,36 @@ export async function getFundraiserStats(
     raised_cents: Number(row?.raised_cents ?? 0),
     donor_count: Number(row?.donor_count ?? 0),
   };
+}
+
+/**
+ * The real EUR->USD rate, taken from the most recently settled USD
+ * donation (Mollie's own settlementAmount — see the amount_eur_cents
+ * column). EN/ES donors pay in USD while fundraiser totals are tracked
+ * internally in EUR, so multiply a EUR amount by this to show its
+ * USD-equivalent on EN/ES pages. Always queried live — never cached or
+ * hardcoded — so a stale rate never lingers; falls back to
+ * FALLBACK_EUR_TO_USD_RATE only if the database has no USD donation
+ * with a known EUR value yet, or the query fails.
+ */
+export async function getCurrentEurToUsdRate(): Promise<number> {
+  try {
+    await ensureSchema();
+    const db = getDb();
+    const result = await db.execute(
+      `SELECT amount_cents * 1.0 / amount_eur_cents AS rate
+       FROM donations
+       WHERE currency = 'USD' AND amount_eur_cents IS NOT NULL AND amount_eur_cents > 0
+       ORDER BY created_at DESC
+       LIMIT 1`,
+    );
+    const rate = result.rows[0]?.rate;
+    return typeof rate === "number" && rate > 0
+      ? rate
+      : FALLBACK_EUR_TO_USD_RATE;
+  } catch {
+    return FALLBACK_EUR_TO_USD_RATE;
+  }
 }
 
 /** Get individual donations for a fundraiser (for activity timeline). */
@@ -116,7 +174,7 @@ export async function getDonationsByFundraiser(
   await ensureSchema();
   const db = getDb();
   const result = await db.execute({
-    sql: `SELECT amount_cents, metadata, created_at
+    sql: `SELECT COALESCE(amount_eur_cents, amount_cents) AS amount_cents, metadata, created_at
           FROM donations
           WHERE context = 'fundraiser'
             AND status = 'paid'
@@ -159,6 +217,7 @@ export async function getDonationByMollieId(
     mollie_id: row.mollie_id as string | null,
     status: row.status as string,
     amount_cents: row.amount_cents as number,
+    amount_eur_cents: row.amount_eur_cents as number | null,
     currency: row.currency as string,
     frequency: row.frequency as DonationFrequency,
     payment_method: row.payment_method as string,

@@ -52,10 +52,23 @@ export const POST: APIRoute = async ({ request }) => {
       metadata: PaymentMeta;
       customerId?: string;
       subscriptionId?: string;
+      amount: { currency: string; value: string };
+      settlementAmount?: { currency: string; value: string };
     };
 
     const meta = payment.metadata || {};
     const currency = meta.currency || "EUR";
+
+    // The real EUR value of this payment. EUR payments need no
+    // conversion; non-EUR payments only get one once Mollie reports its
+    // own settlementAmount (typically once the payment is paid) — see
+    // the amount_eur_cents column comment in db.ts and issue #169.
+    const amountEurCents =
+      payment.amount.currency === "EUR"
+        ? Math.round(parseFloat(payment.amount.value) * 100)
+        : payment.settlementAmount?.currency === "EUR"
+          ? Math.round(parseFloat(payment.settlementAmount.value) * 100)
+          : undefined;
 
     // Check if this payment already has a donation record
     const existing = await getDonationByMollieId(paymentId);
@@ -67,6 +80,7 @@ export const POST: APIRoute = async ({ request }) => {
         paymentId,
         payment.status,
         payment.customerId,
+        amountEurCents,
       ).catch((err) =>
         reportError(SOURCE, "updateDonationStatus failed", err, { paymentId }),
       );
@@ -111,6 +125,7 @@ export const POST: APIRoute = async ({ request }) => {
             paymentId,
             payment.status,
             payment.customerId,
+            amountEurCents,
           );
           await logEvent({
             donationId,
@@ -133,6 +148,7 @@ export const POST: APIRoute = async ({ request }) => {
         paymentId,
         payment.status,
         payment.customerId,
+        amountEurCents,
       ).catch((err) =>
         reportError(SOURCE, "updateDonationStatus failed", err, { paymentId }),
       );
