@@ -335,6 +335,17 @@ export const editions: EditionConfig[] = [
         // Nijmegen runs 5 km, 10 km, and 21 km — no kids run, no full marathon.
         distances: ["5k", "10k", "half"],
       },
+      {
+        id: "singapore",
+        name: "Singapore",
+        city: "Singapore",
+        country: "SG",
+        coords: [1.3521, 103.8198],
+        captain: "Erik Spaans",
+        captainEmail: "erikspaans96@hotmail.com",
+        // Singapore runs the 10 km only.
+        distances: ["10k"],
+      },
     ],
     target: 25000,
     // Demi and Thomas ran for the Putumayo Loop, so their fundraiser was
