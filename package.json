@@ -39,7 +39,9 @@
     "fast-uri": "^3.1.8",
     "undici": "^8.10.2",
     "devalue": "^5.9.4",
-    "brace-expansion": "^5.0.12"
+    "brace-expansion": "^5.0.12",
+    "http-cache-semantics": "^4.3.0",
+    "@fastify/busboy": "^3.2.2"
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.9",
