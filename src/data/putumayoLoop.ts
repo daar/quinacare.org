@@ -348,14 +348,6 @@ export const editions: EditionConfig[] = [
       },
     ],
     target: 25000,
-    // Demi and Thomas ran for the Putumayo Loop, so their fundraiser was
-    // folded into this edition (#144). Their paid donations were moved to
-    // this slug in Turso and show up in the live query; these two are the
-    // offset their page carried for donations collected off the website,
-    // which exist nowhere in the database and would otherwise be lost
-    // when that page was deleted.
-    raisedOffset: 310,
-    donorsOffset: 9,
   },
 ];
 
