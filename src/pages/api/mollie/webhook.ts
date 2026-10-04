@@ -8,6 +8,7 @@ import {
   insertDonation,
   setMollieId,
   logEvent,
+  getCurrentEurToUsdRate,
   type DonationContext,
   type DonationFrequency,
 } from "../../../lib/donations";
@@ -59,16 +60,33 @@ export const POST: APIRoute = async ({ request }) => {
     const meta = payment.metadata || {};
     const currency = meta.currency || "EUR";
 
-    // The real EUR value of this payment. EUR payments need no
-    // conversion; non-EUR payments only get one once Mollie reports its
-    // own settlementAmount (typically once the payment is paid) — see
-    // the amount_eur_cents column comment in db.ts and issue #169.
-    const amountEurCents =
-      payment.amount.currency === "EUR"
-        ? Math.round(parseFloat(payment.amount.value) * 100)
-        : payment.settlementAmount?.currency === "EUR"
-          ? Math.round(parseFloat(payment.settlementAmount.value) * 100)
-          : undefined;
+    // The real EUR value of this payment — resolved in three tiers (see
+    // the amount_eur_cents column comment in db.ts and issue #169):
+    //   1. EUR payments need no conversion — the face value already is
+    //      the EUR value.
+    //   2. Non-EUR payments Mollie itself settles (card, iDEAL, Apple
+    //      Pay) report the exact converted amount via settlementAmount —
+    //      authoritative, not an estimate.
+    //   3. Non-EUR payments Mollie does NOT settle itself (PayPal is the
+    //      one in use here — PayPal settles directly with its own
+    //      conversion, so settlementAmount is never present) fall back
+    //      to the live EUR->USD rate (getCurrentEurToUsdRate, which
+    //      itself falls back to a fixed constant if no live rate is
+    //      available) — only computed once the payment is actually
+    //      paid, since that's the only status amount_eur_cents is ever
+    //      read for.
+    let amountEurCents: number | undefined;
+    if (payment.amount.currency === "EUR") {
+      amountEurCents = Math.round(parseFloat(payment.amount.value) * 100);
+    } else if (payment.settlementAmount?.currency === "EUR") {
+      amountEurCents = Math.round(
+        parseFloat(payment.settlementAmount.value) * 100,
+      );
+    } else if (payment.status === "paid") {
+      const amountCents = Math.round(parseFloat(payment.amount.value) * 100);
+      const rate = await getCurrentEurToUsdRate();
+      amountEurCents = Math.round(amountCents / rate);
+    }
 
     // Check if this payment already has a donation record
     const existing = await getDonationByMollieId(paymentId);

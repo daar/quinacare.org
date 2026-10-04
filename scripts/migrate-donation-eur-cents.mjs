@@ -4,19 +4,21 @@
  * each donation, used everywhere a fundraiser total is summed so a USD
  * donation isn't counted at face value as if it were EUR (issue #169).
  *
- * Going forward this column is populated automatically: EUR donations
- * get it at insert time (no conversion needed), non-EUR donations get
- * it from Mollie's own `settlementAmount` once the webhook sees the
- * payment as paid (see src/lib/donations.ts). This script only backfills
- * rows that predate that change:
+ * Going forward this column is populated automatically by the webhook
+ * (see src/lib/donations.ts), in the same three tiers this script
+ * applies here:
  *
- *   1. Adds the column if it's missing (idempotent ALTER).
- *   2. EUR rows: amount_eur_cents = amount_cents (trivial, no API call).
- *   3. Non-EUR *paid* rows: fetches the payment from Mollie and uses its
- *      settlementAmount. Rows Mollie didn't settle itself (e.g. PayPal —
- *      see the Mollie docs on settlementAmount) are left NULL; the stats
- *      queries fall back to the raw (uncorrected) amount_cents for those,
- *      same as before this migration.
+ *   1. EUR rows: amount_eur_cents = amount_cents (trivial, no API call,
+ *      no conversion needed).
+ *   2. Non-EUR *paid* rows: fetches the payment from Mollie and uses its
+ *      settlementAmount — the exact amount Mollie actually settled,
+ *      not an estimate.
+ *   3. Non-EUR paid rows Mollie didn't settle itself (PayPal is the one
+ *      in use here — it settles directly with its own conversion, so
+ *      settlementAmount is never present): estimated from the live
+ *      EUR->USD rate — the most recently observed real rate from
+ *      another donation's own tier-2 conversion — falling back to a
+ *      fixed constant only if no such donation exists yet.
  *
  * Safe to re-run: every write is gated on amount_eur_cents IS NULL.
  *
@@ -41,6 +43,23 @@ if (!mollieApiKey) {
 
 const db = createClient({ url, authToken });
 const mollie = createMollieClient({ apiKey: mollieApiKey });
+
+// Mirrors getCurrentEurToUsdRate() in src/lib/donations.ts — kept as a
+// literal duplicate here since this standalone script can't import a
+// .ts module. Update both together if the logic changes.
+const FALLBACK_EUR_TO_USD_RATE = 1.17;
+
+async function getCurrentEurToUsdRate() {
+  const result = await db.execute(
+    `SELECT amount_cents * 1.0 / amount_eur_cents AS rate
+     FROM donations
+     WHERE currency = 'USD' AND amount_eur_cents IS NOT NULL AND amount_eur_cents > 0
+     ORDER BY created_at DESC
+     LIMIT 1`,
+  );
+  const rate = result.rows[0]?.rate;
+  return typeof rate === "number" && rate > 0 ? rate : FALLBACK_EUR_TO_USD_RATE;
+}
 
 async function tryAlter(sql) {
   try {
@@ -71,8 +90,8 @@ const pending = await db.execute(
 
 console.log(`Non-EUR paid rows to resolve via Mollie: ${pending.rows.length}`);
 
-let converted = 0;
-let noSettlement = 0;
+let settled = 0;
+const needsRateEstimate = [];
 let failed = 0;
 
 for (const row of pending.rows) {
@@ -86,15 +105,16 @@ for (const row of pending.rows) {
         sql: `UPDATE donations SET amount_eur_cents = ? WHERE id = ?`,
         args: [eurCents, row.id],
       });
-      converted++;
+      settled++;
       console.log(
-        `  #${row.id} (${mollieId}): ${row.amount_cents / 100} ${row.currency} -> ${eurCents / 100} EUR`,
+        `  #${row.id} (${mollieId}): ${row.amount_cents / 100} ${row.currency} -> ${eurCents / 100} EUR (tier 2: Mollie settlementAmount)`,
       );
     } else {
-      noSettlement++;
-      console.log(
-        `  #${row.id} (${mollieId}): no EUR settlementAmount (method likely settles outside Mollie, e.g. PayPal) — left as-is`,
-      );
+      // Tier 3 candidate — Mollie doesn't settle this method itself
+      // (e.g. PayPal). Resolved below, after every tier-2 conversion in
+      // this batch has been written, so the live rate reflects the most
+      // up-to-date real data available.
+      needsRateEstimate.push(row);
     }
   } catch (e) {
     failed++;
@@ -104,6 +124,25 @@ for (const row of pending.rows) {
   }
 }
 
+let estimated = 0;
+if (needsRateEstimate.length > 0) {
+  const rate = await getCurrentEurToUsdRate();
+  console.log(
+    `\nTier 3: estimating ${needsRateEstimate.length} row(s) with no Mollie settlementAmount using rate ${rate} (USD per EUR)`,
+  );
+  for (const row of needsRateEstimate) {
+    const eurCents = Math.round(row.amount_cents / rate);
+    await db.execute({
+      sql: `UPDATE donations SET amount_eur_cents = ? WHERE id = ?`,
+      args: [eurCents, row.id],
+    });
+    estimated++;
+    console.log(
+      `  #${row.id} (${row.mollie_id}): ${row.amount_cents / 100} ${row.currency} -> ${eurCents / 100} EUR (tier 3: live-rate estimate)`,
+    );
+  }
+}
+
 console.log(
-  `\nDone. Converted: ${converted}, no settlement data: ${noSettlement}, failed: ${failed}`,
+  `\nDone. Settled via Mollie: ${settled}, estimated via live rate: ${estimated}, failed to fetch: ${failed}`,
 );
