@@ -13,7 +13,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { getTurso } from "../../../lib/turso";
+import { getDb } from "../../../lib/db";
 import { sendMail } from "../../../lib/mailer";
 import { geocode } from "../../../lib/geocode";
 import { countryName } from "../../../lib/countryName";
@@ -135,7 +135,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     try {
-      const db = getTurso();
+      const db = getDb();
       // Insert directly — the table is created by the migration script. If
       // it's missing we want a loud 500 rather than a silent CREATE in the
       // hot path.

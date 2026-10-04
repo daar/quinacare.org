@@ -14,7 +14,7 @@ import type {
   Subscriber,
 } from "../data/putumayoLoop";
 import { ALL_DISTANCES, editions } from "../data/putumayoLoop";
-import { getTurso } from "./turso";
+import { getDb } from "./db";
 import { getFundraiserStats, getDonationsByFundraiser } from "./donations";
 
 type SubscriberRow = {
@@ -84,7 +84,7 @@ async function fetchSubscribers(
   year: number,
   hubs: Hub[],
 ): Promise<Subscriber[]> {
-  const db = getTurso();
+  const db = getDb();
   // Return every signup; whether or not it can be mapped is a downstream
   // concern (the page-side counters need all rows; the map filters those
   // without coords). Older code used to filter on lat/lng here and that
