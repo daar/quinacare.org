@@ -29,6 +29,7 @@ import {
   hubDistances,
 } from "../../data/putumayoLoop";
 import { countryName } from "../../lib/countryName";
+import { getCurrentEurToUsdRate } from "../../lib/donations";
 
 const lang: Lang = "en";
 const t = useTranslations(lang);
@@ -37,13 +38,18 @@ const edition = await getCurrentEdition();
 const { hubs, subscribers, donations, donationItems } = edition;
 const title = editionTitle(edition, lang);
 
-function formatCurrency(amount: number): string {
+// Donation totals are tracked internally in EUR (see donations.currency
+// in putumayoLoopRepo), but EN donors pay in USD — convert for display
+// using the live rate.
+const rate = await getCurrentEurToUsdRate();
+
+function formatCurrency(amountEur: number): string {
   return new Intl.NumberFormat(dateLocale, {
     style: "currency",
-    currency: donations.currency,
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amountEur * rate);
 }
 
 function formatRunDate(iso: string): string {
@@ -240,6 +246,7 @@ const excerpt = t("putumayoLoop.heroSubtitle");
           hubs={hubs}
           subscribers={subscribers}
           donationItems={donationItems}
+          rate={rate}
         />
       </div>
     </div>

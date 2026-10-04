@@ -3,6 +3,7 @@ import Icon from "./Icon.astro";
 import type { Hub, Subscriber } from "../data/putumayoLoop";
 import { useTranslations, getDateLocale, type Lang } from "../i18n";
 import { countryName } from "../lib/countryName";
+import { formatCurrency } from "../lib/currency";
 
 interface Props {
   lang: Lang;
@@ -13,8 +14,14 @@ interface Props {
     firstName?: string;
     donatedAt: string;
   }>;
+  /**
+   * EUR->USD rate (see getCurrentEurToUsdRate) — donation amounts are
+   * tracked internally in EUR, so EN/ES pages pass the live rate here to
+   * show their USD-equivalent. Defaults to 1 (NL: no conversion).
+   */
+  rate?: number;
 }
-const { lang, hubs, subscribers, donationItems = [] } = Astro.props;
+const { lang, hubs, subscribers, donationItems = [], rate = 1 } = Astro.props;
 const t = useTranslations(lang);
 const dateLocale = getDateLocale(lang);
 
@@ -86,7 +93,11 @@ function relTime(iso: string): string {
       } else {
         const d = activity.data;
         const name = d.firstName ?? "Iemand";
-        const amount = `€${Math.round(d.amount_cents / 100)}`;
+        const amount = formatCurrency(
+          (d.amount_cents / 100) * rate,
+          lang,
+          false,
+        );
         const donatedText = t("putumayoLoop.donated")
           .replace("{name}", name)
           .replace("{amount}", amount);

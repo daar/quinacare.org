@@ -8,6 +8,7 @@ import Footer from "../../../components/Footer.astro";
 import { useTranslations, getLocalizedPath, type Lang } from "../../../i18n";
 import { generateQrDataUri } from "../../../lib/qr";
 import { daysToGo, isActive } from "../../../lib/countdown";
+import { getCurrentEurToUsdRate } from "../../../lib/donations";
 
 const lang: Lang = "es";
 const t = useTranslations(lang);
@@ -46,13 +47,17 @@ function getPercentage(
 // Rendered once at build time and then corrected in the browser, so the
 // countdown cannot go stale between deploys — see src/lib/countdown.ts.
 
-function formatCurrency(amount: number): string {
+// Fundraiser totals are tracked internally in EUR (see getFundraiserStats),
+// but ES donors pay in USD — convert for display using the live rate.
+const rate = await getCurrentEurToUsdRate();
+
+function formatCurrency(amountEur: number): string {
   return new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "EUR",
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amountEur * rate);
 }
 ---
 
@@ -78,6 +83,7 @@ function formatCurrency(amount: number): string {
       <>
         <div
           id="fundraise-grid"
+          data-rate={rate}
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
         >
           {sorted.map((fundraiser, idx) => {
@@ -396,13 +402,17 @@ function formatCurrency(amount: number): string {
 
     // Hydrate live stats from Turso
     const locale = "es-ES";
-    const currency = "EUR";
+    const currency = "USD";
     const fmt = new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
+    // Build-time rate, used until each card's live fetch below resolves
+    // with the actual current one.
+    const grid = document.getElementById("fundraise-grid");
+    const buildRate = Number(grid?.dataset.rate) || 1;
 
     cards.forEach((card) => {
       const slug = card.dataset.slug;
@@ -416,27 +426,39 @@ function formatCurrency(amount: number): string {
 
       fetch(`/api/fundraisers/stats?slug=${encodeURIComponent(slug)}`)
         .then((r) => r.json())
-        .then((data: { raised_cents: number; donor_count: number }) => {
-          // Live Turso totals plus the frontmatter offset.
-          const totalRaised = raisedOffset + data.raised_cents / 100;
-          const totalBackers = backersOffset + data.donor_count;
+        .then(
+          (data: {
+            raised_cents: number;
+            donor_count: number;
+            rate?: number;
+          }) => {
+            // Live Turso totals plus the frontmatter offset. Stays in EUR
+            // internally — only the final displayed figure is converted,
+            // using the live rate this request just fetched.
+            const totalRaisedEur = raisedOffset + data.raised_cents / 100;
+            const totalBackers = backersOffset + data.donor_count;
+            const rate = data.rate || buildRate;
+            const totalRaised = totalRaisedEur * rate;
 
-          const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
-          if (raisedEl) raisedEl.textContent = fmt.format(totalRaised);
+            const raisedEl = card.querySelector<HTMLElement>(".fc-raised");
+            if (raisedEl) raisedEl.textContent = fmt.format(totalRaised);
 
-          const backersEl = card.querySelector<HTMLElement>(".fc-backers");
-          if (backersEl) backersEl.textContent = String(totalBackers);
+            const backersEl = card.querySelector<HTMLElement>(".fc-backers");
+            if (backersEl) backersEl.textContent = String(totalBackers);
 
-          if (goal == null) return;
-          const pct = Math.round((totalRaised / goal) * 100);
-          const barPct = Math.min(100, pct);
+            if (goal == null) return;
+            // Percentage uses the EUR figures on both sides of the ratio —
+            // never the converted display value.
+            const pct = Math.round((totalRaisedEur / goal) * 100);
+            const barPct = Math.min(100, pct);
 
-          const pctEl = card.querySelector<HTMLElement>(".fc-pct");
-          if (pctEl) pctEl.textContent = String(pct);
+            const pctEl = card.querySelector<HTMLElement>(".fc-pct");
+            if (pctEl) pctEl.textContent = String(pct);
 
-          const bar = card.querySelector<HTMLElement>(".fc-bar");
-          if (bar) bar.style.width = `${barPct}%`;
-        })
+            const bar = card.querySelector<HTMLElement>(".fc-bar");
+            if (bar) bar.style.width = `${barPct}%`;
+          },
+        )
         .catch(() => {});
     });
   });

@@ -17,6 +17,7 @@ import SocialShare from "../../../components/SocialShare.astro";
 import QRCode from "../../../components/QRCode.astro";
 import { generateQrDataUri } from "../../../lib/qr";
 import { daysToGo, isActive } from "../../../lib/countdown";
+import { getCurrentEurToUsdRate } from "../../../lib/donations";
 
 const lang: Lang = "es";
 const t = useTranslations(lang);
@@ -48,13 +49,17 @@ const barPct = pct == null ? 0 : Math.min(100, pct);
 // so a build-time countdown stands still — see src/lib/countdown.ts.
 const days = daysToGo(entry.data.end_date);
 
-function formatCurrency(amount: number): string {
+// Fundraiser totals are tracked internally in EUR (see getFundraiserStats),
+// but ES donors pay in USD — convert for display using the live rate.
+const rate = await getCurrentEurToUsdRate();
+
+function formatCurrency(amountEur: number): string {
   return new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "EUR",
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amountEur * rate);
 }
 
 function formatDate(date: Date): string {
@@ -154,7 +159,8 @@ const qrDataUri = await generateQrDataUri(shareUrl);
                 data-slug={entry.data.slug}
                 data-goal={entry.data.goal_amount}
                 data-locale="es-ES"
-                data-currency="EUR"
+                data-currency="USD"
+                data-rate={rate}
                 data-initial-raised={entry.data.raised_offset}
                 data-initial-backers={entry.data.backers_offset}
                 data-end={entry.data.end_date.toISOString()}
@@ -386,43 +392,60 @@ const qrDataUri = await generateQrDataUri(shareUrl);
     const goal = raisedEl.dataset.goal ? Number(raisedEl.dataset.goal) : null;
     const locale = raisedEl.dataset.locale!;
     const currency = raisedEl.dataset.currency!;
+    // Build-time rate, used until the live fetch below resolves with the
+    // actual current one — avoids showing a stale baked-in value longer
+    // than the instant it takes this request to come back.
+    const buildRate = Number(raisedEl.dataset.rate) || 1;
     const raisedOffset = Number(raisedEl.dataset.initialRaised);
     const backersOffset = Number(raisedEl.dataset.initialBackers);
 
     fetch(`/api/fundraisers/stats?slug=${encodeURIComponent(slug)}`)
       .then((r) => r.json())
-      .then((data: { raised_cents: number; donor_count: number }) => {
-        // Live Turso totals plus the frontmatter offset, which covers
-        // off-site donations or any missing from the database.
-        const totalRaised = raisedOffset + data.raised_cents / 100;
-        const totalBackers = backersOffset + data.donor_count;
+      .then(
+        (data: {
+          raised_cents: number;
+          donor_count: number;
+          rate?: number;
+        }) => {
+          // Live Turso totals plus the frontmatter offset, which covers
+          // off-site donations or any missing from the database. Stays
+          // in EUR internally — only the final displayed figure is
+          // converted, using the live rate this request just fetched.
+          const totalRaisedEur = raisedOffset + data.raised_cents / 100;
+          const totalBackers = backersOffset + data.donor_count;
+          const rate = data.rate || buildRate;
+          const totalRaised = totalRaisedEur * rate;
 
-        const fmt = new Intl.NumberFormat(locale, {
-          style: "currency",
-          currency,
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0,
-        });
+          const fmt = new Intl.NumberFormat(locale, {
+            style: "currency",
+            currency,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          });
 
-        raisedEl.textContent = fmt.format(totalRaised);
+          raisedEl.textContent = fmt.format(totalRaised);
 
-        const backersEl = document.querySelector<HTMLElement>(
-          ".fundraiser-backers",
-        );
-        if (backersEl) backersEl.textContent = String(totalBackers);
+          const backersEl = document.querySelector<HTMLElement>(
+            ".fundraiser-backers",
+          );
+          if (backersEl) backersEl.textContent = String(totalBackers);
 
-        if (goal == null) return;
-        const pct = Math.round((totalRaised / goal) * 100);
-        const barPct = Math.min(100, pct);
+          if (goal == null) return;
+          // Percentage uses the EUR figures on both sides of the ratio —
+          // never the converted display value, which would wrongly divide
+          // a USD amount by a EUR goal.
+          const pct = Math.round((totalRaisedEur / goal) * 100);
+          const barPct = Math.min(100, pct);
 
-        const pctEl = document.querySelector<HTMLElement>(".fundraiser-pct");
-        if (pctEl) pctEl.textContent = `${pct}%`;
+          const pctEl = document.querySelector<HTMLElement>(".fundraiser-pct");
+          if (pctEl) pctEl.textContent = `${pct}%`;
 
-        const bar = document.querySelector<HTMLElement>(".progress-fill");
-        if (bar) {
-          bar.style.setProperty("--target-width", `${barPct}%`);
-        }
-      })
+          const bar = document.querySelector<HTMLElement>(".progress-fill");
+          if (bar) {
+            bar.style.setProperty("--target-width", `${barPct}%`);
+          }
+        },
+      )
       .catch(() => {});
   });
 </script>

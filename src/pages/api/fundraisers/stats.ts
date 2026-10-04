@@ -1,7 +1,10 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { getFundraiserStats } from "../../../lib/donations";
+import {
+  getFundraiserStats,
+  getCurrentEurToUsdRate,
+} from "../../../lib/donations";
 
 export const GET: APIRoute = async ({ url }) => {
   const slug = url.searchParams.get("slug");
@@ -11,9 +14,14 @@ export const GET: APIRoute = async ({ url }) => {
     });
   }
 
-  const stats = await getFundraiserStats(slug);
+  // `rate` is always the live EUR->USD rate (see getCurrentEurToUsdRate) —
+  // EN/ES pages use it to display the EUR-tracked total converted to USD.
+  const [stats, rate] = await Promise.all([
+    getFundraiserStats(slug),
+    getCurrentEurToUsdRate(),
+  ]);
 
-  return new Response(JSON.stringify(stats), {
+  return new Response(JSON.stringify({ ...stats, rate }), {
     headers: { "Content-Type": "application/json" },
   });
 };
