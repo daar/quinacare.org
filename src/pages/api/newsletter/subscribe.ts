@@ -1,38 +1,41 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { getDb, ensureSchema } from "../../../lib/db";
+import { subscribe, isLocale, normaliseEmail } from "../../../lib/subscribers";
 
-export const POST: APIRoute = async ({ request }) => {
-  const { email, locale } = await request.json();
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+  const { email, locale, name } = await request.json();
 
-  if (
-    !email ||
-    typeof email !== "string" ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  ) {
+  if (!normaliseEmail(email)) {
     return new Response(JSON.stringify({ error: "Invalid email" }), {
       status: 400,
     });
   }
 
-  await ensureSchema();
-  const db = getDb();
+  // The locale is written into a comma-separated set, so an unchecked
+  // value here would let a crafted request inject arbitrary text or extra
+  // delimiters into that column. The widget only ever sends the page
+  // language, which is always one of the three.
+  if (!isLocale(locale)) {
+    return new Response(JSON.stringify({ error: "Invalid locale" }), {
+      status: 400,
+    });
+  }
 
-  // Someone already on one language list who signs up on another gets
-  // that language added to their set, rather than the signup being
-  // silently dropped as a duplicate. Re-subscribing to the same list is
-  // a no-op.
-  await db.execute({
-    sql: `INSERT INTO subscribers (email, locale) VALUES (?, ?)
-         ON CONFLICT(email) DO UPDATE SET locale =
-           CASE
-             WHEN ',' || locale || ',' LIKE '%,' || excluded.locale || ',%'
-               THEN locale
-             ELSE locale || ',' || excluded.locale
-           END`,
-    args: [email.toLowerCase().trim(), locale ?? "nl"],
+  const result = await subscribe({
+    email,
+    locale,
+    name,
+    source: "website",
+    // Kept as evidence that the signup was a real act by a real visitor.
+    ip: clientAddress ?? null,
   });
+
+  if (!result) {
+    return new Response(JSON.stringify({ error: "Invalid email" }), {
+      status: 400,
+    });
+  }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };

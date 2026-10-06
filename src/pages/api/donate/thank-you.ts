@@ -2,8 +2,9 @@ export const prerender = false;
 
 import type { APIRoute } from "astro";
 import { getDb, ensureSchema } from "../../../lib/db";
+import { subscribe, isLocale } from "../../../lib/subscribers";
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, clientAddress }) => {
   const { name, email, newsletter, locale } = await request.json();
 
   if (!name || !email || typeof email !== "string") {
@@ -20,18 +21,17 @@ export const POST: APIRoute = async ({ request }) => {
     args: [name.trim(), email.toLowerCase().trim(), locale ?? "nl"],
   });
 
+  // Only when the box was ticked — it is unchecked by default, which is
+  // what makes this consent rather than something bundled with the gift.
   if (newsletter) {
-    // Adds this language to the set if they were already subscribed in
-    // another one; a repeat of the same language changes nothing.
-    await db.execute({
-      sql: `INSERT INTO subscribers (email, locale) VALUES (?, ?)
-         ON CONFLICT(email) DO UPDATE SET locale =
-           CASE
-             WHEN ',' || locale || ',' LIKE '%,' || excluded.locale || ',%'
-               THEN locale
-             ELSE locale || ',' || excluded.locale
-           END`,
-      args: [email.toLowerCase().trim(), locale ?? "nl"],
+    await subscribe({
+      email,
+      locale: isLocale(locale) ? locale : "nl",
+      // They have just typed their name for the thank-you note, so the
+      // newsletter list gets one too without asking for it twice.
+      name,
+      source: "donation-thanks",
+      ip: clientAddress ?? null,
     });
   }
 
