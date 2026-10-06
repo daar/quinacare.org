@@ -347,7 +347,7 @@ export const editions: EditionConfig[] = [
         distances: ["10k"],
       },
     ],
-    target: 25000,
+    target: 6000,
   },
 ];
 
